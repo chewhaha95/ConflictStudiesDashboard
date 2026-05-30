@@ -25,15 +25,16 @@
   const State = {
     mode: "theatre",          // 'theatre' | 'division'
     division: "GEN",          // active division id
-    horizon: "weekly",        // 'weekly' | 'monthly' | 'quarterly'
+    horizon: "weekly",        // 'weekly' | 'monthly' | 'quarterly' | 'capabilities'
     periodId: null,           // active week/month/quarter id
     theme: "light",
     filters: {
-      theatres: new Set(),    // empty => all
-      phases:   new Set(),
-      trends:   new Set(),
-      domains:  new Set(),
-      search:   ""
+      theatres:  new Set(),   // empty => all
+      phases:    new Set(),
+      trends:    new Set(),
+      domains:   new Set(),
+      lifecycle: new Set(),   // capabilities view: lifecycle status filter
+      search:    ""
     }
   };
 
@@ -329,6 +330,7 @@
       State.filters.phases.clear();
       State.filters.trends.clear();
       State.filters.domains.clear();
+      State.filters.lifecycle.clear();
       State.filters.search = "";
     }
   };
@@ -566,6 +568,9 @@
 
     // ---- Top-level render for the active horizon ----
     renderActiveView() {
+      // Capabilities & Countermeasures is a cross-cutting analytics view,
+      // not tied to a weekly/monthly/quarterly period.
+      if (State.horizon === "capabilities") { Caps.render(); return; }
       const period = this.currentPeriod();
       if (!period) return;
       const ids = Filters.apply(period);
@@ -875,14 +880,38 @@
       a.href = url; a.download = name; document.body.appendChild(a); a.click();
       a.remove(); URL.revokeObjectURL(url);
     },
+    // Capabilities view exports the filtered capability set
+    capabilitiesObject() {
+      return {
+        generatedAt: new Date().toISOString(),
+        view: "capabilities",
+        mode: State.mode,
+        division: State.mode === "division" ? DIV_BY_ID[State.division].name : null,
+        capabilities: Caps.list()
+      };
+    },
     json() {
+      if (State.horizon === "capabilities") {
+        this.download("capabilities.json", "application/json", JSON.stringify(this.capabilitiesObject(), null, 2));
+        return;
+      }
       const obj = this.currentViewObject();
       this.download(`conflict-${State.horizon}-${obj.period.id}.json`, "application/json", JSON.stringify(obj, null, 2));
     },
     csv() {
+      const q = (s) => `"${String(s == null ? "" : s).replace(/"/g, '""')}"`;
+      if (State.horizon === "capabilities") {
+        const cols = ["name", "aka", "category", "role", "domain", "theatres", "lifecycle", "heat", "trend", "vector", "counteredBy", "supersededBy", "timeToCounterDays", "confidence"];
+        const rows = Caps.list().map(c => [
+          c.name, c.aka, c.category, c.role, c.domain, c.theatres.join("|"), c.lifecycle, c.heat, c.trend,
+          c.vector, (c.counteredBy || []).map(id => Caps.name(id)).join("|"),
+          (c.supersededBy || []).map(id => Caps.name(id)).join("|"), c.timeToCounterDays, c.confidence
+        ].map(q).join(","));
+        this.download("capabilities.csv", "text/csv", [cols.join(","), ...rows].join("\n"));
+        return;
+      }
       const obj = this.currentViewObject();
       const cols = ["theatre", "phase", "trend", "progressToDate", "conflictStatusScore", "statusLabel", "developmentPillDomain", "developmentPillHeadline", "watchAreas"];
-      const q = (s) => `"${String(s == null ? "" : s).replace(/"/g, '""')}"`;
       const rows = obj.theatres.map(t => [
         t.theatre, t.phase, t.trend, t.progressToDate, t.conflictStatusScore, t.statusLabel,
         t.developmentPill.domain, t.developmentPill.headline, t.watchAreas
@@ -895,6 +924,277 @@
   /* ----------------------------------------------------------------------
    * 10. APP  — init & event wiring
    * -------------------------------------------------------------------- */
+  /* ----------------------------------------------------------------------
+   * 8b. CAPABILITIES & COUNTERMEASURES  (measure–countermeasure observatory)
+   *     Tracks capabilities as first-class objects: lifecycle, heat, the
+   *     measure⇄countermeasure web, proliferation across theatres, supersession
+   *     chains, and adaptation tempo (time-to-counter). Answers "what's hot,
+   *     what's rising, and what has been superseded".
+   * -------------------------------------------------------------------- */
+  const Caps = {
+    lcPalette: {
+      emerging: "#1f5fa8", scaling: "#8a5a00", peak: "#a01f2e",
+      maturing: "#5a6679", superseded: "#1d6b4c", obsolete: "#8a93a3"
+    },
+    byId(id) { return DB.capabilities.find(c => c.id === id); },
+    name(id) { const c = this.byId(id); return c ? c.name : id; },
+
+    // Apply the shared theatre/domain/search filters + the lifecycle filter
+    list() {
+      const f = State.filters;
+      const q = f.search.trim().toLowerCase();
+      return DB.capabilities.filter(c => {
+        if (f.theatres.size && !c.theatres.some(t => f.theatres.has(t))) return false;
+        if (f.domains.size && !f.domains.has(c.domain)) return false;
+        if (f.lifecycle.size && !f.lifecycle.has(c.lifecycle)) return false;
+        if (q && ![c.name, c.aka, c.category, c.note, c.saf, c.role, c.vector]
+          .join(" ").toLowerCase().includes(q)) return false;
+        return true;
+      });
+    },
+
+    // ---- derived analytics ----
+    heatRanking(list) { return [...list].sort((a, b) => b.heat - a.heat); },
+    lifecycleDist(list) {
+      const o = {}; Object.keys(DB.capabilityDefs.lifecycle).forEach(k => o[k] = 0);
+      list.forEach(c => o[c.lifecycle]++); return o;
+    },
+    vectorDist(list) {
+      const o = {}; Object.keys(DB.capabilityDefs.vectors).forEach(k => o[k] = 0);
+      list.forEach(c => o[c.vector]++); return o;
+    },
+    theatreAdoption(list) {
+      const o = {};
+      DB.theatres.forEach(t => { o[t.id] = {}; Object.keys(DB.capabilityDefs.lifecycle).forEach(k => o[t.id][k] = 0); });
+      list.forEach(c => c.theatres.forEach(t => { if (o[t]) o[t][c.lifecycle]++; }));
+      return o;
+    },
+    pairs(list) {
+      return list.filter(c => c.role !== "Countermeasure" && c.counteredBy && c.counteredBy.length)
+        .map(c => ({ measure: c, counters: c.counteredBy.map(id => this.byId(id)).filter(Boolean) }))
+        .sort((a, b) => b.measure.heat - a.measure.heat);
+    },
+    uncountered(list) {
+      return this.heatRanking(list.filter(c => c.role !== "Countermeasure" && (!c.counteredBy || !c.counteredBy.length)));
+    },
+    supersession(list) {
+      return list.filter(c => c.supersededBy && c.supersededBy.length)
+        .map(c => ({ from: c, to: c.supersededBy.map(id => this.byId(id)).filter(Boolean) }));
+    },
+    diffusion(list) {
+      return list.filter(c => c.theatres.length > 1).sort((a, b) => b.theatres.length - a.theatres.length || b.heat - a.heat);
+    },
+    adaptationTempo(list) {
+      const m = list.filter(c => typeof c.timeToCounterDays === "number");
+      const avg = m.length ? Math.round(m.reduce((s, c) => s + c.timeToCounterDays, 0) / m.length) : 0;
+      return { items: [...m].sort((a, b) => a.timeToCounterDays - b.timeToCounterDays), avg };
+    },
+
+    // ---- small UI helpers ----
+    lcChip(lc) {
+      const tone = (DB.capabilityDefs.lifecycle[lc] || {}).tone || "maturing";
+      const tip = (DB.capabilityDefs.lifecycle[lc] || {}).desc || "";
+      return `<span class="lc-chip lc-${tone} tip" tabindex="0">${esc(lc)}<span class="tip-body">${esc(tip)}</span></span>`;
+    },
+    capTrend(t) {
+      const map = { Rising: ["↑", "bad"], Steady: ["→", "neutral"], Declining: ["↓", "good"] };
+      const [arrow, tone] = map[t] || ["→", "neutral"];
+      return `<span class="trend tone-${tone}"><span class="arrow">${arrow}</span>${esc(t)}</span>`;
+    },
+    theatreChips(ids) {
+      return ids.map(id => `<span class="t-chip" title="${esc(THEATRE_BY_ID[id].name)}">${esc(THEATRE_BY_ID[id].short)}</span>`).join("");
+    },
+    capChipLink(c) {
+      return `<span class="cap-ref lc-dot-${(DB.capabilityDefs.lifecycle[c.lifecycle] || {}).tone}">${esc(c.name)}</span>`;
+    },
+
+    // Is this capability a priority domain for the active division?
+    isDivPriority(c) {
+      if (State.mode !== "division") return false;
+      const div = DIV_BY_ID[State.division];
+      return div.emphasizedDomains.includes(c.domain);
+    },
+
+    render() {
+      const root = el("#view-capabilities .view-body");
+      const all = this.list();
+      const div = State.mode === "division" ? DIV_BY_ID[State.division] : null;
+
+      el("#meta-range").textContent = "All loaded periods";
+
+      // ---- dynamic BLUF ----
+      const ranked = this.heatRanking(all);
+      const hot = ranked.filter(c => c.lifecycle === "Peak").slice(0, 4).map(c => c.name);
+      const rising = all.filter(c => c.trend === "Rising").map(c => c.name);
+      const fading = all.filter(c => ["Superseded", "Obsolete"].includes(c.lifecycle) || c.trend === "Declining").map(c => c.name);
+      const tempo = this.adaptationTempo(all);
+      const unc = this.uncountered(all);
+
+      let html = "";
+      if (div) {
+        html += `<div class="note-banner"><strong>Division View — ${esc(div.name)}.</strong> ${esc(div.doctrinalAssumption)} ` +
+          `Capabilities in this division's priority domains (${esc(div.emphasizedDomains.join(", "))}) are flagged ★.</div>`;
+      }
+
+      html += `<div class="card bluf-card card-pad section">
+        <div class="bluf-label">BLUF — Capability Picture</div>
+        <p><strong>Hot now:</strong> ${esc(hot.join(", ") || "—")}.
+        <strong>Rising:</strong> ${esc(rising.slice(0, 5).join(", ") || "—")}.
+        <strong>Fading / superseded:</strong> ${esc(fading.slice(0, 5).join(", ") || "—")}.</p>
+        <div class="bluf-sub">${all.length} capabilities tracked · mean time-to-counter ${tempo.avg} days · ${unc.length} currently un-countered measure(s)</div>
+      </div>`;
+
+      // ---- lifecycle filter chips ----
+      const lcChips = Object.keys(DB.capabilityDefs.lifecycle).map(lc =>
+        `<button class="fchip lc-filter ${State.filters.lifecycle.has(lc) ? "on" : ""}" aria-pressed="${State.filters.lifecycle.has(lc)}" data-lc="${esc(lc)}">${esc(lc)}</button>`).join("");
+      html += `<div class="section"><div class="section-head"><h2>Capabilities &amp; Countermeasures</h2>
+        <span class="hint">Theatre / domain / search filters apply from the sidebar</span></div>
+        <div class="lc-filter-row">${lcChips}</div></div>`;
+
+      // ---- KPI strip ----
+      const kpi = (label, val, sub) => `<div class="kpi"><div class="kpi-val">${val}</div><div class="kpi-label">${esc(label)}</div>${sub ? `<div class="kpi-sub">${esc(sub)}</div>` : ""}</div>`;
+      html += `<div class="kpi-strip section">
+        ${kpi("Tracked", all.length, "capabilities")}
+        ${kpi("Hot (Peak)", ranked.filter(c => c.lifecycle === "Peak").length, "dominant now")}
+        ${kpi("Rising", rising.length, "adoption ↑")}
+        ${kpi("Un-countered", unc.length, "no effective counter")}
+        ${kpi("Adaptation tempo", tempo.avg + "d", "mean time-to-counter")}
+      </div>`;
+
+      // ---- charts ----
+      html += `<div class="section"><div class="section-head"><h2>Capability Analytics</h2></div>
+        <div class="chart-grid">
+          <div class="card chart-card"><h3>Heat index (top capabilities)</h3><div class="chart-sub">Current employment intensity, coloured by lifecycle</div><div class="chart-holder"><canvas id="cap-heat"></canvas></div></div>
+          <div class="card chart-card"><h3>Lifecycle distribution</h3><div class="chart-sub">Where tracked capabilities sit in their lifecycle</div><div class="chart-holder"><canvas id="cap-lifecycle"></canvas></div></div>
+          <div class="card chart-card"><h3>Proliferation by theatre</h3><div class="chart-sub">Capabilities observed per theatre, stacked by lifecycle</div><div class="chart-holder"><canvas id="cap-theatre"></canvas></div></div>
+          <div class="card chart-card"><h3>Proliferation vector</h3><div class="chart-sub">How capabilities spread</div><div class="chart-holder"><canvas id="cap-vector"></canvas></div></div>
+          <div class="card chart-card"><h3>Adaptation tempo (time-to-counter)</h3><div class="chart-sub">Days from first use to an effective countermeasure — shorter = faster co-evolution</div><div class="chart-holder"><canvas id="cap-tempo"></canvas></div></div>
+        </div></div>`;
+
+      // ---- heat leaderboard ----
+      const rows = ranked.map((c, i) => {
+        const star = this.isDivPriority(c) ? '<span class="prio" title="Priority domain for this division">★</span> ' : "";
+        return `<tr>
+          <td class="matrix-cell-num">${i + 1}</td>
+          <td class="theatre-cell">${star}${esc(c.name)}<div style="font-size:11px;color:var(--text-faint)">${esc(c.aka)} · ${esc(c.category)}</div></td>
+          <td><span class="role-tag role-${c.role.toLowerCase()}">${esc(c.role)}</span></td>
+          <td>${esc(c.domain)}</td>
+          <td>${this.theatreChips(c.theatres)}</td>
+          <td>${this.lcChip(c.lifecycle)}</td>
+          <td><div class="matrix-cell-num">${c.heat}</div><div class="progress-mini"><span style="width:${c.heat}%;background:${this.lcPalette[(DB.capabilityDefs.lifecycle[c.lifecycle] || {}).tone]}"></span></div></td>
+          <td>${this.capTrend(c.trend)}</td>
+        </tr>`;
+      }).join("");
+      html += `<div class="section"><div class="section-head"><h2>Heat Leaderboard</h2>
+        <span class="hint">What's hot — ranked by current employment intensity</span></div>
+        <div class="card matrix-wrap"><table class="matrix"><thead><tr>
+          <th>#</th><th>Capability</th><th>Role</th><th>Domain</th><th>Theatres</th><th>Lifecycle</th><th>Heat</th><th>Adoption</th>
+        </tr></thead><tbody>${rows || `<tr><td colspan="8"><div class="empty">No capabilities match the filters.</div></td></tr>`}</tbody></table></div></div>`;
+
+      // ---- measure ⇄ countermeasure cycles ----
+      const pairCards = this.pairs(all).map(p => `
+        <div class="cycle-card">
+          <div class="cycle-measure">${this.lcChip(p.measure.lifecycle)} <strong>${esc(p.measure.name)}</strong>
+            ${typeof p.measure.timeToCounterDays === "number" ? `<span class="ttc">countered in ~${p.measure.timeToCounterDays}d</span>` : ""}</div>
+          <div class="cycle-arrow">countered by →</div>
+          <div class="cycle-counters">${p.counters.map(c => `<span class="counter-chip">${esc(c.name)} ${this.lcChip(c.lifecycle)}</span>`).join("")}</div>
+        </div>`).join("");
+      const uncCards = this.uncountered(all).map(c =>
+        `<span class="counter-chip warn">${esc(c.name)} ${this.lcChip(c.lifecycle)}</span>`).join("");
+      html += `<div class="section"><div class="section-head"><h2>Measure ⇄ Countermeasure Cycles</h2>
+        <span class="hint">The action–reaction duel and how fast each measure was countered</span></div>
+        ${uncCards ? `<div class="card card-pad" style="margin-bottom:12px"><div class="subhead" style="margin-top:0">⚠ Currently un-countered measures — watch closely</div><div class="chip-wrap">${uncCards}</div></div>` : ""}
+        <div class="cycle-grid">${pairCards || `<div class="empty">No measure–countermeasure pairs in the current filter.</div>`}</div></div>`;
+
+      // ---- supersession chains ----
+      const supRows = this.supersession(all).map(s =>
+        `<div class="sup-row"><span class="sup-from">${esc(s.from.name)} ${this.lcChip(s.from.lifecycle)}</span>
+          <span class="sup-arrow">superseded by →</span>
+          <span class="sup-to">${s.to.map(t => `${esc(t.name)} ${this.lcChip(t.lifecycle)}`).join(" · ")}</span></div>`).join("");
+      html += `<div class="section"><div class="section-head"><h2>Supersession — What Replaced What</h2>
+        <span class="hint">The capability "tech tree": measures displaced by newer ones</span></div>
+        <div class="card card-pad">${supRows || `<div class="empty">No supersession links in the current filter.</div>`}</div></div>`;
+
+      // ---- cross-theatre proliferation / diffusion ----
+      const diff = this.diffusion(all).map(c => `<tr>
+        <td class="theatre-cell">${esc(c.name)}</td>
+        <td>${this.theatreChips(c.theatres)}</td>
+        <td>${esc(c.vector)}</td>
+        <td>${this.lcChip(c.lifecycle)}</td>
+        <td style="font-size:12px;color:var(--text-muted)">${esc(c.note)}</td>
+      </tr>`).join("");
+      html += `<div class="section"><div class="section-head"><h2>Cross-Theatre Proliferation</h2>
+        <span class="hint">Capabilities observed in more than one theatre, and how they spread</span></div>
+        <div class="card matrix-wrap"><table class="cmp-table"><thead><tr><th>Capability</th><th>Theatres</th><th>Vector</th><th>Lifecycle</th><th>Diffusion note</th></tr></thead>
+        <tbody>${diff || `<tr><td colspan="5"><div class="empty">No multi-theatre capabilities in the current filter.</div></td></tr>`}</tbody></table></div></div>`;
+
+      root.innerHTML = html;
+      this.wire(root);
+      this.renderCharts(all);
+    },
+
+    wire(root) {
+      root.querySelectorAll(".lc-filter").forEach(btn => btn.addEventListener("click", () => {
+        const lc = btn.dataset.lc;
+        State.filters.lifecycle.has(lc) ? State.filters.lifecycle.delete(lc) : State.filters.lifecycle.add(lc);
+        this.render();
+      }));
+    },
+
+    renderCharts(list) {
+      Charts.destroyAll();
+      const lcKeys = Object.keys(DB.capabilityDefs.lifecycle);
+      const lcColor = lc => this.lcPalette[DB.capabilityDefs.lifecycle[lc].tone];
+
+      // Heat — horizontal bar, top 12
+      const top = this.heatRanking(list).slice(0, 12);
+      Charts.make("cap-heat", {
+        type: "bar",
+        data: { labels: top.map(c => c.name), datasets: [{ label: "Heat", data: top.map(c => c.heat), backgroundColor: top.map(c => lcColor(c.lifecycle)) }] },
+        options: Object.assign(Charts.baseOpts(), { indexAxis: "y", plugins: { legend: { display: false } } })
+      });
+
+      // Lifecycle doughnut
+      const ld = this.lifecycleDist(list);
+      const lk = lcKeys.filter(k => ld[k] > 0);
+      Charts.make("cap-lifecycle", {
+        type: "doughnut",
+        data: { labels: lk, datasets: [{ data: lk.map(k => ld[k]), backgroundColor: lk.map(lcColor) }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "right", labels: { color: Charts.css("--text-muted"), font: { size: 10 }, boxWidth: 12 } } } }
+      });
+
+      // Proliferation by theatre — stacked bar by lifecycle
+      const ta = this.theatreAdoption(list);
+      const tIds = DB.theatres.map(t => t.id);
+      Charts.make("cap-theatre", {
+        type: "bar",
+        data: { labels: tIds.map(id => THEATRE_BY_ID[id].short),
+          datasets: lcKeys.map(lc => ({ label: lc, data: tIds.map(id => ta[id][lc]), backgroundColor: lcColor(lc) })) },
+        options: Object.assign(Charts.baseOpts(), {
+          scales: { x: Object.assign(Charts.baseOpts().scales.x, { stacked: true }), y: Object.assign(Charts.baseOpts().scales.y, { stacked: true }) }
+        })
+      });
+
+      // Vector doughnut
+      const vd = this.vectorDist(list);
+      const vk = Object.keys(vd).filter(k => vd[k] > 0);
+      const vColors = ["#a01f2e", "#1f5fa8", "#8a5a00", "#1d6b4c"];
+      Charts.make("cap-vector", {
+        type: "doughnut",
+        data: { labels: vk, datasets: [{ data: vk.map(k => vd[k]), backgroundColor: vk.map((_, i) => vColors[i % vColors.length]) }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "right", labels: { color: Charts.css("--text-muted"), font: { size: 10 }, boxWidth: 12 } } } }
+      });
+
+      // Adaptation tempo — bar of time-to-counter
+      const tt = this.adaptationTempo(list).items;
+      Charts.make("cap-tempo", {
+        type: "bar",
+        data: { labels: tt.map(c => c.name), datasets: [{ label: "Days to counter", data: tt.map(c => c.timeToCounterDays), backgroundColor: tt.map(c => lcColor(c.lifecycle)) }] },
+        options: Object.assign(Charts.baseOpts(), { plugins: { legend: { display: false } } })
+      });
+    }
+  };
+
   const App = {
     setActiveView() {
       document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
@@ -906,6 +1206,13 @@
     // Build the period selector contents for the active horizon
     refreshPeriodSelect() {
       const sel = el("#period-select");
+      // The Capabilities view spans all periods — disable the period picker.
+      if (State.horizon === "capabilities") {
+        sel.innerHTML = `<option>All periods (cross-cutting)</option>`;
+        sel.disabled = true;
+        return;
+      }
+      sel.disabled = false;
       let opts = [];
       if (State.horizon === "weekly")
         opts = DB.weeklyReports.map(w => ({ id: w.weekId, label: `${w.weekId} · ${Time.fmtRange(w.weekStart, w.weekEnd)}` }));
