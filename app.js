@@ -979,9 +979,24 @@
         else if (recent < earlier * 0.75) d.trend = "Declining";
         else d.trend = "Steady";
       });
+      // Per-theatre weekly activity series (raw observation intensity summed
+      // across capabilities) — drives the "heat by theatre over time" chart.
+      this.theatreSeries = {};
+      DB.theatres.forEach(t => (this.theatreSeries[t.id] = new Array(n).fill(0)));
+      DB.capabilities.forEach(c => Object.keys(m[c.id].tw).forEach(t => {
+        if (this.theatreSeries[t]) m[c.id].tw[t].forEach((v, i) => (this.theatreSeries[t][i] += v));
+      }));
       this.dynamics = m;
     },
     theatreHeatOf(c, t) { const d = this.dynamics[c.id]; return d && d.byTheatre ? (d.byTheatre[t] || 0) : 0; },
+    // Theatres in scope = the active theatre filter, or all five if none set
+    selectedTheatreIds() {
+      return State.filters.theatres.size
+        ? DB.theatres.filter(t => State.filters.theatres.has(t.id)).map(t => t.id)
+        : DB.theatres.map(t => t.id);
+    },
+    scopedHeat(c, tids) { return tids.reduce((s, t) => s + this.theatreHeatOf(c, t), 0); },
+    theatreColor(id) { return Charts.palette[DB.theatres.findIndex(t => t.id === id) % Charts.palette.length]; },
     heatOf(c) { const d = this.dynamics[c.id]; return d ? d.heat : c.heat; },
     trendOf(c) { const d = this.dynamics[c.id]; return d ? d.trend : c.trend; },
     observations(c) { const d = this.dynamics[c.id]; return d ? d.signals : 0; },
@@ -1118,7 +1133,8 @@
 
       // ---- charts ----
       html += `<div class="section"><div class="section-head"><h2>Capability Analytics</h2></div>
-        <div class="card chart-card chart-wide" style="margin-bottom:14px"><h3>What's hot across the five theatres</h3><div class="chart-sub">Computed heat of leading capabilities, stacked by theatre of employment — one bar per capability, coloured by theatre</div><div class="chart-holder tall"><canvas id="cap-theatre-heat"></canvas></div></div>
+        <div class="card chart-card chart-wide" style="margin-bottom:14px"><h3>What's hot across the five theatres</h3><div class="chart-sub">Computed heat of leading capabilities, stacked by theatre of employment — re-scopes to the theatre filter</div><div class="chart-holder tall"><canvas id="cap-theatre-heat"></canvas></div></div>
+        <div class="card chart-card chart-wide" style="margin-bottom:14px"><h3>Heat by theatre over the ${DB.weeklyReports.length} weeks</h3><div class="chart-sub">Weekly capability-observation intensity per theatre — momentum and where activity is shifting</div><div class="chart-holder"><canvas id="cap-theatre-series"></canvas></div></div>
         <div class="chart-grid">
           <div class="card chart-card"><h3>Heat index (top capabilities)</h3><div class="chart-sub">Current employment intensity, coloured by lifecycle</div><div class="chart-holder"><canvas id="cap-heat"></canvas></div></div>
           <div class="card chart-card"><h3>Lifecycle distribution</h3><div class="chart-sub">Where tracked capabilities sit in their lifecycle</div><div class="chart-holder"><canvas id="cap-lifecycle"></canvas></div></div>
@@ -1204,15 +1220,18 @@
       const lcKeys = Object.keys(DB.capabilityDefs.lifecycle);
       const lcColor = lc => this.lcPalette[DB.capabilityDefs.lifecycle[lc].tone];
 
-      // What's hot across the five theatres — top capabilities, stacked by theatre
-      const topT = this.heatRanking(list).slice(0, 10);
+      // What's hot across the five theatres — top capabilities, stacked by theatre.
+      // Re-scopes to the active theatre filter and ranks by heat within scope.
+      const tids = this.selectedTheatreIds();
+      const topT = list.map(c => ({ c, sh: this.scopedHeat(c, tids) }))
+        .filter(x => x.sh > 0).sort((a, b) => b.sh - a.sh).slice(0, 10).map(x => x.c);
       Charts.make("cap-theatre-heat", {
         type: "bar",
         data: {
           labels: topT.map(c => c.name),
-          datasets: DB.theatres.map((t, i) => ({
-            label: t.short, data: topT.map(c => this.theatreHeatOf(c, t.id)),
-            backgroundColor: Charts.palette[i % Charts.palette.length]
+          datasets: tids.map(t => ({
+            label: THEATRE_BY_ID[t].short, data: topT.map(c => this.theatreHeatOf(c, t)),
+            backgroundColor: this.theatreColor(t)
           }))
         },
         options: Object.assign(Charts.baseOpts(), {
@@ -1223,6 +1242,22 @@
             x: Object.assign(Charts.baseOpts().scales.x, { stacked: true, title: { display: true, text: "Computed heat", color: Charts.css("--text-muted") } }),
             y: Object.assign(Charts.baseOpts().scales.y, { stacked: true })
           }
+        })
+      });
+
+      // Heat by theatre over the weeks — weekly observation intensity per theatre
+      Charts.make("cap-theatre-series", {
+        type: "line",
+        data: {
+          labels: DB.weeklyReports.map(w => w.weekId.replace("2026-", "")),
+          datasets: tids.map(t => ({
+            label: THEATRE_BY_ID[t].short, data: this.theatreSeries[t],
+            borderColor: this.theatreColor(t), backgroundColor: "transparent", tension: .3, pointRadius: 2
+          }))
+        },
+        options: Object.assign(Charts.baseOpts(), {
+          plugins: { legend: { position: "top", labels: { color: Charts.css("--text-muted"), boxWidth: 12, font: { size: 10 } } } },
+          scales: { x: Charts.baseOpts().scales.x, y: Object.assign(Charts.baseOpts().scales.y, { title: { display: true, text: "Weekly observation intensity", color: Charts.css("--text-muted") } }) }
         })
       });
 
