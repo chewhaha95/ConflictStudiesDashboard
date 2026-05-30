@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<!--
+  =========================================================================
+  CONFLICT STUDIES DASHBOARD  —  README
+  =========================================================================
+
+  FILES
+  -----
+  conflict-dashboard.html  This file. The single-page app shell: header,
+                           mode/horizon controls, filter sidebar, and the
+                           three view containers (Weekly / Monthly / Quarterly).
+  styles.css               All styling. Light + dark themes (data-theme),
+                           responsive layout, and a print stylesheet for
+                           PDF-friendly export.
+  app.js                   All behaviour, in clearly separated modules:
+                           data load, time bucketing, aggregation (rollups),
+                           the division layer, filters, rendering, charts,
+                           and export helpers.
+  sample-data.json         Seed data: 8 weekly reports x 5 theatres. Monthly
+                           (x2) and quarterly (x1) reports are NOT stored —
+                           they are computed by deterministic aggregation in
+                           app.js, so the rollups are genuinely aggregated.
+
+  HOW TO RUN LOCALLY
+  ------------------
+  The app reads sample-data.json with fetch(). Most browsers block fetch()
+  over the file:// protocol, so serve the folder over http with any static
+  server. No backend is required. For example:
+
+      cd this-folder
+      python3 -m http.server 8000
+      # then open http://localhost:8000/conflict-dashboard.html
+
+  (Node alternative:  npx serve .   or   npx http-server .)
+  If you open the file directly and see a load error, that is the file://
+  restriction — start a static server as above.
+
+  SWAPPING MOCK DATA FOR A LIVE API LATER
+  ---------------------------------------
+  Everything funnels through one function: loadData() in app.js. Replace its
+  body with a fetch to your API endpoint that returns JSON of the SAME SHAPE
+  (meta / definitions / theatres / divisions / weeklyReports). The aggregation,
+  filtering, rendering, charts and exports all consume that shape, so no other
+  code needs to change. To stream live updates, re-run App.init()'s tail
+  (rebuild MONTHS/QUARTERS and call App.rerender()) when new data arrives.
+
+  NOTE: Division interpretations use sensible doctrinal ASSUMPTIONS for study
+  and planning only. They are not classified or authoritative doctrine; each
+  assumption is declared in sample-data.json and surfaced as UI helper text.
+  =========================================================================
+-->
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Conflict Studies Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">CS</div>
+      <div>
+        <h1>International Conflict Studies Dashboard</h1>
+        <div class="subtitle">Weekly · Monthly · Quarterly tracking across five theatres</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="meta-block optional">
+        <div class="label">Reporting range</div>
+        <div class="value" id="meta-range">—</div>
+      </div>
+      <div class="meta-block">
+        <div class="label">Last updated</div>
+        <div class="value" id="meta-updated">—</div>
+      </div>
+      <button id="theme-toggle" class="icon-btn no-print" title="Toggle light / dark theme" aria-label="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <!-- ===== Control bar: horizon tabs + mode switch + exports ===== -->
+  <div class="control-bar no-print">
+    <div class="seg" role="tablist" aria-label="Reporting horizon">
+      <button class="tab-btn active" role="tab" data-horizon="weekly" aria-selected="true">Weekly</button>
+      <button class="tab-btn" role="tab" data-horizon="monthly">Monthly</button>
+      <button class="tab-btn" role="tab" data-horizon="quarterly">Quarterly</button>
+    </div>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    <div class="seg" role="group" aria-label="Analysis mode">
+      <button data-mode="theatre" aria-selected="true">Conflict Theatre View</button>
+      <button data-mode="division" aria-selected="false">Singapore Army Division View</button>
+    </div>
+
+    <div class="division-select-wrap" id="division-wrap">
+      <label for="division-select">Division</label>
+      <select id="division-select" aria-label="Select division report type"></select>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="export-group">
+      <button class="btn" id="export-print" title="Print / save as PDF">🖨 Print / PDF</button>
+      <button class="btn" id="export-json">⬇ JSON</button>
+      <button class="btn" id="export-csv">⬇ CSV</button>
+    </div>
+  </div>
+
+  <div id="boot-error" class="note-banner no-print" style="display:none;margin:14px 20px;border-color:var(--tone-warn-fg)"></div>
+
+  <!-- ===== Shell: sidebar + main ===== -->
+  <div class="app-shell">
+    <!-- Filters -->
+    <aside class="sidebar no-print" aria-label="Filters">
+      <div class="filter-group">
+        <div class="filter-title">Search</div>
+        <input type="search" id="search" placeholder="Search BLUF, developments, tags…" />
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-title">Period</div>
+        <select id="period-select" aria-label="Select reporting period" style="width:100%;margin-bottom:8px"></select>
+        <label class="filter-title" for="date-jump" style="display:block">Jump to week by date</label>
+        <input type="date" id="date-jump" style="width:100%" />
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-title">Theatres</div>
+        <div class="check-list" id="filter-theatres"></div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-title">Phase</div>
+        <div class="chip-row" id="filter-phases"></div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-title">Trend</div>
+        <div class="chip-row" id="filter-trends"></div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-title">Development-pill domain</div>
+        <div class="chip-row" id="filter-domains"></div>
+      </div>
+
+      <div class="sidebar-actions">
+        <button class="link-btn" id="reset-filters">Reset all filters</button>
+      </div>
+    </aside>
+
+    <!-- Main body: three views, only one active at a time -->
+    <main class="main">
+      <section id="view-weekly" class="view active" role="tabpanel" aria-label="Weekly report">
+        <div class="view-body"></div>
+      </section>
+      <section id="view-monthly" class="view" role="tabpanel" aria-label="Monthly report">
+        <div class="view-body"></div>
+      </section>
+      <section id="view-quarterly" class="view" role="tabpanel" aria-label="Quarterly report">
+        <div class="view-body"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Chart.js (stable CDN). The app degrades gracefully if it fails to load. -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
