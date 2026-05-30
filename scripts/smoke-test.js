@@ -126,6 +126,43 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   doc.querySelector("#search").dispatchEvent(new window.Event("input")); await sleep(40);
   check("search narrows the matrix",
     doc.querySelector("#view-weekly .view-body").querySelectorAll("#status-matrix tbody tr").length < 5);
+  doc.querySelector("#search").value = "";
+  doc.querySelector("#search").dispatchEvent(new window.Event("input")); await sleep(40);
+
+  // --- 6. Capabilities & Countermeasures view ------------------------------
+  console.log("\nCapabilities & Countermeasures:");
+  check("capabilities seed present", Array.isArray(db.capabilities) && db.capabilities.length >= 20);
+  check("capability lifecycle defs present", !!db.capabilityDefs && !!db.capabilityDefs.lifecycle);
+  // every cross-reference resolves
+  const capIds = new Set(db.capabilities.map(c => c.id));
+  let refOk = true;
+  db.capabilities.forEach(c => [...(c.counters||[]), ...(c.counteredBy||[]), ...(c.supersedes||[]), ...(c.supersededBy||[])]
+    .forEach(r => { if (!capIds.has(r)) refOk = false; }));
+  check("all capability references resolve", refOk);
+
+  doc.querySelector('.tab-btn[data-horizon="capabilities"]').click(); await sleep(60);
+  const cb = doc.querySelector("#view-capabilities .view-body");
+  check("capabilities view is active", doc.querySelector("#view-capabilities").classList.contains("active"));
+  check("capability BLUF rendered", cb.textContent.includes("BLUF — Capability Picture"));
+  check("KPI strip rendered (5 KPIs)", cb.querySelectorAll(".kpi").length === 5);
+  check("heat leaderboard populated", cb.querySelectorAll(".matrix tbody tr").length >= 20);
+  check("measure-countermeasure cycle cards present", cb.querySelectorAll(".cycle-card").length > 0);
+  check("supersession chains present", cb.querySelectorAll(".sup-row").length > 0);
+  check("cross-theatre proliferation rows present", cb.querySelectorAll(".cmp-table tbody tr").length > 0);
+  check("5 capability charts rendered", cb.querySelectorAll("canvas").length === 5);
+  check("period selector disabled in capabilities view", doc.querySelector("#period-select").disabled === true);
+
+  // lifecycle filter narrows the leaderboard
+  const beforeRows = cb.querySelectorAll(".matrix tbody tr").length;
+  const peakBtn = [...cb.querySelectorAll(".lc-filter")].find(b => b.dataset.lc === "Peak");
+  peakBtn.click(); await sleep(50);
+  const afterRows = doc.querySelector("#view-capabilities .view-body").querySelectorAll(".matrix tbody tr").length;
+  check("lifecycle filter (Peak) narrows leaderboard", afterRows > 0 && afterRows < beforeRows, `before=${beforeRows} after=${afterRows}`);
+
+  // division priority flag appears in capabilities view
+  doc.querySelector('[data-mode="division"]').click(); await sleep(60);
+  check("division priority ★ flagged in capabilities",
+    doc.querySelector("#view-capabilities .view-body").querySelectorAll(".prio").length > 0);
 
   // --- Result --------------------------------------------------------------
   console.log("");
