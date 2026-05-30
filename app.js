@@ -597,9 +597,6 @@
       html += `<div class="section"><div class="section-head"><h2>Conflict Status Chart</h2>
         <span class="hint">Theatre · Phase · Trend · Progress to date · Conflict Status — click a header to sort</span></div>${this.statusMatrix(period, ids)}</div>`;
 
-      // charts row
-      html += `<div class="section"><div class="section-head"><h2>Analytics</h2></div>${this.chartLayout(horizon)}</div>`;
-
       if (horizon === "weekly") {
         html += `<div class="section">
           <div class="section-head"><h2>Key Developments</h2>
@@ -626,31 +623,9 @@
       html += this.watchPanel(period, ids, days);
 
       container.innerHTML = html;
-      Charts.renderFor(horizon, period, ids);
+      Charts.destroyAll();   // clear any charts from a previous view
       this.wireCardEvents(container);
       this.wireSortable(container, period);
-    },
-
-    chartLayout(horizon) {
-      if (horizon === "weekly") {
-        return `<div class="chart-grid">
-          <div class="card chart-card"><h3>Weekly status matrix</h3><div class="chart-sub">Conflict status score by theatre, selected week</div><div class="chart-holder"><canvas id="c-status"></canvas></div></div>
-          <div class="card chart-card"><h3>Timeline (all weeks)</h3><div class="chart-sub">Status score trajectory across the loaded weeks</div><div class="chart-holder"><canvas id="c-timeline"></canvas></div></div>
-          <div class="card chart-card"><h3>Development-pill frequency by theatre</h3><div class="chart-sub">Which domain most often became the development pill</div><div class="chart-holder"><canvas id="c-domain"></canvas></div></div>
-          <div class="card chart-card"><h3>Domain mix this week</h3><div class="chart-sub">Development-pill domain across theatres this week</div><div class="chart-holder"><canvas id="c-weekmix"></canvas></div></div>
-        </div>`;
-      }
-      if (horizon === "monthly") {
-        return `<div class="chart-grid">
-          <div class="card chart-card"><h3>Monthly trend comparison</h3><div class="chart-sub">Weekly status scores within the month, by theatre</div><div class="chart-holder"><canvas id="c-trend"></canvas></div></div>
-          <div class="card chart-card"><h3>Development-pill frequency</h3><div class="chart-sub">Dominant domains across the month, by theatre</div><div class="chart-holder"><canvas id="c-domain"></canvas></div></div>
-        </div>`;
-      }
-      return `<div class="chart-grid">
-        <div class="card chart-card"><h3>Quarterly escalation / stability overview</h3><div class="chart-sub">Average status by theatre per month</div><div class="chart-holder"><canvas id="c-escal"></canvas></div></div>
-        <div class="card chart-card"><h3>Phase progression</h3><div class="chart-sub">Status-score trajectory across the quarter</div><div class="chart-holder"><canvas id="c-timeline"></canvas></div></div>
-        <div class="card chart-card"><h3>Most significant domain patterns by theatre</h3><div class="chart-sub">Development-pill frequency across the quarter</div><div class="chart-holder"><canvas id="c-domain"></canvas></div></div>
-      </div>`;
     },
 
     // Collapsible theatre cards + expand/collapse all
@@ -725,10 +700,6 @@
   const Charts = {
     registry: {},
     palette: ["#1f5fa8", "#a01f2e", "#1d6b4c", "#8a5a00", "#5a3da8"],
-    domainPalette: {
-      "Fires & Strikes": "#a01f2e", "Intelligence": "#1f5fa8", "Manoeuvre": "#1d6b4c",
-      "Protection": "#8a5a00", "Sustainment": "#5a3da8", "Command & Control": "#0f8a8a"
-    },
     css(v) { return getComputedStyle(document.body).getPropertyValue(v).trim(); },
     baseOpts() {
       const grid = this.css("--border");
@@ -747,104 +718,9 @@
       const cv = document.getElementById(id);
       if (!cv || typeof Chart === "undefined") return;
       this.registry[id] = new Chart(cv.getContext("2d"), cfg);
-    },
-
-    // counts of pill-domain across a set of weekly reports, per theatre
-    domainFreq(weeks) {
-      const data = {};
-      DB.theatres.forEach(t => { data[t.id] = {}; DB.definitions.domains.forEach(d => data[t.id][d] = 0); });
-      weeks.forEach(w => DB.theatres.forEach(t => {
-        const e = w.theatres[t.id]; if (e) data[t.id][e.selectedDevelopmentPill.domain]++;
-      }));
-      return data;
-    },
-
-    renderFor(horizon, period, ids) {
-      this.destroyAll();
-      const labelsT = ids.map(id => THEATRE_BY_ID[id].short);
-
-      if (horizon === "weekly") {
-        // status bar
-        this.make("c-status", {
-          type: "bar",
-          data: { labels: labelsT, datasets: [{ label: "Status score",
-            data: ids.map(id => period.theatres[id].conflictStatusScore),
-            backgroundColor: ids.map(id => Render.scoreColor(period.theatres[id].conflictStatusScore)) }] },
-          options: Object.assign(this.baseOpts(), { plugins: { legend: { display: false } }, scales: Object.assign(this.baseOpts().scales, { y: Object.assign(this.baseOpts().scales.y, { max: 100 }) }) })
-        });
-        // timeline across all weeks
-        this.timeline(ids);
-        // domain frequency across all weeks
-        this.domainStacked("c-domain", DB.weeklyReports, ids);
-        // week mix doughnut
-        const mix = {}; DB.definitions.domains.forEach(d => mix[d] = 0);
-        ids.forEach(id => mix[period.theatres[id].selectedDevelopmentPill.domain]++);
-        const dl = Object.keys(mix).filter(d => mix[d] > 0);
-        this.make("c-weekmix", {
-          type: "doughnut",
-          data: { labels: dl, datasets: [{ data: dl.map(d => mix[d]), backgroundColor: dl.map(d => this.domainPalette[d]) }] },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "right", labels: { color: this.css("--text-muted"), font: { size: 10 }, boxWidth: 12 } } } }
-        });
-      }
-
-      if (horizon === "monthly") {
-        // weekly scores within month, per theatre
-        const weeks = period.weekIds.map(wid => DB.weeklyReports.find(w => w.weekId === wid));
-        this.make("c-trend", {
-          type: "line",
-          data: { labels: weeks.map(w => w.weekId),
-            datasets: ids.map((id, i) => ({ label: THEATRE_BY_ID[id].short,
-              data: weeks.map(w => w.theatres[id].conflictStatusScore),
-              borderColor: this.palette[i % this.palette.length], backgroundColor: "transparent", tension: .3 })) },
-          options: this.baseOpts()
-        });
-        this.domainStacked("c-domain", weeks, ids);
-      }
-
-      if (horizon === "quarterly") {
-        const months = period.monthIds.map(mid => MONTHS.find(m => m.id === mid));
-        this.make("c-escal", {
-          type: "bar",
-          data: { labels: months.map(m => m.label),
-            datasets: ids.map((id, i) => ({ label: THEATRE_BY_ID[id].short,
-              data: months.map(m => m.theatres[id].conflictStatusScore),
-              backgroundColor: this.palette[i % this.palette.length] })) },
-          options: this.baseOpts()
-        });
-        this.timeline(ids);
-        const weeks = period.weekIds.map(wid => DB.weeklyReports.find(w => w.weekId === wid));
-        this.domainStacked("c-domain", weeks, ids);
-      }
-    },
-
-    timeline(ids) {
-      const weeks = DB.weeklyReports;
-      this.make("c-timeline", {
-        type: "line",
-        data: { labels: weeks.map(w => w.weekId.replace("2026-", "")),
-          datasets: ids.map((id, i) => ({ label: THEATRE_BY_ID[id].short,
-            data: weeks.map(w => w.theatres[id].conflictStatusScore),
-            borderColor: this.palette[i % this.palette.length], backgroundColor: "transparent", tension: .3, pointRadius: 2 })) },
-        options: this.baseOpts()
-      });
-    },
-
-    domainStacked(canvasId, weeks, ids) {
-      const freq = this.domainFreq(weeks);
-      this.make(canvasId, {
-        type: "bar",
-        data: {
-          labels: ids.map(id => THEATRE_BY_ID[id].short),
-          datasets: DB.definitions.domains.map(d => ({
-            label: d, data: ids.map(id => freq[id][d]), backgroundColor: this.domainPalette[d]
-          }))
-        },
-        options: Object.assign(this.baseOpts(), {
-          scales: { x: Object.assign(this.baseOpts().scales.x, { stacked: true }),
-                    y: Object.assign(this.baseOpts().scales.y, { stacked: true }) }
-        })
-      });
     }
+    // (Capabilities-tab charts are built in the Caps module; the Weekly/Monthly/
+    //  Quarterly tabs intentionally have no charts.)
   };
 
   /* ----------------------------------------------------------------------
