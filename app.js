@@ -951,22 +951,26 @@
     computeDynamics() {
       const weeks = DB.weeklyReports, n = weeks.length;
       const sig = DB.weeklyCapabilitySignals || {};
+      const wgt = i => 0.55 + 0.45 * (n > 1 ? i / (n - 1) : 1);   // recency weighting
+      const rw = arr => arr.reduce((s, v, i) => s + v * wgt(i), 0);
       const m = {};
-      DB.capabilities.forEach(c => (m[c.id] = { weekly: new Array(n).fill(0), signals: 0 }));
+      DB.capabilities.forEach(c => (m[c.id] = { weekly: new Array(n).fill(0), tw: {}, signals: 0 }));
       weeks.forEach((w, idx) => (sig[w.weekId] || []).forEach(s => {
-        if (m[s.id]) { m[s.id].weekly[idx] += (s.i || 1); m[s.id].signals++; }
+        const d = m[s.id]; if (!d) return;
+        d.weekly[idx] += (s.i || 1); d.signals++;
+        (d.tw[s.t] = d.tw[s.t] || new Array(n).fill(0))[idx] += (s.i || 1);
       }));
-      // recency-weighted raw heat (recent weeks weigh more), then normalise
+      // recency-weighted raw heat, then normalise to 0-100 across capabilities
       let max = 0; const raw = {};
-      DB.capabilities.forEach(c => {
-        let r = 0;
-        for (let i = 0; i < n; i++) { const wgt = 0.55 + 0.45 * (n > 1 ? i / (n - 1) : 1); r += m[c.id].weekly[i] * wgt; }
-        raw[c.id] = r; if (r > max) max = r;
-      });
+      DB.capabilities.forEach(c => { const r = rw(m[c.id].weekly); raw[c.id] = r; if (r > max) max = r; });
+      const scale = max > 0 ? 96 / max : 0;
       const half = Math.max(1, Math.floor(n / 2));
       DB.capabilities.forEach(c => {
         const d = m[c.id];
-        d.heat = d.signals === 0 ? c.heat : (max > 0 ? Math.round((raw[c.id] / max) * 96) : 0);
+        d.heat = d.signals === 0 ? c.heat : Math.round(raw[c.id] * scale);
+        // per-theatre heat contribution (segments sum to total heat)
+        d.byTheatre = {};
+        Object.keys(d.tw).forEach(t => (d.byTheatre[t] = Math.round(rw(d.tw[t]) * scale)));
         const earlier = d.weekly.slice(0, half).reduce((a, b) => a + b, 0);
         const recent = d.weekly.slice(n - half).reduce((a, b) => a + b, 0);
         d.earlier = earlier; d.recent = recent;
@@ -977,6 +981,7 @@
       });
       this.dynamics = m;
     },
+    theatreHeatOf(c, t) { const d = this.dynamics[c.id]; return d && d.byTheatre ? (d.byTheatre[t] || 0) : 0; },
     heatOf(c) { const d = this.dynamics[c.id]; return d ? d.heat : c.heat; },
     trendOf(c) { const d = this.dynamics[c.id]; return d ? d.trend : c.trend; },
     observations(c) { const d = this.dynamics[c.id]; return d ? d.signals : 0; },
@@ -1113,6 +1118,7 @@
 
       // ---- charts ----
       html += `<div class="section"><div class="section-head"><h2>Capability Analytics</h2></div>
+        <div class="card chart-card chart-wide" style="margin-bottom:14px"><h3>What's hot across the five theatres</h3><div class="chart-sub">Computed heat of leading capabilities, stacked by theatre of employment — one bar per capability, coloured by theatre</div><div class="chart-holder tall"><canvas id="cap-theatre-heat"></canvas></div></div>
         <div class="chart-grid">
           <div class="card chart-card"><h3>Heat index (top capabilities)</h3><div class="chart-sub">Current employment intensity, coloured by lifecycle</div><div class="chart-holder"><canvas id="cap-heat"></canvas></div></div>
           <div class="card chart-card"><h3>Lifecycle distribution</h3><div class="chart-sub">Where tracked capabilities sit in their lifecycle</div><div class="chart-holder"><canvas id="cap-lifecycle"></canvas></div></div>
@@ -1197,6 +1203,28 @@
       Charts.destroyAll();
       const lcKeys = Object.keys(DB.capabilityDefs.lifecycle);
       const lcColor = lc => this.lcPalette[DB.capabilityDefs.lifecycle[lc].tone];
+
+      // What's hot across the five theatres — top capabilities, stacked by theatre
+      const topT = this.heatRanking(list).slice(0, 10);
+      Charts.make("cap-theatre-heat", {
+        type: "bar",
+        data: {
+          labels: topT.map(c => c.name),
+          datasets: DB.theatres.map((t, i) => ({
+            label: t.short, data: topT.map(c => this.theatreHeatOf(c, t.id)),
+            backgroundColor: Charts.palette[i % Charts.palette.length]
+          }))
+        },
+        options: Object.assign(Charts.baseOpts(), {
+          indexAxis: "y",
+          plugins: { legend: { position: "top", labels: { color: Charts.css("--text-muted"), boxWidth: 12, font: { size: 10 } } },
+            tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.x} heat` } } },
+          scales: {
+            x: Object.assign(Charts.baseOpts().scales.x, { stacked: true, title: { display: true, text: "Computed heat", color: Charts.css("--text-muted") } }),
+            y: Object.assign(Charts.baseOpts().scales.y, { stacked: true })
+          }
+        })
+      });
 
       // Heat — horizontal bar, top 12
       const top = this.heatRanking(list).slice(0, 12);

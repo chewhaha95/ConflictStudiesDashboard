@@ -149,7 +149,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("measure-countermeasure cycle cards present", cb.querySelectorAll(".cycle-card").length > 0);
   check("supersession chains present", cb.querySelectorAll(".sup-row").length > 0);
   check("cross-theatre proliferation rows present", cb.querySelectorAll(".cmp-table tbody tr").length > 0);
-  check("5 capability charts rendered", cb.querySelectorAll("canvas").length === 5);
+  check("6 capability charts rendered", cb.querySelectorAll("canvas").length === 6);
+  check("'what's hot across five theatres' chart present", !!cb.querySelector("#cap-theatre-heat"));
   check("period selector disabled in capabilities view", doc.querySelector("#period-select").disabled === true);
 
   // lifecycle filter narrows the leaderboard
