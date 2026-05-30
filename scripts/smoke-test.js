@@ -149,10 +149,16 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("measure-countermeasure cycle cards present", cb.querySelectorAll(".cycle-card").length > 0);
   check("supersession chains present", cb.querySelectorAll(".sup-row").length > 0);
   check("cross-theatre proliferation rows present", cb.querySelectorAll(".cmp-table tbody tr").length > 0);
-  check("7 capability charts rendered", cb.querySelectorAll("canvas").length === 7);
+  check("6 capability charts rendered", cb.querySelectorAll("canvas").length === 6);
   check("'what's hot across five theatres' chart present", !!cb.querySelector("#cap-theatre-heat"));
-  check("'heat by theatre over weeks' chart present", !!cb.querySelector("#cap-theatre-series"));
+  check("'heat by theatre over weeks' line chart removed", !cb.querySelector("#cap-theatre-series"));
   check("per-theatre hottest-capability captions (5)", cb.querySelectorAll(".theatre-leaders .tl").length === 5);
+  // Cycles section must appear before the Heat Leaderboard
+  const h2s = [...cb.querySelectorAll(".section-head h2")].map(h => h.textContent);
+  check("Measure⇄Countermeasure Cycles precede Heat Leaderboard",
+    h2s.indexOf("Measure ⇄ Countermeasure Cycles") !== -1 &&
+    h2s.indexOf("Measure ⇄ Countermeasure Cycles") < h2s.indexOf("Heat Leaderboard"),
+    h2s.join(" | "));
   check("period selector disabled in capabilities view", doc.querySelector("#period-select").disabled === true);
 
   // lifecycle filter narrows the leaderboard
@@ -189,7 +195,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   const scoped = doc.querySelector("#view-capabilities .view-body");
   const allGaza = [...scoped.querySelectorAll(".matrix tbody tr td:nth-child(5)")].every(td => td.textContent.includes("ISR-GAZ"));
   check("theatre filter re-scopes capabilities to selected theatre", scoped.querySelectorAll(".matrix tbody tr").length > 0 && allGaza);
-  check("charts still render after theatre filter", scoped.querySelectorAll("canvas").length === 7);
+  check("charts still render after theatre filter", scoped.querySelectorAll("canvas").length === 6);
   gazaCb.checked = false; gazaCb.dispatchEvent(new window.Event("change", { bubbles: true })); await sleep(40);
 
   // division priority flag appears in capabilities view

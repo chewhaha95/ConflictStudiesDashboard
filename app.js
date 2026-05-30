@@ -855,13 +855,6 @@
         else if (recent < earlier * 0.75) d.trend = "Declining";
         else d.trend = "Steady";
       });
-      // Per-theatre weekly activity series (raw observation intensity summed
-      // across capabilities) — drives the "heat by theatre over time" chart.
-      this.theatreSeries = {};
-      DB.theatres.forEach(t => (this.theatreSeries[t.id] = new Array(n).fill(0)));
-      DB.capabilities.forEach(c => Object.keys(m[c.id].tw).forEach(t => {
-        if (this.theatreSeries[t]) m[c.id].tw[t].forEach((v, i) => (this.theatreSeries[t][i] += v));
-      }));
       this.dynamics = m;
     },
     theatreHeatOf(c, t) { const d = this.dynamics[c.id]; return d && d.byTheatre ? (d.byTheatre[t] || 0) : 0; },
@@ -1017,8 +1010,7 @@
 
       // ---- charts ----
       html += `<div class="section"><div class="section-head"><h2>Capability Analytics</h2></div>
-        <div class="card chart-card chart-wide" style="margin-bottom:14px"><h3>What's hot across the five theatres</h3><div class="chart-sub">Computed heat of leading capabilities, stacked by theatre of employment — re-scopes to the theatre filter</div><div class="chart-holder tall"><canvas id="cap-theatre-heat"></canvas></div></div>
-        <div class="card chart-card chart-wide" style="margin-bottom:14px"><h3>Heat by theatre over the ${DB.weeklyReports.length} weeks</h3><div class="chart-sub">Weekly capability-observation intensity per theatre — momentum and where activity is shifting</div><div class="chart-holder"><canvas id="cap-theatre-series"></canvas></div>
+        <div class="card chart-card chart-wide" style="margin-bottom:14px"><h3>What's hot across the five theatres</h3><div class="chart-sub">Computed heat of leading capabilities, stacked by theatre of employment — re-scopes to the theatre filter</div><div class="chart-holder tall"><canvas id="cap-theatre-heat"></canvas></div>
           <div class="theatre-leaders">${this.theatreLeaders(all, this.selectedTheatreIds()).map(x =>
             `<div class="tl"><span class="tl-dot" style="background:${this.theatreColor(x.t)}"></span><span class="tl-theatre">${esc(THEATRE_BY_ID[x.t].name)}</span><span class="tl-label">hottest:</span> <strong>${esc(x.cap.name)}</strong> <span class="tl-heat">heat ${x.heat}</span> ${this.capTrend(this.trendOf(x.cap))} ${this.lcChip(x.cap.lifecycle)}</div>`).join("")}</div>
         </div>
@@ -1029,6 +1021,21 @@
           <div class="card chart-card"><h3>Proliferation vector</h3><div class="chart-sub">How capabilities spread</div><div class="chart-holder"><canvas id="cap-vector"></canvas></div></div>
           <div class="card chart-card"><h3>Adaptation tempo (time-to-counter)</h3><div class="chart-sub">Days from first use to an effective countermeasure — shorter = faster co-evolution</div><div class="chart-holder"><canvas id="cap-tempo"></canvas></div></div>
         </div></div>`;
+
+      // ---- measure ⇄ countermeasure cycles (shown above the leaderboard) ----
+      const pairCards = this.pairs(all).map(p => `
+        <div class="cycle-card">
+          <div class="cycle-measure">${this.lcChip(p.measure.lifecycle)} <strong>${esc(p.measure.name)}</strong>
+            ${typeof p.measure.timeToCounterDays === "number" ? `<span class="ttc">countered in ~${p.measure.timeToCounterDays}d</span>` : ""}</div>
+          <div class="cycle-arrow">countered by →</div>
+          <div class="cycle-counters">${p.counters.map(c => `<span class="counter-chip">${esc(c.name)} ${this.lcChip(c.lifecycle)}</span>`).join("")}</div>
+        </div>`).join("");
+      const uncCards = this.uncountered(all).map(c =>
+        `<span class="counter-chip warn">${esc(c.name)} ${this.lcChip(c.lifecycle)}</span>`).join("");
+      html += `<div class="section"><div class="section-head"><h2>Measure ⇄ Countermeasure Cycles</h2>
+        <span class="hint">The action–reaction duel and how fast each measure was countered</span></div>
+        ${uncCards ? `<div class="card card-pad" style="margin-bottom:12px"><div class="subhead" style="margin-top:0">⚠ Currently un-countered measures — watch closely</div><div class="chip-wrap">${uncCards}</div></div>` : ""}
+        <div class="cycle-grid">${pairCards || `<div class="empty">No measure–countermeasure pairs in the current filter.</div>`}</div></div>`;
 
       // ---- heat leaderboard ----
       const rows = ranked.map((c, i) => {
@@ -1051,21 +1058,6 @@
         <div class="card matrix-wrap"><table class="matrix"><thead><tr>
           <th>#</th><th>Capability</th><th>Role</th><th>Domain</th><th>Theatres</th><th>Lifecycle</th><th>Heat</th><th>Activity (8&nbsp;wk)</th><th>Adoption</th>
         </tr></thead><tbody>${rows || `<tr><td colspan="9"><div class="empty">No capabilities match the filters.</div></td></tr>`}</tbody></table></div></div>`;
-
-      // ---- measure ⇄ countermeasure cycles ----
-      const pairCards = this.pairs(all).map(p => `
-        <div class="cycle-card">
-          <div class="cycle-measure">${this.lcChip(p.measure.lifecycle)} <strong>${esc(p.measure.name)}</strong>
-            ${typeof p.measure.timeToCounterDays === "number" ? `<span class="ttc">countered in ~${p.measure.timeToCounterDays}d</span>` : ""}</div>
-          <div class="cycle-arrow">countered by →</div>
-          <div class="cycle-counters">${p.counters.map(c => `<span class="counter-chip">${esc(c.name)} ${this.lcChip(c.lifecycle)}</span>`).join("")}</div>
-        </div>`).join("");
-      const uncCards = this.uncountered(all).map(c =>
-        `<span class="counter-chip warn">${esc(c.name)} ${this.lcChip(c.lifecycle)}</span>`).join("");
-      html += `<div class="section"><div class="section-head"><h2>Measure ⇄ Countermeasure Cycles</h2>
-        <span class="hint">The action–reaction duel and how fast each measure was countered</span></div>
-        ${uncCards ? `<div class="card card-pad" style="margin-bottom:12px"><div class="subhead" style="margin-top:0">⚠ Currently un-countered measures — watch closely</div><div class="chip-wrap">${uncCards}</div></div>` : ""}
-        <div class="cycle-grid">${pairCards || `<div class="empty">No measure–countermeasure pairs in the current filter.</div>`}</div></div>`;
 
       // ---- supersession chains ----
       const supRows = this.supersession(all).map(s =>
@@ -1129,22 +1121,6 @@
             x: Object.assign(Charts.baseOpts().scales.x, { stacked: true, title: { display: true, text: "Computed heat", color: Charts.css("--text-muted") } }),
             y: Object.assign(Charts.baseOpts().scales.y, { stacked: true })
           }
-        })
-      });
-
-      // Heat by theatre over the weeks — weekly observation intensity per theatre
-      Charts.make("cap-theatre-series", {
-        type: "line",
-        data: {
-          labels: DB.weeklyReports.map(w => w.weekId.replace("2026-", "")),
-          datasets: tids.map(t => ({
-            label: THEATRE_BY_ID[t].short, data: this.theatreSeries[t],
-            borderColor: this.theatreColor(t), backgroundColor: "transparent", tension: .3, pointRadius: 2
-          }))
-        },
-        options: Object.assign(Charts.baseOpts(), {
-          plugins: { legend: { position: "top", labels: { color: Charts.css("--text-muted"), boxWidth: 12, font: { size: 10 } } } },
-          scales: { x: Charts.baseOpts().scales.x, y: Object.assign(Charts.baseOpts().scales.y, { title: { display: true, text: "Weekly observation intensity", color: Charts.css("--text-muted") } }) }
         })
       });
 
