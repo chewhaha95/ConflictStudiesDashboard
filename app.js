@@ -997,6 +997,14 @@
     },
     scopedHeat(c, tids) { return tids.reduce((s, t) => s + this.theatreHeatOf(c, t), 0); },
     theatreColor(id) { return Charts.palette[DB.theatres.findIndex(t => t.id === id) % Charts.palette.length]; },
+    // The hottest capability in each (in-scope) theatre, by per-theatre heat
+    theatreLeaders(list, tids) {
+      return tids.map(t => {
+        let best = null, bh = -1;
+        list.forEach(c => { const h = this.theatreHeatOf(c, t); if (h > bh) { bh = h; best = c; } });
+        return { t, cap: best, heat: bh };
+      }).filter(x => x.cap && x.heat > 0);
+    },
     heatOf(c) { const d = this.dynamics[c.id]; return d ? d.heat : c.heat; },
     trendOf(c) { const d = this.dynamics[c.id]; return d ? d.trend : c.trend; },
     observations(c) { const d = this.dynamics[c.id]; return d ? d.signals : 0; },
@@ -1134,7 +1142,10 @@
       // ---- charts ----
       html += `<div class="section"><div class="section-head"><h2>Capability Analytics</h2></div>
         <div class="card chart-card chart-wide" style="margin-bottom:14px"><h3>What's hot across the five theatres</h3><div class="chart-sub">Computed heat of leading capabilities, stacked by theatre of employment — re-scopes to the theatre filter</div><div class="chart-holder tall"><canvas id="cap-theatre-heat"></canvas></div></div>
-        <div class="card chart-card chart-wide" style="margin-bottom:14px"><h3>Heat by theatre over the ${DB.weeklyReports.length} weeks</h3><div class="chart-sub">Weekly capability-observation intensity per theatre — momentum and where activity is shifting</div><div class="chart-holder"><canvas id="cap-theatre-series"></canvas></div></div>
+        <div class="card chart-card chart-wide" style="margin-bottom:14px"><h3>Heat by theatre over the ${DB.weeklyReports.length} weeks</h3><div class="chart-sub">Weekly capability-observation intensity per theatre — momentum and where activity is shifting</div><div class="chart-holder"><canvas id="cap-theatre-series"></canvas></div>
+          <div class="theatre-leaders">${this.theatreLeaders(all, this.selectedTheatreIds()).map(x =>
+            `<div class="tl"><span class="tl-dot" style="background:${this.theatreColor(x.t)}"></span><span class="tl-theatre">${esc(THEATRE_BY_ID[x.t].name)}</span><span class="tl-label">hottest:</span> <strong>${esc(x.cap.name)}</strong> <span class="tl-heat">heat ${x.heat}</span> ${this.capTrend(this.trendOf(x.cap))} ${this.lcChip(x.cap.lifecycle)}</div>`).join("")}</div>
+        </div>
         <div class="chart-grid">
           <div class="card chart-card"><h3>Heat index (top capabilities)</h3><div class="chart-sub">Current employment intensity, coloured by lifecycle</div><div class="chart-holder"><canvas id="cap-heat"></canvas></div></div>
           <div class="card chart-card"><h3>Lifecycle distribution</h3><div class="chart-sub">Where tracked capabilities sit in their lifecycle</div><div class="chart-holder"><canvas id="cap-lifecycle"></canvas></div></div>

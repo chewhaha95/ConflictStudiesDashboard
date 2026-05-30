@@ -152,6 +152,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("7 capability charts rendered", cb.querySelectorAll("canvas").length === 7);
   check("'what's hot across five theatres' chart present", !!cb.querySelector("#cap-theatre-heat"));
   check("'heat by theatre over weeks' chart present", !!cb.querySelector("#cap-theatre-series"));
+  check("per-theatre hottest-capability captions (5)", cb.querySelectorAll(".theatre-leaders .tl").length === 5);
   check("period selector disabled in capabilities view", doc.querySelector("#period-select").disabled === true);
 
   // lifecycle filter narrows the leaderboard
