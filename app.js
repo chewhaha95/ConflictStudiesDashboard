@@ -238,12 +238,24 @@
   const Division = {
     // A planning question per domain — used to generate commander prompts
     domainQuestion: {
-      "Fires and Strikes": "How would this strike profile stress our counter-fire, air-defence and EW posture?",
+      "Fires & Strikes": "How would this strike profile stress our counter-fire, air-defence and EW posture?",
       "Intelligence":      "Do we have the ISR and indications-&-warning coverage to detect this pattern early in our own AO?",
       "Manoeuvre":         "What does this manoeuvre dynamic imply for our mobility, terrain control and reserve-commitment decisions?",
       "Protection":        "Are our force-protection and air/missile-defence measures sized for a threat of this character?",
       "Sustainment":       "Can our logistics and munitions stocks sustain operations at this tempo and duration?",
-      "Command and Control":"Is our C2 and decision tempo resilient enough to match this environment?"
+      "Command & Control":"Is our C2 and decision tempo resilient enough to match this environment?"
+    },
+
+    // SAF-relevance "Implication [Domain]" framing, mirroring the reference brief's
+    // imperative voice (Formations should rehearse / Staffs should track /
+    // Commanders should treat / Planners should consider).
+    domainImplication: {
+      "Fires & Strikes":    "Formations should rehearse dispersal, hardening and counter-fire against this strike profile.",
+      "Intelligence":       "Staffs should track the indications-and-warning picture and close ISR coverage gaps.",
+      "Manoeuvre":          "Planners should consider mobility, terrain control and reserve-commitment implications.",
+      "Protection":         "Commanders should treat layered air/missile defence and force protection as a priority.",
+      "Sustainment":        "Planners should consider munitions stockpiles and logistics resilience at this tempo.",
+      "Command & Control":  "Staffs should track decision tempo and C2 resilience under contested conditions."
     },
 
     // Choose the domain this division would emphasise for an entry:
@@ -359,7 +371,7 @@
     bluf(period, watchLabel) {
       return `
         <div class="card bluf-card card-pad section">
-          <div class="bluf-label">Bottom Line Up Front (BLUF)</div>
+          <div class="bluf-label">BLUF — Bottom Line Up Front</div>
           <p>${esc(period.bluf)}</p>
           <div class="bluf-sub">${esc(watchLabel)} · ${esc(Time.fmtRange(period.weekStart || period.start, period.weekEnd || period.end))}</div>
         </div>`;
@@ -377,8 +389,8 @@
             <td>${this.phaseTag(e.phase)}</td>
             <td>${this.trendChip(e.trend)}</td>
             <td>
-              <div class="matrix-cell-num">${e.conflictStatusScore}/100</div>
-              <div class="progress-mini"><span style="width:${e.conflictStatusScore}%;background:${this.scoreColor(e.conflictStatusScore)}"></span></div>
+              <div style="font-size:12px;max-width:280px">${esc(e.progressToDate)}</div>
+              <div class="progress-mini" title="Conflict status score ${e.conflictStatusScore}/100"><span style="width:${e.conflictStatusScore}%;background:${this.scoreColor(e.conflictStatusScore)}"></span></div>
             </td>
             <td>${this.statusChip(e.statusLabel)}</td>
           </tr>`;
@@ -390,7 +402,7 @@
               <th data-sort="name">Theatre <span class="sort-ind"></span></th>
               <th data-sort="phase">Phase <span class="sort-ind"></span></th>
               <th data-sort="trend">Trend <span class="sort-ind"></span></th>
-              <th data-sort="score">Progress / Status Score <span class="sort-ind"></span></th>
+              <th data-sort="score">Progress to date <span class="sort-ind"></span></th>
               <th data-sort="status">Conflict Status <span class="sort-ind"></span></th>
             </tr></thead>
             <tbody>${rows}</tbody>
@@ -411,6 +423,9 @@
       const div = State.mode === "division" ? DIV_BY_ID[State.division] : null;
       const tailor = div ? Division.tailor(div, e, id) : null;
       const pillDomain = tailor ? tailor.domain : e.selectedDevelopmentPill.domain;
+      // Stable "Theatre 01–05" numbering by data order (mirrors the reference brief)
+      const theatreNo = String(DB.theatres.findIndex(x => x.id === id) + 1).padStart(2, "0");
+      const implication = Division.domainImplication[pillDomain] || "";
 
       // Domain analysis grid (collapsible). The pill domain is highlighted.
       const domainGrid = DB.definitions.domains.map(d => {
@@ -447,7 +462,7 @@
           <div class="tc-head" role="button" tabindex="0" aria-expanded="${idx === 0}">
             <span class="tc-caret">▶</span>
             <div style="min-width:0">
-              <div class="tc-title">${esc(t.name)}</div>
+              <div class="tc-title"><span style="color:var(--text-faint);font-weight:700">Theatre ${theatreNo}</span> — ${esc(t.name)}</div>
               <div class="tc-summary">${esc(summary)}</div>
             </div>
             <div class="tc-meta">
@@ -471,6 +486,7 @@
               <div class="pill-domain">${esc(pillDomain)}</div>
               <div class="pill-headline">${esc(e.selectedDevelopmentPill.headline)}</div>
               <div class="pill-rationale">${esc(e.selectedDevelopmentPill.rationale)}</div>
+              <div class="pill-implication"><strong>Implication (${esc(pillDomain)}):</strong> ${esc(implication)}</div>
               ${tailor ? `<div class="pill-rationale"><em>${esc(div.name)} reads this primarily through ${esc(pillDomain)}.</em></div>` : ""}
             </div>
 
@@ -501,7 +517,7 @@
       }).join("");
       return `
         <div class="section">
-          <div class="section-head"><h2>Watch Areas: Next ${days} Days</h2>
+          <div class="section-head"><h2>Watch Areas — Next ${days} Days</h2>
             <span class="hint">Diplomatic milestones, named meetings, deadlines and decision points</span></div>
           <div class="watch-grid">${items || `<div class="empty">No theatres match the current filters.</div>`}</div>
         </div>`;
@@ -573,15 +589,15 @@
 
       html += this.bluf(period, watchLabel);
 
-      html += `<div class="section"><div class="section-head"><h2>Conflict Status by Theatre</h2>
-        <span class="hint">Click a column header to sort</span></div>${this.statusMatrix(period, ids)}</div>`;
+      html += `<div class="section"><div class="section-head"><h2>Conflict Status Chart</h2>
+        <span class="hint">Theatre · Phase · Trend · Progress to date · Conflict Status — click a header to sort</span></div>${this.statusMatrix(period, ids)}</div>`;
 
       // charts row
       html += `<div class="section"><div class="section-head"><h2>Analytics</h2></div>${this.chartLayout(horizon)}</div>`;
 
       if (horizon === "weekly") {
         html += `<div class="section">
-          <div class="section-head"><h2>Theatre-by-Theatre Developments</h2>
+          <div class="section-head"><h2>Key Developments</h2>
             <div class="head-actions">
               <button class="btn" data-action="expand-all">Expand all</button>
               <button class="btn" data-action="collapse-all">Collapse all</button>
@@ -688,7 +704,7 @@
             const e = period.theatres[id], t = THEATRE_BY_ID[id];
             return `<tr><td class="theatre-cell">${esc(t.name)}<div style="font-size:11px;color:var(--text-faint)">${esc(t.region)}</div></td>
               <td>${this.phaseTag(e.phase)}</td><td>${this.trendChip(e.trend)}</td>
-              <td><div class="matrix-cell-num">${e.conflictStatusScore}/100</div><div class="progress-mini"><span style="width:${e.conflictStatusScore}%;background:${this.scoreColor(e.conflictStatusScore)}"></span></div></td>
+              <td><div style="font-size:12px;max-width:280px">${esc(e.progressToDate)}</div><div class="progress-mini" title="Conflict status score ${e.conflictStatusScore}/100"><span style="width:${e.conflictStatusScore}%;background:${this.scoreColor(e.conflictStatusScore)}"></span></div></td>
               <td>${this.statusChip(e.statusLabel)}</td></tr>`;
           }).join("");
           table.querySelectorAll(".sort-ind").forEach(s => s.textContent = "");
@@ -705,8 +721,8 @@
     registry: {},
     palette: ["#1f5fa8", "#a01f2e", "#1d6b4c", "#8a5a00", "#5a3da8"],
     domainPalette: {
-      "Fires and Strikes": "#a01f2e", "Intelligence": "#1f5fa8", "Manoeuvre": "#1d6b4c",
-      "Protection": "#8a5a00", "Sustainment": "#5a3da8", "Command and Control": "#0f8a8a"
+      "Fires & Strikes": "#a01f2e", "Intelligence": "#1f5fa8", "Manoeuvre": "#1d6b4c",
+      "Protection": "#8a5a00", "Sustainment": "#5a3da8", "Command & Control": "#0f8a8a"
     },
     css(v) { return getComputedStyle(document.body).getPropertyValue(v).trim(); },
     baseOpts() {

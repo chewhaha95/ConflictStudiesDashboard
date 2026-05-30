@@ -321,6 +321,11 @@ table.matrix td.theatre-cell { font-weight: 650; }
 .dev-pill .pill-domain { font-size: 13px; font-weight: 700; margin: 3px 0; }
 .dev-pill .pill-headline { font-size: 13.5px; font-weight: 600; }
 .dev-pill .pill-rationale { font-size: 12.5px; color: var(--text-muted); margin-top: 3px; }
+.dev-pill .pill-implication {
+  font-size: 12.5px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-strong);
+  color: var(--text);
+}
+.dev-pill .pill-implication strong { color: var(--accent); }
 
 .subhead { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--text-muted); margin: 14px 0 6px; }
 ul.dev-list { margin: 0; padding-left: 18px; }

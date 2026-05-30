@@ -32,20 +32,20 @@
       "Ceasefire Under Strain": "warn"
     },
     "domains": [
-      "Fires and Strikes",
+      "Fires & Strikes",
       "Intelligence",
       "Manoeuvre",
       "Protection",
       "Sustainment",
-      "Command and Control"
+      "Command & Control"
     ],
     "domainTooltips": {
-      "Fires and Strikes": "Lethal effects: artillery, missiles, drones, air strikes and counter-fire.",
+      "Fires & Strikes": "Lethal effects: artillery, missiles, drones, air strikes and counter-fire.",
       "Intelligence": "ISR, indications & warning, targeting cycle quality, and information operations.",
       "Manoeuvre": "Ground/maritime movement, gains and losses of terrain, and freedom of movement.",
       "Protection": "Air and missile defence, force protection, hardening, and civil defence.",
       "Sustainment": "Logistics, munitions stocks, industrial output, and external resupply.",
-      "Command and Control": "Decision-making, coalition cohesion, political direction, and tempo."
+      "Command & Control": "Decision-making, coalition cohesion, political direction, and tempo."
     }
   },
 
@@ -63,7 +63,7 @@
       "name": "General Division",
       "doctrinalAssumption": "Analytical proxy for whole-of-force synthesis, joint planning, and strategic-level appreciation. Not a specific formation.",
       "focus": "Whole-force synthesis and planning relevance",
-      "emphasizedDomains": ["Command and Control", "Intelligence", "Sustainment"],
+      "emphasizedDomains": ["Command & Control", "Intelligence", "Sustainment"],
       "lens": "Synthesise across all domains and theatres; identify second-order strategic implications for force planning."
     },
     {
@@ -79,7 +79,7 @@
       "name": "6th Division",
       "doctrinalAssumption": "Modelled as a rapid-response / armour-and-aviation formation. Doctrinal assumption for study only.",
       "focus": "Speed, fires integration, intelligence and C2",
-      "emphasizedDomains": ["Manoeuvre", "Fires and Strikes", "Intelligence"],
+      "emphasizedDomains": ["Manoeuvre", "Fires & Strikes", "Intelligence"],
       "lens": "Read developments for tempo, deep-fires integration, and responsiveness of the targeting cycle."
     },
     {
@@ -87,7 +87,7 @@
       "name": "8th Division",
       "doctrinalAssumption": "Modelled as a higher-readiness combined-arms formation. Doctrinal assumption for study only.",
       "focus": "Readiness, high-tempo manoeuvre and protection",
-      "emphasizedDomains": ["Manoeuvre", "Protection", "Command and Control"],
+      "emphasizedDomains": ["Manoeuvre", "Protection", "Command & Control"],
       "lens": "Read developments for readiness posture, mobilisation timelines, and high-tempo employment."
     },
     {
@@ -133,14 +133,14 @@
             "Ukraine strikes a Black Sea fuel depot with long-range drones."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Highest tempo of the period: combined cruise/ballistic/drone salvos stress Ukrainian air defence interceptor stocks.",
+            "Fires & Strikes": "Highest tempo of the period: combined cruise/ballistic/drone salvos stress Ukrainian air defence interceptor stocks.",
             "Intelligence": "Improved Ukrainian deep-strike targeting of rear fuel nodes; Russian ISR-strike loop tightening near the front.",
             "Manoeuvre": "Marginal Russian gains; no operational breakthrough. Ukrainian reserves committed locally.",
             "Protection": "Interceptor expenditure outpacing resupply; civil energy hardening lagging demand.",
             "Sustainment": "Russian artillery ammunition advantage persists; Ukrainian shell flow steadier than 2024.",
-            "Command and Control": "Ukraine reorganising drone units under unified command; Russian theatre C2 stable."
+            "Command & Control": "Ukraine reorganising drone units under unified command; Russian theatre C2 stable."
           },
-          "selectedDevelopmentPill": { "domain": "Fires and Strikes", "headline": "Energy-grid strike campaign resumes at scale", "rationale": "The strike surge is the week's decisive effect, driving air-defence depletion and civil-protection strain." },
+          "selectedDevelopmentPill": { "domain": "Fires & Strikes", "headline": "Energy-grid strike campaign resumes at scale", "rationale": "The strike surge is the week's decisive effect, driving air-defence depletion and civil-protection strain." },
           "watchAreas": "Watch the 14 Apr air-defence resupply decision in Washington and whether Kyiv commits new long-range systems to counter-strikes.",
           "sourceLinks": [ { "label": "Theatre situation report", "url": "https://example.org/ruua/w15" }, { "label": "Strike tracker", "url": "https://example.org/ruua/strikes" } ],
           "tags": ["deep-strikes", "air-defence", "Donbas"]
@@ -155,12 +155,12 @@
             "Lebanese army deployment south of the Litani reported incomplete."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Targeted Israeli strikes continue against reconstitution; Hezbollah responses limited and signalling-oriented.",
+            "Fires & Strikes": "Targeted Israeli strikes continue against reconstitution; Hezbollah responses limited and signalling-oriented.",
             "Intelligence": "Israeli ISR dominance over southern Lebanon sustained; pattern-of-life targeting evident.",
             "Manoeuvre": "Static front; Lebanese army deployment gaps create ambiguity zones.",
             "Protection": "Northern Israeli communities partially repopulated; shelter posture eased but reversible.",
             "Sustainment": "Hezbollah resupply via Syria constrained but not severed.",
-            "Command and Control": "Ceasefire monitoring mechanism functioning but slow to adjudicate violations."
+            "Command & Control": "Ceasefire monitoring mechanism functioning but slow to adjudicate violations."
           },
           "selectedDevelopmentPill": { "domain": "Intelligence", "headline": "ISR-cued interdiction defines the ceasefire dynamic", "rationale": "Israeli intelligence dominance is enabling the strikes that most strain the truce this week." },
           "watchAreas": "Watch the ceasefire monitoring committee session expected mid-month and any Lebanese army redeployment announcement.",
@@ -177,14 +177,14 @@
             "Indirect talks on a phased framework resume via mediators."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Lower volume, precision-focused; episodic flare-ups around clearance.",
+            "Fires & Strikes": "Lower volume, precision-focused; episodic flare-ups around clearance.",
             "Intelligence": "Tunnel-mapping and HUMINT-led targeting continue to drive raids.",
             "Manoeuvre": "Israeli forces hold corridors; militant freedom of movement constrained.",
             "Protection": "Civilian-harm mitigation under scrutiny; force protection against IEDs a focus.",
             "Sustainment": "Humanitarian logistics remain the central friction point.",
-            "Command and Control": "Mediated negotiation channel intermittently active."
+            "Command & Control": "Mediated negotiation channel intermittently active."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Phased-framework talks resume", "rationale": "The negotiation track is the week's most consequential lever over the trajectory." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Phased-framework talks resume", "rationale": "The negotiation track is the week's most consequential lever over the trajectory." },
           "watchAreas": "Watch the mediator-hosted session and any announcement on hostage-for-pause sequencing.",
           "sourceLinks": [ { "label": "Gaza brief", "url": "https://example.org/ilgz/w15" } ],
           "tags": ["negotiations", "aid", "raids"]
@@ -199,12 +199,12 @@
             "US carrier presence sustained in the Gulf."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "No direct exchange; proxy rocket activity low this week.",
+            "Fires & Strikes": "No direct exchange; proxy rocket activity low this week.",
             "Intelligence": "Enrichment ambiguity central; reduced inspector access raises I&W risk.",
             "Manoeuvre": "Naval posturing in the Gulf; no ground dimension.",
             "Protection": "Regional air-defence integration discussions continue.",
             "Sustainment": "US carrier sustainment and basing access stable.",
-            "Command and Control": "Diplomatic back-channels reportedly active; deterrence signalling deliberate."
+            "Command & Control": "Diplomatic back-channels reportedly active; deterrence signalling deliberate."
           },
           "selectedDevelopmentPill": { "domain": "Intelligence", "headline": "Monitoring-access reduction raises I&W risk", "rationale": "Loss of inspection clarity is the week's most strategically significant shift." },
           "watchAreas": "Watch the IAEA Board statement and any scheduling of indirect US-Iran talks.",
@@ -221,14 +221,14 @@
             "Nationalist rhetoric elevated on both sides domestically."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "No significant exchange; small-arms incidents only.",
+            "Fires & Strikes": "No significant exchange; small-arms incidents only.",
             "Intelligence": "Mutual surveillance of border build-ups; low transparency.",
             "Manoeuvre": "Localised force concentration near contested terrain.",
             "Protection": "Civil-defence measures minimal; population movement limited.",
             "Sustainment": "Logistics undemanding at current posture.",
-            "Command and Control": "Bilateral mechanisms functioning; domestic politics a complicating input."
+            "Command & Control": "Bilateral mechanisms functioning; domestic politics a complicating input."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Border committee meeting scheduled", "rationale": "The diplomatic channel is the most decision-relevant development this week." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Border committee meeting scheduled", "rationale": "The diplomatic channel is the most decision-relevant development this week." },
           "watchAreas": "Watch the bilateral border committee outcome and any change in troop posture at the disputed sector.",
           "sourceLinks": [ { "label": "SE Asia brief", "url": "https://example.org/thkh/w15" } ],
           "tags": ["border", "diplomacy", "ASEAN"]
@@ -252,12 +252,12 @@
             "Western pledge of additional interceptors announced."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Glide bombs remain Russia's high-leverage tool; Ukrainian deep strikes maturing.",
+            "Fires & Strikes": "Glide bombs remain Russia's high-leverage tool; Ukrainian deep strikes maturing.",
             "Intelligence": "Ukrainian targeting of rail nodes shows improved deep-ISR fusion.",
             "Manoeuvre": "No operational movement; attritional pressure continues.",
             "Protection": "Interceptor pledge eases near-term air-defence risk.",
             "Sustainment": "Russian rail dependency emerges as a targetable vulnerability.",
-            "Command and Control": "Both sides' theatre C2 stable; tempo unchanged."
+            "Command & Control": "Both sides' theatre C2 stable; tempo unchanged."
           },
           "selectedDevelopmentPill": { "domain": "Sustainment", "headline": "Russian rail logistics struck as a system vulnerability", "rationale": "Targeting sustainment, not the front line, is the week's most strategically meaningful shift." },
           "watchAreas": "Watch interceptor delivery timelines and whether Ukraine sustains the rail-interdiction campaign.",
@@ -274,14 +274,14 @@
             "Monitoring committee convenes amid mutual complaints."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Escalatory strike-and-response cycle, still controlled.",
+            "Fires & Strikes": "Escalatory strike-and-response cycle, still controlled.",
             "Intelligence": "Decapitation strike reflects continued Israeli targeting penetration.",
             "Manoeuvre": "Front static; no ground escalation.",
             "Protection": "Northern Israeli alert posture raised; shelters reactivated locally.",
             "Sustainment": "Hezbollah reconstitution continues despite interdiction.",
-            "Command and Control": "Monitoring mechanism stressed; adjudication contested."
+            "Command & Control": "Monitoring mechanism stressed; adjudication contested."
           },
-          "selectedDevelopmentPill": { "domain": "Fires and Strikes", "headline": "Decapitation strike triggers measured Hezbollah response", "rationale": "The strike-response cycle is the week's defining escalation risk." },
+          "selectedDevelopmentPill": { "domain": "Fires & Strikes", "headline": "Decapitation strike triggers measured Hezbollah response", "rationale": "The strike-response cycle is the week's defining escalation risk." },
           "watchAreas": "Watch the monitoring committee's adjudication and any threshold rhetoric on resumed operations.",
           "sourceLinks": [ { "label": "Levant brief", "url": "https://example.org/illb/w16" } ],
           "tags": ["ceasefire", "decapitation", "escalation"]
@@ -296,14 +296,14 @@
             "Sporadic clearance operations continue in the south."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Further reduction in strike volume.",
+            "Fires & Strikes": "Further reduction in strike volume.",
             "Intelligence": "Verification mechanisms become a negotiation focus.",
             "Manoeuvre": "Corridor control maintained; reduced clearance tempo.",
             "Protection": "Civilian-harm scrutiny continues to shape operations.",
             "Sustainment": "Aid logistics improving but fragile.",
-            "Command and Control": "Negotiation channel gains structure and momentum."
+            "Command & Control": "Negotiation channel gains structure and momentum."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Convergence on a phased framework", "rationale": "Diplomatic convergence is the most consequential driver of de-escalation this week." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Convergence on a phased framework", "rationale": "Diplomatic convergence is the most consequential driver of de-escalation this week." },
           "watchAreas": "Watch the announced framework's first implementation milestone and the linked hostage-release sequencing.",
           "sourceLinks": [ { "label": "Gaza brief", "url": "https://example.org/ilgz/w16" } ],
           "tags": ["framework", "aid", "de-escalation"]
@@ -318,14 +318,14 @@
             "US sustains Gulf force posture."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Quiet week; no proxy escalation.",
+            "Fires & Strikes": "Quiet week; no proxy escalation.",
             "Intelligence": "Enrichment ambiguity persists pending talks.",
             "Manoeuvre": "Stable naval posture.",
             "Protection": "Regional air-defence cooperation discussions continue.",
             "Sustainment": "US basing and carrier sustainment unchanged.",
-            "Command and Control": "Diplomatic track gains a tentative schedule."
+            "Command & Control": "Diplomatic track gains a tentative schedule."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Indirect talks tentatively scheduled", "rationale": "Scheduling diplomacy is the week's key inflection in an otherwise static standoff." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Indirect talks tentatively scheduled", "rationale": "Scheduling diplomacy is the week's key inflection in an otherwise static standoff." },
           "watchAreas": "Watch confirmation of the talks date and any pre-talks enrichment signalling.",
           "sourceLinks": [ { "label": "Gulf brief", "url": "https://example.org/iusir/w16" } ],
           "tags": ["nuclear", "diplomacy", "deterrence"]
@@ -340,14 +340,14 @@
             "Nationalist rhetoric softens slightly."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "No incidents.",
+            "Fires & Strikes": "No incidents.",
             "Intelligence": "Mutual monitoring continues; transparency improving marginally.",
             "Manoeuvre": "Limited drawdown signals de-escalation intent.",
             "Protection": "No change to civil posture.",
             "Sustainment": "Posture undemanding.",
-            "Command and Control": "Bilateral mechanism delivers a concrete output."
+            "Command & Control": "Bilateral mechanism delivers a concrete output."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Patrol-limitation understanding reached", "rationale": "A concrete bilateral output is the week's most de-escalatory development." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Patrol-limitation understanding reached", "rationale": "A concrete bilateral output is the week's most de-escalatory development." },
           "watchAreas": "Watch implementation of the patrol understanding and any ASEAN facilitation offer.",
           "sourceLinks": [ { "label": "SE Asia brief", "url": "https://example.org/thkh/w16" } ],
           "tags": ["border", "drawdown", "ASEAN"]
@@ -371,12 +371,12 @@
             "Heavy drone duel along the Dnipro line."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Sustained two-way strike tempo; Crimea airbase struck.",
+            "Fires & Strikes": "Sustained two-way strike tempo; Crimea airbase struck.",
             "Intelligence": "Ukrainian deep-strike ISR continues to find high-value rear targets.",
             "Manoeuvre": "Localised Russian gain through force concentration; costly.",
             "Protection": "Air-defence holding with new interceptors; rear bases vulnerable.",
             "Sustainment": "Russian massing reflects sustainment prioritisation on one axis.",
-            "Command and Control": "Russian local C2 effective for set-piece assault."
+            "Command & Control": "Russian local C2 effective for set-piece assault."
           },
           "selectedDevelopmentPill": { "domain": "Manoeuvre", "headline": "Localised Russian gain via force concentration", "rationale": "The town's capture is the week's most consequential change on the ground." },
           "watchAreas": "Watch whether Russia exploits the gain operationally and Ukraine's counter-concentration response.",
@@ -393,14 +393,14 @@
             "Israel reiterates red lines on weapons transfers."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Lull in exchanges; not a structural change.",
+            "Fires & Strikes": "Lull in exchanges; not a structural change.",
             "Intelligence": "Israeli surveillance unchanged; transfer monitoring continues.",
             "Manoeuvre": "Lebanese army deployment plan offers potential stabiliser.",
             "Protection": "Northern posture eases slightly.",
             "Sustainment": "Reconstitution continues beneath the lull.",
-            "Command and Control": "Committee demonstrates limited but real influence."
+            "Command & Control": "Committee demonstrates limited but real influence."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Monitoring committee enforces a brief lull", "rationale": "The committee's demonstrated leverage is the week's most decision-relevant factor." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Monitoring committee enforces a brief lull", "rationale": "The committee's demonstrated leverage is the week's most decision-relevant factor." },
           "watchAreas": "Watch the Lebanese army deployment plan's first phase and whether the lull survives the next interdiction strike.",
           "sourceLinks": [ { "label": "Levant brief", "url": "https://example.org/illb/w17" } ],
           "tags": ["ceasefire", "LAF", "monitoring"]
@@ -415,12 +415,12 @@
             "Aid flows dip during the impasse."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Modest uptick tied to the impasse.",
+            "Fires & Strikes": "Modest uptick tied to the impasse.",
             "Intelligence": "Verification disagreements central to the stall.",
             "Manoeuvre": "Corridor posture unchanged.",
             "Protection": "Civilian-harm concerns resurface with the uptick.",
             "Sustainment": "Aid throughput sensitive to the political impasse.",
-            "Command and Control": "Negotiation channel strained but intact."
+            "Command & Control": "Negotiation channel strained but intact."
           },
           "selectedDevelopmentPill": { "domain": "Intelligence", "headline": "Verification dispute stalls the framework", "rationale": "Disagreement over verification is the week's binding constraint on progress." },
           "watchAreas": "Watch the mediator's proposed compromise on sequencing and whether the framework timeline is reset.",
@@ -437,14 +437,14 @@
             "No maritime or proxy incidents."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Quiet.",
+            "Fires & Strikes": "Quiet.",
             "Intelligence": "Possible monitoring-access opening signalled.",
             "Manoeuvre": "Stable.",
             "Protection": "Unchanged.",
             "Sustainment": "Unchanged.",
-            "Command and Control": "Diplomatic track firms up."
+            "Command & Control": "Diplomatic track firms up."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Indirect talks confirmed", "rationale": "A confirmed date is the week's clearest de-escalatory signal." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Indirect talks confirmed", "rationale": "A confirmed date is the week's clearest de-escalatory signal." },
           "watchAreas": "Watch pre-talks positioning and any confidence-building gesture on inspections.",
           "sourceLinks": [ { "label": "Gulf brief", "url": "https://example.org/iusir/w17" } ],
           "tags": ["nuclear", "talks", "monitoring"]
@@ -459,14 +459,14 @@
             "Technical talks on demarcation floated."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "None.",
+            "Fires & Strikes": "None.",
             "Intelligence": "Routine monitoring.",
             "Manoeuvre": "Posture stable post-drawdown.",
             "Protection": "Unchanged.",
             "Sustainment": "Undemanding.",
-            "Command and Control": "Possible move toward technical demarcation talks."
+            "Command & Control": "Possible move toward technical demarcation talks."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Demarcation talks floated", "rationale": "A move toward technical talks is the most forward-looking development." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Demarcation talks floated", "rationale": "A move toward technical talks is the most forward-looking development." },
           "watchAreas": "Watch whether demarcation talks are scheduled and any seasonal patrol changes.",
           "sourceLinks": [ { "label": "SE Asia brief", "url": "https://example.org/thkh/w17" } ],
           "tags": ["border", "demarcation", "ASEAN"]
@@ -490,12 +490,12 @@
             "Ukraine retaliates against an oil refinery deep in Russia."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Peak strike intensity for the month; mutual deep strikes.",
+            "Fires & Strikes": "Peak strike intensity for the month; mutual deep strikes.",
             "Intelligence": "Both sides demonstrate mature deep-targeting.",
             "Manoeuvre": "Front stabilises; no exploitation of prior gain.",
             "Protection": "Air-defence stocks the critical constraint; refinery defence gaps exposed in Russia.",
             "Sustainment": "Russian refinery strike pressures fuel output.",
-            "Command and Control": "Coordinated multi-vector strike shows planning maturity."
+            "Command & Control": "Coordinated multi-vector strike shows planning maturity."
           },
           "selectedDevelopmentPill": { "domain": "Protection", "headline": "Air-defence depletion becomes the binding constraint", "rationale": "Interceptor expenditure now caps Ukraine's ability to absorb strike surges — the month's pivotal limitation." },
           "watchAreas": "Watch the next air-defence resupply tranche and whether Russia times strikes to interceptor shortfalls.",
@@ -512,14 +512,14 @@
             "Lebanese army deployment slips schedule."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Cycle resumes; intensity controlled but rising.",
+            "Fires & Strikes": "Cycle resumes; intensity controlled but rising.",
             "Intelligence": "Continued targeting penetration.",
             "Manoeuvre": "Static; deployment delay a negative signal.",
             "Protection": "Northern posture re-tightens.",
             "Sustainment": "Reconstitution proceeds.",
-            "Command and Control": "Committee leverage fading."
+            "Command & Control": "Committee leverage fading."
           },
-          "selectedDevelopmentPill": { "domain": "Fires and Strikes", "headline": "Interdiction strike ends the lull", "rationale": "Resumption of the strike cycle is the week's defining risk to the truce." },
+          "selectedDevelopmentPill": { "domain": "Fires & Strikes", "headline": "Interdiction strike ends the lull", "rationale": "Resumption of the strike cycle is the week's defining risk to the truce." },
           "watchAreas": "Watch for a threshold-crossing Hezbollah response and any emergency monitoring session.",
           "sourceLinks": [ { "label": "Levant brief", "url": "https://example.org/illb/w18" } ],
           "tags": ["ceasefire", "interdiction", "escalation"]
@@ -534,14 +534,14 @@
             "Localised operations subside."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Reduced again.",
+            "Fires & Strikes": "Reduced again.",
             "Intelligence": "Verification compromise reduces the binding constraint.",
             "Manoeuvre": "Corridor posture eased slightly.",
             "Protection": "Civilian-harm risk lowers with reduced ops.",
             "Sustainment": "Aid recovers toward higher baseline.",
-            "Command and Control": "Negotiation momentum restored."
+            "Command & Control": "Negotiation momentum restored."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Mediator compromise restores momentum", "rationale": "The compromise is the week's most consequential lever, reopening the de-escalation path." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Mediator compromise restores momentum", "rationale": "The compromise is the week's most consequential lever, reopening the de-escalation path." },
           "watchAreas": "Watch the first implementation step and the linked release schedule.",
           "sourceLinks": [ { "label": "Gaza brief", "url": "https://example.org/ilgz/w18" } ],
           "tags": ["framework", "compromise", "aid"]
@@ -556,12 +556,12 @@
             "A minor maritime harassment incident recurs."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Quiet.",
+            "Fires & Strikes": "Quiet.",
             "Intelligence": "Monitoring access remains constrained.",
             "Manoeuvre": "Naval friction recurs.",
             "Protection": "Air-defence cooperation talks continue.",
             "Sustainment": "Unchanged.",
-            "Command and Control": "Talks continue but yield no substance."
+            "Command & Control": "Talks continue but yield no substance."
           },
           "selectedDevelopmentPill": { "domain": "Intelligence", "headline": "Monitoring access stays constrained after talks", "rationale": "Continued inspection ambiguity keeps I&W risk the dominant concern." },
           "watchAreas": "Watch the next talks round date and any IAEA access proposal.",
@@ -578,14 +578,14 @@
             "Cross-border trade discussions resume."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "None.",
+            "Fires & Strikes": "None.",
             "Intelligence": "Routine.",
             "Manoeuvre": "Stable.",
             "Protection": "Unchanged.",
             "Sustainment": "Undemanding.",
-            "Command and Control": "Substantive diplomatic step scheduled."
+            "Command & Control": "Substantive diplomatic step scheduled."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Demarcation talks scheduled", "rationale": "Scheduling technical talks is the month's most meaningful de-escalation move." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Demarcation talks scheduled", "rationale": "Scheduling technical talks is the month's most meaningful de-escalation move." },
           "watchAreas": "Watch the demarcation talks agenda and any confidence-building economic measures.",
           "sourceLinks": [ { "label": "SE Asia brief", "url": "https://example.org/thkh/w18" } ],
           "tags": ["border", "demarcation", "trade"]
@@ -609,12 +609,12 @@
             "Strike campaign sustained against energy and rail."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "High tempo continues, now shaping the offensive.",
+            "Fires & Strikes": "High tempo continues, now shaping the offensive.",
             "Intelligence": "Ukrainian I&W detects the build-up; targeting prioritises massing forces.",
             "Manoeuvre": "Two-axis offensive is the defining feature; gains contested.",
             "Protection": "Air-defence under renewed strain alongside ground pressure.",
             "Sustainment": "Russia surges sustainment to support the offensive.",
-            "Command and Control": "Russian operational C2 coordinating multi-axis effort."
+            "Command & Control": "Russian operational C2 coordinating multi-axis effort."
           },
           "selectedDevelopmentPill": { "domain": "Manoeuvre", "headline": "Renewed two-axis Russian offensive", "rationale": "The offensive is the period's most consequential development, testing Ukrainian reserves and lines." },
           "watchAreas": "Watch whether Ukraine's reserves hold both axes and any external decision on accelerated munitions delivery.",
@@ -631,14 +631,14 @@
             "Diplomatic appeals for restraint intensify."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Escalation approaching a threshold.",
+            "Fires & Strikes": "Escalation approaching a threshold.",
             "Intelligence": "Targeting unchanged; escalation risk rising.",
             "Manoeuvre": "Israeli mobilisation signalling begins.",
             "Protection": "Northern shelters reactivated more widely.",
             "Sustainment": "Both sides postured for possible escalation.",
-            "Command and Control": "Crisis diplomacy activates."
+            "Command & Control": "Crisis diplomacy activates."
           },
-          "selectedDevelopmentPill": { "domain": "Fires and Strikes", "headline": "Larger Hezbollah salvo nears escalation threshold", "rationale": "The salvo is the period's clearest escalation indicator for the theatre." },
+          "selectedDevelopmentPill": { "domain": "Fires & Strikes", "headline": "Larger Hezbollah salvo nears escalation threshold", "rationale": "The salvo is the period's clearest escalation indicator for the theatre." },
           "watchAreas": "Watch for Israeli mobilisation orders and the outcome of urgent diplomatic appeals.",
           "sourceLinks": [ { "label": "Levant brief", "url": "https://example.org/illb/w19" } ],
           "tags": ["escalation", "threshold", "diplomacy"]
@@ -653,12 +653,12 @@
             "Operations largely paused."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Largely paused.",
+            "Fires & Strikes": "Largely paused.",
             "Intelligence": "Verification mechanism activated for the first step.",
             "Manoeuvre": "Limited Israeli withdrawal from one corridor.",
             "Protection": "Civilian-harm risk at period low.",
             "Sustainment": "Aid logistics at best level of the period.",
-            "Command and Control": "Framework governance operational."
+            "Command & Control": "Framework governance operational."
           },
           "selectedDevelopmentPill": { "domain": "Manoeuvre", "headline": "First withdrawal step executed", "rationale": "A verified withdrawal is the period's most concrete de-escalation action." },
           "watchAreas": "Watch the second-phase trigger conditions and whether the pause holds under spoiler pressure.",
@@ -675,12 +675,12 @@
             "Enrichment-progress reporting raises concern."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Proxy activity resumes at low level.",
+            "Fires & Strikes": "Proxy activity resumes at low level.",
             "Intelligence": "Enrichment concern grows; access still constrained.",
             "Manoeuvre": "Naval posture firm.",
             "Protection": "Regional base defences tested.",
             "Sustainment": "Unchanged.",
-            "Command and Control": "Diplomatic track stalls."
+            "Command & Control": "Diplomatic track stalls."
           },
           "selectedDevelopmentPill": { "domain": "Intelligence", "headline": "Enrichment concern grows as talks stall", "rationale": "The combination of stalled diplomacy and enrichment progress is the period's key deterioration driver." },
           "watchAreas": "Watch any IAEA emergency reporting and whether talks are formally rescheduled.",
@@ -697,14 +697,14 @@
             "No incidents."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "None.",
+            "Fires & Strikes": "None.",
             "Intelligence": "Joint survey would improve transparency.",
             "Manoeuvre": "Stable.",
             "Protection": "Unchanged.",
             "Sustainment": "Undemanding.",
-            "Command and Control": "Constructive diplomatic engagement."
+            "Command & Control": "Constructive diplomatic engagement."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Demarcation talks open constructively", "rationale": "A constructive opening is the period's most meaningful de-escalation signal." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Demarcation talks open constructively", "rationale": "A constructive opening is the period's most meaningful de-escalation signal." },
           "watchAreas": "Watch agreement on a joint survey and any timeline for demarcation.",
           "sourceLinks": [ { "label": "SE Asia brief", "url": "https://example.org/thkh/w19" } ],
           "tags": ["border", "survey", "demarcation"]
@@ -728,14 +728,14 @@
             "Continued energy-grid strikes."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Sustained; Ukraine targets C2 nodes.",
+            "Fires & Strikes": "Sustained; Ukraine targets C2 nodes.",
             "Intelligence": "Ukrainian targeting of command nodes shows ISR maturity.",
             "Manoeuvre": "Offensive culminating on the northern axis; eastern gain limited.",
             "Protection": "Air-defence holding under continued pressure.",
             "Sustainment": "Russian offensive tempo straining its own logistics.",
-            "Command and Control": "Ukrainian C2 strikes aim to disrupt Russian coordination."
+            "Command & Control": "Ukrainian C2 strikes aim to disrupt Russian coordination."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Ukrainian strike on a Russian command node", "rationale": "Targeting C2 to blunt the offensive is the week's most operationally significant move." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Ukrainian strike on a Russian command node", "rationale": "Targeting C2 to blunt the offensive is the week's most operationally significant move." },
           "watchAreas": "Watch whether the offensive culminates and any signs of Russian operational pause for resupply.",
           "sourceLinks": [ { "label": "Theatre situation report", "url": "https://example.org/ruua/w20" } ],
           "tags": ["offensive", "C2-strike", "energy"]
@@ -750,14 +750,14 @@
             "Lebanese army commits to an accelerated deployment."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Pause in the cycle.",
+            "Fires & Strikes": "Pause in the cycle.",
             "Intelligence": "Surveillance continues; targeting paused.",
             "Manoeuvre": "Accelerated LAF deployment a potential stabiliser.",
             "Protection": "Northern posture eases.",
             "Sustainment": "Reconstitution continues quietly.",
-            "Command and Control": "Crisis diplomacy succeeds in the near term."
+            "Command & Control": "Crisis diplomacy succeeds in the near term."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Mediated de-escalation understanding", "rationale": "The diplomatic understanding is the week's decisive factor in averting escalation." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Mediated de-escalation understanding", "rationale": "The diplomatic understanding is the week's decisive factor in averting escalation." },
           "watchAreas": "Watch LAF deployment delivery and whether the pause holds beyond the immediate term.",
           "sourceLinks": [ { "label": "Levant brief", "url": "https://example.org/illb/w20" } ],
           "tags": ["de-escalation", "LAF", "diplomacy"]
@@ -772,12 +772,12 @@
             "Reconstruction planning discussions begin."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Minimal.",
+            "Fires & Strikes": "Minimal.",
             "Intelligence": "Verification holding for phase two.",
             "Manoeuvre": "Wider Israeli withdrawal.",
             "Protection": "Civilian-harm risk low.",
             "Sustainment": "Aid steady; reconstruction logistics discussed.",
-            "Command and Control": "Framework governance consolidating."
+            "Command & Control": "Framework governance consolidating."
           },
           "selectedDevelopmentPill": { "domain": "Manoeuvre", "headline": "Second-phase withdrawal widens", "rationale": "The widened withdrawal is the week's most concrete consolidation of de-escalation." },
           "watchAreas": "Watch reconstruction-governance arrangements and any spoiler attempt to derail phase three.",
@@ -794,12 +794,12 @@
             "Quiet on the maritime and proxy fronts."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Quiet.",
+            "Fires & Strikes": "Quiet.",
             "Intelligence": "Access concerns unresolved.",
             "Manoeuvre": "Stable.",
             "Protection": "Unchanged.",
             "Sustainment": "Unchanged.",
-            "Command and Control": "Diplomacy frozen."
+            "Command & Control": "Diplomacy frozen."
           },
           "selectedDevelopmentPill": { "domain": "Intelligence", "headline": "Access concerns persist amid frozen diplomacy", "rationale": "Unresolved monitoring access remains the dominant strategic risk." },
           "watchAreas": "Watch any third-party initiative to restart talks and the next IAEA reporting cycle.",
@@ -816,12 +816,12 @@
             "No incidents."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "None.",
+            "Fires & Strikes": "None.",
             "Intelligence": "Joint survey to improve mutual transparency.",
             "Manoeuvre": "Stable.",
             "Protection": "Unchanged.",
             "Sustainment": "Undemanding.",
-            "Command and Control": "Confidence-building gains traction."
+            "Command & Control": "Confidence-building gains traction."
           },
           "selectedDevelopmentPill": { "domain": "Intelligence", "headline": "Joint survey agreed", "rationale": "A joint survey is the period's most tangible transparency and confidence-building step." },
           "watchAreas": "Watch the survey's start date and any movement toward formal demarcation.",
@@ -847,12 +847,12 @@
             "Strike tempo dips slightly from the peak."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Slight dip from peak; still high.",
+            "Fires & Strikes": "Slight dip from peak; still high.",
             "Intelligence": "Both sides assess the offensive's culmination.",
             "Manoeuvre": "Culmination without breakthrough; lines near status quo ante.",
             "Protection": "Air-defence stocks recovering marginally with resupply.",
             "Sustainment": "Reconstitution phase begins on both sides.",
-            "Command and Control": "Operational pause for replanning likely."
+            "Command & Control": "Operational pause for replanning likely."
           },
           "selectedDevelopmentPill": { "domain": "Manoeuvre", "headline": "Russian offensive culminates without breakthrough", "rationale": "Culmination is the week's decisive outcome, resetting the operational picture." },
           "watchAreas": "Watch reconstitution timelines and indications of the next offensive window over summer.",
@@ -869,12 +869,12 @@
             "Mutual accusations continue at lower volume."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Quiet.",
+            "Fires & Strikes": "Quiet.",
             "Intelligence": "Surveillance continues.",
             "Manoeuvre": "LAF increment a modest stabiliser.",
             "Protection": "Northern posture stable-eased.",
             "Sustainment": "Reconstitution ongoing.",
-            "Command and Control": "Understanding holding."
+            "Command & Control": "Understanding holding."
           },
           "selectedDevelopmentPill": { "domain": "Manoeuvre", "headline": "LAF completes a deployment increment", "rationale": "Concrete LAF deployment is the week's most stabilising structural step." },
           "watchAreas": "Watch the next LAF increment and any test of the pause via a fresh transfer allegation.",
@@ -891,12 +891,12 @@
             "Phase-three triggers under negotiation."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Minimal.",
+            "Fires & Strikes": "Minimal.",
             "Intelligence": "Verification extending to governance arrangements.",
             "Manoeuvre": "Withdrawal lines stable.",
             "Protection": "Civilian conditions improving.",
             "Sustainment": "Commercial flow resumption a notable improvement.",
-            "Command and Control": "Governance design progressing."
+            "Command & Control": "Governance design progressing."
           },
           "selectedDevelopmentPill": { "domain": "Sustainment", "headline": "Commercial goods flow partially resumes", "rationale": "Restoring commercial logistics is the week's most concrete normalisation step." },
           "watchAreas": "Watch agreement on phase-three triggers and the reconstruction-governance authority's mandate.",
@@ -913,12 +913,12 @@
             "Heightened deterrence signalling from the US."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Quiet kinetically.",
+            "Fires & Strikes": "Quiet kinetically.",
             "Intelligence": "Enrichment signal is the dominant concern; access denied.",
             "Manoeuvre": "Naval posture firm.",
             "Protection": "Regional air-defence integration emphasised.",
             "Sustainment": "Unchanged.",
-            "Command and Control": "Deterrence signalling sharpens."
+            "Command & Control": "Deterrence signalling sharpens."
           },
           "selectedDevelopmentPill": { "domain": "Intelligence", "headline": "Faster enrichment progress reported", "rationale": "The enrichment signal is the period's most strategically significant deterioration." },
           "watchAreas": "Watch for an emergency IAEA Board session and any shift in US force posture.",
@@ -935,12 +935,12 @@
             "No incidents."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "None.",
+            "Fires & Strikes": "None.",
             "Intelligence": "Survey improving transparency in real time.",
             "Manoeuvre": "Stable.",
             "Protection": "Unchanged.",
             "Sustainment": "Undemanding.",
-            "Command and Control": "Process discipline holding."
+            "Command & Control": "Process discipline holding."
           },
           "selectedDevelopmentPill": { "domain": "Intelligence", "headline": "Joint survey commences", "rationale": "Starting the survey is the week's most concrete transparency gain." },
           "watchAreas": "Watch the survey's interim findings and any demarcation-agreement timeline.",
@@ -966,12 +966,12 @@
             "Mobilisation and recruitment efforts reported on both sides."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Persistent strikes during the ground lull.",
+            "Fires & Strikes": "Persistent strikes during the ground lull.",
             "Intelligence": "Both sides watch for the next offensive build-up.",
             "Manoeuvre": "Static; reconstitution dominant.",
             "Protection": "Air-defence stocks recovering with resupply.",
             "Sustainment": "Mobilisation and munitions build-up the central activity.",
-            "Command and Control": "Replanning for the next phase underway."
+            "Command & Control": "Replanning for the next phase underway."
           },
           "selectedDevelopmentPill": { "domain": "Sustainment", "headline": "Reconstitution and mobilisation set summer conditions", "rationale": "The sustainment build-up is the week's most strategically consequential activity for the next phase." },
           "watchAreas": "Watch mobilisation milestones and indicators of the timing of a summer offensive.",
@@ -988,14 +988,14 @@
             "LAF deployment proceeds incrementally."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Quiet.",
+            "Fires & Strikes": "Quiet.",
             "Intelligence": "Surveillance unchanged.",
             "Manoeuvre": "LAF deployment proceeding.",
             "Protection": "Northern posture stable.",
             "Sustainment": "Reconstitution ongoing.",
-            "Command and Control": "Diplomacy aims to formalise the understanding."
+            "Command & Control": "Diplomacy aims to formalise the understanding."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Effort to formalise ceasefire terms", "rationale": "Formalisation is the week's most consequential lever for durability." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Effort to formalise ceasefire terms", "rationale": "Formalisation is the week's most consequential lever for durability." },
           "watchAreas": "Watch any formalisation announcement and the first serious test of the pause.",
           "sourceLinks": [ { "label": "Levant brief", "url": "https://example.org/illb/w22" } ],
           "tags": ["ceasefire", "formalisation", "LAF"]
@@ -1010,14 +1010,14 @@
             "Aid and commerce sustained."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Minimal.",
+            "Fires & Strikes": "Minimal.",
             "Intelligence": "Verification extending to phase three.",
             "Manoeuvre": "Withdrawal lines stable.",
             "Protection": "Civilian conditions continue to improve.",
             "Sustainment": "Aid and commerce sustained.",
-            "Command and Control": "Governance mandate firming."
+            "Command & Control": "Governance mandate firming."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Phase-three triggers agreed", "rationale": "Agreeing triggers is the week's most consequential step toward durable de-escalation." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Phase-three triggers agreed", "rationale": "Agreeing triggers is the week's most consequential step toward durable de-escalation." },
           "watchAreas": "Watch the governance authority's stand-up and any security-guarantee negotiation.",
           "sourceLinks": [ { "label": "Gaza brief", "url": "https://example.org/ilgz/w22" } ],
           "tags": ["framework", "governance", "phase-three"]
@@ -1032,12 +1032,12 @@
             "US maintains heightened posture."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "Quiet kinetically.",
+            "Fires & Strikes": "Quiet kinetically.",
             "Intelligence": "IAEA session central; possible conditional access.",
             "Manoeuvre": "Posture firm.",
             "Protection": "Air-defence integration emphasised.",
             "Sustainment": "Unchanged.",
-            "Command and Control": "Multilateral diplomacy reactivates."
+            "Command & Control": "Multilateral diplomacy reactivates."
           },
           "selectedDevelopmentPill": { "domain": "Intelligence", "headline": "Emergency IAEA session on enrichment", "rationale": "The IAEA session is the week's pivotal event for the standoff's direction." },
           "watchAreas": "Watch the IAEA session outcome and whether conditional access materialises.",
@@ -1054,14 +1054,14 @@
             "Trade normalisation continues."
           ],
           "domainAnalysis": {
-            "Fires and Strikes": "None.",
+            "Fires & Strikes": "None.",
             "Intelligence": "Interim findings improving clarity.",
             "Manoeuvre": "Stable.",
             "Protection": "Unchanged.",
             "Sustainment": "Undemanding.",
-            "Command and Control": "Process advancing toward demarcation."
+            "Command & Control": "Process advancing toward demarcation."
           },
-          "selectedDevelopmentPill": { "domain": "Command and Control", "headline": "Demarcation timeline proposed", "rationale": "A proposed timeline is the week's most forward-looking de-escalation step." },
+          "selectedDevelopmentPill": { "domain": "Command & Control", "headline": "Demarcation timeline proposed", "rationale": "A proposed timeline is the week's most forward-looking de-escalation step." },
           "watchAreas": "Watch adoption of the demarcation timeline and any ASEAN endorsement.",
           "sourceLinks": [ { "label": "SE Asia brief", "url": "https://example.org/thkh/w22" } ],
           "tags": ["border", "demarcation", "ASEAN"]
