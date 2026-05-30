@@ -440,6 +440,13 @@ details.domains[open] > summary::before { transform: rotate(90deg); }
 .role-countermeasure { color: var(--tone-good-fg);    background: var(--tone-good-bg); }
 .role-dual           { color: var(--tone-neutral-fg); background: var(--tone-neutral-bg); }
 .prio { color: var(--accent); font-weight: 800; }
+.sparkline { display: block; }
+.lc-stroke-emerging   polyline { stroke: #1f5fa8; }
+.lc-stroke-scaling    polyline { stroke: #8a5a00; }
+.lc-stroke-peak       polyline { stroke: #a01f2e; }
+.lc-stroke-maturing   polyline { stroke: #5a6679; }
+.lc-stroke-superseded polyline { stroke: #1d6b4c; }
+.lc-stroke-obsolete   polyline { stroke: #8a93a3; }
 
 /* Measure-countermeasure cycle cards */
 .cycle-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }

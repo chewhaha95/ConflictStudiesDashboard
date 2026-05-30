@@ -159,6 +159,27 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   const afterRows = doc.querySelector("#view-capabilities .view-body").querySelectorAll(".matrix tbody tr").length;
   check("lifecycle filter (Peak) narrows leaderboard", afterRows > 0 && afterRows < beforeRows, `before=${beforeRows} after=${afterRows}`);
 
+  // reset lifecycle filter for the remaining checks
+  peakBtn.click(); await sleep(50);
+
+  // --- 6b. Computed capability heat & trend (from weekly observations) -----
+  console.log("\nComputed capability dynamics:");
+  check("weekly capability signals present", !!db.weeklyCapabilitySignals);
+  let sigOk = true, sigCount = 0;
+  Object.keys(db.weeklyCapabilitySignals).filter(k => k !== "_doc").forEach(wk => {
+    db.weeklyCapabilitySignals[wk].forEach(s => { sigCount++; if (!capIds.has(s.id)) sigOk = false; });
+  });
+  check("all signal capIds resolve (" + sigCount + " signals)", sigOk);
+  const capView = doc.querySelector("#view-capabilities .view-body");
+  check("activity sparklines rendered", capView.querySelectorAll("svg.sparkline").length >= 20);
+  check("'computed from ... observations' note shown", capView.textContent.includes("observations — not hardcoded"));
+  // Fibre-optic FPV (signals ramp up over time) should read as Rising
+  const fiberRow = [...capView.querySelectorAll(".matrix tbody tr")].find(tr => tr.textContent.includes("Fibre-optic FPV"));
+  check("rising capability shows Rising trend", fiberRow && fiberRow.textContent.includes("Rising"), fiberRow ? fiberRow.textContent.replace(/\s+/g, " ").slice(0, 80) : "row missing");
+  // A fading capability (COTS quadcopter, only early signals) should read Declining
+  const djiRow = [...capView.querySelectorAll(".matrix tbody tr")].find(tr => tr.textContent.includes("COTS quadcopter"));
+  check("fading capability shows Declining trend", djiRow && djiRow.textContent.includes("Declining"), djiRow ? djiRow.textContent.replace(/\s+/g, " ").slice(0, 80) : "row missing");
+
   // division priority flag appears in capabilities view
   doc.querySelector('[data-mode="division"]').click(); await sleep(60);
   check("division priority ★ flagged in capabilities",
