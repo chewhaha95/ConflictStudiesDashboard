@@ -169,6 +169,78 @@
     { "id": "cap_artillery", "name": "Tube & SP artillery", "aka": "Conventional indirect fires", "category": "Tube artillery", "domain": "Fires & Strikes", "role": "Measure", "theatres": ["TH_KH", "RU_UA"], "lifecycle": "Maturing", "heat": 47, "trend": "Steady", "firstObserved": "2022-02", "vector": "Indigenous production", "counters": [], "counteredBy": ["cap_recon_uav"], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Confirmed", "saf": "Still the mass-fires backbone, but counter-battery driven by drone ISR makes shoot-and-scoot and dispersion essential.", "note": "Enduring, but survivability now hinges on countering ISR.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/artillery" }] }
   ],
 
+  "weeklyCapabilitySignals": {
+    "_doc": "Per-week capability observations that drive computed heat & trend. id=capability, t=theatre, i=intensity(1-3), x=type(emp employment | ctr counter | prolif proliferation | super supersession).",
+    "2026-W15": [
+      {"id":"cap_shahed","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_fpv","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_umpk","t":"RU_UA","i":3,"x":"emp"},
+      {"id":"cap_recon_uav","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_ew_tac","t":"RU_UA","i":2,"x":"ctr"},{"id":"cap_ew_gnss","t":"RU_UA","i":2,"x":"ctr"},
+      {"id":"cap_dji_isr","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_patriot","t":"RU_UA","i":2,"x":"ctr"},{"id":"cap_himars","t":"RU_UA","i":2,"x":"emp"},
+      {"id":"cap_artillery","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_s400","t":"RU_UA","i":1,"x":"ctr"},{"id":"cap_spaag","t":"RU_UA","i":1,"x":"ctr"},
+      {"id":"cap_surface_combatant","t":"RU_UA","i":1,"x":"emp"},
+      {"id":"cap_iron_dome","t":"IL_GZ","i":2,"x":"ctr"},{"id":"cap_rockets","t":"IL_GZ","i":2,"x":"emp"},{"id":"cap_atgm","t":"IL_GZ","i":2,"x":"emp"},
+      {"id":"cap_iran_brm","t":"IL_US_IR","i":1,"x":"emp"}
+    ],
+    "2026-W16": [
+      {"id":"cap_shahed","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_fpv","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_umpk","t":"RU_UA","i":3,"x":"emp"},
+      {"id":"cap_recon_uav","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_ew_tac","t":"RU_UA","i":2,"x":"ctr"},{"id":"cap_ew_gnss","t":"RU_UA","i":2,"x":"ctr"},
+      {"id":"cap_dji_isr","t":"RU_UA","i":1,"x":"emp"},{"id":"cap_patriot","t":"RU_UA","i":2,"x":"ctr"},{"id":"cap_himars","t":"RU_UA","i":2,"x":"emp"},
+      {"id":"cap_usv","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_atacms","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_artillery","t":"RU_UA","i":2,"x":"emp"},
+      {"id":"cap_surface_combatant","t":"RU_UA","i":1,"x":"emp"},{"id":"cap_s400","t":"RU_UA","i":1,"x":"ctr"},
+      {"id":"cap_rockets","t":"IL_GZ","i":2,"x":"emp"},{"id":"cap_atgm","t":"IL_GZ","i":2,"x":"emp"},{"id":"cap_tunnels","t":"IL_GZ","i":2,"x":"emp"},
+      {"id":"cap_trophy_aps","t":"IL_GZ","i":2,"x":"ctr"}
+    ],
+    "2026-W17": [
+      {"id":"cap_shahed","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_fpv","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_umpk","t":"RU_UA","i":3,"x":"emp"},
+      {"id":"cap_recon_uav","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_ew_tac","t":"RU_UA","i":2,"x":"ctr"},{"id":"cap_ew_gnss","t":"RU_UA","i":2,"x":"ctr"},
+      {"id":"cap_dji_isr","t":"RU_UA","i":1,"x":"emp"},{"id":"cap_patriot","t":"RU_UA","i":2,"x":"ctr"},{"id":"cap_himars","t":"RU_UA","i":1,"x":"emp"},
+      {"id":"cap_usv","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_atacms","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_spaag","t":"RU_UA","i":2,"x":"ctr"},
+      {"id":"cap_artillery","t":"RU_UA","i":2,"x":"emp"},
+      {"id":"cap_rockets","t":"IL_GZ","i":1,"x":"emp"},{"id":"cap_atgm","t":"IL_GZ","i":1,"x":"emp"},{"id":"cap_tunnels","t":"IL_GZ","i":2,"x":"emp"},
+      {"id":"cap_trophy_aps","t":"IL_GZ","i":2,"x":"ctr"}
+    ],
+    "2026-W18": [
+      {"id":"cap_shahed","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_fpv","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_umpk","t":"RU_UA","i":3,"x":"emp"},
+      {"id":"cap_recon_uav","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_ew_tac","t":"RU_UA","i":3,"x":"ctr"},{"id":"cap_ew_gnss","t":"RU_UA","i":2,"x":"ctr"},
+      {"id":"cap_patriot","t":"RU_UA","i":2,"x":"ctr"},{"id":"cap_himars","t":"RU_UA","i":1,"x":"emp"},{"id":"cap_atacms","t":"RU_UA","i":2,"x":"emp"},
+      {"id":"cap_fpv_fiber","t":"RU_UA","i":1,"x":"emp"},{"id":"cap_artillery","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_s400","t":"RU_UA","i":1,"x":"ctr"},
+      {"id":"cap_tunnels","t":"IL_GZ","i":1,"x":"emp"},{"id":"cap_tunnel_breach","t":"IL_GZ","i":1,"x":"ctr"},{"id":"cap_rockets","t":"IL_GZ","i":1,"x":"emp"},
+      {"id":"cap_atgm","t":"IL_GZ","i":1,"x":"emp"}
+    ],
+    "2026-W19": [
+      {"id":"cap_shahed","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_fpv","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_umpk","t":"RU_UA","i":3,"x":"emp"},
+      {"id":"cap_recon_uav","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_ew_tac","t":"RU_UA","i":3,"x":"ctr"},{"id":"cap_ew_gnss","t":"RU_UA","i":2,"x":"ctr"},
+      {"id":"cap_patriot","t":"RU_UA","i":3,"x":"ctr"},{"id":"cap_fpv_fiber","t":"RU_UA","i":1,"x":"emp"},{"id":"cap_interceptor_uav","t":"RU_UA","i":1,"x":"ctr"},
+      {"id":"cap_usv","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_atacms","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_longrange_sam","t":"RU_UA","i":1,"x":"ctr"},
+      {"id":"cap_artillery","t":"RU_UA","i":2,"x":"emp"},
+      {"id":"cap_iran_brm","t":"IL_US_IR","i":2,"x":"emp"},{"id":"cap_arrow_thaad","t":"IL_US_IR","i":2,"x":"ctr"},
+      {"id":"cap_border_isr","t":"TH_KH","i":1,"x":"prolif"}
+    ],
+    "2026-W20": [
+      {"id":"cap_shahed","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_fpv","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_umpk","t":"RU_UA","i":3,"x":"emp"},
+      {"id":"cap_recon_uav","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_ew_tac","t":"RU_UA","i":3,"x":"ctr"},{"id":"cap_ew_gnss","t":"RU_UA","i":2,"x":"ctr"},
+      {"id":"cap_patriot","t":"RU_UA","i":3,"x":"ctr"},{"id":"cap_fpv_fiber","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_interceptor_uav","t":"RU_UA","i":1,"x":"ctr"},
+      {"id":"cap_usv","t":"RU_UA","i":1,"x":"emp"},{"id":"cap_longrange_sam","t":"RU_UA","i":1,"x":"ctr"},{"id":"cap_artillery","t":"RU_UA","i":2,"x":"emp"},
+      {"id":"cap_iron_dome","t":"IL_GZ","i":1,"x":"ctr"},{"id":"cap_tunnel_breach","t":"IL_GZ","i":1,"x":"ctr"},
+      {"id":"cap_border_isr","t":"TH_KH","i":1,"x":"prolif"}
+    ],
+    "2026-W21": [
+      {"id":"cap_shahed","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_fpv","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_umpk","t":"RU_UA","i":3,"x":"emp"},
+      {"id":"cap_recon_uav","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_ew_tac","t":"RU_UA","i":3,"x":"ctr"},{"id":"cap_ew_gnss","t":"RU_UA","i":2,"x":"ctr"},
+      {"id":"cap_patriot","t":"RU_UA","i":3,"x":"ctr"},{"id":"cap_fpv_fiber","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_interceptor_uav","t":"RU_UA","i":2,"x":"ctr"},
+      {"id":"cap_usv","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_artillery","t":"RU_UA","i":2,"x":"emp"},
+      {"id":"cap_iran_brm","t":"IL_US_IR","i":3,"x":"emp"},{"id":"cap_arrow_thaad","t":"IL_US_IR","i":3,"x":"ctr"},
+      {"id":"cap_border_isr","t":"TH_KH","i":2,"x":"prolif"},{"id":"cap_tunnel_breach","t":"IL_GZ","i":2,"x":"ctr"}
+    ],
+    "2026-W22": [
+      {"id":"cap_shahed","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_fpv","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_umpk","t":"RU_UA","i":3,"x":"emp"},
+      {"id":"cap_recon_uav","t":"RU_UA","i":2,"x":"emp"},{"id":"cap_ew_tac","t":"RU_UA","i":3,"x":"ctr"},{"id":"cap_ew_gnss","t":"RU_UA","i":2,"x":"ctr"},
+      {"id":"cap_patriot","t":"RU_UA","i":3,"x":"ctr"},{"id":"cap_fpv_fiber","t":"RU_UA","i":3,"x":"super"},{"id":"cap_interceptor_uav","t":"RU_UA","i":2,"x":"ctr"},
+      {"id":"cap_usv","t":"RU_UA","i":3,"x":"emp"},{"id":"cap_heli_patrol","t":"RU_UA","i":1,"x":"ctr"},{"id":"cap_artillery","t":"RU_UA","i":2,"x":"emp"},
+      {"id":"cap_iran_brm","t":"IL_US_IR","i":3,"x":"emp"},{"id":"cap_arrow_thaad","t":"IL_US_IR","i":3,"x":"ctr"},
+      {"id":"cap_border_isr","t":"TH_KH","i":2,"x":"prolif"},{"id":"cap_tunnel_breach","t":"IL_GZ","i":2,"x":"ctr"}
+    ]
+  },
+
   "weeklyReports": [
     {
       "weekId": "2026-W15",

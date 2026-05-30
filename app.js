@@ -887,7 +887,10 @@
         view: "capabilities",
         mode: State.mode,
         division: State.mode === "division" ? DIV_BY_ID[State.division].name : null,
-        capabilities: Caps.list()
+        note: "computedHeat & computedTrend are derived from weekly capability observations.",
+        capabilities: Caps.list().map(c => Object.assign({}, c, {
+          computedHeat: Caps.heatOf(c), computedTrend: Caps.trendOf(c), observations: Caps.observations(c)
+        }))
       };
     },
     json() {
@@ -901,9 +904,9 @@
     csv() {
       const q = (s) => `"${String(s == null ? "" : s).replace(/"/g, '""')}"`;
       if (State.horizon === "capabilities") {
-        const cols = ["name", "aka", "category", "role", "domain", "theatres", "lifecycle", "heat", "trend", "vector", "counteredBy", "supersededBy", "timeToCounterDays", "confidence"];
+        const cols = ["name", "aka", "category", "role", "domain", "theatres", "lifecycle", "computedHeat", "computedTrend", "observations", "vector", "counteredBy", "supersededBy", "timeToCounterDays", "confidence"];
         const rows = Caps.list().map(c => [
-          c.name, c.aka, c.category, c.role, c.domain, c.theatres.join("|"), c.lifecycle, c.heat, c.trend,
+          c.name, c.aka, c.category, c.role, c.domain, c.theatres.join("|"), c.lifecycle, Caps.heatOf(c), Caps.trendOf(c), Caps.observations(c),
           c.vector, (c.counteredBy || []).map(id => Caps.name(id)).join("|"),
           (c.supersededBy || []).map(id => Caps.name(id)).join("|"), c.timeToCounterDays, c.confidence
         ].map(q).join(","));
@@ -939,6 +942,53 @@
     byId(id) { return DB.capabilities.find(c => c.id === id); },
     name(id) { const c = this.byId(id); return c ? c.name : id; },
 
+    // Computed dynamics: heat & trend are derived from the weekly capability
+    // signals, NOT stored. Heat = recency-weighted sum of observation intensity,
+    // normalised 0-100 across capabilities. Trend = recent-half vs earlier-half
+    // activity. Falls back to the declared baseline only if a capability has no
+    // observations. Call once after data load (App.init).
+    dynamics: {},
+    computeDynamics() {
+      const weeks = DB.weeklyReports, n = weeks.length;
+      const sig = DB.weeklyCapabilitySignals || {};
+      const m = {};
+      DB.capabilities.forEach(c => (m[c.id] = { weekly: new Array(n).fill(0), signals: 0 }));
+      weeks.forEach((w, idx) => (sig[w.weekId] || []).forEach(s => {
+        if (m[s.id]) { m[s.id].weekly[idx] += (s.i || 1); m[s.id].signals++; }
+      }));
+      // recency-weighted raw heat (recent weeks weigh more), then normalise
+      let max = 0; const raw = {};
+      DB.capabilities.forEach(c => {
+        let r = 0;
+        for (let i = 0; i < n; i++) { const wgt = 0.55 + 0.45 * (n > 1 ? i / (n - 1) : 1); r += m[c.id].weekly[i] * wgt; }
+        raw[c.id] = r; if (r > max) max = r;
+      });
+      const half = Math.max(1, Math.floor(n / 2));
+      DB.capabilities.forEach(c => {
+        const d = m[c.id];
+        d.heat = d.signals === 0 ? c.heat : (max > 0 ? Math.round((raw[c.id] / max) * 96) : 0);
+        const earlier = d.weekly.slice(0, half).reduce((a, b) => a + b, 0);
+        const recent = d.weekly.slice(n - half).reduce((a, b) => a + b, 0);
+        d.earlier = earlier; d.recent = recent;
+        if (d.signals === 0) d.trend = c.trend;
+        else if (recent > earlier * 1.25 + 0.5) d.trend = "Rising";
+        else if (recent < earlier * 0.75) d.trend = "Declining";
+        else d.trend = "Steady";
+      });
+      this.dynamics = m;
+    },
+    heatOf(c) { const d = this.dynamics[c.id]; return d ? d.heat : c.heat; },
+    trendOf(c) { const d = this.dynamics[c.id]; return d ? d.trend : c.trend; },
+    observations(c) { const d = this.dynamics[c.id]; return d ? d.signals : 0; },
+    // Inline SVG sparkline of weekly observation intensity (shows heat is computed)
+    sparkline(c) {
+      const d = this.dynamics[c.id]; if (!d) return "";
+      const w = 64, h = 16, max = Math.max(1, ...d.weekly), n = d.weekly.length;
+      const pts = d.weekly.map((v, i) => `${(i / (n - 1)) * (w - 2) + 1},${h - 1 - (v / max) * (h - 3)}`).join(" ");
+      const tone = (DB.capabilityDefs.lifecycle[c.lifecycle] || {}).tone || "maturing";
+      return `<svg class="sparkline lc-stroke-${tone}" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline points="${pts}" fill="none" stroke-width="1.5"/></svg>`;
+    },
+
     // Apply the shared theatre/domain/search filters + the lifecycle filter
     list() {
       const f = State.filters;
@@ -954,7 +1004,7 @@
     },
 
     // ---- derived analytics ----
-    heatRanking(list) { return [...list].sort((a, b) => b.heat - a.heat); },
+    heatRanking(list) { return [...list].sort((a, b) => this.heatOf(b) - this.heatOf(a)); },
     lifecycleDist(list) {
       const o = {}; Object.keys(DB.capabilityDefs.lifecycle).forEach(k => o[k] = 0);
       list.forEach(c => o[c.lifecycle]++); return o;
@@ -972,7 +1022,7 @@
     pairs(list) {
       return list.filter(c => c.role !== "Countermeasure" && c.counteredBy && c.counteredBy.length)
         .map(c => ({ measure: c, counters: c.counteredBy.map(id => this.byId(id)).filter(Boolean) }))
-        .sort((a, b) => b.measure.heat - a.measure.heat);
+        .sort((a, b) => this.heatOf(b.measure) - this.heatOf(a.measure));
     },
     uncountered(list) {
       return this.heatRanking(list.filter(c => c.role !== "Countermeasure" && (!c.counteredBy || !c.counteredBy.length)));
@@ -982,7 +1032,7 @@
         .map(c => ({ from: c, to: c.supersededBy.map(id => this.byId(id)).filter(Boolean) }));
     },
     diffusion(list) {
-      return list.filter(c => c.theatres.length > 1).sort((a, b) => b.theatres.length - a.theatres.length || b.heat - a.heat);
+      return list.filter(c => c.theatres.length > 1).sort((a, b) => b.theatres.length - a.theatres.length || this.heatOf(b) - this.heatOf(a));
     },
     adaptationTempo(list) {
       const m = list.filter(c => typeof c.timeToCounterDays === "number");
@@ -1024,9 +1074,9 @@
 
       // ---- dynamic BLUF ----
       const ranked = this.heatRanking(all);
-      const hot = ranked.filter(c => c.lifecycle === "Peak").slice(0, 4).map(c => c.name);
-      const rising = all.filter(c => c.trend === "Rising").map(c => c.name);
-      const fading = all.filter(c => ["Superseded", "Obsolete"].includes(c.lifecycle) || c.trend === "Declining").map(c => c.name);
+      const hot = ranked.slice(0, 4).map(c => c.name);
+      const rising = all.filter(c => this.trendOf(c) === "Rising").map(c => c.name);
+      const fading = all.filter(c => ["Superseded", "Obsolete"].includes(c.lifecycle) || this.trendOf(c) === "Declining").map(c => c.name);
       const tempo = this.adaptationTempo(all);
       const unc = this.uncountered(all);
 
@@ -1074,6 +1124,7 @@
       // ---- heat leaderboard ----
       const rows = ranked.map((c, i) => {
         const star = this.isDivPriority(c) ? '<span class="prio" title="Priority domain for this division">★</span> ' : "";
+        const heat = this.heatOf(c);
         return `<tr>
           <td class="matrix-cell-num">${i + 1}</td>
           <td class="theatre-cell">${star}${esc(c.name)}<div style="font-size:11px;color:var(--text-faint)">${esc(c.aka)} · ${esc(c.category)}</div></td>
@@ -1081,15 +1132,16 @@
           <td>${esc(c.domain)}</td>
           <td>${this.theatreChips(c.theatres)}</td>
           <td>${this.lcChip(c.lifecycle)}</td>
-          <td><div class="matrix-cell-num">${c.heat}</div><div class="progress-mini"><span style="width:${c.heat}%;background:${this.lcPalette[(DB.capabilityDefs.lifecycle[c.lifecycle] || {}).tone]}"></span></div></td>
-          <td>${this.capTrend(c.trend)}</td>
+          <td><div class="matrix-cell-num">${heat}</div><div class="progress-mini"><span style="width:${heat}%;background:${this.lcPalette[(DB.capabilityDefs.lifecycle[c.lifecycle] || {}).tone]}"></span></div></td>
+          <td>${this.sparkline(c)}<div style="font-size:10px;color:var(--text-faint)">${this.observations(c)} obs</div></td>
+          <td>${this.capTrend(this.trendOf(c))}</td>
         </tr>`;
       }).join("");
       html += `<div class="section"><div class="section-head"><h2>Heat Leaderboard</h2>
-        <span class="hint">What's hot — ranked by current employment intensity</span></div>
+        <span class="hint">Heat &amp; adoption are computed from ${DB.weeklyReports.length} weeks of capability observations — not hardcoded</span></div>
         <div class="card matrix-wrap"><table class="matrix"><thead><tr>
-          <th>#</th><th>Capability</th><th>Role</th><th>Domain</th><th>Theatres</th><th>Lifecycle</th><th>Heat</th><th>Adoption</th>
-        </tr></thead><tbody>${rows || `<tr><td colspan="8"><div class="empty">No capabilities match the filters.</div></td></tr>`}</tbody></table></div></div>`;
+          <th>#</th><th>Capability</th><th>Role</th><th>Domain</th><th>Theatres</th><th>Lifecycle</th><th>Heat</th><th>Activity (8&nbsp;wk)</th><th>Adoption</th>
+        </tr></thead><tbody>${rows || `<tr><td colspan="9"><div class="empty">No capabilities match the filters.</div></td></tr>`}</tbody></table></div></div>`;
 
       // ---- measure ⇄ countermeasure cycles ----
       const pairCards = this.pairs(all).map(p => `
@@ -1150,7 +1202,7 @@
       const top = this.heatRanking(list).slice(0, 12);
       Charts.make("cap-heat", {
         type: "bar",
-        data: { labels: top.map(c => c.name), datasets: [{ label: "Heat", data: top.map(c => c.heat), backgroundColor: top.map(c => lcColor(c.lifecycle)) }] },
+        data: { labels: top.map(c => c.name), datasets: [{ label: "Heat", data: top.map(c => this.heatOf(c)), backgroundColor: top.map(c => lcColor(c.lifecycle)) }] },
         options: Object.assign(Charts.baseOpts(), { indexAxis: "y", plugins: { legend: { display: false } } })
       });
 
@@ -1334,6 +1386,7 @@
       DB.divisions.forEach(d => DIV_BY_ID[d.id] = d);
       MONTHS = Agg.buildMonths();
       QUARTERS = Agg.buildQuarters();
+      Caps.computeDynamics();   // derive capability heat & trend from weekly observations
 
       // header meta
       el("#meta-updated").textContent = Time.fmtDateTime(DB.meta.lastUpdated);
