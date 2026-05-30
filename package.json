@@ -1,0 +1,14 @@
+{
+  "name": "conflict-studies-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Single-page international conflict studies dashboard (weekly/monthly/quarterly + Singapore Army division view).",
+  "scripts": {
+    "check": "node --check app.js",
+    "smoke": "node scripts/smoke-test.js",
+    "test": "npm run check && npm run smoke"
+  },
+  "devDependencies": {
+    "jsdom": "^24.0.0"
+  }
+}
