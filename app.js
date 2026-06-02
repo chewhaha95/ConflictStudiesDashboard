@@ -1296,6 +1296,15 @@
         Render.renderActiveView();
       });
 
+      // mobile: collapsible filters panel
+      const ft = el("#filters-toggle");
+      if (ft) ft.addEventListener("click", () => {
+        const sb = document.querySelector(".sidebar");
+        const open = sb.classList.toggle("filters-open");
+        ft.setAttribute("aria-expanded", String(open));
+        ft.querySelector(".ft-caret").textContent = open ? "▴" : "▾";
+      });
+
       // theme toggle
       el("#theme-toggle").addEventListener("click", () => {
         State.theme = State.theme === "light" ? "dark" : "light";
