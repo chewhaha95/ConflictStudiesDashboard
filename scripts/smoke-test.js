@@ -64,7 +64,11 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   const dom = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true });
   const { window } = dom;
   global.window = window; global.document = window.document;
-  window.fetch = async () => ({ ok: true, status: 200, json: async () => JSON.parse(data) });
+  // Seed-only fetch: weekly-live.json returns 404 so the main harness exercises
+  // the seed/fallback path deterministically.
+  window.fetch = async (u) => String(u).includes("weekly-live")
+    ? ({ ok: false, status: 404, json: async () => ({}) })
+    : ({ ok: true, status: 200, json: async () => JSON.parse(data) });
   window.Chart = function () { return { destroy() {} }; };
   window.Chart.prototype = {};
   window.HTMLCanvasElement.prototype.getContext = () => ({});
@@ -202,6 +206,58 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   doc.querySelector('[data-mode="division"]').click(); await sleep(60);
   check("division priority ★ flagged in capabilities",
     doc.querySelector("#view-capabilities .view-body").querySelectorAll(".prio").length > 0);
+
+  // --- 7. Live weekly edition (sync integration) --------------------------
+  console.log("\nLive weekly edition:");
+  // Fallback path: with no live edition, weekly shows seed only (no LIVE option/banner)
+  doc.querySelector('[data-mode="theatre"]').click();
+  doc.querySelector('.tab-btn[data-horizon="weekly"]').click(); await sleep(40);
+  const wb2 = doc.querySelector("#view-weekly .view-body");
+  check("fallback: no LIVE banner when weekly-live.json absent", !wb2.querySelector(".live-banner"));
+  check("fallback: 8 seed weekly periods", doc.querySelectorAll("#period-select option").length === 8);
+
+  // weekly-live.json on disk (if present) must satisfy the schema contract
+  const livePath = path.join(root, "weekly-live.json");
+  if (fs.existsSync(livePath)) {
+    const lw = JSON.parse(fs.readFileSync(livePath, "utf8"));
+    const okLive = lw.__live === true && lw.weekId && lw.weekStart && lw.weekEnd && lw.bluf &&
+      Object.keys(lw.theatres).length >= 4 &&
+      Object.values(lw.theatres).every(e => e.phase && e.trend && e.selectedDevelopmentPill &&
+        Object.keys(e.domainAnalysis || {}).length === 6 && e.watchAreas);
+    check("weekly-live.json matches schema contract", okLive);
+  } else {
+    console.log("  (weekly-live.json not present — skipping contract check)");
+  }
+
+  // Injection path: a synthetic live edition must become the default Weekly view
+  const liveStub = {
+    __live: true, weekId: "LIVE-TEST", rangeLabel: "Test range", weekStart: "2026-05-25",
+    weekEnd: "2026-06-04", sourceUrl: "https://example.org", syncedAt: new Date().toISOString(),
+    bluf: "LIVE-BLUF-MARKER", theatres: {}
+  };
+  ["RU_UA", "IL_LB", "IL_GZ", "IL_US_IR", "TH_KH"].forEach(id => {
+    const da = {}; ["Fires & Strikes", "Intelligence", "Manoeuvre", "Protection", "Sustainment", "Command & Control"].forEach(d => (da[d] = "x"));
+    liveStub.theatres[id] = { phase: "Active Combat", trend: "Escalating", progressToDate: "p", conflictStatusScore: 80,
+      statusLabel: "Escalating", bluf: "b", keyDevelopments: ["k"], domainAnalysis: da,
+      selectedDevelopmentPill: { domain: "Fires & Strikes", headline: "h", rationale: "r" }, watchAreas: "w", sourceLinks: [], tags: [] };
+  });
+  const dom2 = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true });
+  global.window = dom2.window; global.document = dom2.window.document;
+  dom2.window.fetch = async (u) => String(u).includes("weekly-live")
+    ? ({ ok: true, status: 200, json: async () => liveStub })
+    : ({ ok: true, status: 200, json: async () => JSON.parse(data) });
+  dom2.window.Chart = function () { return { destroy() {} }; }; dom2.window.Chart.prototype = {};
+  dom2.window.HTMLCanvasElement.prototype.getContext = () => ({});
+  dom2.window.eval(appjs);
+  await sleep(250);
+  const d2 = dom2.window.document;
+  const liveOpt = [...d2.querySelectorAll("#period-select option")].some(o => o.textContent.includes("● LIVE"));
+  check("LIVE option added to weekly period selector", liveOpt);
+  check("9 weekly periods (8 seed + live)", d2.querySelectorAll("#period-select option").length === 9);
+  const wb3 = d2.querySelector("#view-weekly .view-body");
+  check("LIVE banner shown and is default weekly view", !!wb3.querySelector(".live-banner") && wb3.textContent.includes("LIVE-BLUF-MARKER"));
+  // restore globals for any later use
+  global.window = window; global.document = doc;
 
   // --- Result --------------------------------------------------------------
   console.log("");

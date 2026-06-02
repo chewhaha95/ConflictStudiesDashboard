@@ -364,7 +364,10 @@
 
     // Active period object for the current horizon
     currentPeriod() {
-      if (State.horizon === "weekly")  return DB.weeklyReports.find(w => w.weekId === State.periodId);
+      if (State.horizon === "weekly") {
+        if (DB.liveWeek && State.periodId === DB.liveWeek.weekId) return DB.liveWeek;
+        return DB.weeklyReports.find(w => w.weekId === State.periodId);
+      }
       if (State.horizon === "monthly") return MONTHS.find(m => m.id === State.periodId);
       return QUARTERS.find(q => q.id === State.periodId);
     },
@@ -585,6 +588,12 @@
 
       const container = el(`#view-${horizon} .view-body`);
       let html = "";
+
+      // live-edition banner (weekly tab, synced from the brief site)
+      if (DB.liveWeek && period === DB.liveWeek) {
+        html += `<div class="note-banner live-banner"><strong>● LIVE</strong> — synced from <a href="${esc(period.sourceUrl)}" target="_blank" rel="noopener">conflictstudiesandinsights.pages.dev</a>` +
+          `${period.syncedAt ? ` · last synced ${esc(Time.fmtDateTime(period.syncedAt))}` : ""}. Pick another week from the Period selector for the seed editions.</div>`;
+      }
 
       // mode banner
       if (State.mode === "division") {
@@ -1192,15 +1201,19 @@
       }
       sel.disabled = false;
       let opts = [];
-      if (State.horizon === "weekly")
+      if (State.horizon === "weekly") {
         opts = DB.weeklyReports.map(w => ({ id: w.weekId, label: `${w.weekId} · ${Time.fmtRange(w.weekStart, w.weekEnd)}` }));
-      else if (State.horizon === "monthly")
+        // Live edition (synced from the brief) sits at the top and is the default
+        if (DB.liveWeek) opts.unshift({ id: DB.liveWeek.weekId, label: `● LIVE · ${DB.liveWeek.rangeLabel || "current brief"}` });
+      } else if (State.horizon === "monthly")
         opts = MONTHS.map(m => ({ id: m.id, label: `${m.label} · ${Time.fmtRange(m.start, m.end)}` }));
       else
         opts = QUARTERS.map(qr => ({ id: qr.id, label: `${qr.label} · ${Time.fmtRange(qr.start, qr.end)}` }));
 
-      // default to latest period for the horizon
-      if (!opts.find(o => o.id === State.periodId)) State.periodId = opts[opts.length - 1].id;
+      // default: live edition for weekly (if present), else latest period
+      if (!opts.find(o => o.id === State.periodId)) {
+        State.periodId = (State.horizon === "weekly" && DB.liveWeek) ? DB.liveWeek.weekId : opts[opts.length - 1].id;
+      }
       sel.innerHTML = opts.map(o => `<option value="${o.id}" ${o.id === State.periodId ? "selected" : ""}>${esc(o.label)}</option>`).join("");
     },
 
@@ -1313,6 +1326,16 @@
       MONTHS = Agg.buildMonths();
       QUARTERS = Agg.buildQuarters();
       Caps.computeDynamics();   // derive capability heat & trend from weekly observations
+
+      // Live weekly edition: synced from the brief site into weekly-live.json by
+      // .github/workflows/sync-weekly.yml. Optional — fall back to seed data.
+      try {
+        const r = await fetch("weekly-live.json", { cache: "no-store" });
+        if (r.ok) {
+          const lw = await r.json();
+          if (lw && lw.__live && lw.theatres) DB.liveWeek = lw;
+        }
+      } catch (e) { /* no live edition available — use seed */ }
 
       // header meta
       el("#meta-updated").textContent = Time.fmtDateTime(DB.meta.lastUpdated);
