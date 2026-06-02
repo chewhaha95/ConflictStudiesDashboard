@@ -263,6 +263,17 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   // restore globals for any later use
   global.window = window; global.document = doc;
 
+  // --- 8. Mobile affordances ----------------------------------------------
+  console.log("\nMobile affordances:");
+  check("collapsible Filters toggle present", !!doc.querySelector("#filters-toggle"));
+  check("mode buttons have short labels", doc.querySelectorAll('[data-mode] .lbl-short').length === 2);
+  check("viewport meta is responsive", /width=device-width/.test((doc.querySelector('meta[name="viewport"]') || {}).content || ""));
+  // toggling adds the filters-open class (drives the mobile show/hide)
+  doc.querySelector("#filters-toggle").click();
+  check("Filters toggle opens the panel", doc.querySelector(".sidebar").classList.contains("filters-open"));
+  doc.querySelector("#filters-toggle").click();
+  check("Filters toggle closes the panel", !doc.querySelector(".sidebar").classList.contains("filters-open"));
+
   // --- Result --------------------------------------------------------------
   console.log("");
   if (failures === 0) { console.log("✓ SMOKE TEST PASSED — all checks green."); process.exit(0); }

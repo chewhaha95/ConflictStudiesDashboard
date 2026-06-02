@@ -93,8 +93,8 @@
     <div class="divider" aria-hidden="true"></div>
 
     <div class="seg" role="group" aria-label="Analysis mode">
-      <button data-mode="theatre" aria-selected="true">Conflict Theatre View</button>
-      <button data-mode="division" aria-selected="false">Singapore Army Division View</button>
+      <button data-mode="theatre" aria-selected="true"><span class="lbl-full">Conflict Theatre View</span><span class="lbl-short">Theatre</span></button>
+      <button data-mode="division" aria-selected="false"><span class="lbl-full">Singapore Army Division View</span><span class="lbl-short">Division</span></button>
     </div>
 
     <div class="division-select-wrap" id="division-wrap">
@@ -105,7 +105,7 @@
     <div class="spacer"></div>
 
     <div class="export-group">
-      <button class="btn" id="export-print" title="Print / save as PDF">🖨 Print / PDF</button>
+      <button class="btn" id="export-print" title="Print / save as PDF">🖨 <span class="lbl-full">Print / PDF</span><span class="lbl-short">PDF</span></button>
       <button class="btn" id="export-json">⬇ JSON</button>
       <button class="btn" id="export-csv">⬇ CSV</button>
     </div>
@@ -117,6 +117,9 @@
   <div class="app-shell">
     <!-- Filters -->
     <aside class="sidebar no-print" aria-label="Filters">
+      <button class="filters-toggle" id="filters-toggle" aria-expanded="false" aria-controls="sidebar-filters">
+        <span>Filters &amp; period</span><span class="ft-caret" aria-hidden="true">▾</span>
+      </button>
       <div class="filter-group">
         <div class="filter-title">Search</div>
         <input type="search" id="search" placeholder="Search BLUF, developments, tags…" />
