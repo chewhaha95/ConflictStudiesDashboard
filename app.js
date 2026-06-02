@@ -484,9 +484,18 @@
               <div class="kv"><div class="k">Status score</div><div class="v">${e.conflictStatusScore}/100</div></div>
             </div>
 
+            <div class="subhead">Key developments</div>
+            <ul class="dev-list">${devList}</ul>
+            ${persistent}
+
+            <details class="domains" open>
+              <summary>Domain Analysis — six domains (development pill marked ★)</summary>
+              <div class="domain-grid">${domainGrid}</div>
+            </details>
+
             <div class="dev-pill">
-              <span class="pill-flag tip" tabindex="0">★ Selected Development Pill
-                <span class="tip-body">The single most significant analytical domain for this period — chosen after analysing all six domains.</span>
+              <span class="pill-flag tip" tabindex="0">★ Development Pill — Implication
+                <span class="tip-body">The single most significant analytical domain for this period — named after the six-domain analysis above, following the weekly brief's structure.</span>
               </span>
               <div class="pill-domain">${esc(pillDomain)}</div>
               <div class="pill-headline">${esc(e.selectedDevelopmentPill.headline)}</div>
@@ -494,15 +503,6 @@
               <div class="pill-implication"><strong>Implication (${esc(pillDomain)}):</strong> ${esc(implication)}</div>
               ${tailor ? `<div class="pill-rationale"><em>${esc(div.name)} reads this primarily through ${esc(pillDomain)}.</em></div>` : ""}
             </div>
-
-            <div class="subhead">Key developments</div>
-            <ul class="dev-list">${devList}</ul>
-            ${persistent}
-
-            <details class="domains">
-              <summary>Domain analysis — six domains (development pill marked ★)</summary>
-              <div class="domain-grid">${domainGrid}</div>
-            </details>
 
             ${divisionBlock}
 
