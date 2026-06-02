@@ -91,6 +91,10 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("5 development pills", wb.querySelectorAll(".dev-pill").length === 5);
   check("5 'Implication (...)' SAF lines", wb.querySelectorAll(".pill-implication").length === 5);
   check("30 domain-analysis cells (6×5)", wb.querySelectorAll(".domain-item").length === 30);
+  // Brief order: domain analysis appears before the implication/development pill
+  const firstCard = wb.querySelector(".theatre-card");
+  const dpos = [...firstCard.querySelectorAll("details.domains, .dev-pill")].map(el => el.className.includes("dev-pill") ? "pill" : "domains");
+  check("domain analysis precedes implication pill", dpos[0] === "domains" && dpos.includes("pill"), dpos.join(" → "));
   check("5 watch-area items", wb.querySelectorAll(".watch-item").length === 5);
 
   // --- 3. Aggregation: monthly + quarterly --------------------------------
