@@ -1,0 +1,69 @@
+name: Sync live weekly brief
+
+# Fetches the live brief from conflictstudiesandinsights.pages.dev, converts it
+# to the dashboard's weekly schema (weekly-live.json), commits it, and deploys
+# to Pages so the Weekly tab's "● LIVE" edition stays current.
+#
+# Runs daily and on demand. If the brief's structure can't be parsed, the sync
+# step fails and the previous weekly-live.json (and live site) are left intact.
+
+on:
+  schedule:
+    - cron: "0 22 * * *"   # daily 22:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  sync-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install --no-fund --no-audit
+
+      - name: Sync live weekly brief
+        run: node scripts/sync-weekly.js
+
+      - name: Commit synced edition (if changed)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add weekly-live.json
+          if git diff --staged --quiet; then
+            echo "No change to weekly-live.json."
+          else
+            git commit -m "chore: sync live weekly edition from brief site"
+            git push
+          fi
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

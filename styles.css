@@ -401,6 +401,8 @@ details.domains[open] > summary::before { transform: rotate(90deg); }
   font-size: 12px; color: var(--text-muted); background: var(--bg-elev-2);
   border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; margin-bottom: 14px;
 }
+.note-banner.live-banner { border-left: 3px solid var(--tone-bad-fg); }
+.note-banner.live-banner strong { color: var(--tone-bad-fg); }
 
 /* ----- Responsive ----------------------------------------------------- */
 @media (max-width: 1100px) { .chart-grid, .domain-grid { grid-template-columns: 1fr; } }
