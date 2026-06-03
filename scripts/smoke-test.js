@@ -221,37 +221,42 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("fallback: no LIVE banner when weekly-live.json absent", !wb2.querySelector(".live-banner"));
   check("fallback: 8 seed weekly periods", doc.querySelectorAll("#period-select option").length === 8);
 
-  // weekly-live.json on disk (if present) must satisfy the schema contract
+  // weekly-live.json on disk (if present) must satisfy the multi-edition contract
   const livePath = path.join(root, "weekly-live.json");
   if (fs.existsSync(livePath)) {
     const lw = JSON.parse(fs.readFileSync(livePath, "utf8"));
-    const okLive = lw.__live === true && lw.weekId && lw.weekStart && lw.weekEnd && lw.bluf &&
-      Object.keys(lw.theatres).length >= 4 &&
-      Object.values(lw.theatres).every(e => e.phase && e.trend && e.selectedDevelopmentPill &&
-        Object.keys(e.domainAnalysis || {}).length === 6 && e.watchAreas);
-    check("weekly-live.json matches schema contract", okLive);
-    const hasDevs = Object.values(lw.theatres).some(e => Array.isArray(e.developments) && e.developments.length &&
-      e.developments[0].headline && Array.isArray(e.developments[0].paragraphs));
-    check("weekly-live.json carries verbatim development blocks", hasDevs);
+    const eds = Array.isArray(lw.editions) ? lw.editions : (lw.theatres ? [lw] : []);
+    const okLive = lw.__live === true && eds.length >= 1 && eds.every(ed =>
+      ed.weekStart && ed.weekEnd && ed.bluf && Object.keys(ed.theatres).length >= 4 &&
+      Object.values(ed.theatres).every(e => e.phase && e.trend && e.selectedDevelopmentPill && Array.isArray(e.developments) && e.watchAreas));
+    check("weekly-live.json matches multi-edition contract", okLive, `${eds.length} editions`);
+    check("multiple editions present (past + current)", eds.length >= 2, `${eds.length} editions`);
+    const hasDevs = eds.some(ed => Object.values(ed.theatres).some(e => e.developments.length && e.developments[0].headline && Array.isArray(e.developments[0].paragraphs)));
+    check("editions carry verbatim development blocks", hasDevs);
   } else {
     console.log("  (weekly-live.json not present — skipping contract check)");
   }
 
-  // Injection path: a synthetic live edition must become the default Weekly view
-  const liveStub = {
-    __live: true, weekId: "LIVE-TEST", rangeLabel: "Test range", weekStart: "2026-05-25",
-    weekEnd: "2026-06-04", sourceUrl: "https://example.org", syncedAt: new Date().toISOString(),
-    bluf: "LIVE-BLUF-MARKER", theatres: {}
+  // Injection path: synthetic editions (current + archived) drive the Weekly view
+  const mkTheatres = (marker) => {
+    const t = {};
+    ["RU_UA", "IL_LB", "IL_GZ", "IL_US_IR", "TH_KH"].forEach(id => {
+      const da = {}; ["Fires & Strikes", "Intelligence", "Manoeuvre", "Protection", "Sustainment", "Command & Control"].forEach(d => (da[d] = "x"));
+      t[id] = { phase: "Active Combat", trend: "Escalating", progressToDate: "p", conflictStatusScore: 80,
+        statusLabel: "Escalating", bluf: "b", keyDevelopments: ["k"], domainAnalysis: da,
+        developments: [{ pills: ["Fires & Strikes", "Sustainment"], headline: marker + "-HEADLINE",
+          paragraphs: [marker + "-NARR"], implicationLabel: "Implication [Fires & Strikes · Sustainment]", implicationBullets: [marker + "-IMPL"] }],
+        selectedDevelopmentPill: { domain: "Fires & Strikes", headline: "h", rationale: "r" }, watchAreas: "w", sourceLinks: [], tags: [] };
+    });
+    return t;
   };
-  ["RU_UA", "IL_LB", "IL_GZ", "IL_US_IR", "TH_KH"].forEach(id => {
-    const da = {}; ["Fires & Strikes", "Intelligence", "Manoeuvre", "Protection", "Sustainment", "Command & Control"].forEach(d => (da[d] = "x"));
-    liveStub.theatres[id] = { phase: "Active Combat", trend: "Escalating", progressToDate: "p", conflictStatusScore: 80,
-      statusLabel: "Escalating", bluf: "b", keyDevelopments: ["k"], domainAnalysis: da,
-      developments: [{ pills: ["Fires & Strikes", "Sustainment"], headline: "VERBATIM-HEADLINE",
-        paragraphs: ["VERBATIM-NARRATIVE-TEXT"], implicationLabel: "Implication [Fires & Strikes · Sustainment]",
-        implicationBullets: ["VERBATIM-IMPLICATION-BULLET"] }],
-      selectedDevelopmentPill: { domain: "Fires & Strikes", headline: "h", rationale: "r" }, watchAreas: "w", sourceLinks: [], tags: [] };
-  });
+  const liveStub = {
+    __live: true, syncedAt: new Date().toISOString(), sourceUrl: "https://example.org",
+    editions: [
+      { __live: true, weekId: "BRIEF-NEW", rangeLabel: "25 May – 4 June 2026", weekStart: "2026-05-25", weekEnd: "2026-06-04", sourceUrl: "https://example.org/new", bluf: "LATEST-BLUF", theatres: mkTheatres("LATEST") },
+      { __live: true, weekId: "BRIEF-OLD", rangeLabel: "18 May – 25 May 2026", weekStart: "2026-05-18", weekEnd: "2026-05-25", sourceUrl: "https://example.org/old", bluf: "ARCHIVED-BLUF", theatres: mkTheatres("ARCHIVED") }
+    ]
+  };
   const dom2 = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true });
   global.window = dom2.window; global.document = dom2.window.document;
   dom2.window.fetch = async (u) => String(u).includes("weekly-live")
@@ -262,17 +267,20 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   dom2.window.eval(appjs);
   await sleep(250);
   const d2 = dom2.window.document;
-  const liveOpt = [...d2.querySelectorAll("#period-select option")].some(o => o.textContent.includes("● LIVE"));
-  check("LIVE option added to weekly period selector", liveOpt);
-  check("9 weekly periods (8 seed + live)", d2.querySelectorAll("#period-select option").length === 9);
+  const opts2 = [...d2.querySelectorAll("#period-select option")];
+  check("all brief editions listed (current + past), newest first", opts2.length === 2 && /● LIVE/.test(opts2[0].textContent) && /18 May – 25 May/.test(opts2[1].textContent));
   const wb3 = d2.querySelector("#view-weekly .view-body");
-  check("LIVE banner shown and is default weekly view", !!wb3.querySelector(".live-banner") && wb3.textContent.includes("LIVE-BLUF-MARKER"));
-  // Live edition renders the brief's development blocks verbatim, no domain grid
-  check("LIVE renders verbatim brief development blocks", wb3.querySelectorAll(".brief-dev").length >= 5);
-  check("LIVE shows verbatim headline/narrative/implication words",
-    wb3.textContent.includes("VERBATIM-HEADLINE") && wb3.textContent.includes("VERBATIM-NARRATIVE-TEXT") &&
-    wb3.textContent.includes("VERBATIM-IMPLICATION-BULLET") && wb3.textContent.includes("Implication [Fires & Strikes · Sustainment]"));
-  check("LIVE Weekly has no six-domain breakdown", wb3.querySelectorAll("details.domains").length === 0);
+  check("latest edition is the default ● LIVE view", !!wb3.querySelector(".live-banner") && /●\s*LIVE/.test(wb3.querySelector(".live-banner").textContent));
+  check("latest renders verbatim words, no domain grid",
+    wb3.querySelectorAll(".brief-dev").length >= 5 && wb3.textContent.includes("LATEST-HEADLINE") &&
+    wb3.textContent.includes("LATEST-NARR") && wb3.textContent.includes("LATEST-IMPL") &&
+    wb3.querySelectorAll("details.domains").length === 0);
+  // switch to the archived past edition
+  d2.querySelector("#period-select").value = "BRIEF-OLD";
+  d2.querySelector("#period-select").dispatchEvent(new dom2.window.Event("change")); await sleep(50);
+  const wb4 = d2.querySelector("#view-weekly .view-body");
+  check("past edition shows 'Archived edition' banner + verbatim words",
+    /Archived edition/.test((wb4.querySelector(".live-banner") || {}).textContent || "") && wb4.textContent.includes("ARCHIVED-HEADLINE"));
   // restore globals for any later use
   global.window = window; global.document = doc;
 
