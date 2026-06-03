@@ -97,17 +97,32 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("no status score on Weekly tab", wb.querySelectorAll(".progress-mini").length === 0 && !wb.textContent.includes("Status score"));
   check("5 watch-area items", wb.querySelectorAll(".watch-item").length === 5);
 
-  // --- 3. Aggregation: monthly + quarterly --------------------------------
-  console.log("\nAggregation (rollups + drilldown):");
-  doc.querySelector('.tab-btn[data-horizon="monthly"]').click(); await sleep(40);
-  const mb = doc.querySelector("#view-monthly .view-body");
+  // --- 3a. Monthly: Formation Learning view -------------------------------
+  console.log("\nMonthly (formation learning):");
+  doc.querySelector('.tab-btn[data-horizon="monthly"]').click(); await sleep(50);
+  let mb = doc.querySelector("#view-monthly .view-body");
   check("2 monthly periods (8 weeks / 4)", doc.querySelectorAll("#period-select option").length === 2);
-  check("monthly comparison rows = 5", mb.querySelectorAll(".cmp-table tbody tr").length === 5);
-  check("monthly drilldown to 4 weeks", mb.querySelectorAll(".drill").length === 4);
-  check("monthly BLUF is non-trivial", mb.querySelector(".bluf-card p").textContent.length > 50);
-  check("monthly retains six-domain analysis (30 cells)", mb.querySelectorAll(".domain-item").length === 30);
-  check("monthly retains status score (score bar present)", mb.querySelectorAll("#status-matrix .progress-mini").length === 5);
+  check("monthly BLUF (formation learning) present", /Monthly BLUF — Formation Learning/.test(mb.textContent) && mb.querySelector(".bluf-card p").textContent.length > 50);
+  check("formation-group selector has 5 options", doc.querySelectorAll("#formation-group-select option").length === 5);
+  check("All Groups default shows 4 overview cards", mb.querySelectorAll(".fg-overview .fg-card").length === 4);
+  check("no theatre status matrix on Monthly tab", !mb.querySelector("#status-matrix"));
+  // select a group -> full panel
+  const fgSel = doc.querySelector("#formation-group-select");
+  fgSel.value = "MANOEUVRE"; fgSel.dispatchEvent(new window.Event("change")); await sleep(50);
+  mb = doc.querySelector("#view-monthly .view-body");
+  check("group panel: audience banner shown", /Audience —/.test((mb.querySelector(".fg-audience-banner") || {}).textContent || ""));
+  check("group panel: what worked / failed columns", !!mb.querySelector(".col-worked") && !!mb.querySelector(".col-failed"));
+  check("group panel: training implications box", !!mb.querySelector(".train-box"));
+  check("group panel: commander questions", mb.querySelectorAll(".cq-list li").length >= 1);
+  check("group panel: source-theatre chips", mb.querySelectorAll(".t-chip").length >= 1);
+  check("group panel: linked insight cards (EOLA)", mb.querySelectorAll(".insight-card").length >= 1 && mb.querySelectorAll(".eola .eola-k").length >= 4);
+  check("monthly BLUF still visible inside a group", /Monthly BLUF — Formation Learning/.test(mb.textContent));
+  // back to All Groups via data-group button
+  mb.querySelector('[data-group="ALL"]').click(); await sleep(50);
+  check("can switch back to All Groups", doc.querySelector("#view-monthly .view-body").querySelectorAll(".fg-overview .fg-card").length === 4);
 
+  // --- 3b. Quarterly rollup ----------------------------------------------
+  console.log("\nQuarterly (rollup + drilldown):");
   doc.querySelector('.tab-btn[data-horizon="quarterly"]').click(); await sleep(40);
   const qb = doc.querySelector("#view-quarterly .view-body");
   check("1 quarterly period", doc.querySelectorAll("#period-select option").length === 1);
