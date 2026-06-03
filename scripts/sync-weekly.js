@@ -146,12 +146,36 @@ function parseRange(title) {
     if (!id) return;
     const sub = norm((card.querySelector(".th-sub") || {}).textContent || "");
     const pills = [...card.querySelectorAll(".pill")].map(p => norm(p.textContent));
-    const headlines = [...card.querySelectorAll(".font-semibold.mb-15")].map(d => norm(d.textContent)).filter(Boolean);
-    const implications = [...card.querySelectorAll("ul li")].map(li => norm(li.textContent)).filter(Boolean);
     const links = [...card.querySelectorAll("a.src-pill, .src-group a")]
       .map(a => ({ label: norm(a.textContent) || new URL(a.href).hostname, url: a.href }));
     const uniqLinks = []; const seen = new Set();
     links.forEach(l => { if (l.url && !seen.has(l.url)) { seen.add(l.url); uniqLinks.push(l); } });
+
+    // Verbatim development blocks, in the brief's order: each headline's block
+    // carries its domain pills + narrative paragraphs; each "Implication [...]"
+    // block attaches to the most recent development.
+    const pText = (p) => { const c = p.cloneNode(true); c.querySelectorAll(".src-group").forEach(s => s.remove()); return norm(c.textContent); };
+    const developments = [];
+    let cur = null;
+    card.querySelectorAll(".font-semibold.mb-15, .pl-4").forEach(node => {
+      if (node.classList.contains("font-semibold")) {
+        const block = node.parentElement;
+        developments.push(cur = {
+          pills: [...block.querySelectorAll(".pill")].map(p => norm(p.textContent)),
+          headline: norm(node.textContent),
+          paragraphs: [...block.querySelectorAll(":scope > p, p")].map(pText).filter(Boolean),
+          implicationLabel: "",
+          implicationBullets: []
+        });
+      } else {
+        const fm = node.querySelector(".font-mono");
+        if (!fm || !/^implication/i.test(norm(fm.textContent)) || !cur) return;
+        cur.implicationLabel = norm(fm.textContent);
+        cur.implicationBullets = [...node.querySelectorAll("li")].map(li => norm(li.textContent)).filter(Boolean);
+      }
+    });
+    const headlines = developments.map(d => d.headline);
+    const implications = developments.flatMap(d => d.implicationBullets);
 
     const pillDomain = pills.map(mapDomain).find(Boolean) || "Fires & Strikes";
     const st = status[id] || { phase: "—", trend: "Stable", progress: sub };
@@ -171,6 +195,7 @@ function parseRange(title) {
       statusLabel: statusLabel(st.phase, trend),
       bluf: sub || headlines[0] || "",
       keyDevelopments: headlines.length ? headlines : implications.slice(0, 3),
+      developments,                 // verbatim brief-style development blocks
       domainAnalysis,
       selectedDevelopmentPill: {
         domain: pillDomain,
