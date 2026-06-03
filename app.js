@@ -365,7 +365,7 @@
     // Active period object for the current horizon
     currentPeriod() {
       if (State.horizon === "weekly") {
-        if (DB.liveWeek && State.periodId === DB.liveWeek.weekId) return DB.liveWeek;
+        if (DB.liveEditions) return DB.liveEditions.find(e => e.weekId === State.periodId) || DB.liveEditions[0];
         return DB.weeklyReports.find(w => w.weekId === State.periodId);
       }
       if (State.horizon === "monthly") return MONTHS.find(m => m.id === State.periodId);
@@ -620,10 +620,15 @@
       const container = el(`#view-${horizon} .view-body`);
       let html = "";
 
-      // live-edition banner (weekly tab, synced from the brief site)
-      if (DB.liveWeek && period === DB.liveWeek) {
-        html += `<div class="note-banner live-banner"><strong>● LIVE</strong> — synced from <a href="${esc(period.sourceUrl)}" target="_blank" rel="noopener">conflictstudiesandinsights.pages.dev</a>` +
-          `${period.syncedAt ? ` · last synced ${esc(Time.fmtDateTime(period.syncedAt))}` : ""}. Pick another week from the Period selector for the seed editions.</div>`;
+      // brief-edition banner (weekly tab, synced from the brief site)
+      if (DB.liveEditions && DB.liveEditions.includes(period)) {
+        const isLatest = period === DB.liveEditions[0];
+        const src = period.sourceUrl || DB.liveWeek.sourceUrl;
+        html += `<div class="note-banner live-banner">` +
+          (isLatest
+            ? `<strong>● LIVE</strong> — current edition synced from <a href="${esc(src)}" target="_blank" rel="noopener">conflictstudiesandinsights.pages.dev</a>${DB.liveSyncedAt ? ` · last synced ${esc(Time.fmtDateTime(DB.liveSyncedAt))}` : ""}.`
+            : `<strong>Archived edition</strong> · ${esc(period.rangeLabel || "")} — from <a href="${esc(src)}" target="_blank" rel="noopener">the brief archive</a>.`) +
+          ` Use the Period selector to browse other editions.</div>`;
       }
 
       // mode banner
@@ -1233,17 +1238,20 @@
       sel.disabled = false;
       let opts = [];
       if (State.horizon === "weekly") {
-        opts = DB.weeklyReports.map(w => ({ id: w.weekId, label: `${w.weekId} · ${Time.fmtRange(w.weekStart, w.weekEnd)}` }));
-        // Live edition (synced from the brief) sits at the top and is the default
-        if (DB.liveWeek) opts.unshift({ id: DB.liveWeek.weekId, label: `● LIVE · ${DB.liveWeek.rangeLabel || "current brief"}` });
+        if (DB.liveEditions) {
+          // All brief editions: current (● LIVE) + past archived, newest first
+          opts = DB.liveEditions.map((e, i) => ({ id: e.weekId, label: `${i === 0 ? "● LIVE · " : ""}${e.rangeLabel || Time.fmtRange(e.weekStart, e.weekEnd)}` }));
+        } else {
+          opts = DB.weeklyReports.map(w => ({ id: w.weekId, label: `${w.weekId} · ${Time.fmtRange(w.weekStart, w.weekEnd)}` }));
+        }
       } else if (State.horizon === "monthly")
         opts = MONTHS.map(m => ({ id: m.id, label: `${m.label} · ${Time.fmtRange(m.start, m.end)}` }));
       else
         opts = QUARTERS.map(qr => ({ id: qr.id, label: `${qr.label} · ${Time.fmtRange(qr.start, qr.end)}` }));
 
-      // default: live edition for weekly (if present), else latest period
+      // default: newest brief edition for weekly (if present), else latest period
       if (!opts.find(o => o.id === State.periodId)) {
-        State.periodId = (State.horizon === "weekly" && DB.liveWeek) ? DB.liveWeek.weekId : opts[opts.length - 1].id;
+        State.periodId = (State.horizon === "weekly" && DB.liveEditions) ? DB.liveEditions[0].weekId : opts[opts.length - 1].id;
       }
       sel.innerHTML = opts.map(o => `<option value="${o.id}" ${o.id === State.periodId ? "selected" : ""}>${esc(o.label)}</option>`).join("");
     },
@@ -1367,15 +1375,24 @@
       QUARTERS = Agg.buildQuarters();
       Caps.computeDynamics();   // derive capability heat & trend from weekly observations
 
-      // Live weekly edition: synced from the brief site into weekly-live.json by
-      // .github/workflows/sync-weekly.yml. Optional — fall back to seed data.
+      // Live weekly editions (current + archived past + future), synced from the
+      // brief site into weekly-live.json by .github/workflows/sync-weekly.yml.
+      // Optional — fall back to seed data. Supports the multi-edition shape
+      // ({ editions: [...] }) and the legacy single-edition shape.
       try {
         const r = await fetch("weekly-live.json", { cache: "no-store" });
         if (r.ok) {
           const lw = await r.json();
-          if (lw && lw.__live && lw.theatres) DB.liveWeek = lw;
+          let eds = Array.isArray(lw && lw.editions) ? lw.editions : (lw && lw.__live && lw.theatres ? [lw] : []);
+          eds = eds.filter(e => e && e.theatres && Object.keys(e.theatres).length);
+          if (eds.length) {
+            eds.sort((a, b) => String(b.weekEnd || "").localeCompare(String(a.weekEnd || "")));
+            DB.liveEditions = eds;
+            DB.liveSyncedAt = lw.syncedAt || null;
+            DB.liveWeek = eds[0];   // newest = the "● LIVE" edition
+          }
         }
-      } catch (e) { /* no live edition available — use seed */ }
+      } catch (e) { /* no live editions available — use seed */ }
 
       // header meta
       el("#meta-updated").textContent = Time.fmtDateTime(DB.meta.lastUpdated);
