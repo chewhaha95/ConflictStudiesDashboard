@@ -27,6 +27,7 @@
     division: "GEN",          // active division id
     horizon: "weekly",        // 'weekly' | 'monthly' | 'quarterly' | 'capabilities'
     periodId: null,           // active week/month/quarter id
+    formationGroup: "ALL",    // monthly tab: 'ALL' | formation-group id
     theme: "light",
     filters: {
       theatres:  new Set(),   // empty => all
@@ -606,6 +607,7 @@
       // Capabilities & Countermeasures is a cross-cutting analytics view,
       // not tied to a weekly/monthly/quarterly period.
       if (State.horizon === "capabilities") { Caps.render(); return; }
+      if (State.horizon === "monthly") { Monthly.render(); return; }
       const period = this.currentPeriod();
       if (!period) return;
       const ids = Filters.apply(period);
@@ -1217,6 +1219,176 @@
         data: { labels: tt.map(c => c.name), datasets: [{ label: "Days to counter", data: tt.map(c => c.timeToCounterDays), backgroundColor: tt.map(c => lcColor(c.lifecycle)) }] },
         options: Object.assign(Charts.baseOpts(), { plugins: { legend: { display: false } } })
       });
+    }
+  };
+
+  /* ----------------------------------------------------------------------
+   * 8c. MONTHLY — Formation Learning view
+   *     Not a recap of 4 weekly reports: it transforms extracted insights
+   *     (monthlyInsights) into selectable formation-group learning panels.
+   *     A group's panel is computed from its insights for the selected month
+   *     (insight.sourceWeek ∈ month.weekIds), partitioned by workedOrFailed
+   *     and rolled into worked / failed / adaptation / training / commander
+   *     questions / theatres / linked-insight cards.
+   * -------------------------------------------------------------------- */
+  const Monthly = {
+    groups() { return DB.formationGroups || []; },
+    groupById(id) { return this.groups().find(g => g.id === id); },
+    forMonth(period) { return DB.monthlyInsights.filter(i => period.weekIds.includes(i.sourceWeek)); },
+    byGroup(list, gid) { return list.filter(i => i.group === gid); },
+    countBy(list, key) {
+      const m = {}; list.forEach(i => { (i[key] || []).concat && Array.isArray(i[key]) ? i[key].forEach(v => m[v] = (m[v] || 0) + 1) : (m[i[key]] = (m[i[key]] || 0) + 1); });
+      return Object.entries(m).sort((a, b) => b[1] - a[1]);
+    },
+    topTheatres(list) {
+      const m = {}; list.forEach(i => (m[i.theatre] = (m[i.theatre] || 0) + 1));
+      return Object.entries(m).sort((a, b) => b[1] - a[1]).map(([id, n]) => ({ id, name: THEATRE_BY_ID[id].name, short: THEATRE_BY_ID[id].short, n }));
+    },
+    topTags(list) {
+      const m = {}; list.forEach(i => (i.tags || []).forEach(t => (m[t] = (m[t] || 0) + 1)));
+      return Object.entries(m).sort((a, b) => b[1] - a[1]).map(([t]) => t);
+    },
+    dedup(arr) { return [...new Set(arr.filter(Boolean))]; },
+
+    assessment(g, gi) {
+      if (!gi.length) return `No insights were extracted for ${g.name} this month.`;
+      const w = gi.filter(x => x.workedOrFailed === "worked").length;
+      const f = gi.filter(x => x.workedOrFailed === "failed").length;
+      const a = gi.filter(x => x.workedOrFailed === "adapted").length;
+      const th = this.topTheatres(gi).slice(0, 2).map(t => t.name).join(" and ") || "multiple theatres";
+      const tg = this.topTags(gi).slice(0, 3).join(", ") || "cross-domain adaptation";
+      return `${g.name} lessons this month draw chiefly from ${th}, centring on ${tg}. ` +
+        `${w} effective method${w === 1 ? "" : "s"}, ${f} exposed vulnerabilit${f === 1 ? "y" : "ies"} and ${a} adaptation${a === 1 ? "" : "s"} were extracted for ${g.short}.`;
+    },
+
+    wfLabel(wf) { return wf === "worked" ? "Worked" : wf === "failed" ? "Failed" : "Adapted"; },
+
+    bulletList(items, cls) {
+      if (!items.length) return `<p class="muted-note">No items extracted for this group this month.</p>`;
+      return `<ul class="${cls || "dev-list"}">${items.map(t => `<li>${t}</li>`).join("")}</ul>`;
+    },
+
+    insightCard(i) {
+      const t = THEATRE_BY_ID[i.theatre];
+      const cq = (i.commanderQuestions || []).map(q => `<li>${esc(q)}</li>`).join("");
+      const tags = (i.tags || []).map(tg => `<span class="tag">#${esc(tg)}</span>`).join("");
+      return `<details class="insight-card">
+        <summary><span class="wf-badge wf-${i.workedOrFailed}">${this.wfLabel(i.workedOrFailed)}</span>
+          <span class="ins-title">${esc(i.title)}</span>
+          <span class="ins-meta">${esc(t.short)} · ${esc(i.sourceWeek)} · ${esc(i.sourceDomain)} · ${esc(i.confidence)}</span></summary>
+        <div class="ins-body">
+          <p>${esc(i.description)}</p>
+          <div class="eola">
+            <div><span class="eola-k">Event</span><span>${esc(i.event)}</span></div>
+            <div><span class="eola-k">Observation</span><span>${esc(i.observation)}</span></div>
+            <div><span class="eola-k">Lesson</span><span>${esc(i.lesson)}</span></div>
+            <div><span class="eola-k">Application</span><span>${esc(i.application)}</span></div>
+          </div>
+          <div class="train-inline"><strong>Training implication:</strong> ${esc(i.trainingImplication)}</div>
+          ${cq ? `<div class="subhead">Commander questions</div><ul class="dev-list">${cq}</ul>` : ""}
+          ${tags ? `<div class="tags">${tags}</div>` : ""}
+        </div></details>`;
+    },
+
+    overviewCard(g, gi) {
+      const w = gi.find(x => x.workedOrFailed === "worked");
+      const f = gi.find(x => x.workedOrFailed === "failed");
+      const tr = gi.find(x => x.trainingImplication);
+      const takes = [];
+      if (w) takes.push(`<li><span class="tk tk-w">✓ Worked</span> ${esc(w.title)}</li>`);
+      if (f) takes.push(`<li><span class="tk tk-f">⚠ Failed</span> ${esc(f.title)}</li>`);
+      if (tr) takes.push(`<li><span class="tk tk-t">▶ Train</span> ${esc(tr.trainingImplication)}</li>`);
+      const counts = `${gi.filter(x => x.workedOrFailed === "worked").length}W · ${gi.filter(x => x.workedOrFailed === "failed").length}F · ${gi.filter(x => x.workedOrFailed === "adapted").length}A`;
+      return `<button class="fg-card" data-group="${g.id}">
+        <div class="fg-card-head"><span class="fg-card-name">${esc(g.name)}</span><span class="fg-card-aud">${esc(g.short)}</span></div>
+        <div class="fg-card-counts">${counts} · ${gi.length} insight${gi.length === 1 ? "" : "s"}</div>
+        <div class="subhead">Top takeaways</div>
+        <ul class="dev-list tk-list">${takes.join("") || "<li class='muted-note'>No insights this month.</li>"}</ul>
+        <span class="fg-card-cta">View full panel →</span>
+      </button>`;
+    },
+
+    groupPanel(g, gi) {
+      const worked = gi.filter(i => i.workedOrFailed === "worked").map(i => `<strong>${esc(i.title)}</strong> — ${esc(i.lesson)}`);
+      const failed = gi.filter(i => i.workedOrFailed === "failed").map(i => `<strong>${esc(i.title)}</strong> — ${esc(i.lesson)}`);
+      const adapted = gi.filter(i => i.workedOrFailed === "adapted").map(i => `<strong>${esc(i.title)}</strong> — ${esc(i.lesson)}`);
+      const training = this.dedup(gi.map(i => i.trainingImplication)).map(esc);
+      const cq = this.dedup(gi.flatMap(i => i.commanderQuestions || [])).slice(0, 5).map(esc);
+      const theatres = this.topTheatres(gi);
+      return `
+        <div class="section">
+          <div class="section-head"><h2>${esc(g.name)}</h2>
+            <div class="head-actions"><button class="btn" data-group="ALL">← All groups</button></div></div>
+          <div class="note-banner fg-audience-banner"><strong>Audience — ${esc(g.short)}</strong> (${esc(g.audience.join(", "))}). Focus: ${esc(g.focus)}</div>
+
+          <div class="card card-pad section"><div class="subhead" style="margin-top:0">Monthly assessment</div>
+            <p style="margin:0">${esc(this.assessment(g, gi))}</p></div>
+
+          <div class="worked-failed section">
+            <div class="card card-pad col-worked"><div class="subhead" style="margin-top:0">✓ What worked</div>${this.bulletList(worked, "wf-list")}</div>
+            <div class="card card-pad col-failed"><div class="subhead" style="margin-top:0">⚠ What failed / vulnerabilities exposed</div>${this.bulletList(failed, "wf-list")}</div>
+          </div>
+
+          <div class="card card-pad section"><div class="subhead" style="margin-top:0">Observed adaptation</div>${this.bulletList(adapted, "wf-list")}</div>
+
+          <div class="card card-pad train-box section"><div class="subhead" style="margin-top:0">Training implications for ICTs</div>${this.bulletList(training)}</div>
+
+          <div class="card card-pad section"><div class="subhead" style="margin-top:0">Commander questions</div>
+            ${cq.length ? `<ol class="cq-list">${cq.map(q => `<li>${q}</li>`).join("")}</ol>` : `<p class="muted-note">No commander questions for this group this month.</p>`}</div>
+
+          <div class="card card-pad section"><div class="subhead" style="margin-top:0">Relevant source theatres</div>
+            ${theatres.length ? `<div class="chip-wrap">${theatres.map(t => `<span class="t-chip" title="${esc(t.name)}">${esc(t.short)} · ${t.n}</span>`).join("")}</div>` : `<p class="muted-note">—</p>`}</div>
+
+          <div class="section"><div class="section-head"><h2>Linked monthly insights</h2>
+            <span class="hint">Event → Observation → Lesson → Application, from the underlying weekly briefs</span></div>
+            ${gi.length ? gi.map(i => this.insightCard(i)).join("") : `<div class="empty">No insights extracted for this group this month.</div>`}</div>
+        </div>`;
+    },
+
+    render() {
+      const period = Render.currentPeriod();
+      const container = el("#view-monthly .view-body");
+      if (!period) { container.innerHTML = `<div class="empty">No monthly period available.</div>`; return; }
+      el("#meta-range").textContent = Time.fmtRange(period.start, period.end);
+
+      const insights = this.forMonth(period);
+      const bluf = (DB.monthlyBlufByMonth && DB.monthlyBlufByMonth[period.id]) ||
+        `Formation-learning roll-up for ${period.label}, distilled from the month's weekly briefs.`;
+      const sel = State.formationGroup;
+
+      let html = `<div class="card bluf-card card-pad section">
+        <div class="bluf-label">Monthly BLUF — Formation Learning</div>
+        <p>${esc(bluf)}</p>
+        <div class="bluf-sub">${esc(period.label)} · ${esc(Time.fmtRange(period.start, period.end))} · distilled from ${insights.length} extracted insight${insights.length === 1 ? "" : "s"} across ${period.weekIds.length} weekly briefs</div>
+      </div>`;
+
+      // Formation-group selector
+      html += `<div class="section fg-select-wrap">
+        <label for="formation-group-select" class="fg-select-label">Select Formation Group</label>
+        <select id="formation-group-select" aria-label="Select formation group">
+          <option value="ALL" ${sel === "ALL" ? "selected" : ""}>All Groups</option>
+          ${this.groups().map(g => `<option value="${g.id}" ${sel === g.id ? "selected" : ""}>${esc(g.name)} — ${esc(g.short)}</option>`).join("")}
+        </select>
+      </div>`;
+
+      if (sel === "ALL") {
+        html += `<div class="section"><div class="section-head"><h2>Formation Group Overview</h2>
+          <span class="hint">Pick a group above, or click a card, for its full learning panel</span></div>
+          <div class="fg-overview">${this.groups().map(g => this.overviewCard(g, this.byGroup(insights, g.id))).join("")}</div></div>`;
+      } else {
+        const g = this.groupById(sel) || this.groups()[0];
+        html += this.groupPanel(g, this.byGroup(insights, g.id));
+      }
+
+      container.innerHTML = html;
+      this.wire(container);
+    },
+
+    wire(root) {
+      const sel = root.querySelector("#formation-group-select");
+      if (sel) sel.addEventListener("change", () => { State.formationGroup = sel.value; this.render(); });
+      root.querySelectorAll("[data-group]").forEach(btn =>
+        btn.addEventListener("click", () => { State.formationGroup = btn.getAttribute("data-group"); this.render(); }));
     }
   };
 
