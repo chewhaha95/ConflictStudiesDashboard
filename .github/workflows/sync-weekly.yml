@@ -28,8 +28,10 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v4
+        with:
+          ref: main          # always sync/deploy main, regardless of the triggering ref
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -51,7 +53,7 @@ jobs:
             echo "No change to weekly-live.json."
           else
             git commit -m "chore: sync live weekly edition from brief site"
-            git push
+            git push origin HEAD:main
           fi
 
       - name: Configure Pages
