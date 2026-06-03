@@ -331,6 +331,27 @@ table.matrix td.theatre-cell { font-weight: 650; }
 ul.dev-list { margin: 0; padding-left: 18px; }
 ul.dev-list li { margin-bottom: 5px; font-size: 13px; }
 
+/* Brief-style development blocks (Weekly tab — mirrors conflictstudiesandinsights) */
+.brief-dev { margin: 14px 0 4px; }
+.brief-dev + .brief-dev { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+.brief-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.pill {
+  font-size: 11px; font-weight: 650; padding: 3px 9px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent);
+  white-space: nowrap;
+}
+.brief-headline { font-size: 14.5px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.brief-narr { font-size: 13.5px; line-height: 1.6; color: var(--text); margin: 0 0 10px; }
+.brief-impl {
+  margin-top: 10px; padding: 4px 0 4px 14px; border-left: 2px solid var(--accent);
+}
+.brief-impl-label {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+}
+.brief-impl ul { margin: 0; padding-left: 18px; }
+.brief-impl li { font-size: 13px; line-height: 1.6; margin-bottom: 6px; color: var(--text); }
+
 /* Collapsible domain analysis */
 details.domains { margin-top: 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-elev-2); }
 details.domains > summary {

@@ -88,13 +88,12 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("5 status-matrix rows", wb.querySelectorAll("#status-matrix tbody tr").length === 5);
   check("5 theatre cards", wb.querySelectorAll(".theatre-card").length === 5);
   check("Theatre 01–05 numbering", [...wb.querySelectorAll(".tc-title")].some(t => t.textContent.includes("Theatre 01")));
-  check("5 development pills", wb.querySelectorAll(".dev-pill").length === 5);
-  check("5 'Implication (...)' SAF lines", wb.querySelectorAll(".pill-implication").length === 5);
-  check("30 domain-analysis cells (6×5)", wb.querySelectorAll(".domain-item").length === 30);
-  // Brief order: domain analysis appears before the implication/development pill
-  const firstCard = wb.querySelector(".theatre-card");
-  const dpos = [...firstCard.querySelectorAll("details.domains, .dev-pill")].map(el => el.className.includes("dev-pill") ? "pill" : "domains");
-  check("domain analysis precedes implication pill", dpos[0] === "domains" && dpos.includes("pill"), dpos.join(" → "));
+  // Weekly mirrors the brief: development blocks (pills → headline → narrative →
+  // Implication), and NO six-domain breakdown.
+  check("5 brief-style development blocks", wb.querySelectorAll(".brief-dev").length >= 5);
+  check("development domain pills shown (brief style)", wb.querySelectorAll(".brief-pills .pill").length >= 5);
+  check("Implication blocks shown (>=5)", wb.querySelectorAll(".brief-impl").length >= 5);
+  check("no six-domain breakdown on Weekly tab", wb.querySelectorAll("details.domains").length === 0);
   check("5 watch-area items", wb.querySelectorAll(".watch-item").length === 5);
 
   // --- 3. Aggregation: monthly + quarterly --------------------------------
@@ -105,6 +104,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("monthly comparison rows = 5", mb.querySelectorAll(".cmp-table tbody tr").length === 5);
   check("monthly drilldown to 4 weeks", mb.querySelectorAll(".drill").length === 4);
   check("monthly BLUF is non-trivial", mb.querySelector(".bluf-card p").textContent.length > 50);
+  check("monthly retains six-domain analysis (30 cells)", mb.querySelectorAll(".domain-item").length === 30);
 
   doc.querySelector('.tab-btn[data-horizon="quarterly"]').click(); await sleep(40);
   const qb = doc.querySelector("#view-quarterly .view-body");
@@ -121,10 +121,11 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("5 division-relevance blocks", dvb.querySelectorAll(".div-relevance").length === 5);
   check("10 commander questions (2×5)", dvb.querySelectorAll(".dr-q li").length === 10);
   check("BLUF reframed with division lens", dvb.querySelector(".tc-summary").textContent.includes("lens"));
-  const genPill = dvb.querySelector(".dev-pill .pill-domain").textContent;
+  // seed weekly reframes the implication label by the division's emphasised domain
+  const genPill = dvb.querySelector(".brief-impl-label").textContent;
   doc.querySelector("#division-select").value = "DIV6";
   doc.querySelector("#division-select").dispatchEvent(new window.Event("change")); await sleep(40);
-  const d6Pill = doc.querySelector("#view-weekly .view-body .dev-pill .pill-domain").textContent;
+  const d6Pill = doc.querySelector("#view-weekly .view-body .brief-impl-label").textContent;
   check("different divisions emphasise different domains", genPill !== d6Pill, `GEN=${genPill} DIV6=${d6Pill}`);
 
   // --- 5. Filters ----------------------------------------------------------
@@ -229,6 +230,9 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       Object.values(lw.theatres).every(e => e.phase && e.trend && e.selectedDevelopmentPill &&
         Object.keys(e.domainAnalysis || {}).length === 6 && e.watchAreas);
     check("weekly-live.json matches schema contract", okLive);
+    const hasDevs = Object.values(lw.theatres).some(e => Array.isArray(e.developments) && e.developments.length &&
+      e.developments[0].headline && Array.isArray(e.developments[0].paragraphs));
+    check("weekly-live.json carries verbatim development blocks", hasDevs);
   } else {
     console.log("  (weekly-live.json not present — skipping contract check)");
   }
@@ -243,6 +247,9 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const da = {}; ["Fires & Strikes", "Intelligence", "Manoeuvre", "Protection", "Sustainment", "Command & Control"].forEach(d => (da[d] = "x"));
     liveStub.theatres[id] = { phase: "Active Combat", trend: "Escalating", progressToDate: "p", conflictStatusScore: 80,
       statusLabel: "Escalating", bluf: "b", keyDevelopments: ["k"], domainAnalysis: da,
+      developments: [{ pills: ["Fires & Strikes", "Sustainment"], headline: "VERBATIM-HEADLINE",
+        paragraphs: ["VERBATIM-NARRATIVE-TEXT"], implicationLabel: "Implication [Fires & Strikes · Sustainment]",
+        implicationBullets: ["VERBATIM-IMPLICATION-BULLET"] }],
       selectedDevelopmentPill: { domain: "Fires & Strikes", headline: "h", rationale: "r" }, watchAreas: "w", sourceLinks: [], tags: [] };
   });
   const dom2 = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true });
@@ -260,6 +267,12 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("9 weekly periods (8 seed + live)", d2.querySelectorAll("#period-select option").length === 9);
   const wb3 = d2.querySelector("#view-weekly .view-body");
   check("LIVE banner shown and is default weekly view", !!wb3.querySelector(".live-banner") && wb3.textContent.includes("LIVE-BLUF-MARKER"));
+  // Live edition renders the brief's development blocks verbatim, no domain grid
+  check("LIVE renders verbatim brief development blocks", wb3.querySelectorAll(".brief-dev").length >= 5);
+  check("LIVE shows verbatim headline/narrative/implication words",
+    wb3.textContent.includes("VERBATIM-HEADLINE") && wb3.textContent.includes("VERBATIM-NARRATIVE-TEXT") &&
+    wb3.textContent.includes("VERBATIM-IMPLICATION-BULLET") && wb3.textContent.includes("Implication [Fires & Strikes · Sustainment]"));
+  check("LIVE Weekly has no six-domain breakdown", wb3.querySelectorAll("details.domains").length === 0);
   // restore globals for any later use
   global.window = window; global.document = doc;
 

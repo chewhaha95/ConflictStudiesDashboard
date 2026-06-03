@@ -462,6 +462,55 @@
 
       const summary = tailor ? tailor.bluf : e.bluf;
 
+      // Weekly tab mirrors the brief: verbatim development blocks (domain pills →
+      // headline → narrative → "Implication [...]"), no six-domain breakdown.
+      const isWeekly = State.horizon === "weekly";
+      const briefDev = (d) => `
+        <div class="brief-dev">
+          ${(d.pills || []).length ? `<div class="brief-pills">${d.pills.map(p => `<span class="pill">${esc(p)}</span>`).join("")}</div>` : ""}
+          <div class="brief-headline">${esc(d.headline)}</div>
+          ${(d.paragraphs || []).map(p => `<p class="brief-narr">${esc(p)}</p>`).join("")}
+          ${(d.implicationBullets || []).length ? `<div class="brief-impl">
+            <div class="brief-impl-label">${esc(d.implicationLabel || ("Implication [" + pillDomain + "]"))}</div>
+            <ul>${d.implicationBullets.map(b => `<li>${esc(b)}</li>`).join("")}</ul>
+          </div>` : ""}
+        </div>`;
+
+      let keyDevSection;
+      if (isWeekly) {
+        const devs = (e.developments && e.developments.length) ? e.developments : [{
+          pills: [pillDomain],
+          headline: e.selectedDevelopmentPill.headline,
+          paragraphs: [e.selectedDevelopmentPill.rationale],
+          implicationLabel: `Implication [${pillDomain}]`,
+          implicationBullets: [implication]
+        }];
+        const seedList = (!e.developments && (e.keyDevelopments || []).length > 1)
+          ? `<div class="subhead">Key developments</div><ul class="dev-list">${devList}</ul>` : "";
+        keyDevSection = seedList + devs.map(briefDev).join("");
+      } else {
+        keyDevSection = `
+            <div class="subhead">Key developments</div>
+            <ul class="dev-list">${devList}</ul>
+            ${persistent}
+
+            <details class="domains" open>
+              <summary>Domain Analysis — six domains (development pill marked ★)</summary>
+              <div class="domain-grid">${domainGrid}</div>
+            </details>
+
+            <div class="dev-pill">
+              <span class="pill-flag tip" tabindex="0">★ Development Pill — Implication
+                <span class="tip-body">The single most significant analytical domain for this period — named after the six-domain analysis above.</span>
+              </span>
+              <div class="pill-domain">${esc(pillDomain)}</div>
+              <div class="pill-headline">${esc(e.selectedDevelopmentPill.headline)}</div>
+              <div class="pill-rationale">${esc(e.selectedDevelopmentPill.rationale)}</div>
+              <div class="pill-implication"><strong>Implication (${esc(pillDomain)}):</strong> ${esc(implication)}</div>
+              ${tailor ? `<div class="pill-rationale"><em>${esc(div.name)} reads this primarily through ${esc(pillDomain)}.</em></div>` : ""}
+            </div>`;
+      }
+
       return `
         <article class="card theatre-card" data-open="${idx === 0 ? "true" : "false"}" data-theatre="${id}">
           <div class="tc-head" role="button" tabindex="0" aria-expanded="${idx === 0}">
@@ -484,25 +533,7 @@
               <div class="kv"><div class="k">Status score</div><div class="v">${e.conflictStatusScore}/100</div></div>
             </div>
 
-            <div class="subhead">Key developments</div>
-            <ul class="dev-list">${devList}</ul>
-            ${persistent}
-
-            <details class="domains" open>
-              <summary>Domain Analysis — six domains (development pill marked ★)</summary>
-              <div class="domain-grid">${domainGrid}</div>
-            </details>
-
-            <div class="dev-pill">
-              <span class="pill-flag tip" tabindex="0">★ Development Pill — Implication
-                <span class="tip-body">The single most significant analytical domain for this period — named after the six-domain analysis above, following the weekly brief's structure.</span>
-              </span>
-              <div class="pill-domain">${esc(pillDomain)}</div>
-              <div class="pill-headline">${esc(e.selectedDevelopmentPill.headline)}</div>
-              <div class="pill-rationale">${esc(e.selectedDevelopmentPill.rationale)}</div>
-              <div class="pill-implication"><strong>Implication (${esc(pillDomain)}):</strong> ${esc(implication)}</div>
-              ${tailor ? `<div class="pill-rationale"><em>${esc(div.name)} reads this primarily through ${esc(pillDomain)}.</em></div>` : ""}
-            </div>
+            ${keyDevSection}
 
             ${divisionBlock}
 
