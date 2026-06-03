@@ -94,6 +94,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("development domain pills shown (brief style)", wb.querySelectorAll(".brief-pills .pill").length >= 5);
   check("Implication blocks shown (>=5)", wb.querySelectorAll(".brief-impl").length >= 5);
   check("no six-domain breakdown on Weekly tab", wb.querySelectorAll("details.domains").length === 0);
+  check("no status score on Weekly tab", wb.querySelectorAll(".progress-mini").length === 0 && !wb.textContent.includes("Status score"));
   check("5 watch-area items", wb.querySelectorAll(".watch-item").length === 5);
 
   // --- 3. Aggregation: monthly + quarterly --------------------------------
@@ -105,6 +106,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("monthly drilldown to 4 weeks", mb.querySelectorAll(".drill").length === 4);
   check("monthly BLUF is non-trivial", mb.querySelector(".bluf-card p").textContent.length > 50);
   check("monthly retains six-domain analysis (30 cells)", mb.querySelectorAll(".domain-item").length === 30);
+  check("monthly retains status score (score bar present)", mb.querySelectorAll("#status-matrix .progress-mini").length === 5);
 
   doc.querySelector('.tab-btn[data-horizon="quarterly"]').click(); await sleep(40);
   const qb = doc.querySelector("#view-quarterly .view-body");

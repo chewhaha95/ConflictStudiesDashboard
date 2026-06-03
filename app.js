@@ -385,6 +385,7 @@
     // ---- Conflict status matrix (visual table) ----
     statusMatrix(period, ids) {
       if (!ids.length) return `<div class="empty">No theatres match the current filters.</div>`;
+      const showScore = State.horizon !== "weekly";   // weekly mirrors the brief (no status score)
       const rows = ids.map(id => {
         const e = period.theatres[id];
         const t = THEATRE_BY_ID[id];
@@ -395,7 +396,7 @@
             <td>${this.trendChip(e.trend)}</td>
             <td>
               <div style="font-size:12px;max-width:280px">${esc(e.progressToDate)}</div>
-              <div class="progress-mini" title="Conflict status score ${e.conflictStatusScore}/100"><span style="width:${e.conflictStatusScore}%;background:${this.scoreColor(e.conflictStatusScore)}"></span></div>
+              ${showScore ? `<div class="progress-mini" title="Conflict status score ${e.conflictStatusScore}/100"><span style="width:${e.conflictStatusScore}%;background:${this.scoreColor(e.conflictStatusScore)}"></span></div>` : ""}
             </td>
             <td>${this.statusChip(e.statusLabel)}</td>
           </tr>`;
@@ -530,7 +531,7 @@
               <div class="kv"><div class="k">Current phase</div><div class="v">${esc(e.phase)}</div></div>
               <div class="kv"><div class="k">Trend</div><div class="v">${this.trendChip(e.trend)}</div></div>
               <div class="kv"><div class="k">Progress to date</div><div class="v" style="max-width:420px">${esc(e.progressToDate)}</div></div>
-              <div class="kv"><div class="k">Status score</div><div class="v">${e.conflictStatusScore}/100</div></div>
+              ${isWeekly ? "" : `<div class="kv"><div class="k">Status score</div><div class="v">${e.conflictStatusScore}/100</div></div>`}
             </div>
 
             ${keyDevSection}
@@ -725,11 +726,12 @@
             return asc ? cmp : -cmp;
           });
           const tbody = table.querySelector("tbody");
+          const showScore = State.horizon !== "weekly";
           tbody.innerHTML = ids.map(id => {
             const e = period.theatres[id], t = THEATRE_BY_ID[id];
             return `<tr><td class="theatre-cell">${esc(t.name)}<div style="font-size:11px;color:var(--text-faint)">${esc(t.region)}</div></td>
               <td>${this.phaseTag(e.phase)}</td><td>${this.trendChip(e.trend)}</td>
-              <td><div style="font-size:12px;max-width:280px">${esc(e.progressToDate)}</div><div class="progress-mini" title="Conflict status score ${e.conflictStatusScore}/100"><span style="width:${e.conflictStatusScore}%;background:${this.scoreColor(e.conflictStatusScore)}"></span></div></td>
+              <td><div style="font-size:12px;max-width:280px">${esc(e.progressToDate)}</div>${showScore ? `<div class="progress-mini" title="Conflict status score ${e.conflictStatusScore}/100"><span style="width:${e.conflictStatusScore}%;background:${this.scoreColor(e.conflictStatusScore)}"></span></div>` : ""}</td>
               <td>${this.statusChip(e.statusLabel)}</td></tr>`;
           }).join("");
           table.querySelectorAll(".sort-ind").forEach(s => s.textContent = "");
