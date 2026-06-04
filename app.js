@@ -1284,6 +1284,10 @@
           <span class="tac-meta">${esc(t.short)} · ${esc(i.sourceWeek)} · ${esc(i.sourceDomain)} · ${esc(i.confidence)} conf.</span>
         </div>
         <p class="tac-sowhat">${esc(i.soWhat)}</p>
+        ${(i.findings && i.findings.length) ? `<div class="tac-findings">
+          <div class="lane-h">Findings from cited research</div>
+          <ul>${i.findings.map(f => `<li>${esc(f.text)} <span class="find-src">— ${esc(f.source)}</span></li>`).join("")}</ul>
+        </div>` : ""}
         <div class="tac-lanes">
           ${this.lane("Experiment with", "lane-exp", i.experiment)}
           ${this.lane("Train", "lane-train", i.train)}
