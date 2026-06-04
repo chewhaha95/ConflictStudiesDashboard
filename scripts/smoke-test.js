@@ -116,6 +116,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("each card has Experiment/Train/Adjust-SOP lanes", [...mb.querySelectorAll(".tac-card")].every(c => c.querySelectorAll(".tac-lanes .lane").length === 3));
   check("cards show echelon badges", mb.querySelectorAll(".tac-card .ech-badge").length >= 1);
   check("cards cite articles (deeper-look links)", mb.querySelectorAll(".tac-sources a[href^='http']").length >= 1);
+  check("cards show research findings from cited sources", mb.querySelectorAll(".tac-findings li .find-src").length >= 1);
   check("monthly BLUF still visible inside a group", /Monthly BLUF — Tactical Learning/.test(mb.textContent));
   // echelon sub-filter narrows the cards
   const allCards = mb.querySelectorAll(".tac-card").length;

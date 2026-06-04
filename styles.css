@@ -579,6 +579,12 @@ details.domains[open] > summary::before { transform: rotate(90deg); }
 .ech-battalion { color: var(--tone-warn-fg);    background: var(--tone-warn-bg); }
 .ech-company   { color: var(--tone-neutral-fg); background: var(--tone-neutral-bg); }
 
+.tac-findings { background: var(--bg-sunken); border: 1px solid var(--border); border-left: 3px solid var(--text-muted); border-radius: var(--radius-sm); padding: 9px 12px; margin: 0 0 12px; }
+.tac-findings .lane-h { color: var(--text-muted); margin-bottom: 6px; }
+.tac-findings ul { margin: 0; padding-left: 16px; }
+.tac-findings li { font-size: 12.5px; line-height: 1.55; margin-bottom: 5px; }
+.tac-findings .find-src { color: var(--text-faint); font-size: 11px; font-style: italic; }
+
 .tac-lanes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .lane { background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; }
 .lane-h { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
