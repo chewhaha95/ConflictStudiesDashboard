@@ -177,9 +177,11 @@
       "match": [
         "shahed",
         "geran",
-        "one-way attack",
         "loitering munition",
-        "owa drone"
+        "loitering drone",
+        "one-way attack",
+        "kamikaze drone",
+        "suicide drone"
       ]
     },
     {
@@ -222,7 +224,9 @@
       "match": [
         "fpv",
         "first-person",
-        "first person view"
+        "first person view",
+        "fpv drone",
+        "racing drone"
       ]
     },
     {
@@ -263,7 +267,8 @@
         "fiber-optic",
         "fibre optic",
         "fiber optic",
-        "wire-guided"
+        "wire-guided",
+        "wire guided"
       ]
     },
     {
@@ -302,7 +307,10 @@
         "umpk",
         "glide bomb",
         "glide-bomb",
-        "guided bomb"
+        "guided bomb",
+        "guided glide",
+        "fab-",
+        "jdam"
       ]
     },
     {
@@ -339,7 +347,10 @@
       ],
       "match": [
         "himars",
-        "gmlrs"
+        "gmlrs",
+        "m142",
+        "precision rocket",
+        "guided multiple launch"
       ]
     },
     {
@@ -376,7 +387,9 @@
       "match": [
         "atacms",
         "storm shadow",
-        "scalp"
+        "scalp",
+        "army tactical missile",
+        "deep-strike missile"
       ]
     },
     {
@@ -421,7 +434,10 @@
         "magura",
         "sea baby",
         "naval drone",
-        "drone boat"
+        "drone boat",
+        "explosive boat",
+        "maritime drone",
+        "surface drone"
       ]
     },
     {
@@ -461,10 +477,15 @@
       "match": [
         "orlan",
         "zala",
+        "supercam",
         "reconnaissance drone",
         "recon drone",
         "isr drone",
-        "surveillance drone"
+        "surveillance drone",
+        "spotter drone",
+        "reconnaissance uav",
+        "scaneagle",
+        "scan eagle"
       ]
     },
     {
@@ -505,7 +526,10 @@
         "dji",
         "mavic",
         "quadcopter",
-        "commercial drone"
+        "commercial drone",
+        "cots drone",
+        "off-the-shelf drone",
+        "autel"
       ]
     },
     {
@@ -545,7 +569,11 @@
       "match": [
         "patriot",
         "iris-t",
-        "nasams"
+        "nasams",
+        "pac-3",
+        "pac-2",
+        "samp/t",
+        "surface-to-air missile system"
       ]
     },
     {
@@ -587,7 +615,13 @@
       "match": [
         "jammer",
         "jamming",
-        "electronic warfare"
+        "electronic warfare",
+        "electronic-warfare",
+        "counter-uas",
+        "counter-drone",
+        "anti-drone",
+        "drone jammer",
+        "rf jamming"
       ]
     },
     {
@@ -629,7 +663,10 @@
         "gps jamming",
         "gps spoofing",
         "spoofing",
-        " pnt"
+        "navigation jamming",
+        "gps denial",
+        "pnt denial",
+        "satellite navigation jamming"
       ]
     },
     {
@@ -667,7 +704,10 @@
       "match": [
         "interceptor drone",
         "interceptor uav",
-        "drone interceptor"
+        "drone interceptor",
+        "counter-drone drone",
+        "anti-drone drone",
+        "drone-on-drone"
       ]
     },
     {
@@ -704,7 +744,12 @@
       "match": [
         "gepard",
         "spaag",
-        "anti-aircraft gun"
+        "anti-aircraft gun",
+        "flak",
+        "shilka",
+        "self-propelled anti-aircraft",
+        "gun-based air defence",
+        "gun air defence"
       ]
     },
     {
@@ -740,7 +785,9 @@
       ],
       "match": [
         "s-300",
-        "long-range sam"
+        "s-200",
+        "long-range sam",
+        "strategic air defence"
       ]
     },
     {
@@ -779,7 +826,8 @@
       ],
       "match": [
         "s-400",
-        "s400"
+        "s400",
+        "s-500"
       ]
     },
     {
@@ -819,8 +867,12 @@
         "ballistic missile",
         "cruise missile",
         "missile salvo",
+        "missile barrage",
+        "hypersonic missile",
         "oreshnik",
-        "missile barrage"
+        "kinzhal",
+        "iskander",
+        "fattah"
       ]
     },
     {
@@ -855,8 +907,13 @@
         }
       ],
       "match": [
-        "arrow",
-        "thaad"
+        "thaad",
+        "arrow-3",
+        "arrow 3",
+        "arrow interceptor",
+        "david's sling",
+        "ballistic missile defence",
+        "ballistic missile defense"
       ]
     },
     {
@@ -895,7 +952,9 @@
       ],
       "match": [
         "iron dome",
-        "c-ram"
+        "c-ram",
+        "tamir",
+        "short-range air defence"
       ]
     },
     {
@@ -936,8 +995,11 @@
         "rocket barrage",
         "rocket fire",
         "rocket salvo",
+        "rocket attack",
         "katyusha",
-        "unguided rocket"
+        "unguided rocket",
+        "bm-21",
+        "multiple rocket launcher"
       ]
     },
     {
@@ -975,7 +1037,9 @@
       ],
       "match": [
         "trophy",
-        "active protection"
+        "active protection",
+        "hard-kill",
+        "afghanit"
       ]
     },
     {
@@ -1014,9 +1078,14 @@
       ],
       "match": [
         "atgm",
+        "anti-tank guided",
         "anti-tank",
         "rpg",
-        "kornet"
+        "kornet",
+        "javelin",
+        "nlaw",
+        "tow missile",
+        "anti-armour missile"
       ]
     },
     {
@@ -1054,7 +1123,8 @@
       "match": [
         "tunnel",
         "subterranean",
-        "underground"
+        "underground",
+        "tunnel network"
       ]
     },
     {
@@ -1091,7 +1161,9 @@
       "match": [
         "tunnel detection",
         "counter-tunnel",
-        "subterranean clearance"
+        "subterranean clearance",
+        "tunnel breach",
+        "tunnel-clearing"
       ]
     },
     {
@@ -1130,8 +1202,12 @@
         "warship",
         "frigate",
         "corvette",
+        "destroyer",
         "black sea fleet",
-        "naval vessel"
+        "naval vessel",
+        "missile boat",
+        "flagship",
+        "patrol ship"
       ]
     },
     {
@@ -1167,7 +1243,11 @@
       ],
       "match": [
         "patrol helicopter",
-        "naval helicopter"
+        "naval helicopter",
+        "maritime helicopter",
+        "ka-27",
+        "mi-14",
+        "anti-submarine helicopter"
       ]
     },
     {
@@ -1202,7 +1282,11 @@
       "match": [
         "border surveillance",
         "livestream",
-        "border monitoring"
+        "border monitoring",
+        "surveillance camera",
+        "border camera",
+        "cctv",
+        "observation post"
       ]
     },
     {
@@ -1239,7 +1323,13 @@
       ],
       "match": [
         "artillery",
-        "howitzer"
+        "howitzer",
+        "self-propelled gun",
+        "towed gun",
+        "155mm",
+        "152mm",
+        "counter-battery",
+        "tube artillery"
       ]
     }
   ],
