@@ -121,33 +121,16 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   mb.querySelector('[data-group="ALL"]').click(); await sleep(50);
   check("can switch back to All Groups", doc.querySelector("#view-monthly .view-body").querySelectorAll(".fg-overview .fg-card").length === 4);
 
-  // --- 3b. Quarterly rollup ----------------------------------------------
-  console.log("\nQuarterly (rollup + drilldown):");
-  doc.querySelector('.tab-btn[data-horizon="quarterly"]').click(); await sleep(40);
-  const qb = doc.querySelector("#view-quarterly .view-body");
-  check("1 quarterly period", doc.querySelectorAll("#period-select option").length === 1);
-  check("quarterly comparison rows = 5", qb.querySelectorAll(".cmp-table tbody tr").length === 5);
-  check("quarterly drilldown to 2 months", qb.querySelectorAll(".drill").length === 2);
-
-  // --- 4. Division mode reframing -----------------------------------------
-  console.log("\nDivision mode (SAF reframing):");
-  doc.querySelector('.tab-btn[data-horizon="weekly"]').click();
-  doc.querySelector('[data-mode="division"]').click(); await sleep(40);
-  const dvb = doc.querySelector("#view-weekly .view-body");
-  check("division banner shown", !!dvb.querySelector(".note-banner"));
-  check("5 division-relevance blocks", dvb.querySelectorAll(".div-relevance").length === 5);
-  check("10 commander questions (2×5)", dvb.querySelectorAll(".dr-q li").length === 10);
-  check("BLUF reframed with division lens", dvb.querySelector(".tc-summary").textContent.includes("lens"));
-  // seed weekly reframes the implication label by the division's emphasised domain
-  const genPill = dvb.querySelector(".brief-impl-label").textContent;
-  doc.querySelector("#division-select").value = "DIV6";
-  doc.querySelector("#division-select").dispatchEvent(new window.Event("change")); await sleep(40);
-  const d6Pill = doc.querySelector("#view-weekly .view-body .brief-impl-label").textContent;
-  check("different divisions emphasise different domains", genPill !== d6Pill, `GEN=${genPill} DIV6=${d6Pill}`);
+  // --- 4. Top control bar: removed mode switch / quarterly / division dd ---
+  console.log("\nTop control bar (trimmed):");
+  check("horizon tabs are Weekly / Monthly / Capabilities only", [...doc.querySelectorAll(".tab-btn")].map(b => b.dataset.horizon).join(",") === "weekly,monthly,capabilities");
+  check("no Quarterly tab", !doc.querySelector('.tab-btn[data-horizon="quarterly"]') && !doc.querySelector("#view-quarterly"));
+  check("no Theatre/Division mode switch", !doc.querySelector("[data-mode]"));
+  check("no top division dropdown", !doc.querySelector("#division-select") && !doc.querySelector("#division-wrap"));
 
   // --- 5. Filters ----------------------------------------------------------
   console.log("\nFilters:");
-  doc.querySelector('[data-mode="theatre"]').click(); await sleep(40);
+  doc.querySelector('.tab-btn[data-horizon="weekly"]').click(); await sleep(40);
   doc.querySelector("#search").value = "enrichment";
   doc.querySelector("#search").dispatchEvent(new window.Event("input")); await sleep(40);
   check("search narrows the matrix",
@@ -224,15 +207,9 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("charts still render after theatre filter", scoped.querySelectorAll("canvas").length === 6);
   gazaCb.checked = false; gazaCb.dispatchEvent(new window.Event("change", { bubbles: true })); await sleep(40);
 
-  // division priority flag appears in capabilities view
-  doc.querySelector('[data-mode="division"]').click(); await sleep(60);
-  check("division priority ★ flagged in capabilities",
-    doc.querySelector("#view-capabilities .view-body").querySelectorAll(".prio").length > 0);
-
   // --- 7. Live weekly edition (sync integration) --------------------------
   console.log("\nLive weekly edition:");
   // Fallback path: with no live edition, weekly shows seed only (no LIVE option/banner)
-  doc.querySelector('[data-mode="theatre"]').click();
   doc.querySelector('.tab-btn[data-horizon="weekly"]').click(); await sleep(40);
   const wb2 = doc.querySelector("#view-weekly .view-body");
   check("fallback: no LIVE banner when weekly-live.json absent", !wb2.querySelector(".live-banner"));
@@ -304,7 +281,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   // --- 8. Mobile affordances ----------------------------------------------
   console.log("\nMobile affordances:");
   check("collapsible Filters toggle present", !!doc.querySelector("#filters-toggle"));
-  check("mode buttons have short labels", doc.querySelectorAll('[data-mode] .lbl-short').length === 2);
+  check("export buttons have short labels", doc.querySelectorAll('.export-group .lbl-short').length >= 1);
   check("viewport meta is responsive", /width=device-width/.test((doc.querySelector('meta[name="viewport"]') || {}).content || ""));
   // toggling adds the filters-open class (drives the mobile show/hide)
   doc.querySelector("#filters-toggle").click();

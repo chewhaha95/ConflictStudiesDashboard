@@ -81,25 +81,12 @@
     </div>
   </header>
 
-  <!-- ===== Control bar: horizon tabs + mode switch + exports ===== -->
+  <!-- ===== Control bar: horizon tabs + exports ===== -->
   <div class="control-bar no-print">
     <div class="seg" role="tablist" aria-label="Reporting horizon">
       <button class="tab-btn active" role="tab" data-horizon="weekly" aria-selected="true">Weekly</button>
       <button class="tab-btn" role="tab" data-horizon="monthly">Monthly</button>
-      <button class="tab-btn" role="tab" data-horizon="quarterly">Quarterly</button>
       <button class="tab-btn" role="tab" data-horizon="capabilities">Capabilities</button>
-    </div>
-
-    <div class="divider" aria-hidden="true"></div>
-
-    <div class="seg" role="group" aria-label="Analysis mode">
-      <button data-mode="theatre" aria-selected="true"><span class="lbl-full">Conflict Theatre View</span><span class="lbl-short">Theatre</span></button>
-      <button data-mode="division" aria-selected="false"><span class="lbl-full">Singapore Army Division View</span><span class="lbl-short">Division</span></button>
-    </div>
-
-    <div class="division-select-wrap" id="division-wrap">
-      <label for="division-select">Division</label>
-      <select id="division-select" aria-label="Select division report type"></select>
     </div>
 
     <div class="spacer"></div>
@@ -157,15 +144,12 @@
       </div>
     </aside>
 
-    <!-- Main body: three views, only one active at a time -->
+    <!-- Main body: one view active at a time -->
     <main class="main">
       <section id="view-weekly" class="view active" role="tabpanel" aria-label="Weekly report">
         <div class="view-body"></div>
       </section>
-      <section id="view-monthly" class="view" role="tabpanel" aria-label="Monthly report">
-        <div class="view-body"></div>
-      </section>
-      <section id="view-quarterly" class="view" role="tabpanel" aria-label="Quarterly report">
+      <section id="view-monthly" class="view" role="tabpanel" aria-label="Monthly formation learning">
         <div class="view-body"></div>
       </section>
       <section id="view-capabilities" class="view" role="tabpanel" aria-label="Capabilities and countermeasures">
