@@ -1449,25 +1449,12 @@
       // domain chips
       el("#filter-domains").innerHTML = DB.definitions.domains.map(d =>
         `<button class="fchip" aria-pressed="false" data-val="${esc(d)}">${esc(d)}</button>`).join("");
-      // division dropdown
-      el("#division-select").innerHTML = DB.divisions.map(d =>
-        `<option value="${d.id}">${esc(d.name)}</option>`).join("");
     },
 
     wire() {
       // horizon tabs
       document.querySelectorAll(".tab-btn").forEach(b =>
         b.addEventListener("click", () => { State.horizon = b.dataset.horizon; this.rerender(); }));
-
-      // mode switch
-      document.querySelectorAll('[data-mode]').forEach(b =>
-        b.addEventListener("click", () => {
-          State.mode = b.dataset.mode;
-          document.querySelectorAll('[data-mode]').forEach(x => x.setAttribute("aria-selected", String(x === b)));
-          el("#division-wrap").classList.toggle("show", State.mode === "division");
-          this.rerender();
-        }));
-      el("#division-select").addEventListener("change", e => { State.division = e.target.value; this.rerender(); });
 
       // period select + date picker
       el("#period-select").addEventListener("change", e => { State.periodId = e.target.value; Render.renderActiveView(); });
