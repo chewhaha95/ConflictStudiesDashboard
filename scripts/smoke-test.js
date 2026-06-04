@@ -97,26 +97,33 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("no status score on Weekly tab", wb.querySelectorAll(".progress-mini").length === 0 && !wb.textContent.includes("Status score"));
   check("5 watch-area items", wb.querySelectorAll(".watch-item").length === 5);
 
-  // --- 3a. Monthly: Formation Learning view -------------------------------
-  console.log("\nMonthly (formation learning):");
+  // --- 3a. Monthly: Tactical Learning view --------------------------------
+  console.log("\nMonthly (tactical learning):");
   doc.querySelector('.tab-btn[data-horizon="monthly"]').click(); await sleep(50);
   let mb = doc.querySelector("#view-monthly .view-body");
   check("2 monthly periods (8 weeks / 4)", doc.querySelectorAll("#period-select option").length === 2);
-  check("monthly BLUF (formation learning) present", /Monthly BLUF — Formation Learning/.test(mb.textContent) && mb.querySelector(".bluf-card p").textContent.length > 50);
+  check("monthly BLUF (tactical learning) present", /Monthly BLUF — Tactical Learning/.test(mb.textContent) && mb.querySelector(".bluf-card p").textContent.length > 50);
   check("formation-group selector has 5 options", doc.querySelectorAll("#formation-group-select option").length === 5);
   check("All Groups default shows 4 overview cards", mb.querySelectorAll(".fg-overview .fg-card").length === 4);
   check("no theatre status matrix on Monthly tab", !mb.querySelector("#status-matrix"));
-  // select a group -> full panel
+  // select a group -> tactical panel
   const fgSel = doc.querySelector("#formation-group-select");
   fgSel.value = "MANOEUVRE"; fgSel.dispatchEvent(new window.Event("change")); await sleep(50);
   mb = doc.querySelector("#view-monthly .view-body");
   check("group panel: audience banner shown", /Audience —/.test((mb.querySelector(".fg-audience-banner") || {}).textContent || ""));
-  check("group panel: what worked / failed columns", !!mb.querySelector(".col-worked") && !!mb.querySelector(".col-failed"));
-  check("group panel: training implications box", !!mb.querySelector(".train-box"));
-  check("group panel: commander questions", mb.querySelectorAll(".cq-list li").length >= 1);
-  check("group panel: source-theatre chips", mb.querySelectorAll(".t-chip").length >= 1);
-  check("group panel: linked insight cards (EOLA)", mb.querySelectorAll(".insight-card").length >= 1 && mb.querySelectorAll(".eola .eola-k").length >= 4);
-  check("monthly BLUF still visible inside a group", /Monthly BLUF — Formation Learning/.test(mb.textContent));
+  check("group panel: echelon filter (4 chips)", mb.querySelectorAll(".ech-filter .ech-chip").length === 4);
+  check("group panel: tactical insight cards", mb.querySelectorAll(".tac-card").length >= 1);
+  check("each card has Experiment/Train/Adjust-SOP lanes", [...mb.querySelectorAll(".tac-card")].every(c => c.querySelectorAll(".tac-lanes .lane").length === 3));
+  check("cards show echelon badges", mb.querySelectorAll(".tac-card .ech-badge").length >= 1);
+  check("cards cite articles (deeper-look links)", mb.querySelectorAll(".tac-sources a[href^='http']").length >= 1);
+  check("monthly BLUF still visible inside a group", /Monthly BLUF — Tactical Learning/.test(mb.textContent));
+  // echelon sub-filter narrows the cards
+  const allCards = mb.querySelectorAll(".tac-card").length;
+  const compChip = [...mb.querySelectorAll(".ech-chip")].find(b => b.dataset.ech === "Company");
+  compChip.click(); await sleep(50);
+  mb = doc.querySelector("#view-monthly .view-body");
+  const compCards = [...mb.querySelectorAll(".tac-card .ech-badge")];
+  check("echelon filter narrows to selected echelon", compCards.length > 0 && compCards.length <= allCards && compCards.every(b => /Company/i.test(b.textContent)));
   // back to All Groups via data-group button
   mb.querySelector('[data-group="ALL"]').click(); await sleep(50);
   check("can switch back to All Groups", doc.querySelector("#view-monthly .view-body").querySelectorAll(".fg-overview .fg-card").length === 4);

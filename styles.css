@@ -565,6 +565,37 @@ details.domains[open] > summary::before { transform: rotate(90deg); }
 .tk-t { color: var(--accent); background: var(--accent-soft); }
 .fg-card-cta { display: inline-block; margin-top: 8px; font-size: 12.5px; font-weight: 650; color: var(--accent); }
 
+/* Tactical learning cards (echelon-level) */
+.ech-filter { gap: 6px; }
+.ech-chip.on, .ech-chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tac-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.tac-card { background: var(--bg-elev); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow-sm); }
+.tac-head { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
+.tac-title { font-size: 14.5px; font-weight: 700; }
+.tac-meta { margin-left: auto; font-size: 11px; color: var(--text-faint); white-space: nowrap; }
+.tac-sowhat { font-size: 13px; line-height: 1.55; color: var(--text); margin: 8px 0 12px; }
+.ech-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.ech-brigade   { color: var(--tone-bad-fg);     background: var(--tone-bad-bg); }
+.ech-battalion { color: var(--tone-warn-fg);    background: var(--tone-warn-bg); }
+.ech-company   { color: var(--tone-neutral-fg); background: var(--tone-neutral-bg); }
+
+.tac-lanes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.lane { background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; }
+.lane-h { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.lane-exp { border-top: 2px solid var(--tone-neutral-fg); }
+.lane-exp .lane-h { color: var(--tone-neutral-fg); }
+.lane-train { border-top: 2px solid var(--accent); }
+.lane-train .lane-h { color: var(--accent); }
+.lane-sop { border-top: 2px solid var(--tone-good-fg); }
+.lane-sop .lane-h { color: var(--tone-good-fg); }
+.lane ul { margin: 0; padding-left: 16px; }
+.lane li { font-size: 12.5px; line-height: 1.5; margin-bottom: 6px; }
+
+.tac-sources { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border-strong); font-size: 12.5px; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+.tac-sources .src-k { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; color: var(--text-muted); }
+
+@media (max-width: 760px) { .tac-lanes { grid-template-columns: 1fr; } }
+
 .fg-audience-banner { border-left: 3px solid var(--accent); }
 .worked-failed { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .col-worked { border-top: 3px solid var(--tone-good-fg); }
