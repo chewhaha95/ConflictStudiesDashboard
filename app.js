@@ -1012,6 +1012,35 @@
       return div.emphasizedDomains.includes(c.domain);
     },
 
+    // Explains how computed heat/trend are derived, and defines the lifecycle phases.
+    methodologyPanel() {
+      const weeks = DB.weeklyReports.length;
+      const sig = DB.weeklyCapabilitySignals || {};
+      const sigCount = Object.keys(sig).filter(k => k !== "_doc").reduce((s, k) => s + (sig[k] ? sig[k].length : 0), 0);
+      const lcRows = Object.entries(DB.capabilityDefs.lifecycle)
+        .sort((a, b) => (a[1].rank || 0) - (b[1].rank || 0))
+        .map(([name, def]) => `<div class="lc-def"><span class="lc-chip lc-${def.tone}">${esc(name)}</span><span class="lc-def-text">${esc(def.desc || "")}</span></div>`).join("");
+      return `<details class="cap-method card" open>
+        <summary>How computed heat is calculated · lifecycle phase definitions</summary>
+        <div class="cap-method-body">
+          <div class="cm-col">
+            <div class="subhead" style="margin-top:0">How computed heat &amp; trend are calculated</div>
+            <p>Heat is <strong>computed from ${sigCount} weekly observation signals</strong> across ${weeks} weeks (${DB.capabilities.length} capabilities) — it is not hand-set. Each signal records a capability's employment in a theatre that week at <strong>intensity 1–3</strong>.</p>
+            <ul class="cm-list">
+              <li><strong>Heat (0–100)</strong> = recency-weighted sum of weekly intensity, normalised across all capabilities. Recent weeks weigh more — the weight rises from <strong>×0.55</strong> for the oldest week to <strong>×1.0</strong> for the latest. The busiest capability scales to ≈96; every other is relative to it.</li>
+              <li><strong>Adoption trend</strong> compares the recent half of the weeks with the earlier half: <em>Rising</em> if recent activity &gt; 1.25× earlier, <em>Declining</em> if &lt; 0.75×, otherwise <em>Steady</em>.</li>
+              <li><strong>Per-theatre heat</strong> (the "what's hot across five theatres" chart) applies the same recency-weighting to each theatre's signals, so a capability's theatre segments sum to its total heat.</li>
+              <li>The <strong>8-week sparkline</strong> on each leaderboard row is the raw weekly-intensity series that the heat is built from. Change the underlying weekly signals and heat, trend and rankings recompute.</li>
+            </ul>
+          </div>
+          <div class="cm-col">
+            <div class="subhead" style="margin-top:0">Lifecycle phase definitions</div>
+            <div class="lc-defs">${lcRows}</div>
+          </div>
+        </div>
+      </details>`;
+    },
+
     render() {
       const root = el("#view-capabilities .view-body");
       const all = this.list();
@@ -1060,6 +1089,7 @@
 
       // ---- charts ----
       html += `<div class="section"><div class="section-head"><h2>Capability Analytics</h2></div>
+        ${this.methodologyPanel()}
         <div class="card chart-card chart-wide" style="margin-bottom:14px"><h3>What's hot across the five theatres</h3><div class="chart-sub">Computed heat of leading capabilities, stacked by theatre of employment — re-scopes to the theatre filter</div><div class="chart-holder tall"><canvas id="cap-theatre-heat"></canvas></div>
           <div class="theatre-leaders">${this.theatreLeaders(all, this.selectedTheatreIds()).map(x =>
             `<div class="tl"><span class="tl-dot" style="background:${this.theatreColor(x.t)}"></span><span class="tl-theatre">${esc(THEATRE_BY_ID[x.t].name)}</span><span class="tl-label">hottest:</span> <strong>${esc(x.cap.name)}</strong> <span class="tl-heat">heat ${x.heat}</span> ${this.capTrend(this.trendOf(x.cap))} ${this.lcChip(x.cap.lifecycle)}</div>`).join("")}</div>
