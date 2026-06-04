@@ -162,6 +162,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("capabilities view is active", doc.querySelector("#view-capabilities").classList.contains("active"));
   check("capability BLUF rendered", cb.textContent.includes("BLUF — Capability Picture"));
   check("KPI strip rendered (5 KPIs)", cb.querySelectorAll(".kpi").length === 5);
+  check("methodology panel explains how heat is computed", !!cb.querySelector(".cap-method") && /recency-weighted/.test(cb.querySelector(".cap-method").textContent) && /weekly observation signals/.test(cb.querySelector(".cap-method").textContent));
+  check("lifecycle phase definitions shown (6)", cb.querySelectorAll(".cap-method .lc-def").length === 6 && /Newly observed/.test(cb.textContent));
   check("heat leaderboard populated", cb.querySelectorAll(".matrix tbody tr").length >= 20);
   check("measure-countermeasure cycle cards present", cb.querySelectorAll(".cycle-card").length > 0);
   check("supersession chains present", cb.querySelectorAll(".sup-row").length > 0);
