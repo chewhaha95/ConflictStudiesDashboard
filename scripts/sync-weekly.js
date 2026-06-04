@@ -157,6 +157,7 @@ function parseEdition(html, pageUrl, rangeHint) {
         pills: [...b.querySelectorAll(".pill")].map(p => norm(p.textContent)),
         headline: norm(h.textContent),
         paragraphs: [...b.querySelectorAll(":scope > p")].map(pText).filter(Boolean),
+        sources: [...b.querySelectorAll("a[href^='http']")].map(a => ({ label: norm(a.textContent) || a.href, url: a.href })),
         implicationLabel: "", implicationBullets: []
       });
     });
@@ -249,8 +250,40 @@ function parseEdition(html, pageUrl, rangeHint) {
   // newest first
   editions.sort((x, y) => String(y.weekEnd || "").localeCompare(String(x.weekEnd || "")));
 
+  // ---- derive capability evidence from the editions (traceable provenance) ----
+  // For each capability `match` keyword found in a theatre's developments, record
+  // an evidence item: which edition/theatre, the development headline, and a link.
+  let capabilityEvidence = {};
+  try {
+    const seed = JSON.parse(fs.readFileSync(path.resolve(__dirname, "..", "sample-data.json"), "utf8"));
+    (seed.capabilities || []).forEach(c => { if ((c.match || []).length) capabilityEvidence[c.id] = []; });
+    editions.forEach(ed => {
+      Object.entries(ed.theatres).forEach(([t, e]) => {
+        (e.developments || []).forEach(dev => {
+          const text = [dev.headline, ...(dev.paragraphs || []), ...(dev.pills || []), ...(dev.implicationBullets || [])].join(" ").toLowerCase();
+          const inHeadline = (dev.headline || "").toLowerCase();
+          (seed.capabilities || []).forEach(c => {
+            const kws = c.match || []; if (!kws.length) return;
+            const hit = kws.find(k => text.includes(k));
+            if (!hit) return;
+            const src = (dev.sources && dev.sources[0]) || (e.sourceLinks && e.sourceLinks[0]) || { label: "brief edition", url: ed.sourceUrl };
+            capabilityEvidence[c.id].push({
+              weekId: ed.weekId, rangeLabel: ed.rangeLabel, theatre: t,
+              headline: dev.headline, intensity: inHeadline.includes(hit) ? 3 : (dev.pills || []).join(" ").toLowerCase().includes(hit) ? 2 : 1,
+              url: src.url, source: src.label
+            });
+          });
+        });
+      });
+    });
+    // keep only capabilities that actually have evidence
+    Object.keys(capabilityEvidence).forEach(id => { if (!capabilityEvidence[id].length) delete capabilityEvidence[id]; });
+  } catch (e) { console.error("  ! capability evidence extraction skipped:", e.message); capabilityEvidence = {}; }
+  const evCount = Object.values(capabilityEvidence).reduce((s, a) => s + a.length, 0);
+
   fs.writeFileSync(OUT, JSON.stringify({
-    __live: true, syncedAt: new Date().toISOString(), sourceUrl: SOURCE, editions
+    __live: true, syncedAt: new Date().toISOString(), sourceUrl: SOURCE, editions, capabilityEvidence
   }, null, 2) + "\n");
   console.log(`✓ weekly-live.json written: ${editions.length} edition(s) — ${editions.map(e => e.rangeLabel).join(" | ")}.`);
+  console.log(`  capability evidence: ${evCount} item(s) across ${Object.keys(capabilityEvidence).length} capabilities.`);
 })().catch(e => { console.error("✗ sync-weekly failed:", e.message); process.exit(1); });

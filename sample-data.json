@@ -139,34 +139,1109 @@
   },
 
   "capabilities": [
-    { "id": "cap_shahed", "name": "Shahed-136 / Geran-2", "aka": "One-way attack loitering munition", "category": "Loitering munition", "domain": "Fires & Strikes", "role": "Measure", "theatres": ["RU_UA", "IL_US_IR"], "lifecycle": "Peak", "heat": 88, "trend": "Steady", "firstObserved": "2022-09", "vector": "State transfer", "counters": [], "counteredBy": ["cap_ew_tac", "cap_spaag", "cap_interceptor_uav", "cap_patriot"], "supersedes": null, "supersededBy": null, "timeToCounterDays": 75, "confidence": "Confirmed", "saf": "Mass cheap one-way attack drones force a high-low cost-exchange problem for air defence; drives need for layered, low-cost interceptors and EW.", "note": "Iranian design now produced at scale in Russia; the archetypal proliferating long-range strike capability.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/shahed" }] },
-    { "id": "cap_fpv", "name": "RF-controlled FPV drone", "aka": "First-person-view attack drone", "category": "FPV / tactical drone", "domain": "Fires & Strikes", "role": "Measure", "theatres": ["RU_UA"], "lifecycle": "Peak", "heat": 90, "trend": "Steady", "firstObserved": "2023-03", "vector": "Commercial / COTS", "counters": ["cap_recon_uav"], "counteredBy": ["cap_ew_tac"], "supersedes": ["cap_dji_isr"], "supersededBy": ["cap_fpv_fiber"], "timeToCounterDays": 90, "confidence": "Confirmed", "saf": "Cheap precision under 10km collapses the close fight; mandates EW at platoon level, overhead cover and counter-UAS drills.", "note": "Dominant tactical killer but vulnerable to RF jamming, driving the move to fibre-optic control.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/fpv" }] },
-    { "id": "cap_fpv_fiber", "name": "Fibre-optic FPV drone", "aka": "EW-immune wire-guided FPV", "category": "FPV / tactical drone", "domain": "Fires & Strikes", "role": "Dual", "theatres": ["RU_UA"], "lifecycle": "Scaling", "heat": 74, "trend": "Rising", "firstObserved": "2024-08", "vector": "Indigenous production", "counters": ["cap_ew_tac"], "counteredBy": [], "supersedes": ["cap_fpv"], "supersededBy": null, "timeToCounterDays": null, "confidence": "Confirmed", "saf": "Immune to RF jamming — a countermeasure to EW that is itself a strike measure; signals limits of EW-only counter-UAS and need for kinetic/last-ditch defeat.", "note": "Clearest current example of a countermeasure-to-the-countermeasure (defeats trench EW).", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/fpv-fiber" }] },
-    { "id": "cap_umpk", "name": "UMPK glide bomb", "aka": "Guided glide-bomb kit", "category": "Glide bomb", "domain": "Fires & Strikes", "role": "Measure", "theatres": ["RU_UA"], "lifecycle": "Peak", "heat": 85, "trend": "Steady", "firstObserved": "2023-01", "vector": "Indigenous production", "counters": [], "counteredBy": ["cap_longrange_sam", "cap_ew_gnss"], "supersedes": null, "supersededBy": null, "timeToCounterDays": 240, "confidence": "Confirmed", "saf": "Stand-off mass fires from inside friendly airspace; hard to counter without pushing GBAD/airpower forward — a persistent un-countered problem.", "note": "Cheap kits turn legacy bombs into stand-off munitions; among the hardest measures to counter.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/umpk" }] },
-    { "id": "cap_himars", "name": "HIMARS / GMLRS", "aka": "Precision rocket artillery", "category": "Rocket artillery", "domain": "Fires & Strikes", "role": "Measure", "theatres": ["RU_UA"], "lifecycle": "Maturing", "heat": 55, "trend": "Declining", "firstObserved": "2022-06", "vector": "State transfer", "counters": [], "counteredBy": ["cap_ew_gnss", "cap_s400"], "supersedes": null, "supersededBy": null, "timeToCounterDays": 180, "confidence": "Confirmed", "saf": "Demonstrates how GNSS jamming erodes precision-fires effectiveness over time; argues for alt-navigation and resilient PNT.", "note": "Initial decisive effect degraded as Russian GNSS jamming/spoofing matured.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/himars" }] },
-    { "id": "cap_atacms", "name": "ATACMS / Storm Shadow", "aka": "Deep-strike missiles", "category": "Cruise / ballistic", "domain": "Fires & Strikes", "role": "Measure", "theatres": ["RU_UA"], "lifecycle": "Maturing", "heat": 60, "trend": "Steady", "firstObserved": "2023-05", "vector": "State transfer", "counters": [], "counteredBy": ["cap_s400"], "supersedes": null, "supersededBy": null, "timeToCounterDays": 120, "confidence": "Confirmed", "saf": "Deep strike forces dispersal of rear logistics/airpower; counter is to move assets out of range — a manoeuvre/sustainment lesson.", "note": "Drives Russian relocation of high-value assets beyond range.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/atacms" }] },
-    { "id": "cap_usv", "name": "Naval USV (Magura / Sea Baby)", "aka": "Explosive uncrewed surface vessel", "category": "Maritime / USV", "domain": "Manoeuvre", "role": "Measure", "theatres": ["RU_UA", "IL_US_IR"], "lifecycle": "Scaling", "heat": 78, "trend": "Rising", "firstObserved": "2022-10", "vector": "Indigenous production", "counters": ["cap_surface_combatant"], "counteredBy": ["cap_heli_patrol"], "supersedes": null, "supersededBy": null, "timeToCounterDays": 210, "confidence": "Confirmed", "saf": "A navy-less actor achieved sea denial against a conventional fleet; major lesson for small-craft swarm threats to naval and coastal assets.", "note": "Pushed the Black Sea Fleet out of the western basin; concept now diffusing (e.g. Red Sea).", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/usv" }] },
-    { "id": "cap_recon_uav", "name": "Recon UAV (Orlan / ZALA)", "aka": "ISR / artillery-spotting drone", "category": "ISR UAV", "domain": "Intelligence", "role": "Measure", "theatres": ["RU_UA"], "lifecycle": "Peak", "heat": 65, "trend": "Steady", "firstObserved": "2022-03", "vector": "Indigenous production", "counters": [], "counteredBy": ["cap_ew_tac", "cap_interceptor_uav"], "supersedes": ["cap_dji_isr"], "supersededBy": null, "timeToCounterDays": 90, "confidence": "Confirmed", "saf": "Persistent ISR closes the sensor-to-shooter loop; counter-ISR and emission control become survival skills.", "note": "Backbone of the reconnaissance-strike complex.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/recon-uav" }] },
-    { "id": "cap_dji_isr", "name": "COTS quadcopter ISR (DJI-class)", "aka": "Commercial recon quadcopter", "category": "ISR UAV", "domain": "Intelligence", "role": "Measure", "theatres": ["RU_UA"], "lifecycle": "Superseded", "heat": 28, "trend": "Declining", "firstObserved": "2022-02", "vector": "Commercial / COTS", "counters": [], "counteredBy": ["cap_ew_tac"], "supersedes": null, "supersededBy": ["cap_recon_uav", "cap_fpv"], "timeToCounterDays": 60, "confidence": "Confirmed", "saf": "Early COTS adaptation, now displaced by purpose-built ISR/FPV — a clean example of supersession to track.", "note": "Vulnerable to tracking/geofencing and jamming; overtaken by military FPV and recon UAVs.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/dji" }] },
-    { "id": "cap_patriot", "name": "Patriot / IRIS-T / NASAMS", "aka": "Layered SAM systems", "category": "Air & missile defence", "domain": "Protection", "role": "Countermeasure", "theatres": ["RU_UA", "IL_US_IR"], "lifecycle": "Peak", "heat": 80, "trend": "Steady", "firstObserved": "2023-01", "vector": "State transfer", "counters": ["cap_shahed", "cap_iran_brm", "cap_atacms"], "counteredBy": [], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Confirmed", "saf": "High-end intercept works but is interceptor-stock and cost constrained; magazine depth and cost-per-kill are the binding planning factors.", "note": "Effective against ballistic and cruise threats; saturation and interceptor economics are the limiting risk.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/patriot" }] },
-    { "id": "cap_ew_tac", "name": "Tactical EW / trench jammers", "aka": "Man-portable & vehicle RF jamming", "category": "Electronic warfare", "domain": "Intelligence", "role": "Countermeasure", "theatres": ["RU_UA"], "lifecycle": "Peak", "heat": 76, "trend": "Rising", "firstObserved": "2023-04", "vector": "Indigenous production", "counters": ["cap_fpv", "cap_shahed", "cap_recon_uav", "cap_dji_isr"], "counteredBy": ["cap_fpv_fiber"], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Confirmed", "saf": "The dominant counter-UAS method — but fibre-optic FPV defeats it, so EW must be paired with kinetic last-ditch defeat.", "note": "Now itself being countered by EW-immune fibre-optic drones.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/ew-tac" }] },
-    { "id": "cap_ew_gnss", "name": "GNSS jamming / spoofing", "aka": "Counter-PNT electronic warfare", "category": "Electronic warfare", "domain": "Intelligence", "role": "Countermeasure", "theatres": ["RU_UA", "IL_US_IR"], "lifecycle": "Peak", "heat": 70, "trend": "Steady", "firstObserved": "2022-08", "vector": "Indigenous production", "counters": ["cap_himars", "cap_umpk", "cap_shahed"], "counteredBy": [], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Confirmed", "saf": "Degrades GNSS-guided munitions and navigation; drives demand for resilient PNT and inertial/terminal seekers.", "note": "Quietly one of the most consequential countermeasures of the war.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/ew-gnss" }] },
-    { "id": "cap_interceptor_uav", "name": "Interceptor UAV", "aka": "Drone-on-drone interceptor", "category": "Interceptor drone", "domain": "Protection", "role": "Countermeasure", "theatres": ["RU_UA"], "lifecycle": "Emerging", "heat": 46, "trend": "Rising", "firstObserved": "2024-05", "vector": "Indigenous production", "counters": ["cap_shahed", "cap_recon_uav"], "counteredBy": [], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Probable", "saf": "A low-cost kinetic answer to the Shahed cost-exchange problem; watch as a fast-rising counter-UAS option.", "note": "Promising low-cost intercept; scaling and reliability still maturing.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/interceptor-uav" }] },
-    { "id": "cap_spaag", "name": "Mobile AAA / SPAAG (Gepard)", "aka": "Self-propelled anti-aircraft gun", "category": "Air & missile defence", "domain": "Protection", "role": "Countermeasure", "theatres": ["RU_UA"], "lifecycle": "Maturing", "heat": 50, "trend": "Steady", "firstObserved": "2022-11", "vector": "State transfer", "counters": ["cap_shahed"], "counteredBy": [], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Confirmed", "saf": "Gun-based defeat is cost-favourable against drones; revalidates SHORAD/gun AD that many militaries had divested.", "note": "Cost-effective Shahed defeat; ammunition supply is the constraint.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/spaag" }] },
-    { "id": "cap_longrange_sam", "name": "Forward long-range SAM", "aka": "Push-forward GBAD vs glide bombs", "category": "Air & missile defence", "domain": "Protection", "role": "Countermeasure", "theatres": ["RU_UA"], "lifecycle": "Emerging", "heat": 40, "trend": "Rising", "firstObserved": "2024-02", "vector": "State transfer", "counters": ["cap_umpk"], "counteredBy": [], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Probable", "saf": "Only credible counter to glide bombs is to threaten the launch aircraft — high-risk forward GBAD employment.", "note": "Attempts to hold launch platforms at risk; exposes scarce SAMs to attrition.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/lr-sam" }] },
-    { "id": "cap_s400", "name": "Strategic SAM (S-400)", "aka": "Long-range air/missile defence", "category": "Air & missile defence", "domain": "Protection", "role": "Countermeasure", "theatres": ["RU_UA"], "lifecycle": "Maturing", "heat": 52, "trend": "Steady", "firstObserved": "2022-02", "vector": "Indigenous production", "counters": ["cap_atacms", "cap_himars"], "counteredBy": ["cap_atacms"], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Confirmed", "saf": "High-end SAM that is itself a priority target for deep strike — the SEAD/IADS duel in microcosm.", "note": "Both a countermeasure and a high-value target.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/s400" }] },
-    { "id": "cap_iran_brm", "name": "Iranian ballistic / cruise + Shahed mix", "aka": "Combined missile-and-drone salvo", "category": "Cruise / ballistic", "domain": "Fires & Strikes", "role": "Measure", "theatres": ["IL_US_IR", "IL_LB"], "lifecycle": "Peak", "heat": 78, "trend": "Steady", "firstObserved": "2024-04", "vector": "Indigenous production", "counters": [], "counteredBy": ["cap_arrow_thaad", "cap_patriot"], "supersedes": null, "supersededBy": null, "timeToCounterDays": 30, "confidence": "Confirmed", "saf": "Saturation salvos mixing ballistic, cruise and drones stress layered defence depth; magazine depth is decisive.", "note": "Proliferation hub: the Shahed family and missile tech radiate from here to multiple theatres and proxies.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/iran-brm" }] },
-    { "id": "cap_arrow_thaad", "name": "Arrow / THAAD layered defence", "aka": "Exo/endo-atmospheric BMD", "category": "Air & missile defence", "domain": "Protection", "role": "Countermeasure", "theatres": ["IL_US_IR"], "lifecycle": "Peak", "heat": 75, "trend": "Rising", "firstObserved": "2024-04", "vector": "State transfer", "counters": ["cap_iran_brm"], "counteredBy": [], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Confirmed", "saf": "Demonstrates multi-tier BMD intercepting large salvos; cost-per-engagement and interceptor stockpiles are the watch items.", "note": "High intercept rates against complex salvos; sustainment economics are the limiting factor.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/arrow-thaad" }] },
-    { "id": "cap_iron_dome", "name": "Iron Dome", "aka": "Short-range rocket defence", "category": "Air & missile defence", "domain": "Protection", "role": "Countermeasure", "theatres": ["IL_GZ", "IL_LB"], "lifecycle": "Maturing", "heat": 62, "trend": "Steady", "firstObserved": "2022-01", "vector": "Indigenous production", "counters": ["cap_rockets"], "counteredBy": ["cap_rockets"], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Confirmed", "saf": "Mature C-RAM with strong intercept rates, but large simultaneous salvos remain the saturation risk.", "note": "Effectiveness eroded only by mass simultaneous launches.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/iron-dome" }] },
-    { "id": "cap_rockets", "name": "Unguided/short-range rockets", "aka": "Massed rocket fires", "category": "Rocket artillery", "domain": "Fires & Strikes", "role": "Measure", "theatres": ["IL_GZ", "IL_LB"], "lifecycle": "Maturing", "heat": 48, "trend": "Declining", "firstObserved": "2022-01", "vector": "Indigenous production", "counters": [], "counteredBy": ["cap_iron_dome"], "supersedes": null, "supersededBy": ["cap_iran_brm"], "timeToCounterDays": 30, "confidence": "Confirmed", "saf": "Saturation is the only path through modern C-RAM; drives interest in PGMs over volume — a measure being superseded by precision.", "note": "Being displaced by precision-guided systems where available.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/rockets" }] },
-    { "id": "cap_trophy_aps", "name": "Trophy active protection system", "aka": "Hard-kill APS on armour", "category": "Active protection", "domain": "Protection", "role": "Countermeasure", "theatres": ["IL_GZ"], "lifecycle": "Maturing", "heat": 50, "trend": "Steady", "firstObserved": "2023-10", "vector": "Indigenous production", "counters": ["cap_atgm"], "counteredBy": ["cap_fpv"], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Confirmed", "saf": "Hard-kill APS defeats RPG/ATGM well but top-attack drones probe its limits — APS plus overhead cover is the emerging standard.", "note": "Strong vs direct ATGM/RPG; top-attack FPV is the open challenge.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/trophy" }] },
-    { "id": "cap_atgm", "name": "Anti-tank guided missile", "aka": "ATGM / RPG", "category": "Anti-armour", "domain": "Fires & Strikes", "role": "Measure", "theatres": ["IL_GZ", "IL_LB"], "lifecycle": "Maturing", "heat": 44, "trend": "Declining", "firstObserved": "2022-01", "vector": "State transfer", "counters": [], "counteredBy": ["cap_trophy_aps"], "supersedes": null, "supersededBy": ["cap_fpv"], "timeToCounterDays": 90, "confidence": "Confirmed", "saf": "Classic anti-armour increasingly defeated by APS and out-ranged by cheap FPV — a measure under pressure from both sides.", "note": "Being superseded for many tasks by cheaper FPV drones.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/atgm" }] },
-    { "id": "cap_tunnels", "name": "Subterranean tunnel networks", "aka": "Underground manoeuvre & C2", "category": "Subterranean", "domain": "Manoeuvre", "role": "Measure", "theatres": ["IL_GZ", "IL_LB"], "lifecycle": "Maturing", "heat": 54, "trend": "Declining", "firstObserved": "2022-01", "vector": "Indigenous production", "counters": [], "counteredBy": ["cap_tunnel_breach"], "supersedes": null, "supersededBy": null, "timeToCounterDays": 365, "confidence": "Confirmed", "saf": "Subterranean denial negates air/ISR overmatch; demands specialised breach, mapping and subterranean-warfare capabilities.", "note": "Persistent measure that is slow and costly to counter.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/tunnels" }] },
-    { "id": "cap_tunnel_breach", "name": "Tunnel detection & breach", "aka": "Subterranean clearance toolkit", "category": "Subterranean", "domain": "Protection", "role": "Countermeasure", "theatres": ["IL_GZ"], "lifecycle": "Scaling", "heat": 42, "trend": "Rising", "firstObserved": "2023-11", "vector": "Indigenous production", "counters": ["cap_tunnels"], "counteredBy": [], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Probable", "saf": "Robotics, sensing and engineered defeat for tunnels; a slow-burning but doctrinally important counter to invest in.", "note": "Mix of robotics, sensing, flooding and demolition.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/tunnel-breach" }] },
-    { "id": "cap_surface_combatant", "name": "Conventional surface combatant", "aka": "Crewed warship", "category": "Maritime", "domain": "Manoeuvre", "role": "Measure", "theatres": ["RU_UA", "IL_US_IR"], "lifecycle": "Superseded", "heat": 32, "trend": "Declining", "firstObserved": "2022-02", "vector": "Indigenous production", "counters": [], "counteredBy": ["cap_usv"], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Confirmed", "saf": "High-value crewed surface units are increasingly held at risk by cheap USVs/missiles in confined seas — a sea-control rethink.", "note": "Forced into port or out of contested waters by cheap unmanned threats.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/surface-combatant" }] },
-    { "id": "cap_heli_patrol", "name": "Maritime patrol helicopter", "aka": "Counter-USV rotary patrol", "category": "Maritime", "domain": "Protection", "role": "Countermeasure", "theatres": ["RU_UA"], "lifecycle": "Emerging", "heat": 34, "trend": "Steady", "firstObserved": "2023-08", "vector": "Indigenous production", "counters": ["cap_usv"], "counteredBy": [], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Probable", "saf": "Rotary patrol is a partial counter to USVs; small fast surface threats still lack a cheap, scalable defeat.", "note": "Only a partial answer to the USV problem.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/heli-patrol" }] },
-    { "id": "cap_border_isr", "name": "Border surveillance ISR", "aka": "Tactical ISR drones & sensors", "category": "ISR UAV", "domain": "Intelligence", "role": "Measure", "theatres": ["TH_KH"], "lifecycle": "Scaling", "heat": 36, "trend": "Rising", "firstObserved": "2025-09", "vector": "Commercial / COTS", "counters": [], "counteredBy": [], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Probable", "saf": "Low-cost ISR for border transparency; a confidence-building enabler more than a strike capability.", "note": "Rising adoption for border monitoring; not yet a kinetic dynamic.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/border-isr" }] },
-    { "id": "cap_artillery", "name": "Tube & SP artillery", "aka": "Conventional indirect fires", "category": "Tube artillery", "domain": "Fires & Strikes", "role": "Measure", "theatres": ["TH_KH", "RU_UA"], "lifecycle": "Maturing", "heat": 47, "trend": "Steady", "firstObserved": "2022-02", "vector": "Indigenous production", "counters": [], "counteredBy": ["cap_recon_uav"], "supersedes": null, "supersededBy": null, "timeToCounterDays": null, "confidence": "Confirmed", "saf": "Still the mass-fires backbone, but counter-battery driven by drone ISR makes shoot-and-scoot and dispersion essential.", "note": "Enduring, but survivability now hinges on countering ISR.", "sources": [{ "label": "Capability note", "url": "https://example.org/cap/artillery" }] }
+    {
+      "id": "cap_shahed",
+      "name": "Shahed-136 / Geran-2",
+      "aka": "One-way attack loitering munition",
+      "category": "Loitering munition",
+      "domain": "Fires & Strikes",
+      "role": "Measure",
+      "theatres": [
+        "RU_UA",
+        "IL_US_IR"
+      ],
+      "lifecycle": "Peak",
+      "heat": 88,
+      "trend": "Steady",
+      "firstObserved": "2022-09",
+      "vector": "State transfer",
+      "counters": [],
+      "counteredBy": [
+        "cap_ew_tac",
+        "cap_spaag",
+        "cap_interceptor_uav",
+        "cap_patriot"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": 75,
+      "confidence": "Confirmed",
+      "saf": "Mass cheap one-way attack drones force a high-low cost-exchange problem for air defence; drives need for layered, low-cost interceptors and EW.",
+      "note": "Iranian design now produced at scale in Russia; the archetypal proliferating long-range strike capability.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/shahed"
+        }
+      ],
+      "match": [
+        "shahed",
+        "geran",
+        "one-way attack",
+        "loitering munition",
+        "owa drone"
+      ]
+    },
+    {
+      "id": "cap_fpv",
+      "name": "RF-controlled FPV drone",
+      "aka": "First-person-view attack drone",
+      "category": "FPV / tactical drone",
+      "domain": "Fires & Strikes",
+      "role": "Measure",
+      "theatres": [
+        "RU_UA"
+      ],
+      "lifecycle": "Peak",
+      "heat": 90,
+      "trend": "Steady",
+      "firstObserved": "2023-03",
+      "vector": "Commercial / COTS",
+      "counters": [
+        "cap_recon_uav"
+      ],
+      "counteredBy": [
+        "cap_ew_tac"
+      ],
+      "supersedes": [
+        "cap_dji_isr"
+      ],
+      "supersededBy": [
+        "cap_fpv_fiber"
+      ],
+      "timeToCounterDays": 90,
+      "confidence": "Confirmed",
+      "saf": "Cheap precision under 10km collapses the close fight; mandates EW at platoon level, overhead cover and counter-UAS drills.",
+      "note": "Dominant tactical killer but vulnerable to RF jamming, driving the move to fibre-optic control.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/fpv"
+        }
+      ],
+      "match": [
+        "fpv",
+        "first-person",
+        "first person view"
+      ]
+    },
+    {
+      "id": "cap_fpv_fiber",
+      "name": "Fibre-optic FPV drone",
+      "aka": "EW-immune wire-guided FPV",
+      "category": "FPV / tactical drone",
+      "domain": "Fires & Strikes",
+      "role": "Dual",
+      "theatres": [
+        "RU_UA"
+      ],
+      "lifecycle": "Scaling",
+      "heat": 74,
+      "trend": "Rising",
+      "firstObserved": "2024-08",
+      "vector": "Indigenous production",
+      "counters": [
+        "cap_ew_tac"
+      ],
+      "counteredBy": [],
+      "supersedes": [
+        "cap_fpv"
+      ],
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Confirmed",
+      "saf": "Immune to RF jamming — a countermeasure to EW that is itself a strike measure; signals limits of EW-only counter-UAS and need for kinetic/last-ditch defeat.",
+      "note": "Clearest current example of a countermeasure-to-the-countermeasure (defeats trench EW).",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/fpv-fiber"
+        }
+      ],
+      "match": [
+        "fibre-optic",
+        "fiber-optic",
+        "fibre optic",
+        "fiber optic",
+        "wire-guided"
+      ]
+    },
+    {
+      "id": "cap_umpk",
+      "name": "UMPK glide bomb",
+      "aka": "Guided glide-bomb kit",
+      "category": "Glide bomb",
+      "domain": "Fires & Strikes",
+      "role": "Measure",
+      "theatres": [
+        "RU_UA"
+      ],
+      "lifecycle": "Peak",
+      "heat": 85,
+      "trend": "Steady",
+      "firstObserved": "2023-01",
+      "vector": "Indigenous production",
+      "counters": [],
+      "counteredBy": [
+        "cap_longrange_sam",
+        "cap_ew_gnss"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": 240,
+      "confidence": "Confirmed",
+      "saf": "Stand-off mass fires from inside friendly airspace; hard to counter without pushing GBAD/airpower forward — a persistent un-countered problem.",
+      "note": "Cheap kits turn legacy bombs into stand-off munitions; among the hardest measures to counter.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/umpk"
+        }
+      ],
+      "match": [
+        "umpk",
+        "glide bomb",
+        "glide-bomb",
+        "guided bomb"
+      ]
+    },
+    {
+      "id": "cap_himars",
+      "name": "HIMARS / GMLRS",
+      "aka": "Precision rocket artillery",
+      "category": "Rocket artillery",
+      "domain": "Fires & Strikes",
+      "role": "Measure",
+      "theatres": [
+        "RU_UA"
+      ],
+      "lifecycle": "Maturing",
+      "heat": 55,
+      "trend": "Declining",
+      "firstObserved": "2022-06",
+      "vector": "State transfer",
+      "counters": [],
+      "counteredBy": [
+        "cap_ew_gnss",
+        "cap_s400"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": 180,
+      "confidence": "Confirmed",
+      "saf": "Demonstrates how GNSS jamming erodes precision-fires effectiveness over time; argues for alt-navigation and resilient PNT.",
+      "note": "Initial decisive effect degraded as Russian GNSS jamming/spoofing matured.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/himars"
+        }
+      ],
+      "match": [
+        "himars",
+        "gmlrs"
+      ]
+    },
+    {
+      "id": "cap_atacms",
+      "name": "ATACMS / Storm Shadow",
+      "aka": "Deep-strike missiles",
+      "category": "Cruise / ballistic",
+      "domain": "Fires & Strikes",
+      "role": "Measure",
+      "theatres": [
+        "RU_UA"
+      ],
+      "lifecycle": "Maturing",
+      "heat": 60,
+      "trend": "Steady",
+      "firstObserved": "2023-05",
+      "vector": "State transfer",
+      "counters": [],
+      "counteredBy": [
+        "cap_s400"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": 120,
+      "confidence": "Confirmed",
+      "saf": "Deep strike forces dispersal of rear logistics/airpower; counter is to move assets out of range — a manoeuvre/sustainment lesson.",
+      "note": "Drives Russian relocation of high-value assets beyond range.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/atacms"
+        }
+      ],
+      "match": [
+        "atacms",
+        "storm shadow",
+        "scalp"
+      ]
+    },
+    {
+      "id": "cap_usv",
+      "name": "Naval USV (Magura / Sea Baby)",
+      "aka": "Explosive uncrewed surface vessel",
+      "category": "Maritime / USV",
+      "domain": "Manoeuvre",
+      "role": "Measure",
+      "theatres": [
+        "RU_UA",
+        "IL_US_IR"
+      ],
+      "lifecycle": "Scaling",
+      "heat": 78,
+      "trend": "Rising",
+      "firstObserved": "2022-10",
+      "vector": "Indigenous production",
+      "counters": [
+        "cap_surface_combatant"
+      ],
+      "counteredBy": [
+        "cap_heli_patrol"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": 210,
+      "confidence": "Confirmed",
+      "saf": "A navy-less actor achieved sea denial against a conventional fleet; major lesson for small-craft swarm threats to naval and coastal assets.",
+      "note": "Pushed the Black Sea Fleet out of the western basin; concept now diffusing (e.g. Red Sea).",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/usv"
+        }
+      ],
+      "match": [
+        "usv",
+        "uncrewed surface",
+        "unmanned surface",
+        "sea drone",
+        "magura",
+        "sea baby",
+        "naval drone",
+        "drone boat"
+      ]
+    },
+    {
+      "id": "cap_recon_uav",
+      "name": "Recon UAV (Orlan / ZALA)",
+      "aka": "ISR / artillery-spotting drone",
+      "category": "ISR UAV",
+      "domain": "Intelligence",
+      "role": "Measure",
+      "theatres": [
+        "RU_UA"
+      ],
+      "lifecycle": "Peak",
+      "heat": 65,
+      "trend": "Steady",
+      "firstObserved": "2022-03",
+      "vector": "Indigenous production",
+      "counters": [],
+      "counteredBy": [
+        "cap_ew_tac",
+        "cap_interceptor_uav"
+      ],
+      "supersedes": [
+        "cap_dji_isr"
+      ],
+      "supersededBy": null,
+      "timeToCounterDays": 90,
+      "confidence": "Confirmed",
+      "saf": "Persistent ISR closes the sensor-to-shooter loop; counter-ISR and emission control become survival skills.",
+      "note": "Backbone of the reconnaissance-strike complex.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/recon-uav"
+        }
+      ],
+      "match": [
+        "orlan",
+        "zala",
+        "reconnaissance drone",
+        "recon drone",
+        "isr drone",
+        "surveillance drone"
+      ]
+    },
+    {
+      "id": "cap_dji_isr",
+      "name": "COTS quadcopter ISR (DJI-class)",
+      "aka": "Commercial recon quadcopter",
+      "category": "ISR UAV",
+      "domain": "Intelligence",
+      "role": "Measure",
+      "theatres": [
+        "RU_UA"
+      ],
+      "lifecycle": "Superseded",
+      "heat": 28,
+      "trend": "Declining",
+      "firstObserved": "2022-02",
+      "vector": "Commercial / COTS",
+      "counters": [],
+      "counteredBy": [
+        "cap_ew_tac"
+      ],
+      "supersedes": null,
+      "supersededBy": [
+        "cap_recon_uav",
+        "cap_fpv"
+      ],
+      "timeToCounterDays": 60,
+      "confidence": "Confirmed",
+      "saf": "Early COTS adaptation, now displaced by purpose-built ISR/FPV — a clean example of supersession to track.",
+      "note": "Vulnerable to tracking/geofencing and jamming; overtaken by military FPV and recon UAVs.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/dji"
+        }
+      ],
+      "match": [
+        "dji",
+        "mavic",
+        "quadcopter",
+        "commercial drone"
+      ]
+    },
+    {
+      "id": "cap_patriot",
+      "name": "Patriot / IRIS-T / NASAMS",
+      "aka": "Layered SAM systems",
+      "category": "Air & missile defence",
+      "domain": "Protection",
+      "role": "Countermeasure",
+      "theatres": [
+        "RU_UA",
+        "IL_US_IR"
+      ],
+      "lifecycle": "Peak",
+      "heat": 80,
+      "trend": "Steady",
+      "firstObserved": "2023-01",
+      "vector": "State transfer",
+      "counters": [
+        "cap_shahed",
+        "cap_iran_brm",
+        "cap_atacms"
+      ],
+      "counteredBy": [],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Confirmed",
+      "saf": "High-end intercept works but is interceptor-stock and cost constrained; magazine depth and cost-per-kill are the binding planning factors.",
+      "note": "Effective against ballistic and cruise threats; saturation and interceptor economics are the limiting risk.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/patriot"
+        }
+      ],
+      "match": [
+        "patriot",
+        "iris-t",
+        "nasams"
+      ]
+    },
+    {
+      "id": "cap_ew_tac",
+      "name": "Tactical EW / trench jammers",
+      "aka": "Man-portable & vehicle RF jamming",
+      "category": "Electronic warfare",
+      "domain": "Intelligence",
+      "role": "Countermeasure",
+      "theatres": [
+        "RU_UA"
+      ],
+      "lifecycle": "Peak",
+      "heat": 76,
+      "trend": "Rising",
+      "firstObserved": "2023-04",
+      "vector": "Indigenous production",
+      "counters": [
+        "cap_fpv",
+        "cap_shahed",
+        "cap_recon_uav",
+        "cap_dji_isr"
+      ],
+      "counteredBy": [
+        "cap_fpv_fiber"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Confirmed",
+      "saf": "The dominant counter-UAS method — but fibre-optic FPV defeats it, so EW must be paired with kinetic last-ditch defeat.",
+      "note": "Now itself being countered by EW-immune fibre-optic drones.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/ew-tac"
+        }
+      ],
+      "match": [
+        "jammer",
+        "jamming",
+        "electronic warfare"
+      ]
+    },
+    {
+      "id": "cap_ew_gnss",
+      "name": "GNSS jamming / spoofing",
+      "aka": "Counter-PNT electronic warfare",
+      "category": "Electronic warfare",
+      "domain": "Intelligence",
+      "role": "Countermeasure",
+      "theatres": [
+        "RU_UA",
+        "IL_US_IR"
+      ],
+      "lifecycle": "Peak",
+      "heat": 70,
+      "trend": "Steady",
+      "firstObserved": "2022-08",
+      "vector": "Indigenous production",
+      "counters": [
+        "cap_himars",
+        "cap_umpk",
+        "cap_shahed"
+      ],
+      "counteredBy": [],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Confirmed",
+      "saf": "Degrades GNSS-guided munitions and navigation; drives demand for resilient PNT and inertial/terminal seekers.",
+      "note": "Quietly one of the most consequential countermeasures of the war.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/ew-gnss"
+        }
+      ],
+      "match": [
+        "gnss",
+        "gps jamming",
+        "gps spoofing",
+        "spoofing",
+        " pnt"
+      ]
+    },
+    {
+      "id": "cap_interceptor_uav",
+      "name": "Interceptor UAV",
+      "aka": "Drone-on-drone interceptor",
+      "category": "Interceptor drone",
+      "domain": "Protection",
+      "role": "Countermeasure",
+      "theatres": [
+        "RU_UA"
+      ],
+      "lifecycle": "Emerging",
+      "heat": 46,
+      "trend": "Rising",
+      "firstObserved": "2024-05",
+      "vector": "Indigenous production",
+      "counters": [
+        "cap_shahed",
+        "cap_recon_uav"
+      ],
+      "counteredBy": [],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Probable",
+      "saf": "A low-cost kinetic answer to the Shahed cost-exchange problem; watch as a fast-rising counter-UAS option.",
+      "note": "Promising low-cost intercept; scaling and reliability still maturing.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/interceptor-uav"
+        }
+      ],
+      "match": [
+        "interceptor drone",
+        "interceptor uav",
+        "drone interceptor"
+      ]
+    },
+    {
+      "id": "cap_spaag",
+      "name": "Mobile AAA / SPAAG (Gepard)",
+      "aka": "Self-propelled anti-aircraft gun",
+      "category": "Air & missile defence",
+      "domain": "Protection",
+      "role": "Countermeasure",
+      "theatres": [
+        "RU_UA"
+      ],
+      "lifecycle": "Maturing",
+      "heat": 50,
+      "trend": "Steady",
+      "firstObserved": "2022-11",
+      "vector": "State transfer",
+      "counters": [
+        "cap_shahed"
+      ],
+      "counteredBy": [],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Confirmed",
+      "saf": "Gun-based defeat is cost-favourable against drones; revalidates SHORAD/gun AD that many militaries had divested.",
+      "note": "Cost-effective Shahed defeat; ammunition supply is the constraint.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/spaag"
+        }
+      ],
+      "match": [
+        "gepard",
+        "spaag",
+        "anti-aircraft gun"
+      ]
+    },
+    {
+      "id": "cap_longrange_sam",
+      "name": "Forward long-range SAM",
+      "aka": "Push-forward GBAD vs glide bombs",
+      "category": "Air & missile defence",
+      "domain": "Protection",
+      "role": "Countermeasure",
+      "theatres": [
+        "RU_UA"
+      ],
+      "lifecycle": "Emerging",
+      "heat": 40,
+      "trend": "Rising",
+      "firstObserved": "2024-02",
+      "vector": "State transfer",
+      "counters": [
+        "cap_umpk"
+      ],
+      "counteredBy": [],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Probable",
+      "saf": "Only credible counter to glide bombs is to threaten the launch aircraft — high-risk forward GBAD employment.",
+      "note": "Attempts to hold launch platforms at risk; exposes scarce SAMs to attrition.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/lr-sam"
+        }
+      ],
+      "match": [
+        "s-300",
+        "long-range sam"
+      ]
+    },
+    {
+      "id": "cap_s400",
+      "name": "Strategic SAM (S-400)",
+      "aka": "Long-range air/missile defence",
+      "category": "Air & missile defence",
+      "domain": "Protection",
+      "role": "Countermeasure",
+      "theatres": [
+        "RU_UA"
+      ],
+      "lifecycle": "Maturing",
+      "heat": 52,
+      "trend": "Steady",
+      "firstObserved": "2022-02",
+      "vector": "Indigenous production",
+      "counters": [
+        "cap_atacms",
+        "cap_himars"
+      ],
+      "counteredBy": [
+        "cap_atacms"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Confirmed",
+      "saf": "High-end SAM that is itself a priority target for deep strike — the SEAD/IADS duel in microcosm.",
+      "note": "Both a countermeasure and a high-value target.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/s400"
+        }
+      ],
+      "match": [
+        "s-400",
+        "s400"
+      ]
+    },
+    {
+      "id": "cap_iran_brm",
+      "name": "Iranian ballistic / cruise + Shahed mix",
+      "aka": "Combined missile-and-drone salvo",
+      "category": "Cruise / ballistic",
+      "domain": "Fires & Strikes",
+      "role": "Measure",
+      "theatres": [
+        "IL_US_IR",
+        "IL_LB"
+      ],
+      "lifecycle": "Peak",
+      "heat": 78,
+      "trend": "Steady",
+      "firstObserved": "2024-04",
+      "vector": "Indigenous production",
+      "counters": [],
+      "counteredBy": [
+        "cap_arrow_thaad",
+        "cap_patriot"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": 30,
+      "confidence": "Confirmed",
+      "saf": "Saturation salvos mixing ballistic, cruise and drones stress layered defence depth; magazine depth is decisive.",
+      "note": "Proliferation hub: the Shahed family and missile tech radiate from here to multiple theatres and proxies.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/iran-brm"
+        }
+      ],
+      "match": [
+        "ballistic missile",
+        "cruise missile",
+        "missile salvo",
+        "oreshnik",
+        "missile barrage"
+      ]
+    },
+    {
+      "id": "cap_arrow_thaad",
+      "name": "Arrow / THAAD layered defence",
+      "aka": "Exo/endo-atmospheric BMD",
+      "category": "Air & missile defence",
+      "domain": "Protection",
+      "role": "Countermeasure",
+      "theatres": [
+        "IL_US_IR"
+      ],
+      "lifecycle": "Peak",
+      "heat": 75,
+      "trend": "Rising",
+      "firstObserved": "2024-04",
+      "vector": "State transfer",
+      "counters": [
+        "cap_iran_brm"
+      ],
+      "counteredBy": [],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Confirmed",
+      "saf": "Demonstrates multi-tier BMD intercepting large salvos; cost-per-engagement and interceptor stockpiles are the watch items.",
+      "note": "High intercept rates against complex salvos; sustainment economics are the limiting factor.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/arrow-thaad"
+        }
+      ],
+      "match": [
+        "arrow",
+        "thaad"
+      ]
+    },
+    {
+      "id": "cap_iron_dome",
+      "name": "Iron Dome",
+      "aka": "Short-range rocket defence",
+      "category": "Air & missile defence",
+      "domain": "Protection",
+      "role": "Countermeasure",
+      "theatres": [
+        "IL_GZ",
+        "IL_LB"
+      ],
+      "lifecycle": "Maturing",
+      "heat": 62,
+      "trend": "Steady",
+      "firstObserved": "2022-01",
+      "vector": "Indigenous production",
+      "counters": [
+        "cap_rockets"
+      ],
+      "counteredBy": [
+        "cap_rockets"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Confirmed",
+      "saf": "Mature C-RAM with strong intercept rates, but large simultaneous salvos remain the saturation risk.",
+      "note": "Effectiveness eroded only by mass simultaneous launches.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/iron-dome"
+        }
+      ],
+      "match": [
+        "iron dome",
+        "c-ram"
+      ]
+    },
+    {
+      "id": "cap_rockets",
+      "name": "Unguided/short-range rockets",
+      "aka": "Massed rocket fires",
+      "category": "Rocket artillery",
+      "domain": "Fires & Strikes",
+      "role": "Measure",
+      "theatres": [
+        "IL_GZ",
+        "IL_LB"
+      ],
+      "lifecycle": "Maturing",
+      "heat": 48,
+      "trend": "Declining",
+      "firstObserved": "2022-01",
+      "vector": "Indigenous production",
+      "counters": [],
+      "counteredBy": [
+        "cap_iron_dome"
+      ],
+      "supersedes": null,
+      "supersededBy": [
+        "cap_iran_brm"
+      ],
+      "timeToCounterDays": 30,
+      "confidence": "Confirmed",
+      "saf": "Saturation is the only path through modern C-RAM; drives interest in PGMs over volume — a measure being superseded by precision.",
+      "note": "Being displaced by precision-guided systems where available.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/rockets"
+        }
+      ],
+      "match": [
+        "rocket barrage",
+        "rocket fire",
+        "rocket salvo",
+        "katyusha",
+        "unguided rocket"
+      ]
+    },
+    {
+      "id": "cap_trophy_aps",
+      "name": "Trophy active protection system",
+      "aka": "Hard-kill APS on armour",
+      "category": "Active protection",
+      "domain": "Protection",
+      "role": "Countermeasure",
+      "theatres": [
+        "IL_GZ"
+      ],
+      "lifecycle": "Maturing",
+      "heat": 50,
+      "trend": "Steady",
+      "firstObserved": "2023-10",
+      "vector": "Indigenous production",
+      "counters": [
+        "cap_atgm"
+      ],
+      "counteredBy": [
+        "cap_fpv"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Confirmed",
+      "saf": "Hard-kill APS defeats RPG/ATGM well but top-attack drones probe its limits — APS plus overhead cover is the emerging standard.",
+      "note": "Strong vs direct ATGM/RPG; top-attack FPV is the open challenge.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/trophy"
+        }
+      ],
+      "match": [
+        "trophy",
+        "active protection"
+      ]
+    },
+    {
+      "id": "cap_atgm",
+      "name": "Anti-tank guided missile",
+      "aka": "ATGM / RPG",
+      "category": "Anti-armour",
+      "domain": "Fires & Strikes",
+      "role": "Measure",
+      "theatres": [
+        "IL_GZ",
+        "IL_LB"
+      ],
+      "lifecycle": "Maturing",
+      "heat": 44,
+      "trend": "Declining",
+      "firstObserved": "2022-01",
+      "vector": "State transfer",
+      "counters": [],
+      "counteredBy": [
+        "cap_trophy_aps"
+      ],
+      "supersedes": null,
+      "supersededBy": [
+        "cap_fpv"
+      ],
+      "timeToCounterDays": 90,
+      "confidence": "Confirmed",
+      "saf": "Classic anti-armour increasingly defeated by APS and out-ranged by cheap FPV — a measure under pressure from both sides.",
+      "note": "Being superseded for many tasks by cheaper FPV drones.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/atgm"
+        }
+      ],
+      "match": [
+        "atgm",
+        "anti-tank",
+        "rpg",
+        "kornet"
+      ]
+    },
+    {
+      "id": "cap_tunnels",
+      "name": "Subterranean tunnel networks",
+      "aka": "Underground manoeuvre & C2",
+      "category": "Subterranean",
+      "domain": "Manoeuvre",
+      "role": "Measure",
+      "theatres": [
+        "IL_GZ",
+        "IL_LB"
+      ],
+      "lifecycle": "Maturing",
+      "heat": 54,
+      "trend": "Declining",
+      "firstObserved": "2022-01",
+      "vector": "Indigenous production",
+      "counters": [],
+      "counteredBy": [
+        "cap_tunnel_breach"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": 365,
+      "confidence": "Confirmed",
+      "saf": "Subterranean denial negates air/ISR overmatch; demands specialised breach, mapping and subterranean-warfare capabilities.",
+      "note": "Persistent measure that is slow and costly to counter.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/tunnels"
+        }
+      ],
+      "match": [
+        "tunnel",
+        "subterranean",
+        "underground"
+      ]
+    },
+    {
+      "id": "cap_tunnel_breach",
+      "name": "Tunnel detection & breach",
+      "aka": "Subterranean clearance toolkit",
+      "category": "Subterranean",
+      "domain": "Protection",
+      "role": "Countermeasure",
+      "theatres": [
+        "IL_GZ"
+      ],
+      "lifecycle": "Scaling",
+      "heat": 42,
+      "trend": "Rising",
+      "firstObserved": "2023-11",
+      "vector": "Indigenous production",
+      "counters": [
+        "cap_tunnels"
+      ],
+      "counteredBy": [],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Probable",
+      "saf": "Robotics, sensing and engineered defeat for tunnels; a slow-burning but doctrinally important counter to invest in.",
+      "note": "Mix of robotics, sensing, flooding and demolition.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/tunnel-breach"
+        }
+      ],
+      "match": [
+        "tunnel detection",
+        "counter-tunnel",
+        "subterranean clearance"
+      ]
+    },
+    {
+      "id": "cap_surface_combatant",
+      "name": "Conventional surface combatant",
+      "aka": "Crewed warship",
+      "category": "Maritime",
+      "domain": "Manoeuvre",
+      "role": "Measure",
+      "theatres": [
+        "RU_UA",
+        "IL_US_IR"
+      ],
+      "lifecycle": "Superseded",
+      "heat": 32,
+      "trend": "Declining",
+      "firstObserved": "2022-02",
+      "vector": "Indigenous production",
+      "counters": [],
+      "counteredBy": [
+        "cap_usv"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Confirmed",
+      "saf": "High-value crewed surface units are increasingly held at risk by cheap USVs/missiles in confined seas — a sea-control rethink.",
+      "note": "Forced into port or out of contested waters by cheap unmanned threats.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/surface-combatant"
+        }
+      ],
+      "match": [
+        "warship",
+        "frigate",
+        "corvette",
+        "black sea fleet",
+        "naval vessel"
+      ]
+    },
+    {
+      "id": "cap_heli_patrol",
+      "name": "Maritime patrol helicopter",
+      "aka": "Counter-USV rotary patrol",
+      "category": "Maritime",
+      "domain": "Protection",
+      "role": "Countermeasure",
+      "theatres": [
+        "RU_UA"
+      ],
+      "lifecycle": "Emerging",
+      "heat": 34,
+      "trend": "Steady",
+      "firstObserved": "2023-08",
+      "vector": "Indigenous production",
+      "counters": [
+        "cap_usv"
+      ],
+      "counteredBy": [],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Probable",
+      "saf": "Rotary patrol is a partial counter to USVs; small fast surface threats still lack a cheap, scalable defeat.",
+      "note": "Only a partial answer to the USV problem.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/heli-patrol"
+        }
+      ],
+      "match": [
+        "patrol helicopter",
+        "naval helicopter"
+      ]
+    },
+    {
+      "id": "cap_border_isr",
+      "name": "Border surveillance ISR",
+      "aka": "Tactical ISR drones & sensors",
+      "category": "ISR UAV",
+      "domain": "Intelligence",
+      "role": "Measure",
+      "theatres": [
+        "TH_KH"
+      ],
+      "lifecycle": "Scaling",
+      "heat": 36,
+      "trend": "Rising",
+      "firstObserved": "2025-09",
+      "vector": "Commercial / COTS",
+      "counters": [],
+      "counteredBy": [],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Probable",
+      "saf": "Low-cost ISR for border transparency; a confidence-building enabler more than a strike capability.",
+      "note": "Rising adoption for border monitoring; not yet a kinetic dynamic.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/border-isr"
+        }
+      ],
+      "match": [
+        "border surveillance",
+        "livestream",
+        "border monitoring"
+      ]
+    },
+    {
+      "id": "cap_artillery",
+      "name": "Tube & SP artillery",
+      "aka": "Conventional indirect fires",
+      "category": "Tube artillery",
+      "domain": "Fires & Strikes",
+      "role": "Measure",
+      "theatres": [
+        "TH_KH",
+        "RU_UA"
+      ],
+      "lifecycle": "Maturing",
+      "heat": 47,
+      "trend": "Steady",
+      "firstObserved": "2022-02",
+      "vector": "Indigenous production",
+      "counters": [],
+      "counteredBy": [
+        "cap_recon_uav"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "timeToCounterDays": null,
+      "confidence": "Confirmed",
+      "saf": "Still the mass-fires backbone, but counter-battery driven by drone ISR makes shoot-and-scoot and dispersion essential.",
+      "note": "Enduring, but survivability now hinges on countering ISR.",
+      "sources": [
+        {
+          "label": "Capability note",
+          "url": "https://example.org/cap/artillery"
+        }
+      ],
+      "match": [
+        "artillery",
+        "howitzer"
+      ]
+    }
   ],
 
   "formationGroups": [
