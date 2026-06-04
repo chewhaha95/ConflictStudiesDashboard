@@ -166,6 +166,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("Heat & Lifecycle headers carry info tooltips", cb.querySelectorAll(".matrix thead .th-info .tip-body").length >= 2);
   check("lifecycle chips define phases on hover/tap", [...cb.querySelectorAll(".matrix tbody .lc-chip .tip-body")].some(t => /Newly observed|Dominant and widely employed/.test(t.textContent)));
   check("heat leaderboard populated", cb.querySelectorAll(".matrix tbody tr").length >= 20);
+  check("evidence column + provenance badges present", [...cb.querySelectorAll(".matrix thead th")].some(th => /Evidence/.test(th.textContent)) && cb.querySelectorAll(".matrix tbody .ev-badge").length >= 20);
   check("measure-countermeasure cycle cards present", cb.querySelectorAll(".cycle-card").length > 0);
   check("supersession chains present", cb.querySelectorAll(".sup-row").length > 0);
   check("cross-theatre proliferation rows present", cb.querySelectorAll(".cmp-table tbody tr").length > 0);
@@ -238,6 +239,9 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     check("multiple editions present (past + current)", eds.length >= 2, `${eds.length} editions`);
     const hasDevs = eds.some(ed => Object.values(ed.theatres).some(e => e.developments.length && e.developments[0].headline && Array.isArray(e.developments[0].paragraphs)));
     check("editions carry verbatim development blocks", hasDevs);
+    const ce = lw.capabilityEvidence || {};
+    const ceOk = Object.keys(ce).length >= 1 && Object.values(ce).every(arr => arr.every(x => x.weekId && x.theatre && x.url && x.headline));
+    check("capabilityEvidence present & traceable (capId → brief obs w/ links)", ceOk, `${Object.keys(ce).length} capabilities evidenced`);
   } else {
     console.log("  (weekly-live.json not present — skipping contract check)");
   }
@@ -260,7 +264,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     editions: [
       { __live: true, weekId: "BRIEF-NEW", rangeLabel: "25 May – 4 June 2026", weekStart: "2026-05-25", weekEnd: "2026-06-04", sourceUrl: "https://example.org/new", bluf: "LATEST-BLUF", theatres: mkTheatres("LATEST") },
       { __live: true, weekId: "BRIEF-OLD", rangeLabel: "18 May – 25 May 2026", weekStart: "2026-05-18", weekEnd: "2026-05-25", sourceUrl: "https://example.org/old", bluf: "ARCHIVED-BLUF", theatres: mkTheatres("ARCHIVED") }
-    ]
+    ],
+    capabilityEvidence: { cap_shahed: [{ weekId: "BRIEF-NEW", rangeLabel: "25 May – 4 June 2026", theatre: "RU_UA", headline: "EVIDENCE-HEADLINE", url: "https://example.org/evidence", source: "ISW" }] }
   };
   const dom2 = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true });
   global.window = dom2.window; global.document = dom2.window.document;
@@ -286,6 +291,18 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   const wb4 = d2.querySelector("#view-weekly .view-body");
   check("past edition shows 'Archived edition' banner + verbatim words",
     /Archived edition/.test((wb4.querySelector(".live-banner") || {}).textContent || "") && wb4.textContent.includes("ARCHIVED-HEADLINE"));
+  // capability brief-evidence wired through to the leaderboard
+  d2.querySelector('.tab-btn[data-horizon="capabilities"]').click(); await sleep(60);
+  const cb2 = d2.querySelector("#view-capabilities .view-body");
+  check("brief-evidence badge + cited link shown on evidenced capability",
+    cb2.querySelectorAll(".ev-badge.ev-yes").length >= 1 && /EVIDENCE-HEADLINE/.test(cb2.textContent) && !!cb2.querySelector(".ev-list a[href^='http']"));
+  check("'Brief-evidenced only' filter present and narrows", (() => {
+    const chip = cb2.querySelector("#cap-ev-only"); if (!chip) return false;
+    const before = cb2.querySelectorAll(".matrix tbody tr").length;
+    chip.click();
+    const after = d2.querySelector("#view-capabilities .view-body").querySelectorAll(".matrix tbody tr").length;
+    return after > 0 && after < before;
+  })());
   // restore globals for any later use
   global.window = window; global.document = doc;
 

@@ -29,6 +29,7 @@
     periodId: null,           // active week/month/quarter id
     formationGroup: "ALL",    // monthly tab: 'ALL' | formation-group id
     monthlyEchelon: "ALL",    // monthly group panel: 'ALL' | Brigade | Battalion | Company
+    capEvidencedOnly: false,  // capabilities: show only brief-evidenced capabilities
     theme: "light",
     filters: {
       theatres:  new Set(),   // empty => all
@@ -908,6 +909,9 @@
       this.dynamics = m;
     },
     theatreHeatOf(c, t) { const d = this.dynamics[c.id]; return d && d.byTheatre ? (d.byTheatre[t] || 0) : 0; },
+    // Brief-derived evidence (traceable) for a capability
+    evidence(c) { return (DB.capabilityEvidence && DB.capabilityEvidence[c.id]) || []; },
+    isEvidenced(c) { return this.evidence(c).length > 0; },
     // Theatres in scope = the active theatre filter, or all five if none set
     selectedTheatreIds() {
       return State.filters.theatres.size
@@ -941,6 +945,7 @@
       const f = State.filters;
       const q = f.search.trim().toLowerCase();
       return DB.capabilities.filter(c => {
+        if (State.capEvidencedOnly && !this.isEvidenced(c)) return false;
         if (f.theatres.size && !c.theatres.some(t => f.theatres.has(t))) return false;
         if (f.domains.size && !f.domains.has(c.domain)) return false;
         if (f.lifecycle.size && !f.lifecycle.has(c.lifecycle)) return false;
@@ -1044,9 +1049,12 @@
       // ---- lifecycle filter chips ----
       const lcChips = Object.keys(DB.capabilityDefs.lifecycle).map(lc =>
         `<button class="fchip lc-filter ${State.filters.lifecycle.has(lc) ? "on" : ""}" aria-pressed="${State.filters.lifecycle.has(lc)}" data-lc="${esc(lc)}">${esc(lc)}</button>`).join("");
+      const evCount = DB.capabilities.filter(c => this.isEvidenced(c)).length;
+      const evChip = DB.capabilityEvidence
+        ? `<button class="fchip ev-filter ${State.capEvidencedOnly ? "on" : ""}" aria-pressed="${State.capEvidencedOnly}" id="cap-ev-only">✓ Brief-evidenced only (${evCount})</button>` : "";
       html += `<div class="section"><div class="section-head"><h2>Capabilities &amp; Countermeasures</h2>
         <span class="hint">Theatre / domain / search filters apply from the sidebar</span></div>
-        <div class="lc-filter-row">${lcChips}</div></div>`;
+        <div class="lc-filter-row">${lcChips}${evChip}</div></div>`;
 
       // ---- KPI strip ----
       const kpi = (label, val, sub) => `<div class="kpi"><div class="kpi-val">${val}</div><div class="kpi-label">${esc(label)}</div>${sub ? `<div class="kpi-sub">${esc(sub)}</div>` : ""}</div>`;
@@ -1088,9 +1096,14 @@
         <div class="cycle-grid">${pairCards || `<div class="empty">No measure–countermeasure pairs in the current filter.</div>`}</div></div>`;
 
       // ---- heat leaderboard ----
+      const evItem = (x) => `<div class="ev-item"><span class="ev-meta">${esc(x.rangeLabel || x.weekId)} · ${esc(THEATRE_BY_ID[x.theatre] ? THEATRE_BY_ID[x.theatre].short : x.theatre)}</span> ${esc(x.headline)} <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.source || "source")} ↗</a></div>`;
       const rows = ranked.map((c, i) => {
         const star = this.isDivPriority(c) ? '<span class="prio" title="Priority domain for this division">★</span> ' : "";
         const heat = this.heatOf(c);
+        const ev = this.evidence(c);
+        const evCell = ev.length
+          ? `<details class="ev"><summary><span class="ev-badge ev-yes">✓ Brief ×${ev.length}</span></summary><div class="ev-list">${ev.map(evItem).join("")}</div></details>`
+          : `<span class="ev-badge ev-est" title="Not yet named in the loaded brief editions — analyst estimate">Analyst est.</span>`;
         return `<tr>
           <td class="matrix-cell-num">${i + 1}</td>
           <td class="theatre-cell">${star}${esc(c.name)}<div style="font-size:11px;color:var(--text-faint)">${esc(c.aka)} · ${esc(c.category)}</div></td>
@@ -1101,19 +1114,21 @@
           <td><div class="matrix-cell-num">${heat}</div><div class="progress-mini"><span style="width:${heat}%;background:${this.lcPalette[(DB.capabilityDefs.lifecycle[c.lifecycle] || {}).tone]}"></span></div></td>
           <td>${this.sparkline(c)}<div style="font-size:10px;color:var(--text-faint)">${this.observations(c)} obs</div></td>
           <td>${this.capTrend(this.trendOf(c))}</td>
+          <td class="ev-cell">${evCell}</td>
         </tr>`;
       }).join("");
       const lifeTip = Object.entries(DB.capabilityDefs.lifecycle).sort((a, b) => (a[1].rank || 0) - (b[1].rank || 0))
         .map(([n, d]) => `${n}: ${d.desc}`).join(" ");
       html += `<div class="section"><div class="section-head"><h2>Heat Leaderboard</h2>
-        <span class="hint">Heat &amp; adoption are computed from ${DB.weeklyReports.length} weeks of observations — recency-weighted intensity, normalised 0–100; trend = recent vs earlier weeks</span></div>
+        <span class="hint">Heat &amp; adoption are computed from ${DB.weeklyReports.length} weeks of observations — recency-weighted intensity, normalised 0–100; trend = recent vs earlier weeks${DB.capabilityEvidence ? " · the Evidence column links each capability to brief reporting" : ""}</span></div>
         <div class="card matrix-wrap"><table class="matrix"><thead><tr>
           <th>#</th><th>Capability</th><th>Role</th><th>Domain</th><th>Theatres</th>
           <th>Lifecycle <span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">${esc(lifeTip)} (hover any chip for its definition.)</span></span></th>
           <th>Heat <span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">Recency-weighted sum of weekly employment intensity (1–3), normalised 0–100 across capabilities; recent weeks weigh ×0.55→×1.0, so the busiest ≈96.</span></span></th>
           <th>Activity (8&nbsp;wk)</th>
           <th>Adoption <span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">Recent half of weeks vs earlier half: Rising &gt; 1.25×, Declining &lt; 0.75×, else Steady.</span></span></th>
-        </tr></thead><tbody>${rows || `<tr><td colspan="9"><div class="empty">No capabilities match the filters.</div></td></tr>`}</tbody></table></div></div>`;
+          <th>Evidence <span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">Brief observations that substantiate this capability — expand for the edition, theatre and a link to the reporting. 'Analyst est.' = not yet named in the loaded brief editions.</span></span></th>
+        </tr></thead><tbody>${rows || `<tr><td colspan="10"><div class="empty">No capabilities match the filters.</div></td></tr>`}</tbody></table></div></div>`;
 
       // ---- supersession chains ----
       const supRows = this.supersession(all).map(s =>
@@ -1148,6 +1163,8 @@
         State.filters.lifecycle.has(lc) ? State.filters.lifecycle.delete(lc) : State.filters.lifecycle.add(lc);
         this.render();
       }));
+      const evBtn = root.querySelector("#cap-ev-only");
+      if (evBtn) evBtn.addEventListener("click", () => { State.capEvidencedOnly = !State.capEvidencedOnly; this.render(); });
     },
 
     renderCharts(list) {
@@ -1554,6 +1571,7 @@
             DB.liveEditions = eds;
             DB.liveSyncedAt = lw.syncedAt || null;
             DB.liveWeek = eds[0];   // newest = the "● LIVE" edition
+            DB.capabilityEvidence = lw.capabilityEvidence || {};   // brief-derived, traceable
           }
         }
       } catch (e) { /* no live editions available — use seed */ }
