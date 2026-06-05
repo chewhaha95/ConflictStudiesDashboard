@@ -875,18 +875,37 @@
     // activity. Falls back to the declared baseline only if a capability has no
     // observations. Call once after data load (App.init).
     dynamics: {},
+    briefMode: false,
+    axisLen: 0,
     computeDynamics() {
-      const weeks = DB.weeklyReports, n = weeks.length;
-      const sig = DB.weeklyCapabilitySignals || {};
+      // Pick the signal source: brief evidence (live editions) when available,
+      // else the seed weekly capability signals. In brief mode, heat/trend for
+      // evidenced capabilities are DRIVEN BY THE BRIEF; capabilities the briefs
+      // haven't named fall back to the declared analyst baseline.
+      const briefMode = !!(DB.liveEditions && DB.liveEditions.length && DB.capabilityEvidence && Object.keys(DB.capabilityEvidence).length);
+      this.briefMode = briefMode;
+      let axis, idxOf = {}, signalsFor;
+      if (briefMode) {
+        axis = [...DB.liveEditions].sort((a, b) => String(a.weekEnd || "").localeCompare(String(b.weekEnd || ""))); // oldest→newest
+        axis.forEach((e, i) => (idxOf[e.weekId] = i));
+        signalsFor = (id) => (DB.capabilityEvidence[id] || [])
+          .map(ev => ({ idx: idxOf[ev.weekId], t: ev.theatre, i: ev.intensity || 1 })).filter(s => s.idx != null);
+      } else {
+        axis = DB.weeklyReports;
+        const sig = DB.weeklyCapabilitySignals || {};
+        axis.forEach((w, i) => (idxOf[w.weekId] = i));
+        signalsFor = (id) => Object.keys(sig).filter(k => k !== "_doc")
+          .flatMap(wk => (sig[wk] || []).filter(s => s.id === id).map(s => ({ idx: idxOf[wk], t: s.t, i: s.i || 1 })));
+      }
+      const n = axis.length; this.axisLen = n;
       const wgt = i => 0.55 + 0.45 * (n > 1 ? i / (n - 1) : 1);   // recency weighting
       const rw = arr => arr.reduce((s, v, i) => s + v * wgt(i), 0);
       const m = {};
-      DB.capabilities.forEach(c => (m[c.id] = { weekly: new Array(n).fill(0), tw: {}, signals: 0 }));
-      weeks.forEach((w, idx) => (sig[w.weekId] || []).forEach(s => {
-        const d = m[s.id]; if (!d) return;
-        d.weekly[idx] += (s.i || 1); d.signals++;
-        (d.tw[s.t] = d.tw[s.t] || new Array(n).fill(0))[idx] += (s.i || 1);
-      }));
+      DB.capabilities.forEach(c => {
+        const weekly = new Array(n).fill(0), tw = {};
+        signalsFor(c.id).forEach(s => { weekly[s.idx] += s.i; (tw[s.t] = tw[s.t] || new Array(n).fill(0))[s.idx] += s.i; });
+        m[c.id] = { weekly, tw, signals: signalsFor(c.id).length };
+      });
       // recency-weighted raw heat, then normalise to 0-100 across capabilities
       let max = 0; const raw = {};
       DB.capabilities.forEach(c => { const r = rw(m[c.id].weekly); raw[c.id] = r; if (r > max) max = r; });
@@ -894,6 +913,7 @@
       const half = Math.max(1, Math.floor(n / 2));
       DB.capabilities.forEach(c => {
         const d = m[c.id];
+        d.basis = d.signals === 0 ? "model" : (briefMode ? "brief" : "signals");
         d.heat = d.signals === 0 ? c.heat : Math.round(raw[c.id] * scale);
         // per-theatre heat contribution (segments sum to total heat)
         d.byTheatre = {};
@@ -908,6 +928,7 @@
       });
       this.dynamics = m;
     },
+    basisOf(c) { const d = this.dynamics[c.id]; return d ? d.basis : "model"; },
     theatreHeatOf(c, t) { const d = this.dynamics[c.id]; return d && d.byTheatre ? (d.byTheatre[t] || 0) : 0; },
     // Brief-derived evidence (traceable) for a capability
     evidence(c) { return (DB.capabilityEvidence && DB.capabilityEvidence[c.id]) || []; },
@@ -1111,7 +1132,7 @@
           <td>${esc(c.domain)}</td>
           <td>${this.theatreChips(c.theatres)}</td>
           <td>${this.lcChip(c.lifecycle)}</td>
-          <td><div class="matrix-cell-num">${heat}</div><div class="progress-mini"><span style="width:${heat}%;background:${this.lcPalette[(DB.capabilityDefs.lifecycle[c.lifecycle] || {}).tone]}"></span></div></td>
+          <td><div class="matrix-cell-num">${heat}</div><div class="progress-mini"><span style="width:${heat}%;background:${this.lcPalette[(DB.capabilityDefs.lifecycle[c.lifecycle] || {}).tone]}"></span></div><div class="heat-basis hb-${this.basisOf(c)}" title="${this.basisOf(c) === "brief" ? "Heat driven by brief evidence" : "Heat from the analyst model (not yet named in the briefs)"}">${this.basisOf(c) === "brief" ? "brief-driven" : "model"}</div></td>
           <td>${this.sparkline(c)}<div style="font-size:10px;color:var(--text-faint)">${this.observations(c)} obs</div></td>
           <td>${this.capTrend(this.trendOf(c))}</td>
           <td class="ev-cell">${evCell}</td>
@@ -1120,12 +1141,14 @@
       const lifeTip = Object.entries(DB.capabilityDefs.lifecycle).sort((a, b) => (a[1].rank || 0) - (b[1].rank || 0))
         .map(([n, d]) => `${n}: ${d.desc}`).join(" ");
       html += `<div class="section"><div class="section-head"><h2>Heat Leaderboard</h2>
-        <span class="hint">Heat &amp; adoption are computed from ${DB.weeklyReports.length} weeks of observations — recency-weighted intensity, normalised 0–100; trend = recent vs earlier weeks${DB.capabilityEvidence ? " · the Evidence column links each capability to brief reporting" : ""}</span></div>
+        <span class="hint">${this.briefMode
+          ? `Heat is <strong>driven by the weekly brief</strong> — recency-weighted observation intensity across ${this.axisLen} editions, normalised 0–100. Capabilities the briefs haven't named fall back to the analyst model (see the Evidence column / 'model' tag).`
+          : `Heat &amp; adoption are computed from ${DB.weeklyReports.length} weeks of observations — recency-weighted intensity, normalised 0–100; trend = recent vs earlier weeks`}</span></div>
         <div class="card matrix-wrap"><table class="matrix"><thead><tr>
           <th>#</th><th>Capability</th><th>Role</th><th>Domain</th><th>Theatres</th>
           <th>Lifecycle <span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">${esc(lifeTip)} (hover any chip for its definition.)</span></span></th>
           <th>Heat <span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">Recency-weighted sum of weekly employment intensity (1–3), normalised 0–100 across capabilities; recent weeks weigh ×0.55→×1.0, so the busiest ≈96.</span></span></th>
-          <th>Activity (8&nbsp;wk)</th>
+          <th>Activity (${this.briefMode ? this.axisLen + "&nbsp;ed" : "8&nbsp;wk"})</th>
           <th>Adoption <span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">Recent half of weeks vs earlier half: Rising &gt; 1.25×, Declining &lt; 0.75×, else Steady.</span></span></th>
           <th>Evidence <span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">Brief observations that substantiate this capability — expand for the edition, theatre and a link to the reporting. 'Analyst est.' = not yet named in the loaded brief editions.</span></span></th>
         </tr></thead><tbody>${rows || `<tr><td colspan="10"><div class="empty">No capabilities match the filters.</div></td></tr>`}</tbody></table></div></div>`;
@@ -1554,7 +1577,6 @@
       DB.divisions.forEach(d => DIV_BY_ID[d.id] = d);
       MONTHS = Agg.buildMonths();
       QUARTERS = Agg.buildQuarters();
-      Caps.computeDynamics();   // derive capability heat & trend from weekly observations
 
       // Live weekly editions (current + archived past + future), synced from the
       // brief site into weekly-live.json by .github/workflows/sync-weekly.yml.
@@ -1575,6 +1597,10 @@
           }
         }
       } catch (e) { /* no live editions available — use seed */ }
+
+      // Compute capability heat/trend AFTER live editions load, so brief evidence
+      // can drive it (with the analyst model as fallback).
+      Caps.computeDynamics();
 
       // header meta
       el("#meta-updated").textContent = Time.fmtDateTime(DB.meta.lastUpdated);
