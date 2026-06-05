@@ -499,6 +499,11 @@ details.domains[open] > summary::before { transform: rotate(90deg); }
 .kpi-label { font-size: 12px; font-weight: 650; margin-top: 6px; }
 .kpi-sub { font-size: 11px; color: var(--text-faint); margin-top: 2px; }
 
+/* Heat basis tag (brief-driven vs analyst model) */
+.heat-basis { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; margin-top: 3px; }
+.hb-brief { color: var(--tone-good-fg); }
+.hb-model { color: var(--text-faint); }
+
 /* Brief-evidence badges & expander (capability leaderboard) */
 .fchip.ev-filter.on, .fchip.ev-filter[aria-pressed="true"] { background: var(--tone-good-fg); border-color: var(--tone-good-fg); color: #fff; }
 .ev-badge { font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 5px; white-space: nowrap; }

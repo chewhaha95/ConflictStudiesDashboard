@@ -296,6 +296,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   const cb2 = d2.querySelector("#view-capabilities .view-body");
   check("brief-evidence badge + cited link shown on evidenced capability",
     cb2.querySelectorAll(".ev-badge.ev-yes").length >= 1 && /EVIDENCE-HEADLINE/.test(cb2.textContent) && !!cb2.querySelector(".ev-list a[href^='http']"));
+  check("heat is brief-driven when evidence present (model fallback for rest)",
+    /driven by the weekly brief/.test(cb2.textContent) && cb2.querySelectorAll(".heat-basis.hb-brief").length >= 1 && cb2.querySelectorAll(".heat-basis.hb-model").length >= 1);
   check("'Brief-evidenced only' filter present and narrows", (() => {
     const chip = cb2.querySelector("#cap-ev-only"); if (!chip) return false;
     const before = cb2.querySelectorAll(".matrix tbody tr").length;
