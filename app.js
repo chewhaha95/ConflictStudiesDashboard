@@ -1163,7 +1163,7 @@
       const obsCount = DB.capabilities.filter(c => this.observed(c)).length;
       const evChip = `<button class="fchip ev-filter ${State.capEvidencedOnly ? "on" : ""}" aria-pressed="${State.capEvidencedOnly}" id="cap-ev-only" title="When on, only brief-evidenced contests &amp; capabilities are shown. Turn off to reveal analyst-judged items that the current briefs haven't yet named.">${State.capEvidencedOnly ? "✓ " : ""}Brief-evidenced only (${obsCount})</button>`;
       html += `<div class="section"><div class="section-head"><h2>Capabilities &amp; Countermeasures</h2>
-        <span class="hint">Theatre / domain / search filters apply from the sidebar</span></div>
+        <span class="hint">Limit to brief-evidenced items, or filter by lifecycle phase</span></div>
         <div class="lc-filter-row">${evChip}${lcChips}</div></div>`;
 
       // ---- summary cards (explainable) ----
@@ -1556,9 +1556,10 @@
       document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
       el(`#view-${State.horizon}`).classList.add("active");
       el(`.tab-btn[data-horizon="${State.horizon}"]`).classList.add("active");
-      // Monthly is a full-width promulgation page — hide the left filter rail
-      // (Weekly & Capabilities keep it).
+      // Monthly & Capabilities are full-width pages — hide the left filter rail
+      // (Weekly keeps it). Both carry their own inline controls instead.
       document.body.classList.toggle("monthly-view", State.horizon === "monthly");
+      document.body.classList.toggle("capabilities-view", State.horizon === "capabilities");
     },
 
     // Build the period selector contents for the active horizon

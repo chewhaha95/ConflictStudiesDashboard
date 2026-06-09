@@ -178,6 +178,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   doc.querySelector('.tab-btn[data-horizon="capabilities"]').click(); await sleep(60);
   const cb = doc.querySelector("#view-capabilities .view-body");
   check("capabilities view is active", doc.querySelector("#view-capabilities").classList.contains("active"));
+  check("capabilities tab hides the left filter rail (full-width)", doc.body.classList.contains("capabilities-view") && !doc.body.classList.contains("monthly-view"));
   check("capability BLUF rendered", cb.textContent.includes("BLUF — Capability Picture"));
   check("BLUF shows operational picture (stressed / bypass / uncountered)",
     /Most stressed countermeasures/.test(cb.textContent) && /Most consequential bypasses/.test(cb.textContent) && /Currently uncountered/.test(cb.textContent));
