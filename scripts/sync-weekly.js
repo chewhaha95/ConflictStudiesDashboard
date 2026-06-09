@@ -18,6 +18,7 @@
 const fs = require("fs");
 const path = require("path");
 const { JSDOM } = require("jsdom");
+const { deriveCapabilityEvidence } = require("./lib/capability-evidence");
 
 const SOURCE = "https://conflictstudiesandinsights.pages.dev";
 const OUT = path.resolve(__dirname, "..", "weekly-live.json");
@@ -251,33 +252,11 @@ function parseEdition(html, pageUrl, rangeHint) {
   editions.sort((x, y) => String(y.weekEnd || "").localeCompare(String(x.weekEnd || "")));
 
   // ---- derive capability evidence from the editions (traceable provenance) ----
-  // For each capability `match` keyword found in a theatre's developments, record
-  // an evidence item: which edition/theatre, the development headline, and a link.
+  // Theatre-scoped, confidence-graded matcher — see scripts/lib/capability-evidence.js.
   let capabilityEvidence = {};
   try {
     const seed = JSON.parse(fs.readFileSync(path.resolve(__dirname, "..", "sample-data.json"), "utf8"));
-    (seed.capabilities || []).forEach(c => { if ((c.match || []).length) capabilityEvidence[c.id] = []; });
-    editions.forEach(ed => {
-      Object.entries(ed.theatres).forEach(([t, e]) => {
-        (e.developments || []).forEach(dev => {
-          const text = [dev.headline, ...(dev.paragraphs || []), ...(dev.pills || []), ...(dev.implicationBullets || [])].join(" ").toLowerCase();
-          const inHeadline = (dev.headline || "").toLowerCase();
-          (seed.capabilities || []).forEach(c => {
-            const kws = c.match || []; if (!kws.length) return;
-            const hit = kws.find(k => text.includes(k));
-            if (!hit) return;
-            const src = (dev.sources && dev.sources[0]) || (e.sourceLinks && e.sourceLinks[0]) || { label: "brief edition", url: ed.sourceUrl };
-            capabilityEvidence[c.id].push({
-              weekId: ed.weekId, rangeLabel: ed.rangeLabel, theatre: t,
-              headline: dev.headline, intensity: inHeadline.includes(hit) ? 3 : (dev.pills || []).join(" ").toLowerCase().includes(hit) ? 2 : 1,
-              url: src.url, source: src.label
-            });
-          });
-        });
-      });
-    });
-    // keep only capabilities that actually have evidence
-    Object.keys(capabilityEvidence).forEach(id => { if (!capabilityEvidence[id].length) delete capabilityEvidence[id]; });
+    capabilityEvidence = deriveCapabilityEvidence(editions, seed.capabilities);
   } catch (e) { console.error("  ! capability evidence extraction skipped:", e.message); capabilityEvidence = {}; }
   const evCount = Object.values(capabilityEvidence).reduce((s, a) => s + a.length, 0);
 

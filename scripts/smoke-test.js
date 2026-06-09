@@ -282,6 +282,12 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const ce = lw.capabilityEvidence || {};
     const ceOk = Object.keys(ce).length >= 1 && Object.values(ce).every(arr => arr.every(x => x.weekId && x.theatre && x.url && x.headline));
     check("capabilityEvidence present & traceable (capId → brief obs w/ links)", ceOk, `${Object.keys(ce).length} capabilities evidenced`);
+    // tightened matcher: every row is confidence-graded and theatre-relevant
+    const capById = {}; (JSON.parse(data).capabilities || []).forEach(c => (capById[c.id] = c));
+    const confOk = Object.values(ce).every(arr => arr.every(x => ["high", "medium", "low"].includes(x.confidence) && ["headline", "pill", "body"].includes(x.where)));
+    check("evidence rows are confidence-graded (high/medium/low + where)", confOk);
+    const theatreOk = Object.entries(ce).every(([id, arr]) => arr.every(x => !capById[id] || !capById[id].theatres.length || capById[id].theatres.includes(x.theatre)));
+    check("evidence is theatre-relevant (no cross-theatre keyword collisions)", theatreOk);
   } else {
     console.log("  (weekly-live.json not present — skipping contract check)");
   }

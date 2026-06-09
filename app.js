@@ -1098,7 +1098,12 @@
     },
     // "View supporting briefs" drawer for a set of evidence rows.
     evItem(x) {
-      return `<div class="ev-item"><span class="ev-meta">${esc(x.rangeLabel || x.weekId)} · ${esc(THEATRE_BY_ID[x.theatre] ? THEATRE_BY_ID[x.theatre].short : x.theatre)}</span> ${esc(x.headline)} ${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.source || "source")} ↗</a>` : ""}</div>`;
+      // Per-row match confidence (how the keyword was found): headline=high,
+      // pill=medium, body=low. Surfaced so weak (body-only) hits are visible.
+      const conf = x.confidence || "";
+      const confChip = conf
+        ? `<span class="ev-conf-dot ec-${esc(conf)}" title="Match confidence: ${esc(conf)}${x.where ? ` (keyword in ${esc(x.where)})` : ""}">${esc(conf)}</span>` : "";
+      return `<div class="ev-item">${confChip}<span class="ev-meta">${esc(x.rangeLabel || x.weekId)} · ${esc(THEATRE_BY_ID[x.theatre] ? THEATRE_BY_ID[x.theatre].short : x.theatre)}</span> ${esc(x.headline)} ${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.source || "source")} ↗</a>` : ""}</div>`;
     },
     evDrawer(rows, observed, obsCount) {
       if (rows && rows.length) {
