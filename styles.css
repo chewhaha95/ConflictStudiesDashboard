@@ -615,6 +615,10 @@ details.ev > summary::-webkit-details-marker { display: none; }
 .sup-grade.sg-bad  { color: var(--tone-bad-fg);  background: var(--tone-bad-bg); }
 .sup-niche { flex-basis: 100%; font-size: 12px; color: var(--text-muted); padding-left: 2px; }
 .ev-seed { color: var(--accent); background: var(--accent-soft); }
+.ev-conf-dot { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .3px; padding: 1px 5px; border-radius: 4px; margin-right: 6px; }
+.ec-high { color: var(--tone-good-fg); background: var(--tone-good-bg); }
+.ec-medium { color: var(--tone-warn-fg); background: var(--tone-warn-bg); }
+.ec-low { color: var(--text-muted); background: var(--bg-sunken); }
 
 @media (max-width: 1100px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } .cycle-grid { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .kpi-strip { grid-template-columns: 1fr; } }
