@@ -1167,13 +1167,33 @@
       const m = (DB.capabilityDefs.metrics || {})[key]; if (!m) return "";
       return `<span class="th-info tip" tabindex="0">ⓘ<span class="tip-body"><strong>${esc(m.label)}.</strong> Inputs: ${esc(m.inputs)} Method: ${esc(m.method)} Fallback: ${esc(m.fallback)}</span></span>`;
     },
-    // Provenance pill: brief-derived (green), seed-observed (blue), analyst-judged (amber), model-derived (grey).
+    // Provenance pill — the three evidence tiers + model fallback.
+    //   brief-derived (green)  = Layer 1, weekly-brief observation
+    //   research-judged (indigo) = Layer 2, wider open-source research
+    //   analyst-judged (amber) = interpretive synthesis, no research packet
+    //   model-derived (grey)   = seed/placeholder
     srcBadge(type) {
       const map = { "brief-derived": ["src-brief", "Brief-derived"], "seed-observed": ["src-brief", "Brief-derived"],
+        "research-judged": ["src-research", "Research-judged"],
         "analyst-judged": ["src-analyst", "Analyst-judged"], "model-derived": ["src-model", "Model-derived"] };
       const def = (DB.capabilityDefs.sourceTypes || {})[type === "seed-observed" ? "brief-derived" : type] || "";
       const [cls, label] = map[type] || ["src-model", type];
       return `<span class="src-badge ${cls} tip" tabindex="0">${esc(label)}<span class="tip-body">${esc(def)}</span></span>`;
+    },
+    // ---- Layer 2 research source packet ----
+    researchById(id) { return (DB.researchSources || []).find(s => s.id === id); },
+    researchPacket(ids) { return (ids || []).map(id => this.researchById(id)).filter(Boolean); },
+    // Rule-based research confidence from the packet size (see capabilityDefs.researchConfidence).
+    researchConfidence(ids) {
+      const n = (ids || []).length;
+      return n >= 3 ? "High" : n === 2 ? "Medium" : n === 1 ? "Low" : "—";
+    },
+    // "View research basis" drawer — the open-source studies behind a Layer-2 judgment.
+    researchDrawer(ids, label) {
+      const pk = this.researchPacket(ids);
+      if (!pk.length) return `<span class="ev-badge ev-est" title="No research packet — analyst assertion only">Analyst assertion</span>`;
+      const items = pk.map(s => `<div class="rs-item"><a href="${esc(s.url)}" target="_blank" rel="noopener"><strong>${esc(s.label)}</strong></a> <span class="rs-pub">${esc(s.publisher)}</span><div class="rs-note">${esc(s.note)}</div></div>`).join("");
+      return `<details class="ev"><summary><span class="ev-badge ev-research">🔬 ${esc(label || "Research basis")} ×${pk.length}</span></summary><div class="ev-list rs-list">${items}</div></details>`;
     },
     judgmentBadge(j) {
       const def = (DB.capabilityDefs.judgments || {})[j] || { tone: "neutral", desc: "" };
@@ -1220,34 +1240,34 @@
       const contests = this.contests();
       const allContests = this.contestsAll();
       const dataTag = this.briefMode
-        ? `Heat &amp; trend are <strong>brief-derived</strong> from ${this.axisLen} live brief edition(s); contest narratives (effect / adaptation / judgment) are <strong>analyst-judged</strong>, grounded in the cited briefs.`
-        : `Offline preview — heat &amp; trend computed from ${DB.weeklyReports.length} seed signal weeks (the brief stand-in); narratives are analyst-judged.`;
+        ? `<strong>Two-layer evidence:</strong> ① reporting-picture lines (most-observed / rising) are <strong>brief-derived</strong> from ${this.axisLen} live brief edition(s); ② capdev lines (stressed / bypassed / superseded) are <strong>research-judged</strong> from wider open-source research and tied to a source packet on each contest.`
+        : `Offline preview — reporting picture from ${DB.weeklyReports.length} seed signal weeks; capdev lines are research-judged (see each contest's research basis).`;
 
-      // ---- BLUF — operational capability picture --------------------------
-      // Hot / Rising / Fading are computed from brief observations (brief-derived).
-      // Stressed counters / bypasses / uncountered come from the contest layer
-      // (analyst-judged interpretation, grounded in the cited briefs).
-      // Disciplined BLUF: top 2–3 items per line; brief-derived lines tagged
-      // brief-derived, interpretive lines tagged analyst-judged.
+      // ---- BLUF — split into the two evidence layers ----------------------
+      // Layer 1 (brief-derived): what the weekly reporting shows — most-observed,
+      // rising-in-reporting. Layer 2 (research-judged): capability-development
+      // judgments (stressed / bypassed / superseded), tied to research packets.
       const TOP = 3;
-      const hot = ranked.slice(0, TOP).map(c => c.name);
+      const mostObserved = ranked.slice(0, TOP).map(c => c.name);
       const rising = all.filter(c => this.trendOf(c) === "Rising").map(c => c.name);
       const fading = all.filter(c => ["Superseded", "Obsolete"].includes(c.lifecycle) || this.trendOf(c) === "Declining").map(c => c.name);
       const stressedCtr = contests.filter(ct => ct.operationalJudgment === "stressed" && this.counterOf(ct)).map(ct => this.counterOf(ct).name);
       const bypassCt = contests.filter(ct => ["bypassed", "uncountered"].includes(ct.operationalJudgment)).map(ct => this.measureOf(ct) ? this.measureOf(ct).name : ct.title);
       const uncCt = contests.filter(ct => ct.operationalJudgment === "uncountered").map(ct => this.measureOf(ct) ? this.measureOf(ct).name : ct.title);
-      const bTag = `<span class="prov-tag pt-brief" title="Computed from weekly-brief observations">brief-derived</span>`;
-      const aTag = `<span class="prov-tag pt-analyst" title="Analyst interpretation, grounded in the cited briefs">analyst-judged</span>`;
+      const bTag = `<span class="prov-tag pt-brief" title="Layer 1 — computed from weekly-brief observations">brief-derived</span>`;
+      const rTag = `<span class="prov-tag pt-research" title="Layer 2 — wider open-source research, tied to a source packet">research-judged</span>`;
       const top = arr => [...new Set(arr)].slice(0, TOP).join(", ");
       const blufLine = (label, val, tag) => `<div class="bluf-line"><span class="bluf-k">${esc(label)}</span><span class="bluf-v">${esc(val || "—")}</span> ${tag}</div>`;
       let html = `<div class="card bluf-card card-pad section">
         <div class="bluf-label">BLUF — Capability Picture</div>
-        ${blufLine("Hottest now", top(hot), bTag)}
-        ${blufLine("Rising", top(rising), bTag)}
-        ${blufLine("Fading / superseded", top(fading), aTag)}
-        ${blufLine("Most stressed counters", top(stressedCtr), aTag)}
-        ${blufLine("Key bypasses", top(bypassCt), aTag)}
-        ${blufLine("Uncountered / weakly countered", top(uncCt), aTag)}
+        <div class="bluf-layer-h">① Current reporting picture <span class="layer-src">${this.srcBadge("brief-derived")}</span></div>
+        ${blufLine("Most observed in reporting", top(mostObserved), bTag)}
+        ${blufLine("Rising in reporting", top(rising), bTag)}
+        <div class="bluf-layer-h">② Broader capdev assessment <span class="layer-src">${this.srcBadge("research-judged")}</span></div>
+        ${blufLine("Fading / superseded", top(fading), rTag)}
+        ${blufLine("Most stressed counters", top(stressedCtr), rTag)}
+        ${blufLine("Key bypasses", top(bypassCt), rTag)}
+        ${blufLine("Uncountered / weakly countered", top(uncCt), rTag)}
         <div class="bluf-sub">${dataTag}</div>
       </div>`;
 
@@ -1300,24 +1320,26 @@
         const m = this.measureOf(ct), c = this.counterOf(ct);
         const conf = this.contestConfidence(ct), s = this.contestStats(ct);
         const vs = c ? `${esc(m ? m.name : ct.measureCapId)} <span class="vs">vs</span> ${esc(c.name)}` : `${esc(m ? m.name : ct.measureCapId)} <span class="vs">vs</span> <span class="cc-uncountered">uncountered</span>`;
+        const rConf = this.researchConfidence(ct.researchSourceIds);
         return `<tr>
           <td class="matrix-cell-num">${i + 1}</td>
           <td class="theatre-cell">${vs}<div style="font-size:11px;color:var(--text-faint)">heat ${this.contestHeat(ct)} · ${this.capTrend(this.contestTrend(ct))}</div></td>
           <td style="font-size:12px">${esc(ct.threatens || "—")}</td>
           <td>${this.judgmentBadge(ct.operationalJudgment)}</td>
-          <td class="tip" tabindex="0"><strong>${esc(conf.level)}</strong> <span class="conf-score">(${conf.score}/8)</span><span class="tip-body">${esc((DB.capabilityDefs.confidence || {}).method || "")}</span></td>
-          <td>${this.disciplineBadge(this.contestDiscipline(ct))}</td>
+          <td class="tip" tabindex="0"><strong>${esc(rConf)}</strong><span class="tip-body">${esc((DB.capabilityDefs.researchConfidence || {}).method || "")}</span></td>
           <td>${this.safActionBadge(ct.safAction)}</td>
           <td style="font-size:11px">${this.formationChips(ct.formationRelevance)}</td>
           <td class="ev-cell">${this.evDrawer(this.contestEvidence(ct), this.contestObserved(ct), s.obsCount)}</td>
+          <td class="ev-cell">${this.researchDrawer(ct.researchSourceIds, "Research")}</td>
         </tr>`;
       }).join("");
       html += `<div class="section"><div class="section-head"><h2>Capability Contests</h2>
-        <span class="hint">The primary table — attack ⇄ counter contests, ranked by heat. ${dataTag}</span></div>
+        <span class="hint">The primary table — attack ⇄ counter contests, ranked by heat. Judgment &amp; research confidence are <strong>research-judged</strong> (Layer 2); the reporting drawer is <strong>brief-derived</strong> (Layer 1).</span></div>
         <div class="card matrix-wrap"><table class="matrix"><thead><tr>
           <th>#</th><th>Contest (measure vs counter)</th><th>Threatened function</th>
-          <th>Judgment</th><th>Confidence ${this.metricTip("trend") ? `<span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">${esc((DB.capabilityDefs.confidence || {}).method || "")}</span></span>` : ""}</th>
-          <th>Evidence</th><th>SAF action</th><th>Formation</th><th>Supporting briefs</th>
+          <th>Judgment ${this.srcBadge("research-judged")}</th>
+          <th>Research confidence <span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">${esc((DB.capabilityDefs.researchConfidence || {}).method || "")}</span></span></th>
+          <th>SAF action</th><th>Formation</th><th>Reporting (briefs)</th><th>Research basis</th>
         </tr></thead><tbody>${ctRows || `<tr><td colspan="9"><div class="empty">No brief-evidenced contests in the current filter.</div></td></tr>`}</tbody></table></div></div>`;
 
       // ---- SECONDARY TABLE: capability inventory --------------------------
@@ -1341,15 +1363,17 @@
         </tr>`;
       }).join("");
       html += `<div class="section"><div class="section-head"><h2>Capability Inventory</h2>
-        <span class="hint">Observed in the briefs but not yet a full contest — heat / trend brief-derived. Promoted into a contest once a countermeasure dynamic is evidenced.</span></div>
+        <span class="hint">Observed in the briefs but not yet a full contest. Heat / trend / theatres are <strong>brief-derived</strong> (Layer 1); lifecycle is <strong>research-judged</strong> (Layer 2). Promoted into a contest once a countermeasure dynamic is evidenced.</span></div>
         <div class="card matrix-wrap"><table class="matrix"><thead><tr>
           <th>#</th><th>Capability</th><th>Role</th><th>Threatened function</th><th>Theatres</th>
-          <th>Lifecycle ${this.metricTip("lifecycle")}</th><th>Heat ${this.metricTip("heat")}</th>
+          <th>Lifecycle ${this.srcBadge("research-judged")} ${this.metricTip("lifecycle")}</th><th>Heat ${this.metricTip("heat")}</th>
           <th>Activity (${this.briefMode ? this.axisLen + "&nbsp;ed" : "8&nbsp;wk"})</th>
           <th>Trend ${this.metricTip("trend")}</th><th>Source</th><th>Supporting briefs</th>
         </tr></thead><tbody>${invRows || `<tr><td colspan="11"><div class="empty">No standalone observed capabilities — all observed items are in a contest.</div></td></tr>`}</tbody></table></div></div>`;
 
-      // ---- Supersession (graded: fully / partially / niche) ----
+      // ---- Supersession (graded: fully / partially / niche) — Layer 2 ----
+      // Replacement / supersession is a capability-development judgment, so each
+      // link carries a research-basis packet (research-judged) where authored.
       const supRows = this.supersession(all).map(s => {
         const grade = s.from.displacement || "Partially displaced";
         const tone = grade === "Fully superseded" ? "bad" : grade === "Still valid in niche" ? "good" : "warn";
@@ -1357,10 +1381,11 @@
           <span class="sup-arrow">→</span>
           <span class="sup-to">${s.to.map(t => `${esc(t.name)} ${this.lcChip(t.lifecycle)}`).join(" · ")}</span>
           <span class="sup-grade sg-${tone}">${esc(grade)}</span>
+          <span class="sup-basis">${this.researchDrawer(s.from.displacementSources, "Research basis")}</span>
           ${s.from.niche ? `<div class="sup-niche">Niche: ${esc(s.from.niche)}</div>` : ""}</div>`;
       }).join("");
-      html += `<div class="section"><div class="section-head"><h2>Supersession — What Replaced What</h2>
-        <span class="hint">Analyst-judged ${this.metricTip("supersession")} — graded by how completely the older capability was displaced</span></div>
+      html += `<div class="section"><div class="section-head"><h2>Supersession — What Replaced What ${this.srcBadge("research-judged")}</h2>
+        <span class="hint">${this.metricTip("supersession")} A capability-development judgment — graded by how completely the older capability was displaced, with a research basis where authored.</span></div>
         <div class="card card-pad">${supRows || `<div class="empty">No supersession links in the current filter.</div>`}</div></div>`;
 
       // ---- Cross-theatre proliferation (enriched) ----
@@ -1403,32 +1428,47 @@
       const conf = this.contestConfidence(ct);
       const safBlock = this.safActionsBlock(ct.saf);
       const confTip = (DB.capabilityDefs.confidence || {}).method || "";
+      const rConf = this.researchConfidence(ct.researchSourceIds);
+      const rConfTip = (DB.capabilityDefs.researchConfidence || {}).method || "";
+      const L1 = (DB.capabilityDefs.layers || {}).observation || "";
+      const L2 = (DB.capabilityDefs.layers || {}).capdev || "";
       return `<article class="contest-card cj-${tone}">
         <div class="cc-head"><span class="cc-title">${esc(ct.title)}</span>
           <span class="cc-metrics">${heat ? `<span class="cc-heat">heat ${heat}</span>` : ""} ${this.capTrend(trend)} ${this.judgmentBadge(ct.operationalJudgment)} ${this.disciplineBadge(this.contestDiscipline(ct))}</span></div>
         ${ct.formationRelevance ? `<div class="cc-forms"><span class="cc-forms-k">Formation relevance</span> ${this.formationChips(ct.formationRelevance)}</div>` : ""}
-        <div class="cc-grid">
-          <div class="cc-f"><div class="cc-h">Measure / attack</div><div class="cc-b">${m ? `${esc(m.name)} ${this.lcChip(m.lifecycle)}` : esc(ct.measureCapId)}</div></div>
-          <div class="cc-f"><div class="cc-h">Threatened function</div><div class="cc-b">${esc(ct.threatens || "—")}</div></div>
-          <div class="cc-f"><div class="cc-h">Countermeasure</div><div class="cc-b">${counterCell}</div></div>
-          <div class="cc-f"><div class="cc-h">Observed effect</div><div class="cc-b">${esc(ct.observedEffect || "—")}</div></div>
-          <div class="cc-f"><div class="cc-h">Adaptation / bypass</div><div class="cc-b">${esc(ct.adaptationBypass || "—")}</div></div>
-          <div class="cc-f"><div class="cc-h">Operational judgment</div><div class="cc-b">${this.judgmentBadge(ct.operationalJudgment)} ${esc(ct.judgmentNote || "")}</div></div>
+
+        <div class="cc-layer cc-layer-1">
+          <div class="cc-layer-h tip" tabindex="0">① Current reporting picture <span class="layer-src">${this.srcBadge(st)}</span><span class="tip-body">${esc(L1)}</span></div>
+          <div class="cc-grid">
+            <div class="cc-f"><div class="cc-h">Measure / attack</div><div class="cc-b">${m ? `${esc(m.name)} ${this.lcChip(m.lifecycle)}` : esc(ct.measureCapId)}</div></div>
+            <div class="cc-f"><div class="cc-h">Threatened function</div><div class="cc-b">${esc(ct.threatens || "—")}</div></div>
+            <div class="cc-f"><div class="cc-h">Countermeasure observed</div><div class="cc-b">${counterCell}</div></div>
+            <div class="cc-f"><div class="cc-h">Observed effect (in reporting)</div><div class="cc-b">${esc(ct.observedEffect || "—")}</div></div>
+          </div>
+          <div class="cc-lineage">
+            <span class="ln"><span class="ln-k">First seen</span> ${esc(s.first || "—")}</span>
+            <span class="ln"><span class="ln-k">Last seen</span> ${esc(s.last || "—")}</span>
+            <span class="ln"><span class="ln-k">Theatres</span> ${s.theatres.length ? this.theatreChips(s.theatres) : "—"}</span>
+            <span class="ln"><span class="ln-k">Supporting weeks</span> ${s.weeks}</span>
+            <span class="ln cc-conf tip" tabindex="0"><span class="ln-k">Obs. confidence</span> <strong>${esc(conf.level)}</strong> <span class="conf-score">(${conf.score}/8)</span><span class="tip-body">${esc(confTip)}</span></span>
+          </div>
+          <div class="cc-basis">${esc(this.contestEvidenceBasis(ct))} ${this.evDrawer(evRows, obsBacked, obsCount)}</div>
         </div>
-        ${safBlock ? `<div class="cc-saf"><div class="cc-h">SAF learning</div><div class="saf-grid">${safBlock}</div></div>` : ""}
-        <div class="cc-lineage">
-          <span class="ln"><span class="ln-k">First seen</span> ${esc(s.first || "—")}</span>
-          <span class="ln"><span class="ln-k">Last seen</span> ${esc(s.last || "—")}</span>
-          <span class="ln"><span class="ln-k">Theatres</span> ${s.theatres.length ? this.theatreChips(s.theatres) : "—"}</span>
-          <span class="ln"><span class="ln-k">Supporting weeks</span> ${s.weeks}</span>
+
+        <div class="cc-layer cc-layer-2">
+          <div class="cc-layer-h tip" tabindex="0">② Broader capability-development assessment <span class="layer-src">${this.srcBadge(ct.researchSourceIds && ct.researchSourceIds.length ? "research-judged" : "analyst-judged")}</span><span class="tip-body">${esc(L2)}</span></div>
+          <div class="cc-grid">
+            <div class="cc-f"><div class="cc-h">Operational judgment</div><div class="cc-b">${this.judgmentBadge(ct.operationalJudgment)} ${esc(ct.judgmentNote || "")}</div></div>
+            <div class="cc-f"><div class="cc-h">Adaptation / bypass</div><div class="cc-b">${esc(ct.adaptationBypass || "—")}</div></div>
+          </div>
+          ${ct.capdevAssessment ? `<div class="cc-capdev">${esc(ct.capdevAssessment)}</div>` : ""}
+          <div class="cc-basis">
+            <span class="cc-conf tip" tabindex="0"><span class="ln-k">Research confidence</span> <strong>${esc(rConf)}</strong><span class="tip-body">${esc(rConfTip)}</span></span>
+            ${this.researchDrawer(ct.researchSourceIds, "View research basis")}
+          </div>
         </div>
-        <div class="cc-basis">${esc(this.contestEvidenceBasis(ct))}</div>
-        <div class="cc-foot">
-          <span class="cc-prov">Observations: ${this.srcBadge(st)}</span>
-          <span class="cc-prov">Assessment: ${this.srcBadge(ct.assessmentSource || "analyst-judged")}</span>
-          <span class="cc-conf tip" tabindex="0">Confidence: <strong>${esc(conf.level)}</strong> <span class="conf-score">(${conf.score}/8)</span><span class="tip-body">${esc(confTip)}</span></span>
-          ${this.evDrawer(evRows, obsBacked, obsCount)}
-        </div>
+
+        ${safBlock ? `<div class="cc-saf"><div class="cc-h">SAF learning ${this.srcBadge("analyst-judged")}</div><div class="saf-grid">${safBlock}</div></div>` : ""}
       </article>`;
     },
 
