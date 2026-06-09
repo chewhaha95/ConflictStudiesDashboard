@@ -1,0 +1,4 @@
+# Cloudflare Pages routing (ignored by GitHub Pages).
+# Serve the dashboard for any path that isn't a real file (SPA-style fallback),
+# so bad/old URLs on *.pages.dev still land on the app.
+/*    /conflict-dashboard.html    200
