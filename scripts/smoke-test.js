@@ -101,10 +101,13 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   console.log("\nMonthly (tactical learning):");
   doc.querySelector('.tab-btn[data-horizon="monthly"]').click(); await sleep(50);
   let mb = doc.querySelector("#view-monthly .view-body");
-  check("2 monthly periods (8 weeks / 4)", doc.querySelectorAll("#period-select option").length === 2);
+  check("monthly tab hides the left filter rail (full-width promulgation)", doc.body.classList.contains("monthly-view"));
+  check("2 monthly periods (8 weeks / 4)", doc.querySelectorAll("#monthly-period-select option").length === 2);
   check("monthly BLUF (tactical learning) present", /Monthly BLUF — Tactical Learning/.test(mb.textContent) && mb.querySelector(".bluf-card p").textContent.length > 50);
   check("formation-group selector has 5 options", doc.querySelectorAll("#formation-group-select option").length === 5);
   check("All Groups default shows 4 overview cards", mb.querySelectorAll(".fg-overview .fg-card").length === 4);
+  check("overview cards are full-card buttons (accessible click target)",
+    [...mb.querySelectorAll(".fg-overview .fg-card")].every(c => c.tagName === "BUTTON" && /^Open .+ tactical learnings/.test(c.getAttribute("aria-label") || "")));
   check("no theatre status matrix on Monthly tab", !mb.querySelector("#status-matrix"));
   // select a group -> tactical panel
   const fgSel = doc.querySelector("#formation-group-select");
@@ -113,10 +116,21 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("group panel: audience banner shown", /Audience —/.test((mb.querySelector(".fg-audience-banner") || {}).textContent || ""));
   check("group panel: echelon filter (4 chips)", mb.querySelectorAll(".ech-filter .ech-chip").length === 4);
   check("group panel: tactical insight cards", mb.querySelectorAll(".tac-card").length >= 1);
-  check("each card has Experiment/Train/Adjust-SOP lanes", [...mb.querySelectorAll(".tac-card")].every(c => c.querySelectorAll(".tac-lanes .lane").length === 3));
+  check("each card exposes 4 tactical-decision fields (observed / problem / experiment / SOP)",
+    [...mb.querySelectorAll(".tac-card")].every(c =>
+      c.querySelectorAll(".tac-fields .tfield").length === 2 &&
+      c.querySelector(".tf-observed .tfield-h").textContent.includes("Observed in theatre") &&
+      c.querySelector(".tf-problem .tfield-h").textContent.includes("Tactical problem") &&
+      c.querySelectorAll(".tac-lanes .lane").length === 2 &&
+      /Experiment with/.test(c.querySelector(".lane-exp").textContent) &&
+      /SOP \/ Training implication/.test(c.querySelector(".lane-sop").textContent)));
+  check("SOP lane carries both Train and Adjust-SOP sub-lanes",
+    [...mb.querySelectorAll(".tac-card .lane-sop")].every(l => l.querySelectorAll(".sop-sub .sop-k").length === 2));
   check("cards show echelon badges", mb.querySelectorAll(".tac-card .ech-badge").length >= 1);
-  check("cards cite articles (deeper-look links)", mb.querySelectorAll(".tac-sources a[href^='http']").length >= 1);
-  check("cards show research findings from cited sources", mb.querySelectorAll(".tac-findings li .find-src").length >= 1);
+  check("cards expose a prominent evidence block", mb.querySelectorAll(".tac-card .tac-evidence .ev-h").length === mb.querySelectorAll(".tac-card").length);
+  check("cards cite articles (deeper-look links)", mb.querySelectorAll(".tac-evidence .ev-links a[href^='http']").length >= 1);
+  check("cards show research findings from cited sources", mb.querySelectorAll(".ev-findings li .find-src").length >= 1);
+  check("evidence block shows a confidence note", mb.querySelectorAll(".tac-evidence .ev-conf").length >= 1);
   check("monthly BLUF still visible inside a group", /Monthly BLUF — Tactical Learning/.test(mb.textContent));
   // echelon sub-filter narrows the cards
   const allCards = mb.querySelectorAll(".tac-card").length;
@@ -128,6 +142,10 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   // back to All Groups via data-group button
   mb.querySelector('[data-group="ALL"]').click(); await sleep(50);
   check("can switch back to All Groups", doc.querySelector("#view-monthly .view-body").querySelectorAll(".fg-overview .fg-card").length === 4);
+  // leaving Monthly restores the filter rail for Weekly / Capabilities
+  doc.querySelector('.tab-btn[data-horizon="weekly"]').click(); await sleep(40);
+  check("filter rail restored on Weekly tab (monthly-view cleared)", !doc.body.classList.contains("monthly-view"));
+  doc.querySelector('.tab-btn[data-horizon="monthly"]').click(); await sleep(40);
 
   // --- 4. Top control bar: removed mode switch / quarterly / division dd ---
   console.log("\nTop control bar (trimmed):");

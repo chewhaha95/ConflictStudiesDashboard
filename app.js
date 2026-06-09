@@ -1323,23 +1323,30 @@
       const t = THEATRE_BY_ID[i.theatre];
       const sources = (i.sources || []).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)} ↗</a>`).join("");
       const tags = (i.tags || []).map(tg => `<span class="tag">#${esc(tg)}</span>`).join("");
+      const sopBlock = `<div class="lane lane-sop"><div class="lane-h">SOP / Training implication</div>
+        <div class="sop-sub"><span class="sop-k">Train</span>${(i.train || []).length ? `<ul>${i.train.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="muted-note">—</p>`}</div>
+        <div class="sop-sub"><span class="sop-k">Adjust SOPs</span>${(i.adjustSOP || []).length ? `<ul>${i.adjustSOP.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="muted-note">—</p>`}</div></div>`;
       return `<article class="tac-card">
         <div class="tac-head">
           ${this.echBadge(i.echelon)}
           <span class="tac-title">${esc(i.title)}</span>
-          <span class="tac-meta">${esc(t.short)} · ${esc(i.sourceWeek)} · ${esc(i.sourceDomain)} · ${esc(i.confidence)} conf.</span>
+          <span class="tac-meta">${esc(i.sourceWeek)} · ${esc(i.sourceDomain)}</span>
         </div>
-        <p class="tac-sowhat">${esc(i.soWhat)}</p>
-        ${(i.findings && i.findings.length) ? `<div class="tac-findings">
-          <div class="lane-h">Findings from cited research</div>
-          <ul>${i.findings.map(f => `<li>${esc(f.text)} <span class="find-src">— ${esc(f.source)}</span></li>`).join("")}</ul>
-        </div>` : ""}
+        <div class="tac-fields">
+          <div class="tfield tf-observed"><div class="tfield-h">Observed in theatre</div>
+            <div class="tfield-b"><span class="t-chip" title="${esc(t.name)}">${esc(t.short)}</span> ${esc(i.observedInTheatre || i.soWhat || "")}</div></div>
+          <div class="tfield tf-problem"><div class="tfield-h">Tactical problem</div>
+            <div class="tfield-b">${esc(i.tacticalProblem || "")}</div></div>
+        </div>
         <div class="tac-lanes">
           ${this.lane("Experiment with", "lane-exp", i.experiment)}
-          ${this.lane("Train", "lane-train", i.train)}
-          ${this.lane("Adjust SOPs", "lane-sop", i.adjustSOP)}
+          ${sopBlock}
         </div>
-        ${sources ? `<div class="tac-sources"><span class="src-k">Cited articles</span>${sources}</div>` : ""}
+        <div class="tac-evidence">
+          <div class="ev-h">Evidence / cited articles <span class="ev-conf conf-${esc((i.confidence || "").toLowerCase())}">${esc(i.confidence || "—")} confidence</span></div>
+          ${(i.findings && i.findings.length) ? `<ul class="ev-findings">${i.findings.map(f => `<li>${esc(f.text)} <span class="find-src">— ${esc(f.source)}</span></li>`).join("")}</ul>` : ""}
+          ${sources ? `<div class="ev-links">${sources}</div>` : `<p class="muted-note">No external citation for this learning yet.</p>`}
+        </div>
         ${tags ? `<div class="tags">${tags}</div>` : ""}
       </article>`;
     },
@@ -1348,12 +1355,12 @@
       const ech = this.echelonsPresent(gi);
       const srcN = this.dedup(gi.flatMap(i => (i.sources || []).map(s => s.url))).length;
       const takes = gi.slice(0, 3).map(i => `<li>${this.echBadge(i.echelon)} ${esc(i.title)}</li>`).join("");
-      return `<button class="fg-card" data-group="${g.id}">
+      return `<button class="fg-card" data-group="${g.id}" aria-label="Open ${esc(g.name)} tactical learnings (${esc(g.short)})">
         <div class="fg-card-head"><span class="fg-card-name">${esc(g.name)}</span><span class="fg-card-aud">${esc(g.short)}</span></div>
-        <div class="fg-card-counts">${gi.length} tactical insight${gi.length === 1 ? "" : "s"} · ${ech.join("/") || "—"} · ${srcN} cited</div>
+        <div class="fg-card-counts">${gi.length} tactical learning${gi.length === 1 ? "" : "s"} · ${ech.join("/") || "—"} · ${srcN} cited</div>
         <div class="subhead">Top learnings</div>
-        <ul class="dev-list tk-list">${takes || "<li class='muted-note'>No insights this month.</li>"}</ul>
-        <span class="fg-card-cta">View tactical learnings →</span>
+        <ul class="dev-list tk-list">${takes || "<li class='muted-note'>No learnings this month.</li>"}</ul>
+        <span class="fg-card-cta">Open tactical learnings →</span>
       </button>`;
     },
 
@@ -1376,13 +1383,12 @@
           <div class="card card-pad section"><div class="subhead" style="margin-top:0">Monthly assessment</div>
             <p style="margin:0">${esc(this.assessment(g, gi))}</p></div>
 
-          <div class="section">
-            <div class="subhead">Filter by echelon</div>
-            ${this.echelonFilter(gi)}
-          </div>
+          <div class="section-head" style="margin-top:18px"><h2>Formation tactical learnings</h2>
+            <span class="hint">Each card is a tactical decision: what was observed → the problem it creates → what to experiment with → SOP/training to adjust</span></div>
+          <div class="ech-filter-wrap">${this.echelonFilter(gi)}</div>
 
           <div class="tac-grid">
-            ${shown.length ? shown.map(i => this.insightCard(i)).join("") : `<div class="empty">No insights at this echelon for ${esc(g.name)} this month.</div>`}
+            ${shown.length ? shown.map(i => this.insightCard(i)).join("") : `<div class="empty">No learnings at this echelon for ${esc(g.name)} this month.</div>`}
           </div>
         </div>`;
     },
@@ -1404,17 +1410,24 @@
         <div class="bluf-sub">${esc(period.label)} · ${esc(Time.fmtRange(period.start, period.end))} · ${insights.length} tactical insight${insights.length === 1 ? "" : "s"} extracted from ${period.weekIds.length} weekly briefs · cite the linked articles for a deeper look</div>
       </div>`;
 
+      const monthOpts = (MONTHS || []).map(m => `<option value="${m.id}" ${m.id === period.id ? "selected" : ""}>${esc(m.label)} · ${esc(Time.fmtRange(m.start, m.end))}</option>`).join("");
       html += `<div class="section fg-select-wrap">
-        <label for="formation-group-select" class="fg-select-label">Select Formation Group</label>
-        <select id="formation-group-select" aria-label="Select formation group">
-          <option value="ALL" ${sel === "ALL" ? "selected" : ""}>All Groups</option>
-          ${this.groups().map(g => `<option value="${g.id}" ${sel === g.id ? "selected" : ""}>${esc(g.name)} — ${esc(g.short)}</option>`).join("")}
-        </select>
+        <div class="fg-sel">
+          <label for="monthly-period-select" class="fg-select-label">Reporting month</label>
+          <select id="monthly-period-select" aria-label="Select reporting month">${monthOpts}</select>
+        </div>
+        <div class="fg-sel">
+          <label for="formation-group-select" class="fg-select-label">Formation group</label>
+          <select id="formation-group-select" aria-label="Select formation group">
+            <option value="ALL" ${sel === "ALL" ? "selected" : ""}>All Groups</option>
+            ${this.groups().map(g => `<option value="${g.id}" ${sel === g.id ? "selected" : ""}>${esc(g.name)} — ${esc(g.short)}</option>`).join("")}
+          </select>
+        </div>
       </div>`;
 
       if (sel === "ALL") {
-        html += `<div class="section"><div class="section-head"><h2>Formation Group Overview</h2>
-          <span class="hint">Pick a group above, or click a card, for its tactical learnings</span></div>
+        html += `<div class="section"><div class="section-head"><h2>Formation tactical learnings</h2>
+          <span class="hint">Select a formation group below — the whole card opens its learnings</span></div>
           <div class="fg-overview">${this.groups().map(g => this.overviewCard(g, this.byGroup(insights, g.id))).join("")}</div></div>`;
       } else {
         const g = this.groupById(sel) || this.groups()[0];
@@ -1426,6 +1439,8 @@
     },
 
     wire(root) {
+      const msel = root.querySelector("#monthly-period-select");
+      if (msel) msel.addEventListener("change", () => { State.periodId = msel.value; this.render(); });
       const sel = root.querySelector("#formation-group-select");
       if (sel) sel.addEventListener("change", () => { State.formationGroup = sel.value; State.monthlyEchelon = "ALL"; this.render(); });
       root.querySelectorAll("[data-group]").forEach(btn =>
@@ -1441,6 +1456,9 @@
       document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
       el(`#view-${State.horizon}`).classList.add("active");
       el(`.tab-btn[data-horizon="${State.horizon}"]`).classList.add("active");
+      // Monthly is a full-width promulgation page — hide the left filter rail
+      // (Weekly & Capabilities keep it).
+      document.body.classList.toggle("monthly-view", State.horizon === "monthly");
     },
 
     // Build the period selector contents for the active horizon
