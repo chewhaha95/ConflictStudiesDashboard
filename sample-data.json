@@ -188,7 +188,8 @@
     "sourceTypes": {
       "brief-derived": "Signal computed directly from weekly-brief observations (traceable to editions).",
       "analyst-judged": "Interpretation by the analyst — grounded in, but not stated verbatim by, the briefs.",
-      "model-derived": "Placeholder / seed estimate — not from the briefs."
+      "model-derived": "Placeholder / seed estimate — not from the briefs.",
+      "research-judged": "Capability-development judgment drawn from wider open-source research beyond the weekly briefs — labelled and tied to a research source packet."
     },
     "metrics": {
       "heat": {
@@ -243,6 +244,15 @@
       "Well evidenced": "Multiple supporting weeks and/or theatres with at least one strong (headline) observation.",
       "Observed but limited": "Backed by the briefs, but thin — few weeks/theatres or low-confidence (body-only) mentions.",
       "Not yet evidenced": "No supporting observations in the current reporting — narrative is analyst-judged only."
+    },
+    "layers": {
+      "observation": "Layer 1 — Current reporting picture. Brief-derived observation: what capability/contest was seen, in which theatre and week, and the immediate countermeasure or adaptation reported.",
+      "capdev": "Layer 2 — Broader capability-development assessment. Research-judged: hot / scaling / stressed / bypassed / superseded / replaced / worth-emulating, informed by wider open-source research and tied to a source packet. Not derivable from the weekly briefs alone."
+    },
+    "researchConfidence": {
+      "label": "Research confidence",
+      "method": "Rule-based on the supporting research packet: ≥3 independent open-source studies = High, 2 = Medium, 1 = Low, 0 = assertion only (analyst-judged, no packet).",
+      "fallback": "Distinct from the brief-observation confidence (which scores weekly-reporting strength). A judgment with no packet is shown as analyst-judged, not research-judged."
     }
   },
   "capabilityContests": [
@@ -270,7 +280,13 @@
         "trial": "Close-fight interceptor / shotgun / overhead-cover drills",
         "review": "Mounted & trench movement SOP assumptions",
         "doNotAssume": "Jamming alone defeats the FPV threat"
-      }
+      },
+      "capdevAssessment": "Wider open-source analysis assesses tactical EW as a STRESSED countermeasure — it degrades but no longer reliably defeats RF FPVs, and the contest is shifting toward fibre-optic control and kinetic defeat.",
+      "researchSourceIds": [
+        "rs_rusi",
+        "rs_wotr",
+        "rs_isw_deep"
+      ]
     },
     {
       "id": "ct_fpv_fiber",
@@ -297,7 +313,12 @@
         "trial": "Kinetic C-UAS, nets and line-spotting / counter-recce drills",
         "review": "Reliance on EW for close-in protection",
         "doNotAssume": "EW degrades fibre-optic FPVs"
-      }
+      },
+      "capdevAssessment": "Research consensus treats fibre-optic control as a SCALING EW-bypass; no scalable counter has been demonstrated, so the countermeasure is currently outpaced.",
+      "researchSourceIds": [
+        "rs_rusi",
+        "rs_wotr"
+      ]
     },
     {
       "id": "ct_shahed",
@@ -323,7 +344,13 @@
         "trial": "Decoy discrimination and cued gun / EW engagement",
         "review": "Interceptor cost-exchange and munition stockpiles",
         "doNotAssume": "Exquisite interceptors alone can defend rear areas affordably"
-      }
+      },
+      "capdevAssessment": "Open-source air-defence analysis judges layered AD as effective per-engagement but under cost-exchange and magazine STRAIN at scale, while Shahed-type production continues to SCALE.",
+      "researchSourceIds": [
+        "rs_csis",
+        "rs_iiss",
+        "rs_rusi"
+      ]
     },
     {
       "id": "ct_iran",
@@ -348,7 +375,12 @@
         "trial": "Mixed-threat (ballistic / cruise / drone) engagement sequencing",
         "review": "Magazine depth and defended-asset resilience",
         "doNotAssume": "A single defensive layer survives a saturation salvo"
-      }
+      },
+      "capdevAssessment": "Wider research assesses layered defence as HOLDING BUT STRESSED under mixed ballistic/cruise/drone saturation; interceptor inventory is the limiting factor.",
+      "researchSourceIds": [
+        "rs_csis",
+        "rs_iiss"
+      ]
     },
     {
       "id": "ct_usv",
@@ -372,7 +404,12 @@
         "trial": "Layered close-in defeat and distributed basing vs USV swarms",
         "review": "Coastal / chokepoint force-protection posture",
         "doNotAssume": "A stronger surface fleet is safe from cheap USVs"
-      }
+      },
+      "capdevAssessment": "Naval open-source analysis assesses cheap USVs as a SCALING sea-denial capability that has materially constrained a larger fleet; dedicated counters remain immature.",
+      "researchSourceIds": [
+        "rs_rusi",
+        "rs_janes"
+      ]
     },
     {
       "id": "ct_tunnels",
@@ -397,7 +434,56 @@
         "trial": "Subterranean detection & breaching serials",
         "review": "Manpower and time to clear-and-hold underground",
         "doNotAssume": "Surface ISR / air overmatch translates underground"
-      }
+      },
+      "capdevAssessment": "Subterranean-warfare research assesses detection-and-breach as a MATURING but manpower-intensive counter that does not negate well-developed tunnel networks.",
+      "researchSourceIds": [
+        "rs_csis",
+        "rs_janes"
+      ]
+    }
+  ],
+  "researchSources": [
+    {
+      "id": "rs_rusi",
+      "label": "RUSI",
+      "publisher": "Royal United Services Institute",
+      "url": "https://rusi.org",
+      "note": "Sustained open-source analysis of the Russia–Ukraine drone, EW and counter-UAS adaptation cycle."
+    },
+    {
+      "id": "rs_csis",
+      "label": "CSIS",
+      "publisher": "Center for Strategic & International Studies",
+      "url": "https://www.csis.org",
+      "note": "Missile-threat and air-defence capability tracking (incl. the Missile Threat project)."
+    },
+    {
+      "id": "rs_iiss",
+      "label": "IISS",
+      "publisher": "International Institute for Strategic Studies",
+      "url": "https://www.iiss.org",
+      "note": "The Military Balance — capability fielding, inventories and proliferation."
+    },
+    {
+      "id": "rs_wotr",
+      "label": "War on the Rocks",
+      "publisher": "War on the Rocks",
+      "url": "https://warontherocks.com",
+      "note": "Practitioner open-source commentary on drone, EW and air-defence adaptation."
+    },
+    {
+      "id": "rs_isw_deep",
+      "label": "ISW special reports",
+      "publisher": "Institute for the Study of War",
+      "url": "https://www.understandingwar.org",
+      "note": "Thematic deep-dives beyond ISW's weekly campaign updates."
+    },
+    {
+      "id": "rs_janes",
+      "label": "Janes",
+      "publisher": "Janes",
+      "url": "https://www.janes.com",
+      "note": "Open-source defence-intelligence on systems fielding and proliferation."
     }
   ],
 
@@ -490,7 +576,11 @@
       "threatens": "Armour, infantry & exposed movement (close fight)",
       "safAction": "Do not assume",
       "displacement": "Partially displaced",
-      "niche": "RF FPVs remain dominant where fibre is unavailable, ranges exceed the spool, or cost/availability matter more than EW immunity."
+      "niche": "RF FPVs remain dominant where fibre is unavailable, ranges exceed the spool, or cost/availability matter more than EW immunity.",
+      "displacementSources": [
+        "rs_rusi",
+        "rs_wotr"
+      ]
     },
     {
       "id": "cap_fpv_fiber",
@@ -771,7 +861,11 @@
       ],
       "threatens": "Short-range observation / targeting (cheap ISR)",
       "displacement": "Fully superseded",
-      "niche": "Residual use only for cheap, very-short-range observation where milspec ISR is absent."
+      "niche": "Residual use only for cheap, very-short-range observation where milspec ISR is absent.",
+      "displacementSources": [
+        "rs_rusi",
+        "rs_iiss"
+      ]
     },
     {
       "id": "cap_patriot",
@@ -1205,7 +1299,10 @@
       ],
       "threatens": "Area saturation & harassment (short range)",
       "displacement": "Still valid in niche",
-      "niche": "Cheap unguided rockets remain useful for short-range saturation and harassment despite precision alternatives."
+      "niche": "Cheap unguided rockets remain useful for short-range saturation and harassment despite precision alternatives.",
+      "displacementSources": [
+        "rs_csis"
+      ]
     },
     {
       "id": "cap_trophy_aps",
@@ -1288,7 +1385,11 @@
       "niche": "ATGMs retain the edge at longer range, in clear LOS, against targets beyond FPV endurance, and where EW would defeat FPVs.",
       "spreadWhy": "Mature, widely transferred, low training burden.",
       "transferLimits": "Range / LOS dependent; APS and FPVs erode its niche.",
-      "safRelevance": "Medium — APS fit and anti-armour tactics review."
+      "safRelevance": "Medium — APS fit and anti-armour tactics review.",
+      "displacementSources": [
+        "rs_iiss",
+        "rs_janes"
+      ]
     },
     {
       "id": "cap_tunnels",

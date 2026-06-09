@@ -182,8 +182,12 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("capability BLUF rendered", cb.textContent.includes("BLUF — Capability Picture"));
   check("BLUF shows operational picture (stressed / bypass / uncountered)",
     /Most stressed counters/.test(cb.textContent) && /Key bypasses/.test(cb.textContent) && /Uncountered \/ weakly countered/.test(cb.textContent));
-  check("BLUF claims carry provenance tags (brief-derived / analyst-judged)",
-    cb.querySelectorAll(".bluf-card .pt-brief").length >= 1 && cb.querySelectorAll(".bluf-card .pt-analyst").length >= 1);
+  check("BLUF claims carry layer provenance tags (brief-derived + research-judged)",
+    cb.querySelectorAll(".bluf-card .pt-brief").length >= 1 && cb.querySelectorAll(".bluf-card .pt-research").length >= 1);
+  check("BLUF separates reporting picture (Layer 1) from capdev assessment (Layer 2)",
+    cb.querySelectorAll(".bluf-card .bluf-layer-h").length >= 2 &&
+    /Current reporting picture/.test(cb.textContent) && /Broader capdev assessment/.test(cb.textContent));
+  check("research-judged is a distinct source type (Layer 2)", cb.querySelectorAll(".src-badge.src-research").length >= 1);
   check("summary cards rendered (6, explainable)", cb.querySelectorAll(".kpi").length === 6 && [...cb.querySelectorAll(".kpi")].every(k => !!k.querySelector(".tip-body, .th-info")));
   check("contest is the analytic unit (Tracked contests card)", /Tracked contests/.test(cb.textContent));
   check("heat methodology explained (inputs/method/fallback in tooltip)", /Recency-weighted/.test(cb.textContent) && /normalised 0–100/.test(cb.textContent) && /Fallback:/.test(cb.textContent));
@@ -196,8 +200,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     h2list.indexOf("Capability Contests") < h2list.indexOf("Capability Inventory"));
   check("contest table populated and contest-based (measure vs counter)",
     cb.querySelectorAll(".matrix tbody tr").length >= 5 && cb.querySelectorAll(".matrix tbody .vs").length >= 1);
-  check("contest table columns (Threatened fn / Judgment / Confidence / SAF action / Formation)",
-    ["Threatened function", "Judgment", "Confidence", "SAF action", "Formation"].every(h => [...cb.querySelectorAll(".matrix thead th")].some(th => th.textContent.includes(h))));
+  check("contest table columns (Threatened fn / Judgment / Research confidence / SAF action / Formation / Research basis)",
+    ["Threatened function", "Judgment", "Research confidence", "SAF action", "Formation", "Research basis"].every(h => [...cb.querySelectorAll(".matrix thead th")].some(th => th.textContent.includes(h))));
   check("inventory holds only standalone (non-contest) capabilities",
     [...cb.querySelectorAll(".matrix thead th")].some(th => /Capability$/.test(th.textContent.trim())));
   check("Supporting-briefs column + source-type badges present",
@@ -208,6 +212,14 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     /Threatened function/.test(c.textContent) && /Countermeasure/.test(c.textContent) && /Observed effect/.test(c.textContent) &&
     /Adaptation \/ bypass/.test(c.textContent) && /Operational judgment/.test(c.textContent) && /SAF learning/.test(c.textContent) &&
     c.querySelector(".src-badge") && c.querySelector(".judg")));
+  check("cards split into two evidence layers (reporting vs capdev)", [...cb.querySelectorAll(".contest-card")].every(c =>
+    c.querySelector(".cc-layer-1") && c.querySelector(".cc-layer-2") &&
+    /Current reporting picture/.test(c.textContent) && /Broader capability-development assessment/.test(c.textContent)));
+  check("Layer-1 zone is brief-derived, Layer-2 zone is research-judged", [...cb.querySelectorAll(".contest-card")].every(c =>
+    c.querySelector(".cc-layer-1 .src-brief") && c.querySelector(".cc-layer-2 .src-research, .cc-layer-2 .src-analyst")));
+  check("Layer-2 judgments carry a research source-packet drawer + research confidence",
+    cb.querySelectorAll(".contest-card .cc-layer-2 .ev-research").length >= 1 &&
+    [...cb.querySelectorAll(".contest-card")].some(c => /Research confidence/.test(c.textContent)));
   check("cards carry evidence lineage (first/last seen, theatres, supporting weeks, basis)",
     [...cb.querySelectorAll(".contest-card")].every(c =>
       /First seen/.test(c.textContent) && /Last seen/.test(c.textContent) && /Supporting weeks/.test(c.textContent) &&
