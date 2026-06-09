@@ -599,10 +599,30 @@ details.ev > summary::-webkit-details-marker { display: none; }
 .cc-h { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--text-faint); margin-bottom: 3px; }
 .cc-b { font-size: 12.5px; line-height: 1.5; color: var(--text); }
 .cc-uncountered { color: var(--tone-bad-fg); font-weight: 650; }
-.cc-saf { margin-top: 12px; background: var(--accent-soft); border: 1px solid var(--accent); border-radius: var(--radius-sm); padding: 9px 12px; font-size: 12.5px; line-height: 1.5; }
-.cc-saf .cc-h { color: var(--accent); display: inline; margin-right: 6px; }
+.cc-saf { margin-top: 12px; background: var(--accent-soft); border: 1px solid var(--accent); border-radius: var(--radius-sm); padding: 9px 12px; }
+.cc-saf .cc-h { color: var(--accent); margin-bottom: 6px; }
+.saf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 16px; }
+.saf-row { display: flex; align-items: baseline; gap: 8px; font-size: 12px; line-height: 1.45; }
+.saf-k { flex: 0 0 auto; font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .3px; padding: 1px 6px; border-radius: 4px; }
+.saf-v { color: var(--text); }
+/* formation-relevance chips */
+.cc-forms { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-bottom: 10px; }
+.cc-forms-k { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; color: var(--text-faint); }
+.form-chip { font-size: 10.5px; font-weight: 650; padding: 2px 8px; border-radius: 999px; background: var(--bg-elev-2); border: 1px solid var(--border); cursor: help; }
+/* evidence-discipline badge */
+.disc { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; cursor: help; }
+.disc-good { color: var(--tone-good-fg); background: var(--tone-good-bg); }
+.disc-warn { color: var(--tone-warn-fg); background: var(--tone-warn-bg); }
+.disc-bad  { color: var(--tone-bad-fg);  background: var(--tone-bad-bg); }
+/* cycle-card evidence lineage */
+.cc-lineage { margin-top: 11px; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 11.5px; color: var(--text-muted); }
+.cc-lineage .ln { display: inline-flex; align-items: center; gap: 5px; }
+.cc-lineage .ln-k { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .3px; color: var(--text-faint); }
+.cc-basis { margin-top: 6px; font-size: 11.5px; font-style: italic; color: var(--text-muted); }
 .cc-foot { margin-top: 10px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 9px; }
 .cc-foot .ev { margin-left: auto; }
+.conf-score { color: var(--text-faint); font-weight: 600; }
+.vs { color: var(--text-faint); font-weight: 600; font-size: 11px; }
 
 /* Supersession chains (graded) */
 .sup-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 0; border-bottom: 1px solid var(--border); }

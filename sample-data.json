@@ -227,6 +227,22 @@
         "method": "Theatre count is counted from brief observations; the spread / transferability commentary is analyst-judged.",
         "fallback": "Theatre count is brief-derived; the 'why it spreads / limits' commentary is analyst-judged."
       }
+    },
+    "confidence": {
+      "label": "Confidence",
+      "method": "Rule-based score (0–8): supporting weeks (max 3) + theatres observed (max 2) + countermeasure directly observed in the briefs (1) + adaptation/bypass explicitly evidenced (1) + at least one headline-level observation (1). High ≥ 6, Medium 3–5, Low < 3.",
+      "fallback": "Computed from the observation source in use (live brief editions, or seed signals offline). Narrative remains analyst-judged."
+    },
+    "formations": {
+      "Manoeuvre": "Close-combat manoeuvre formations (armour / infantry).",
+      "Sense Strike": "ISR–strike / fires and air-defence formations.",
+      "Combat Support": "Engineers, signals, EW, C-UAS and enablers.",
+      "Expeditionary": "Naval / littoral / distributed expeditionary forces."
+    },
+    "evidenceDiscipline": {
+      "Well evidenced": "Multiple supporting weeks and/or theatres with at least one strong (headline) observation.",
+      "Observed but limited": "Backed by the briefs, but thin — few weeks/theatres or low-confidence (body-only) mentions.",
+      "Not yet evidenced": "No supporting observations in the current reporting — narrative is analyst-judged only."
     }
   },
   "capabilityContests": [
@@ -243,7 +259,18 @@
       "safImplication": "Layer kinetic defeat (C-UAS guns, shotguns, nets, overhead cover) with EW; do not treat jamming as a complete answer.",
       "safAction": "Do not assume",
       "confidence": "High",
-      "assessmentSource": "analyst-judged"
+      "assessmentSource": "analyst-judged",
+      "bypassCapId": "cap_fpv_fiber",
+      "formationRelevance": [
+        "Manoeuvre",
+        "Combat Support"
+      ],
+      "saf": {
+        "emulate": "Layered EW + kinetic counter-UAS",
+        "trial": "Close-fight interceptor / shotgun / overhead-cover drills",
+        "review": "Mounted & trench movement SOP assumptions",
+        "doNotAssume": "Jamming alone defeats the FPV threat"
+      }
     },
     {
       "id": "ct_fpv_fiber",
@@ -259,7 +286,18 @@
       "safImplication": "Assume EW-immune FPVs in the close fight; invest in kinetic C-UAS, overhead protection and counter-recce rather than relying on jamming.",
       "safAction": "Do not assume",
       "confidence": "Medium",
-      "assessmentSource": "analyst-judged"
+      "assessmentSource": "analyst-judged",
+      "bypassCapId": null,
+      "formationRelevance": [
+        "Manoeuvre",
+        "Combat Support"
+      ],
+      "saf": {
+        "emulate": "Overhead cover, dispersion & camouflage discipline",
+        "trial": "Kinetic C-UAS, nets and line-spotting / counter-recce drills",
+        "review": "Reliance on EW for close-in protection",
+        "doNotAssume": "EW degrades fibre-optic FPVs"
+      }
     },
     {
       "id": "ct_shahed",
@@ -274,7 +312,18 @@
       "safImplication": "Prioritise low-cost layered defeat (guns / EW / interceptor-UAS) and magazine depth over exquisite interceptors alone.",
       "safAction": "Review",
       "confidence": "High",
-      "assessmentSource": "analyst-judged"
+      "assessmentSource": "analyst-judged",
+      "bypassCapId": null,
+      "formationRelevance": [
+        "Sense Strike",
+        "Combat Support"
+      ],
+      "saf": {
+        "emulate": "Low-cost layered AD (guns / EW / interceptor-UAS) with magazine depth",
+        "trial": "Decoy discrimination and cued gun / EW engagement",
+        "review": "Interceptor cost-exchange and munition stockpiles",
+        "doNotAssume": "Exquisite interceptors alone can defend rear areas affordably"
+      }
     },
     {
       "id": "ct_iran",
@@ -289,7 +338,17 @@
       "safImplication": "Plan for saturation: defence-in-depth, interceptor economy and resilience of defended assets — not single-layer reliance.",
       "safAction": "Review",
       "confidence": "Medium",
-      "assessmentSource": "analyst-judged"
+      "assessmentSource": "analyst-judged",
+      "bypassCapId": null,
+      "formationRelevance": [
+        "Sense Strike"
+      ],
+      "saf": {
+        "emulate": "Defence-in-depth and interceptor economy",
+        "trial": "Mixed-threat (ballistic / cruise / drone) engagement sequencing",
+        "review": "Magazine depth and defended-asset resilience",
+        "doNotAssume": "A single defensive layer survives a saturation salvo"
+      }
     },
     {
       "id": "ct_usv",
@@ -304,7 +363,16 @@
       "safImplication": "Coastal / chokepoint forces need layered close-in defeat and distributed basing against cheap USV swarms.",
       "safAction": "Watch",
       "confidence": "Medium",
-      "assessmentSource": "analyst-judged"
+      "assessmentSource": "analyst-judged",
+      "bypassCapId": null,
+      "formationRelevance": [
+        "Expeditionary"
+      ],
+      "saf": {
+        "trial": "Layered close-in defeat and distributed basing vs USV swarms",
+        "review": "Coastal / chokepoint force-protection posture",
+        "doNotAssume": "A stronger surface fleet is safe from cheap USVs"
+      }
     },
     {
       "id": "ct_tunnels",
@@ -319,7 +387,17 @@
       "safImplication": "Invest in subterranean detection, breaching and the manpower / serials to clear and hold.",
       "safAction": "Trial",
       "confidence": "Low",
-      "assessmentSource": "analyst-judged"
+      "assessmentSource": "analyst-judged",
+      "bypassCapId": null,
+      "formationRelevance": [
+        "Manoeuvre",
+        "Combat Support"
+      ],
+      "saf": {
+        "trial": "Subterranean detection & breaching serials",
+        "review": "Manpower and time to clear-and-hold underground",
+        "doNotAssume": "Surface ISR / air overmatch translates underground"
+      }
     }
   ],
 

@@ -974,6 +974,96 @@
       const all = this.contestsAll();
       return State.capEvidencedOnly ? all.filter(ct => this.contestObserved(ct)) : all;
     },
+    // Capability ids that participate in any contest (measure / counter / bypass).
+    contestCapIds() {
+      const s = new Set();
+      this.contestsAll().forEach(ct => [ct.measureCapId, ct.counterCapId, ct.bypassCapId].forEach(id => id && s.add(id)));
+      return s;
+    },
+    // Secondary INVENTORY: capabilities observed in the briefs but not yet part of
+    // a contest narrative — kept out of the primary contest table to avoid mixing
+    // object types. (Respects the brief-evidenced-only toggle via list().)
+    inventory(list) {
+      const inContest = this.contestCapIds();
+      return this.heatRanking(list.filter(c => this.observed(c) && !inContest.has(c.id)));
+    },
+
+    // ---- contest observation stats & rule-based confidence ----
+    // Unified observation stats for a contest, from the ACTIVE source: live brief
+    // evidence rows when present, else the measure's seed signals (offline).
+    contestStats(ct) {
+      const m = this.measureOf(ct);
+      const ev = this.contestEvidence(ct);
+      const d = (m && this.dynamics[m.id]) || { weekly: [], tw: {}, signals: 0 };
+      let weeks, theatres, obsCount, first, last, highConf;
+      if (this.briefMode && ev.length) {
+        const ws = [...new Set(ev.map(r => r.weekId))];
+        weeks = ws.length;
+        theatres = [...new Set(ev.map(r => r.theatre))];
+        obsCount = ev.length;
+        first = ev[0].rangeLabel || ev[0].weekId;
+        last = ev[ev.length - 1].rangeLabel || ev[ev.length - 1].weekId;
+        highConf = ev.some(r => r.confidence === "high");
+      } else {
+        const axis = DB.weeklyReports || [];
+        const idx = (d.weekly || []).map((v, i) => v > 0 ? i : -1).filter(i => i >= 0);
+        weeks = idx.length;
+        theatres = Object.keys(d.tw || {});
+        obsCount = d.signals || 0;
+        first = idx.length ? (axis[idx[0]] || {}).weekId : null;
+        last = idx.length ? (axis[idx[idx.length - 1]] || {}).weekId : null;
+        highConf = false;
+      }
+      const counter = this.counterOf(ct);
+      const bypass = ct.bypassCapId ? this.byId(ct.bypassCapId) : null;
+      return {
+        weeks, theatres, obsCount, first, last, highConf,
+        counterObserved: !!(counter && this.observed(counter)),
+        bypassObserved: !!(bypass && this.observed(bypass))
+      };
+    },
+    // Rule-based confidence (0–8): weeks(≤3) + theatres(≤2) + counter-observed(1)
+    // + bypass-evidenced(1) + a headline-level observation(1). High ≥6, Med ≥3, Low <3.
+    contestConfidence(ct) {
+      const s = this.contestStats(ct);
+      const score = Math.min(s.weeks, 3) + Math.min(s.theatres.length, 2) +
+        (s.counterObserved ? 1 : 0) + (s.bypassObserved ? 1 : 0) + (s.highConf ? 1 : 0);
+      return { level: score >= 6 ? "High" : score >= 3 ? "Medium" : "Low", score };
+    },
+    // Evidence-discipline flag — guards against over-assertion.
+    contestDiscipline(ct) {
+      const s = this.contestStats(ct);
+      if (!s.obsCount) return "Not yet evidenced";
+      if (s.obsCount < 3 || s.theatres.length < 2 || !s.highConf) return "Observed but limited";
+      return "Well evidenced";
+    },
+    // One-line evidence basis, e.g. "Supported by 5 brief observations across
+    // Russia–Ukraine and Israel–Lebanon."
+    contestEvidenceBasis(ct) {
+      const s = this.contestStats(ct);
+      if (!s.obsCount) return "No supporting observations in current reporting — analyst-judged only.";
+      const names = s.theatres.map(t => (THEATRE_BY_ID[t] || {}).name || t);
+      const where = names.length === 1 ? names[0] : names.slice(0, -1).join(", ") + " and " + names[names.length - 1];
+      const src = this.briefMode ? "brief observation" : "seed observation";
+      return `Supported by ${s.obsCount} ${src}${s.obsCount === 1 ? "" : "s"}${names.length ? ` across ${where}` : ""}.`;
+    },
+    formationChips(arr) {
+      return (arr || []).map(f => `<span class="form-chip tip" tabindex="0">${esc(f)}<span class="tip-body">${esc((DB.capabilityDefs.formations || {})[f] || "")}</span></span>`).join("");
+    },
+    // Structured SAF actions (Emulate / Trial / Review / Do not assume) — only the
+    // fields the analyst populated for this contest.
+    safActionsBlock(saf) {
+      if (!saf) return "";
+      const rows = [
+        ["Emulate", saf.emulate, "good"], ["Trial", saf.trial, "scaling"],
+        ["Review", saf.review, "warn"], ["Do not assume", saf.doNotAssume, "bad"]
+      ].filter(r => r[1]);
+      return rows.map(([k, v, tone]) => `<div class="saf-row"><span class="saf-k saf-${tone}">${esc(k)}</span><span class="saf-v">${esc(v)}</span></div>`).join("");
+    },
+    disciplineBadge(d) {
+      const tone = d === "Well evidenced" ? "good" : d === "Not yet evidenced" ? "bad" : "warn";
+      return `<span class="disc disc-${tone} tip" tabindex="0">${esc(d)}<span class="tip-body">${esc((DB.capabilityDefs.evidenceDiscipline || {})[d] || "")}</span></span>`;
+    },
     // Theatres in scope = the active theatre filter, or all five if none set
     selectedTheatreIds() {
       return State.filters.theatres.size
@@ -1137,23 +1227,27 @@
       // Hot / Rising / Fading are computed from brief observations (brief-derived).
       // Stressed counters / bypasses / uncountered come from the contest layer
       // (analyst-judged interpretation, grounded in the cited briefs).
-      const hot = ranked.slice(0, 4).map(c => c.name);
+      // Disciplined BLUF: top 2–3 items per line; brief-derived lines tagged
+      // brief-derived, interpretive lines tagged analyst-judged.
+      const TOP = 3;
+      const hot = ranked.slice(0, TOP).map(c => c.name);
       const rising = all.filter(c => this.trendOf(c) === "Rising").map(c => c.name);
       const fading = all.filter(c => ["Superseded", "Obsolete"].includes(c.lifecycle) || this.trendOf(c) === "Declining").map(c => c.name);
       const stressedCtr = contests.filter(ct => ct.operationalJudgment === "stressed" && this.counterOf(ct)).map(ct => this.counterOf(ct).name);
-      const bypassCt = contests.filter(ct => ["bypassed", "uncountered", "stressed"].includes(ct.operationalJudgment) && ct.adaptationBypass).map(ct => this.measureOf(ct) ? this.measureOf(ct).name : ct.title);
+      const bypassCt = contests.filter(ct => ["bypassed", "uncountered"].includes(ct.operationalJudgment)).map(ct => this.measureOf(ct) ? this.measureOf(ct).name : ct.title);
       const uncCt = contests.filter(ct => ct.operationalJudgment === "uncountered").map(ct => this.measureOf(ct) ? this.measureOf(ct).name : ct.title);
       const bTag = `<span class="prov-tag pt-brief" title="Computed from weekly-brief observations">brief-derived</span>`;
       const aTag = `<span class="prov-tag pt-analyst" title="Analyst interpretation, grounded in the cited briefs">analyst-judged</span>`;
+      const top = arr => [...new Set(arr)].slice(0, TOP).join(", ");
       const blufLine = (label, val, tag) => `<div class="bluf-line"><span class="bluf-k">${esc(label)}</span><span class="bluf-v">${esc(val || "—")}</span> ${tag}</div>`;
       let html = `<div class="card bluf-card card-pad section">
         <div class="bluf-label">BLUF — Capability Picture</div>
-        ${blufLine("Hot now", hot.join(", "), bTag)}
-        ${blufLine("Rising", rising.slice(0, 5).join(", "), bTag)}
-        ${blufLine("Fading / superseded", fading.slice(0, 5).join(", "), aTag)}
-        ${blufLine("Most stressed countermeasures", [...new Set(stressedCtr)].join(", "), aTag)}
-        ${blufLine("Most consequential bypasses", [...new Set(bypassCt)].join(", "), aTag)}
-        ${blufLine("Currently uncountered / weakly countered", [...new Set(uncCt)].join(", "), aTag)}
+        ${blufLine("Hottest now", top(hot), bTag)}
+        ${blufLine("Rising", top(rising), bTag)}
+        ${blufLine("Fading / superseded", top(fading), aTag)}
+        ${blufLine("Most stressed counters", top(stressedCtr), aTag)}
+        ${blufLine("Key bypasses", top(bypassCt), aTag)}
+        ${blufLine("Uncountered / weakly countered", top(uncCt), aTag)}
         <div class="bluf-sub">${dataTag}</div>
       </div>`;
 
@@ -1197,12 +1291,41 @@
         <div class="cycle-grid">${contestCards || `<div class="empty">No brief-evidenced contests in the current filter. ${hiddenN ? "Turn off 'Brief-evidenced only' to see analyst-judged contests." : ""}</div>`}</div>
         ${(State.capEvidencedOnly && hiddenN > 0) ? `<div class="muted-note" style="margin-top:8px">${hiddenN} analyst-judged contest(s) hidden — not yet named in the loaded briefs. Turn off <em>Brief-evidenced only</em> to view.</div>` : ""}</div>`;
 
-      // ---- Learning table (was the heat leaderboard) ----------------------
-      const rows = ranked.map((c, i) => {
+      // ---- PRIMARY TABLE: capability contests -----------------------------
+      // Organised around contests, not standalone capabilities. Every row is a
+      // well-formed contest (threatened function + judgment + effect authored),
+      // so no "—" rows leak in. Ranked by the measure's heat.
+      const rankedContests = [...contests].sort((a, b) => this.contestHeat(b) - this.contestHeat(a));
+      const ctRows = rankedContests.map((ct, i) => {
+        const m = this.measureOf(ct), c = this.counterOf(ct);
+        const conf = this.contestConfidence(ct), s = this.contestStats(ct);
+        const vs = c ? `${esc(m ? m.name : ct.measureCapId)} <span class="vs">vs</span> ${esc(c.name)}` : `${esc(m ? m.name : ct.measureCapId)} <span class="vs">vs</span> <span class="cc-uncountered">uncountered</span>`;
+        return `<tr>
+          <td class="matrix-cell-num">${i + 1}</td>
+          <td class="theatre-cell">${vs}<div style="font-size:11px;color:var(--text-faint)">heat ${this.contestHeat(ct)} · ${this.capTrend(this.contestTrend(ct))}</div></td>
+          <td style="font-size:12px">${esc(ct.threatens || "—")}</td>
+          <td>${this.judgmentBadge(ct.operationalJudgment)}</td>
+          <td class="tip" tabindex="0"><strong>${esc(conf.level)}</strong> <span class="conf-score">(${conf.score}/8)</span><span class="tip-body">${esc((DB.capabilityDefs.confidence || {}).method || "")}</span></td>
+          <td>${this.disciplineBadge(this.contestDiscipline(ct))}</td>
+          <td>${this.safActionBadge(ct.safAction)}</td>
+          <td style="font-size:11px">${this.formationChips(ct.formationRelevance)}</td>
+          <td class="ev-cell">${this.evDrawer(this.contestEvidence(ct), this.contestObserved(ct), s.obsCount)}</td>
+        </tr>`;
+      }).join("");
+      html += `<div class="section"><div class="section-head"><h2>Capability Contests</h2>
+        <span class="hint">The primary table — attack ⇄ counter contests, ranked by heat. ${dataTag}</span></div>
+        <div class="card matrix-wrap"><table class="matrix"><thead><tr>
+          <th>#</th><th>Contest (measure vs counter)</th><th>Threatened function</th>
+          <th>Judgment</th><th>Confidence ${this.metricTip("trend") ? `<span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">${esc((DB.capabilityDefs.confidence || {}).method || "")}</span></span>` : ""}</th>
+          <th>Evidence</th><th>SAF action</th><th>Formation</th><th>Supporting briefs</th>
+        </tr></thead><tbody>${ctRows || `<tr><td colspan="9"><div class="empty">No brief-evidenced contests in the current filter.</div></td></tr>`}</tbody></table></div></div>`;
+
+      // ---- SECONDARY TABLE: capability inventory --------------------------
+      // Standalone capabilities observed in the briefs that do NOT yet support a
+      // contest narrative — kept separate so the primary table stays contest-pure.
+      const inv = this.inventory(all);
+      const invRows = inv.map((c, i) => {
         const heat = this.heatOf(c);
-        const ct = allContests.find(x => x.measureCapId === c.id);
-        const judg = ct ? this.judgmentBadge(ct.operationalJudgment) : `<span class="muted-note">—</span>`;
-        const st = this.obsSourceType(c);
         return `<tr>
           <td class="matrix-cell-num">${i + 1}</td>
           <td class="theatre-cell">${esc(c.name)}<div style="font-size:11px;color:var(--text-faint)">${esc(c.aka)} · ${esc(c.category)}</div></td>
@@ -1210,28 +1333,21 @@
           <td style="font-size:12px">${esc(c.threatens || "—")}</td>
           <td>${this.theatreChips(c.theatres)}</td>
           <td>${this.lcChip(c.lifecycle)}</td>
-          <td>${judg}</td>
           <td><div class="matrix-cell-num">${heat}</div><div class="progress-mini"><span style="width:${heat}%;background:${this.lcPalette[(DB.capabilityDefs.lifecycle[c.lifecycle] || {}).tone]}"></span></div></td>
           <td>${this.sparkline(c)}<div style="font-size:10px;color:var(--text-faint)">${this.observations(c)} obs</div></td>
           <td>${this.capTrend(this.trendOf(c))}</td>
-          <td>${this.srcBadge(st)}</td>
-          <td>${this.safActionBadge(c.safAction || this.defaultSaf(c))}</td>
+          <td>${this.srcBadge(this.obsSourceType(c))}</td>
           <td class="ev-cell">${this.evDrawer(this.evidence(c), this.observed(c), this.observations(c))}</td>
         </tr>`;
       }).join("");
-      html += `<div class="section"><div class="section-head"><h2>Heat Leaderboard</h2>
-        <span class="hint">A learning table — what each capability threatens, how the contest is going, and what SAF should do about it. ${dataTag}</span></div>
+      html += `<div class="section"><div class="section-head"><h2>Capability Inventory</h2>
+        <span class="hint">Observed in the briefs but not yet a full contest — heat / trend brief-derived. Promoted into a contest once a countermeasure dynamic is evidenced.</span></div>
         <div class="card matrix-wrap"><table class="matrix"><thead><tr>
-          <th>#</th><th>Capability / contest</th><th>Role</th><th>Threatened function</th><th>Theatres</th>
-          <th>Lifecycle ${this.metricTip("lifecycle")}</th>
-          <th>Judgment</th>
-          <th>Heat ${this.metricTip("heat")}</th>
+          <th>#</th><th>Capability</th><th>Role</th><th>Threatened function</th><th>Theatres</th>
+          <th>Lifecycle ${this.metricTip("lifecycle")}</th><th>Heat ${this.metricTip("heat")}</th>
           <th>Activity (${this.briefMode ? this.axisLen + "&nbsp;ed" : "8&nbsp;wk"})</th>
-          <th>Trend ${this.metricTip("trend")}</th>
-          <th>Source</th>
-          <th>SAF action</th>
-          <th>Supporting briefs</th>
-        </tr></thead><tbody>${rows || `<tr><td colspan="13"><div class="empty">No capabilities match the filters.</div></td></tr>`}</tbody></table></div></div>`;
+          <th>Trend ${this.metricTip("trend")}</th><th>Source</th><th>Supporting briefs</th>
+        </tr></thead><tbody>${invRows || `<tr><td colspan="11"><div class="empty">No standalone observed capabilities — all observed items are in a contest.</div></td></tr>`}</tbody></table></div></div>`;
 
       // ---- Supersession (graded: fully / partially / niche) ----
       const supRows = this.supersession(all).map(s => {
@@ -1248,17 +1364,20 @@
         <div class="card card-pad">${supRows || `<div class="empty">No supersession links in the current filter.</div>`}</div></div>`;
 
       // ---- Cross-theatre proliferation (enriched) ----
-      const diff = this.diffusion(all).map(c => `<tr>
+      // Only keep rows that meaningfully support ALL THREE columns (why it spreads /
+      // what limits transfer / SAF relevance). Incomplete rows are dropped rather
+      // than padded with "—".
+      const diff = this.diffusion(all).filter(c => c.spreadWhy && c.transferLimits && c.safRelevance).map(c => `<tr>
         <td class="theatre-cell">${esc(c.name)}</td>
         <td>${this.theatreChips(c.theatres)}</td>
-        <td style="font-size:12px;color:var(--text-muted)">${esc(c.spreadWhy || c.note || "—")}</td>
-        <td style="font-size:12px;color:var(--text-muted)">${esc(c.transferLimits || "—")}</td>
-        <td style="font-size:12px">${esc(c.safRelevance || "—")}</td>
+        <td style="font-size:12px;color:var(--text-muted)">${esc(c.spreadWhy)}</td>
+        <td style="font-size:12px;color:var(--text-muted)">${esc(c.transferLimits)}</td>
+        <td style="font-size:12px">${esc(c.safRelevance)}</td>
       </tr>`).join("");
       html += `<div class="section"><div class="section-head"><h2>Cross-Theatre Proliferation</h2>
-        <span class="hint">Theatre count is ${this.metricTip("proliferation")} brief-derived; why-it-spreads / limits / SAF relevance are analyst-judged</span></div>
+        <span class="hint">Theatre count is ${this.metricTip("proliferation")} brief-derived; why-it-spreads / limits / SAF relevance are analyst-judged. Only rows that support all three are shown.</span></div>
         <div class="card matrix-wrap"><table class="cmp-table"><thead><tr><th>Capability</th><th>Theatres</th><th>Why it spreads</th><th>What limits transfer</th><th>SAF relevance</th></tr></thead>
-        <tbody>${diff || `<tr><td colspan="5"><div class="empty">No multi-theatre capabilities in the current filter.</div></td></tr>`}</tbody></table></div></div>`;
+        <tbody>${diff || `<tr><td colspan="5"><div class="empty">No fully-characterised multi-theatre capabilities in the current filter.</div></td></tr>`}</tbody></table></div></div>`;
 
       root.innerHTML = html;
       this.wire(root);
@@ -1272,7 +1391,6 @@
     contestCard(ct) {
       const m = this.measureOf(ct), c = this.counterOf(ct);
       const heat = this.contestHeat(ct), trend = this.contestTrend(ct);
-      const weeks = this.contestWeeks(ct);
       const evRows = this.contestEvidence(ct);
       const obsBacked = this.contestObserved(ct);
       const obsCount = (m ? this.observations(m) : 0) + (c ? this.observations(c) : 0);
@@ -1281,22 +1399,34 @@
       const counterCell = c
         ? `${esc(c.name)} ${this.lcChip(c.lifecycle)}`
         : `<span class="cc-uncountered">⚠ ${esc(ct.countermeasureNote || "Countermeasure not yet evidenced in current weekly briefs")}</span>`;
+      const s = this.contestStats(ct);
+      const conf = this.contestConfidence(ct);
+      const safBlock = this.safActionsBlock(ct.saf);
+      const confTip = (DB.capabilityDefs.confidence || {}).method || "";
       return `<article class="contest-card cj-${tone}">
         <div class="cc-head"><span class="cc-title">${esc(ct.title)}</span>
-          <span class="cc-metrics">${heat ? `<span class="cc-heat">heat ${heat}</span>` : ""} ${this.capTrend(trend)} ${this.judgmentBadge(ct.operationalJudgment)}</span></div>
+          <span class="cc-metrics">${heat ? `<span class="cc-heat">heat ${heat}</span>` : ""} ${this.capTrend(trend)} ${this.judgmentBadge(ct.operationalJudgment)} ${this.disciplineBadge(this.contestDiscipline(ct))}</span></div>
+        ${ct.formationRelevance ? `<div class="cc-forms"><span class="cc-forms-k">Formation relevance</span> ${this.formationChips(ct.formationRelevance)}</div>` : ""}
         <div class="cc-grid">
           <div class="cc-f"><div class="cc-h">Measure / attack</div><div class="cc-b">${m ? `${esc(m.name)} ${this.lcChip(m.lifecycle)}` : esc(ct.measureCapId)}</div></div>
-          <div class="cc-f"><div class="cc-h">Threatens</div><div class="cc-b">${esc(ct.threatens || "—")}</div></div>
+          <div class="cc-f"><div class="cc-h">Threatened function</div><div class="cc-b">${esc(ct.threatens || "—")}</div></div>
           <div class="cc-f"><div class="cc-h">Countermeasure</div><div class="cc-b">${counterCell}</div></div>
           <div class="cc-f"><div class="cc-h">Observed effect</div><div class="cc-b">${esc(ct.observedEffect || "—")}</div></div>
           <div class="cc-f"><div class="cc-h">Adaptation / bypass</div><div class="cc-b">${esc(ct.adaptationBypass || "—")}</div></div>
           <div class="cc-f"><div class="cc-h">Operational judgment</div><div class="cc-b">${this.judgmentBadge(ct.operationalJudgment)} ${esc(ct.judgmentNote || "")}</div></div>
         </div>
-        <div class="cc-saf"><span class="cc-h">SAF learning</span> ${esc(ct.safImplication || "—")} ${this.safActionBadge(ct.safAction)}</div>
+        ${safBlock ? `<div class="cc-saf"><div class="cc-h">SAF learning</div><div class="saf-grid">${safBlock}</div></div>` : ""}
+        <div class="cc-lineage">
+          <span class="ln"><span class="ln-k">First seen</span> ${esc(s.first || "—")}</span>
+          <span class="ln"><span class="ln-k">Last seen</span> ${esc(s.last || "—")}</span>
+          <span class="ln"><span class="ln-k">Theatres</span> ${s.theatres.length ? this.theatreChips(s.theatres) : "—"}</span>
+          <span class="ln"><span class="ln-k">Supporting weeks</span> ${s.weeks}</span>
+        </div>
+        <div class="cc-basis">${esc(this.contestEvidenceBasis(ct))}</div>
         <div class="cc-foot">
-          <span class="cc-prov">Observations: ${this.srcBadge(st)} · ${weeks.length} supporting week(s)</span>
+          <span class="cc-prov">Observations: ${this.srcBadge(st)}</span>
           <span class="cc-prov">Assessment: ${this.srcBadge(ct.assessmentSource || "analyst-judged")}</span>
-          <span class="cc-conf">Confidence: <strong>${esc(ct.confidence || "—")}</strong></span>
+          <span class="cc-conf tip" tabindex="0">Confidence: <strong>${esc(conf.level)}</strong> <span class="conf-score">(${conf.score}/8)</span><span class="tip-body">${esc(confTip)}</span></span>
           ${this.evDrawer(evRows, obsBacked, obsCount)}
         </div>
       </article>`;
