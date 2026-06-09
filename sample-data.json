@@ -118,25 +118,210 @@
 
   "capabilityDefs": {
     "lifecycle": {
-      "Emerging":   { "tone": "emerging",   "rank": 1, "desc": "Newly observed in theatre; limited, experimental employment." },
-      "Scaling":    { "tone": "scaling",    "rank": 2, "desc": "Adoption rising quickly; production or transfer ramping." },
-      "Peak":       { "tone": "peak",       "rank": 3, "desc": "Dominant and widely employed — currently 'hot'." },
-      "Maturing":   { "tone": "maturing",   "rank": 4, "desc": "Established, but effectiveness plateauing or being eroded by countermeasures." },
-      "Superseded": { "tone": "superseded", "rank": 5, "desc": "Largely displaced by a more effective capability; residual use only." },
-      "Obsolete":   { "tone": "obsolete",   "rank": 6, "desc": "No longer effective or fielded in any meaningful way." }
+      "Emerging": {
+        "tone": "emerging",
+        "rank": 1,
+        "desc": "Newly observed in theatre; limited, experimental employment."
+      },
+      "Scaling": {
+        "tone": "scaling",
+        "rank": 2,
+        "desc": "Adoption rising quickly; production or transfer ramping."
+      },
+      "Peak": {
+        "tone": "peak",
+        "rank": 3,
+        "desc": "Dominant and widely employed — currently 'hot'."
+      },
+      "Maturing": {
+        "tone": "maturing",
+        "rank": 4,
+        "desc": "Established, but effectiveness plateauing or being eroded by countermeasures."
+      },
+      "Superseded": {
+        "tone": "superseded",
+        "rank": 5,
+        "desc": "Largely displaced by a more effective capability; residual use only."
+      },
+      "Obsolete": {
+        "tone": "obsolete",
+        "rank": 6,
+        "desc": "No longer effective or fielded in any meaningful way."
+      }
     },
     "vectors": {
-      "State transfer":          "Supplied by a state sponsor or ally.",
-      "Indigenous production":   "Designed and/or mass-produced domestically.",
-      "Commercial / COTS":       "Adapted from commercial off-the-shelf technology.",
+      "State transfer": "Supplied by a state sponsor or ally.",
+      "Indigenous production": "Designed and/or mass-produced domestically.",
+      "Commercial / COTS": "Adapted from commercial off-the-shelf technology.",
       "Captured / reverse-engineered": "Derived from captured systems or copied designs."
     },
     "roles": {
-      "Measure":        "An offensive/enabling capability that imposes a problem on the adversary.",
+      "Measure": "An offensive/enabling capability that imposes a problem on the adversary.",
       "Countermeasure": "A capability fielded primarily to defeat or degrade an adversary measure.",
-      "Dual":           "Acts as both a measure and a countermeasure depending on context."
+      "Dual": "Acts as both a measure and a countermeasure depending on context."
+    },
+    "judgments": {
+      "holding": {
+        "tone": "good",
+        "desc": "Countermeasure is currently coping with the threat in reporting."
+      },
+      "stressed": {
+        "tone": "warn",
+        "desc": "Countermeasure works but is no longer sufficient alone — under strain."
+      },
+      "bypassed": {
+        "tone": "bad",
+        "desc": "An adaptation defeats the countermeasure (e.g. fibre-optic FPV vs EW)."
+      },
+      "uncountered": {
+        "tone": "bad",
+        "desc": "No effective countermeasure evidenced in current reporting."
+      }
+    },
+    "safActions": {
+      "Emulate": "Proven and transferable — adopt the pattern.",
+      "Trial": "Worth experimenting with under SAF conditions before adopting.",
+      "Review": "Re-examine existing SOPs / assumptions in light of this.",
+      "Do not assume": "Do not assume current SAF holdings defeat this.",
+      "Watch": "Monitor; not yet actionable."
+    },
+    "sourceTypes": {
+      "brief-derived": "Signal computed directly from weekly-brief observations (traceable to editions).",
+      "analyst-judged": "Interpretation by the analyst — grounded in, but not stated verbatim by, the briefs.",
+      "model-derived": "Placeholder / seed estimate — not from the briefs."
+    },
+    "metrics": {
+      "heat": {
+        "label": "Heat",
+        "inputs": "Weekly-brief observation rows for the capability, each tagged with theatre and intensity (1–3).",
+        "method": "Recency-weighted sum of observation intensity (newest edition ×1.0 → oldest ×0.55), normalised 0–100 across all observed capabilities.",
+        "fallback": "A capability with zero brief observations is shown as un-observed — it is NOT assigned a modeled heat number."
+      },
+      "lifecycle": {
+        "label": "Lifecycle",
+        "inputs": "Analyst reading of where the capability sits (emerging → obsolete).",
+        "method": "Analyst judgement — not computed from the briefs.",
+        "fallback": "Always analyst-judged; badged as such."
+      },
+      "trend": {
+        "label": "Adoption trend",
+        "inputs": "Count of brief observations in the recent half vs the earlier half of the loaded editions.",
+        "method": "Rising if recent > 1.25× earlier, Declining if < 0.75×, otherwise Steady.",
+        "fallback": "Needs ≥1 observation; otherwise shown as —."
+      },
+      "timeToCounter": {
+        "label": "Time-to-counter",
+        "inputs": "Would require a dated first-use and a dated first-effective-counter from the briefs.",
+        "method": "Not reliably derivable from the current briefs — removed as a live metric.",
+        "fallback": "Shown only where an analyst explicitly records it, badged analyst-judged."
+      },
+      "supersession": {
+        "label": "Supersession",
+        "inputs": "Analyst reading of which capability displaced which, and how completely.",
+        "method": "Analyst judgement, graded Fully superseded / Partially displaced / Still valid in niche.",
+        "fallback": "Always analyst-judged."
+      },
+      "proliferation": {
+        "label": "Cross-theatre proliferation",
+        "inputs": "Distinct theatres in which the capability is observed in the briefs (scoped to its theatres of relevance).",
+        "method": "Theatre count is counted from brief observations; the spread / transferability commentary is analyst-judged.",
+        "fallback": "Theatre count is brief-derived; the 'why it spreads / limits' commentary is analyst-judged."
+      }
     }
   },
+  "capabilityContests": [
+    {
+      "id": "ct_fpv",
+      "measureCapId": "cap_fpv",
+      "counterCapId": "cap_ew_tac",
+      "title": "RF-controlled FPV drone vs tactical EW",
+      "threatens": "Armour, trench lines and exposed movement in the close fight (last 100–1,000 m).",
+      "observedEffect": "Trench jammers and man-portable EW degrade RF-link FPVs, but reporting shows they no longer defeat them reliably — operators shift frequencies, fly pre-programmed terminal runs and saturate.",
+      "adaptationBypass": "Fibre-optic FPVs remove the RF link entirely, defeating jamming outright (see the fibre-optic contest).",
+      "operationalJudgment": "stressed",
+      "judgmentNote": "EW alone is no longer sufficient against the RF FPV threat.",
+      "safImplication": "Layer kinetic defeat (C-UAS guns, shotguns, nets, overhead cover) with EW; do not treat jamming as a complete answer.",
+      "safAction": "Do not assume",
+      "confidence": "High",
+      "assessmentSource": "analyst-judged"
+    },
+    {
+      "id": "ct_fpv_fiber",
+      "measureCapId": "cap_fpv_fiber",
+      "counterCapId": null,
+      "title": "Fibre-optic FPV drone vs electronic warfare",
+      "threatens": "The same close-fight targets as RF FPVs, plus rear-area and rotary-wing targets — now immune to jamming.",
+      "countermeasureNote": "Currently uncountered in current reporting — defeat depends on physical / kinetic means and spotting the fibre, none evidenced at scale.",
+      "observedEffect": "Reporting shows fibre-optic FPVs operating through EW that would defeat RF drones — including against Iron Dome sites and in rear areas.",
+      "adaptationBypass": "The fibre spool IS the adaptation to EW. Emerging counters (nets, kinetic C-UAS, cutting the line) are not yet evidenced at scale.",
+      "operationalJudgment": "uncountered",
+      "judgmentNote": "Currently uncountered in current reporting — EW does not defeat it.",
+      "safImplication": "Assume EW-immune FPVs in the close fight; invest in kinetic C-UAS, overhead protection and counter-recce rather than relying on jamming.",
+      "safAction": "Do not assume",
+      "confidence": "Medium",
+      "assessmentSource": "analyst-judged"
+    },
+    {
+      "id": "ct_shahed",
+      "measureCapId": "cap_shahed",
+      "counterCapId": "cap_patriot",
+      "title": "Shahed-136 / Geran-2 mass strike vs layered air defence",
+      "threatens": "Energy and logistics infrastructure, rear-area C2 and population centres via massed one-way attack drones.",
+      "observedEffect": "Layered AD (Patriot / IRIS-T / NASAMS, guns, EW) intercepts a large share, but 200+ drone packages still leak through and impose an unfavourable cost-exchange on defenders.",
+      "adaptationBypass": "Attackers scale raid size, mix in decoys and ballistic / cruise rounds, and time strikes to exhaust interceptor magazines.",
+      "operationalJudgment": "stressed",
+      "judgmentNote": "The counter works per-shot but is stressed by cost-exchange and magazine depth.",
+      "safImplication": "Prioritise low-cost layered defeat (guns / EW / interceptor-UAS) and magazine depth over exquisite interceptors alone.",
+      "safAction": "Review",
+      "confidence": "High",
+      "assessmentSource": "analyst-judged"
+    },
+    {
+      "id": "ct_iran",
+      "measureCapId": "cap_iran_brm",
+      "counterCapId": "cap_iron_dome",
+      "title": "Iranian ballistic / cruise + Shahed saturation vs Iron Dome / Arrow",
+      "threatens": "Israeli and GCC military and civilian targets via mixed ballistic, cruise and drone salvos designed to saturate defences.",
+      "observedEffect": "Reporting shows high interception rates but visible saturation pressure — direct Iran–Israel exchanges and Houthi re-entry stretch the defensive architecture.",
+      "adaptationBypass": "Iran alternates between salvo mass and coercive 'rule-setting' (e.g. Hormuz), mixing profiles to complicate the intercept problem.",
+      "operationalJudgment": "stressed",
+      "judgmentNote": "Layered defence is holding but visibly stressed by saturation.",
+      "safImplication": "Plan for saturation: defence-in-depth, interceptor economy and resilience of defended assets — not single-layer reliance.",
+      "safAction": "Review",
+      "confidence": "Medium",
+      "assessmentSource": "analyst-judged"
+    },
+    {
+      "id": "ct_usv",
+      "measureCapId": "cap_usv",
+      "counterCapId": "cap_heli_patrol",
+      "title": "Naval uncrewed surface vessels vs surface combatants / patrols",
+      "threatens": "Surface combatants, ports and chokepoint freedom of movement, using cheap explosive USVs.",
+      "observedEffect": "Analyst assessment: USVs have repeatedly denied a stronger navy freedom of action; dedicated counters (patrol helos, close-in guns) are only partial.",
+      "adaptationBypass": "Swarming, night attacks and aerial-USV teaming complicate point defence.",
+      "operationalJudgment": "stressed",
+      "judgmentNote": "Analyst-judged — not cleanly isolated in the currently loaded briefs.",
+      "safImplication": "Coastal / chokepoint forces need layered close-in defeat and distributed basing against cheap USV swarms.",
+      "safAction": "Watch",
+      "confidence": "Medium",
+      "assessmentSource": "analyst-judged"
+    },
+    {
+      "id": "ct_tunnels",
+      "measureCapId": "cap_tunnels",
+      "counterCapId": "cap_tunnel_breach",
+      "title": "Subterranean tunnel networks vs detection & breach",
+      "threatens": "Negates surface ISR / air overmatch; enables protected movement, storage and ambush in dense / urban terrain.",
+      "observedEffect": "Analyst assessment: detection-and-breach is manpower-intensive and slow; surface overmatch does not translate underground.",
+      "adaptationBypass": "Deeper, compartmented and re-dug networks defeat one-off clearance.",
+      "operationalJudgment": "stressed",
+      "judgmentNote": "Analyst-judged — limited direct tunnel reporting in the current editions.",
+      "safImplication": "Invest in subterranean detection, breaching and the manpower / serials to clear and hold.",
+      "safAction": "Trial",
+      "confidence": "Low",
+      "assessmentSource": "analyst-judged"
+    }
+  ],
 
   "capabilities": [
     {
@@ -168,12 +353,7 @@
       "confidence": "Confirmed",
       "saf": "Mass cheap one-way attack drones force a high-low cost-exchange problem for air defence; drives need for layered, low-cost interceptors and EW.",
       "note": "Iranian design now produced at scale in Russia; the archetypal proliferating long-range strike capability.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/shahed"
-        }
-      ],
+      "sources": [],
       "match": [
         "shahed",
         "geran",
@@ -182,7 +362,12 @@
         "one-way attack",
         "kamikaze drone",
         "suicide drone"
-      ]
+      ],
+      "threatens": "Energy / logistics infrastructure & rear-area C2",
+      "safAction": "Review",
+      "spreadWhy": "Cheap, mass-producible one-way attack drone with a low skill floor — attractive to any actor wanting long-range strike on the cheap.",
+      "transferLimits": "Needs a production base or state transfer; defeated in part by layered low-cost AD and EW.",
+      "safRelevance": "High — SAF must plan affordable layered AD against massed cheap drones."
     },
     {
       "id": "cap_fpv",
@@ -215,19 +400,18 @@
       "confidence": "Confirmed",
       "saf": "Cheap precision under 10km collapses the close fight; mandates EW at platoon level, overhead cover and counter-UAS drills.",
       "note": "Dominant tactical killer but vulnerable to RF jamming, driving the move to fibre-optic control.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/fpv"
-        }
-      ],
+      "sources": [],
       "match": [
         "fpv",
         "first-person",
         "first person view",
         "fpv drone",
         "racing drone"
-      ]
+      ],
+      "threatens": "Armour, infantry & exposed movement (close fight)",
+      "safAction": "Do not assume",
+      "displacement": "Partially displaced",
+      "niche": "RF FPVs remain dominant where fibre is unavailable, ranges exceed the spool, or cost/availability matter more than EW immunity."
     },
     {
       "id": "cap_fpv_fiber",
@@ -256,12 +440,7 @@
       "confidence": "Confirmed",
       "saf": "Immune to RF jamming — a countermeasure to EW that is itself a strike measure; signals limits of EW-only counter-UAS and need for kinetic/last-ditch defeat.",
       "note": "Clearest current example of a countermeasure-to-the-countermeasure (defeats trench EW).",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/fpv-fiber"
-        }
-      ],
+      "sources": [],
       "match": [
         "fibre-optic",
         "fiber-optic",
@@ -269,7 +448,9 @@
         "fiber optic",
         "wire-guided",
         "wire guided"
-      ]
+      ],
+      "threatens": "Armour, infantry, rear-area & rotary-wing (EW-immune)",
+      "safAction": "Do not assume"
     },
     {
       "id": "cap_umpk",
@@ -297,12 +478,7 @@
       "confidence": "Confirmed",
       "saf": "Stand-off mass fires from inside friendly airspace; hard to counter without pushing GBAD/airpower forward — a persistent un-countered problem.",
       "note": "Cheap kits turn legacy bombs into stand-off munitions; among the hardest measures to counter.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/umpk"
-        }
-      ],
+      "sources": [],
       "match": [
         "umpk",
         "glide bomb",
@@ -311,7 +487,8 @@
         "guided glide",
         "fab-",
         "jdam"
-      ]
+      ],
+      "threatens": "Fixed defensive positions & urban strongpoints"
     },
     {
       "id": "cap_himars",
@@ -339,19 +516,15 @@
       "confidence": "Confirmed",
       "saf": "Demonstrates how GNSS jamming erodes precision-fires effectiveness over time; argues for alt-navigation and resilient PNT.",
       "note": "Initial decisive effect degraded as Russian GNSS jamming/spoofing matured.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/himars"
-        }
-      ],
+      "sources": [],
       "match": [
         "himars",
         "gmlrs",
         "m142",
         "precision rocket",
         "guided multiple launch"
-      ]
+      ],
+      "threatens": "C2 nodes, logistics & rear-area HVTs"
     },
     {
       "id": "cap_atacms",
@@ -378,19 +551,15 @@
       "confidence": "Confirmed",
       "saf": "Deep strike forces dispersal of rear logistics/airpower; counter is to move assets out of range — a manoeuvre/sustainment lesson.",
       "note": "Drives Russian relocation of high-value assets beyond range.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/atacms"
-        }
-      ],
+      "sources": [],
       "match": [
         "atacms",
         "storm shadow",
         "scalp",
         "army tactical missile",
         "deep-strike missile"
-      ]
+      ],
+      "threatens": "Deep rear airfields, depots & C2"
     },
     {
       "id": "cap_usv",
@@ -420,12 +589,7 @@
       "confidence": "Confirmed",
       "saf": "A navy-less actor achieved sea denial against a conventional fleet; major lesson for small-craft swarm threats to naval and coastal assets.",
       "note": "Pushed the Black Sea Fleet out of the western basin; concept now diffusing (e.g. Red Sea).",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/usv"
-        }
-      ],
+      "sources": [],
       "match": [
         "usv",
         "uncrewed surface",
@@ -438,7 +602,9 @@
         "explosive boat",
         "maritime drone",
         "surface drone"
-      ]
+      ],
+      "threatens": "Surface combatants, ports & chokepoints",
+      "safAction": "Watch"
     },
     {
       "id": "cap_recon_uav",
@@ -468,12 +634,7 @@
       "confidence": "Confirmed",
       "saf": "Persistent ISR closes the sensor-to-shooter loop; counter-ISR and emission control become survival skills.",
       "note": "Backbone of the reconnaissance-strike complex.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/recon-uav"
-        }
-      ],
+      "sources": [],
       "match": [
         "orlan",
         "zala",
@@ -486,7 +647,9 @@
         "reconnaissance uav",
         "scaneagle",
         "scan eagle"
-      ]
+      ],
+      "threatens": "Provides targeting for fires (recce-strike enabler)",
+      "safAction": "Emulate"
     },
     {
       "id": "cap_dji_isr",
@@ -516,12 +679,7 @@
       "confidence": "Confirmed",
       "saf": "Early COTS adaptation, now displaced by purpose-built ISR/FPV — a clean example of supersession to track.",
       "note": "Vulnerable to tracking/geofencing and jamming; overtaken by military FPV and recon UAVs.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/dji"
-        }
-      ],
+      "sources": [],
       "match": [
         "dji",
         "mavic",
@@ -530,7 +688,10 @@
         "cots drone",
         "off-the-shelf drone",
         "autel"
-      ]
+      ],
+      "threatens": "Short-range observation / targeting (cheap ISR)",
+      "displacement": "Fully superseded",
+      "niche": "Residual use only for cheap, very-short-range observation where milspec ISR is absent."
     },
     {
       "id": "cap_patriot",
@@ -560,12 +721,7 @@
       "confidence": "Confirmed",
       "saf": "High-end intercept works but is interceptor-stock and cost constrained; magazine depth and cost-per-kill are the binding planning factors.",
       "note": "Effective against ballistic and cruise threats; saturation and interceptor economics are the limiting risk.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/patriot"
-        }
-      ],
+      "sources": [],
       "match": [
         "patriot",
         "iris-t",
@@ -574,7 +730,11 @@
         "pac-2",
         "samp/t",
         "surface-to-air missile system"
-      ]
+      ],
+      "safAction": "Review",
+      "spreadWhy": "Premier transferred SAM; spreads via alliance supply.",
+      "transferLimits": "Scarce, expensive and magazine-limited under saturation.",
+      "safRelevance": "Medium — high-value-asset defence."
     },
     {
       "id": "cap_ew_tac",
@@ -606,12 +766,7 @@
       "confidence": "Confirmed",
       "saf": "The dominant counter-UAS method — but fibre-optic FPV defeats it, so EW must be paired with kinetic last-ditch defeat.",
       "note": "Now itself being countered by EW-immune fibre-optic drones.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/ew-tac"
-        }
-      ],
+      "sources": [],
       "match": [
         "jammer",
         "jamming",
@@ -622,7 +777,8 @@
         "anti-drone",
         "drone jammer",
         "rf jamming"
-      ]
+      ],
+      "safAction": "Trial"
     },
     {
       "id": "cap_ew_gnss",
@@ -652,12 +808,7 @@
       "confidence": "Confirmed",
       "saf": "Degrades GNSS-guided munitions and navigation; drives demand for resilient PNT and inertial/terminal seekers.",
       "note": "Quietly one of the most consequential countermeasures of the war.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/ew-gnss"
-        }
-      ],
+      "sources": [],
       "match": [
         "gnss",
         "gps jamming",
@@ -695,12 +846,7 @@
       "confidence": "Probable",
       "saf": "A low-cost kinetic answer to the Shahed cost-exchange problem; watch as a fast-rising counter-UAS option.",
       "note": "Promising low-cost intercept; scaling and reliability still maturing.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/interceptor-uav"
-        }
-      ],
+      "sources": [],
       "match": [
         "interceptor drone",
         "interceptor uav",
@@ -708,7 +854,8 @@
         "counter-drone drone",
         "anti-drone drone",
         "drone-on-drone"
-      ]
+      ],
+      "safAction": "Trial"
     },
     {
       "id": "cap_spaag",
@@ -735,12 +882,7 @@
       "confidence": "Confirmed",
       "saf": "Gun-based defeat is cost-favourable against drones; revalidates SHORAD/gun AD that many militaries had divested.",
       "note": "Cost-effective Shahed defeat; ammunition supply is the constraint.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/spaag"
-        }
-      ],
+      "sources": [],
       "match": [
         "gepard",
         "spaag",
@@ -777,12 +919,7 @@
       "confidence": "Probable",
       "saf": "Only credible counter to glide bombs is to threaten the launch aircraft — high-risk forward GBAD employment.",
       "note": "Attempts to hold launch platforms at risk; exposes scarce SAMs to attrition.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/lr-sam"
-        }
-      ],
+      "sources": [],
       "match": [
         "s-300",
         "s-200",
@@ -818,12 +955,7 @@
       "confidence": "Confirmed",
       "saf": "High-end SAM that is itself a priority target for deep strike — the SEAD/IADS duel in microcosm.",
       "note": "Both a countermeasure and a high-value target.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/s400"
-        }
-      ],
+      "sources": [],
       "match": [
         "s-400",
         "s400",
@@ -857,12 +989,7 @@
       "confidence": "Confirmed",
       "saf": "Saturation salvos mixing ballistic, cruise and drones stress layered defence depth; magazine depth is decisive.",
       "note": "Proliferation hub: the Shahed family and missile tech radiate from here to multiple theatres and proxies.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/iran-brm"
-        }
-      ],
+      "sources": [],
       "match": [
         "ballistic missile",
         "cruise missile",
@@ -873,7 +1000,12 @@
         "kinzhal",
         "iskander",
         "fattah"
-      ]
+      ],
+      "threatens": "Defended military & civilian targets (saturation)",
+      "safAction": "Review",
+      "spreadWhy": "Mixed ballistic / cruise / drone salvo doctrine spreading via Iranian transfer and emulation by proxies.",
+      "transferLimits": "Requires missile inventory and targeting; partly defeated by layered ABM.",
+      "safRelevance": "Medium — informs saturation and interceptor-economy planning."
     },
     {
       "id": "cap_arrow_thaad",
@@ -900,12 +1032,7 @@
       "confidence": "Confirmed",
       "saf": "Demonstrates multi-tier BMD intercepting large salvos; cost-per-engagement and interceptor stockpiles are the watch items.",
       "note": "High intercept rates against complex salvos; sustainment economics are the limiting factor.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/arrow-thaad"
-        }
-      ],
+      "sources": [],
       "match": [
         "thaad",
         "arrow-3",
@@ -944,18 +1071,17 @@
       "confidence": "Confirmed",
       "saf": "Mature C-RAM with strong intercept rates, but large simultaneous salvos remain the saturation risk.",
       "note": "Effectiveness eroded only by mass simultaneous launches.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/iron-dome"
-        }
-      ],
+      "sources": [],
       "match": [
         "iron dome",
         "c-ram",
         "tamir",
         "short-range air defence"
-      ]
+      ],
+      "safAction": "Review",
+      "spreadWhy": "Proven point / area defence against rockets and short-range threats; exportable.",
+      "transferLimits": "Expensive per intercept; stressed by saturation and FPV / top-attack.",
+      "safRelevance": "Medium — informs SAF interceptor-economy and layering."
     },
     {
       "id": "cap_rockets",
@@ -985,12 +1111,7 @@
       "confidence": "Confirmed",
       "saf": "Saturation is the only path through modern C-RAM; drives interest in PGMs over volume — a measure being superseded by precision.",
       "note": "Being displaced by precision-guided systems where available.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/rockets"
-        }
-      ],
+      "sources": [],
       "match": [
         "rocket barrage",
         "rocket fire",
@@ -1000,7 +1121,10 @@
         "unguided rocket",
         "bm-21",
         "multiple rocket launcher"
-      ]
+      ],
+      "threatens": "Area saturation & harassment (short range)",
+      "displacement": "Still valid in niche",
+      "niche": "Cheap unguided rockets remain useful for short-range saturation and harassment despite precision alternatives."
     },
     {
       "id": "cap_trophy_aps",
@@ -1029,12 +1153,7 @@
       "confidence": "Confirmed",
       "saf": "Hard-kill APS defeats RPG/ATGM well but top-attack drones probe its limits — APS plus overhead cover is the emerging standard.",
       "note": "Strong vs direct ATGM/RPG; top-attack FPV is the open challenge.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/trophy"
-        }
-      ],
+      "sources": [],
       "match": [
         "trophy",
         "active protection",
@@ -1070,12 +1189,7 @@
       "confidence": "Confirmed",
       "saf": "Classic anti-armour increasingly defeated by APS and out-ranged by cheap FPV — a measure under pressure from both sides.",
       "note": "Being superseded for many tasks by cheaper FPV drones.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/atgm"
-        }
-      ],
+      "sources": [],
       "match": [
         "atgm",
         "anti-tank guided",
@@ -1086,7 +1200,14 @@
         "nlaw",
         "tow missile",
         "anti-armour missile"
-      ]
+      ],
+      "threatens": "Armour & fortified positions",
+      "safAction": "Review",
+      "displacement": "Partially displaced",
+      "niche": "ATGMs retain the edge at longer range, in clear LOS, against targets beyond FPV endurance, and where EW would defeat FPVs.",
+      "spreadWhy": "Mature, widely transferred, low training burden.",
+      "transferLimits": "Range / LOS dependent; APS and FPVs erode its niche.",
+      "safRelevance": "Medium — APS fit and anti-armour tactics review."
     },
     {
       "id": "cap_tunnels",
@@ -1114,18 +1235,15 @@
       "confidence": "Confirmed",
       "saf": "Subterranean denial negates air/ISR overmatch; demands specialised breach, mapping and subterranean-warfare capabilities.",
       "note": "Persistent measure that is slow and costly to counter.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/tunnels"
-        }
-      ],
+      "sources": [],
       "match": [
         "tunnel",
         "subterranean",
         "underground",
         "tunnel network"
-      ]
+      ],
+      "threatens": "Surface ISR / air overmatch; enables protected movement",
+      "safAction": "Trial"
     },
     {
       "id": "cap_tunnel_breach",
@@ -1152,12 +1270,7 @@
       "confidence": "Probable",
       "saf": "Robotics, sensing and engineered defeat for tunnels; a slow-burning but doctrinally important counter to invest in.",
       "note": "Mix of robotics, sensing, flooding and demolition.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/tunnel-breach"
-        }
-      ],
+      "sources": [],
       "match": [
         "tunnel detection",
         "counter-tunnel",
@@ -1192,12 +1305,7 @@
       "confidence": "Confirmed",
       "saf": "High-value crewed surface units are increasingly held at risk by cheap USVs/missiles in confined seas — a sea-control rethink.",
       "note": "Forced into port or out of contested waters by cheap unmanned threats.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/surface-combatant"
-        }
-      ],
+      "sources": [],
       "match": [
         "warship",
         "frigate",
@@ -1208,7 +1316,12 @@
         "missile boat",
         "flagship",
         "patrol ship"
-      ]
+      ],
+      "threatens": "Sea control & naval presence (now contested by USVs)",
+      "safAction": "Review",
+      "spreadWhy": "Conventional naval presence — less 'proliferating' than increasingly 'contested' by cheap USVs.",
+      "transferLimits": "High cost; vulnerable to cheap uncrewed attack.",
+      "safRelevance": "Medium — naval force-protection."
     },
     {
       "id": "cap_heli_patrol",
@@ -1235,12 +1348,7 @@
       "confidence": "Probable",
       "saf": "Rotary patrol is a partial counter to USVs; small fast surface threats still lack a cheap, scalable defeat.",
       "note": "Only a partial answer to the USV problem.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/heli-patrol"
-        }
-      ],
+      "sources": [],
       "match": [
         "patrol helicopter",
         "naval helicopter",
@@ -1273,12 +1381,7 @@
       "confidence": "Probable",
       "saf": "Low-cost ISR for border transparency; a confidence-building enabler more than a strike capability.",
       "note": "Rising adoption for border monitoring; not yet a kinetic dynamic.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/border-isr"
-        }
-      ],
+      "sources": [],
       "match": [
         "border surveillance",
         "livestream",
@@ -1315,12 +1418,7 @@
       "confidence": "Confirmed",
       "saf": "Still the mass-fires backbone, but counter-battery driven by drone ISR makes shoot-and-scoot and dispersion essential.",
       "note": "Enduring, but survivability now hinges on countering ISR.",
-      "sources": [
-        {
-          "label": "Capability note",
-          "url": "https://example.org/cap/artillery"
-        }
-      ],
+      "sources": [],
       "match": [
         "artillery",
         "howitzer",
@@ -1330,7 +1428,12 @@
         "152mm",
         "counter-battery",
         "tube artillery"
-      ]
+      ],
+      "threatens": "Massed targets, fixed positions & counter-battery duels",
+      "safAction": "Emulate",
+      "spreadWhy": "Universal indirect fire — present in every theatre.",
+      "transferLimits": "Counter-battery and drone spotting expose static guns quickly.",
+      "safRelevance": "High — shoot-and-scoot and signature management."
     }
   ],
 
