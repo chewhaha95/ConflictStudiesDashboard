@@ -29,7 +29,7 @@
     periodId: null,           // active week/month/quarter id
     formationGroup: "ALL",    // monthly tab: 'ALL' | formation-group id
     monthlyEchelon: "ALL",    // monthly group panel: 'ALL' | Brigade | Battalion | Company
-    capEvidencedOnly: false,  // capabilities: show only brief-evidenced capabilities
+    capEvidencedOnly: true,   // capabilities: default to brief-evidenced contests/caps only (lean, trustworthy default)
     theme: "light",
     filters: {
       theatres:  new Set(),   // empty => all
@@ -930,9 +930,50 @@
     },
     basisOf(c) { const d = this.dynamics[c.id]; return d ? d.basis : "model"; },
     theatreHeatOf(c, t) { const d = this.dynamics[c.id]; return d && d.byTheatre ? (d.byTheatre[t] || 0) : 0; },
-    // Brief-derived evidence (traceable) for a capability
-    evidence(c) { return (DB.capabilityEvidence && DB.capabilityEvidence[c.id]) || []; },
-    isEvidenced(c) { return this.evidence(c).length > 0; },
+    // Brief-derived evidence (traceable) for a capability. Scoped to the
+    // capability's declared theatres of relevance to drop keyword false-positives
+    // (the matcher can otherwise attribute a generic headline to the wrong cap).
+    evidence(c) {
+      const rows = (DB.capabilityEvidence && DB.capabilityEvidence[c.id]) || [];
+      const scope = new Set(c.theatres || []);
+      return scope.size ? rows.filter(r => scope.has(r.theatre)) : rows;
+    },
+    // "Observed" = backed by the ACTIVE observation source. In brief mode that is
+    // ≥1 traceable brief evidence row; offline it is ≥1 seed signal (the brief
+    // stand-in used only when no live editions are loaded).
+    observed(c) { return this.briefMode ? this.evidence(c).length > 0 : this.observations(c) > 0; },
+    isEvidenced(c) { return this.observed(c); },
+    // How a capability's heat/trend is sourced, for honest labelling.
+    obsSourceType(c) {
+      if (!this.observed(c)) return "analyst-judged";
+      return this.briefMode ? "brief-derived" : "seed-observed";
+    },
+
+    // ---- capability contests (the analytic unit) ----
+    contestsAll() { return DB.capabilityContests || []; },
+    measureOf(ct) { return this.byId(ct.measureCapId); },
+    counterOf(ct) { return ct.counterCapId ? this.byId(ct.counterCapId) : null; },
+    // A contest is brief-evidenced if its measure (or named counter) is observed.
+    contestObserved(ct) {
+      const m = this.measureOf(ct), c = this.counterOf(ct);
+      return !!(m && this.observed(m)) || !!(c && this.observed(c));
+    },
+    // Combined, theatre-scoped brief evidence for a contest (measure ∪ counter).
+    contestEvidence(ct) {
+      const m = this.measureOf(ct), c = this.counterOf(ct);
+      const rows = [...(m ? this.evidence(m) : []), ...(c ? this.evidence(c) : [])];
+      const order = {}; (DB.liveEditions || []).slice().sort((a, b) => String(a.weekEnd || "").localeCompare(String(b.weekEnd || ""))).forEach((e, i) => (order[e.weekId] = i));
+      return rows.sort((a, b) => (order[a.weekId] || 0) - (order[b.weekId] || 0));
+    },
+    contestHeat(ct) { const m = this.measureOf(ct); return m ? this.heatOf(m) : 0; },
+    contestTrend(ct) { const m = this.measureOf(ct); return m ? this.trendOf(m) : "Steady"; },
+    contestWeeks(ct) { return [...new Set(this.contestEvidence(ct).map(r => r.rangeLabel || r.weekId))]; },
+    // The default-visible set: brief-evidenced contests unless the analyst-judged
+    // toggle is on (capEvidencedOnly === false reveals not-yet-evidenced contests).
+    contests() {
+      const all = this.contestsAll();
+      return State.capEvidencedOnly ? all.filter(ct => this.contestObserved(ct)) : all;
+    },
     // Theatres in scope = the active theatre filter, or all five if none set
     selectedTheatreIds() {
       return State.filters.theatres.size
@@ -1030,6 +1071,42 @@
     capChipLink(c) {
       return `<span class="cap-ref lc-dot-${(DB.capabilityDefs.lifecycle[c.lifecycle] || {}).tone}">${esc(c.name)}</span>`;
     },
+    // Methodology tooltip for a metric (inputs / method / fallback) — single source
+    // of truth is capabilityDefs.metrics, mirrored in the code comments above each use.
+    metricTip(key) {
+      const m = (DB.capabilityDefs.metrics || {})[key]; if (!m) return "";
+      return `<span class="th-info tip" tabindex="0">ⓘ<span class="tip-body"><strong>${esc(m.label)}.</strong> Inputs: ${esc(m.inputs)} Method: ${esc(m.method)} Fallback: ${esc(m.fallback)}</span></span>`;
+    },
+    // Provenance pill: brief-derived (green), seed-observed (blue), analyst-judged (amber), model-derived (grey).
+    srcBadge(type) {
+      const map = { "brief-derived": ["src-brief", "Brief-derived"], "seed-observed": ["src-brief", "Brief-derived"],
+        "analyst-judged": ["src-analyst", "Analyst-judged"], "model-derived": ["src-model", "Model-derived"] };
+      const def = (DB.capabilityDefs.sourceTypes || {})[type === "seed-observed" ? "brief-derived" : type] || "";
+      const [cls, label] = map[type] || ["src-model", type];
+      return `<span class="src-badge ${cls} tip" tabindex="0">${esc(label)}<span class="tip-body">${esc(def)}</span></span>`;
+    },
+    judgmentBadge(j) {
+      const def = (DB.capabilityDefs.judgments || {})[j] || { tone: "neutral", desc: "" };
+      const label = { holding: "Holding", stressed: "Counter under strain", bypassed: "Counter bypassed", uncountered: "Currently uncountered" }[j] || j;
+      return `<span class="judg judg-${def.tone} tip" tabindex="0">${esc(label)}<span class="tip-body">${esc(def.desc)}</span></span>`;
+    },
+    safActionBadge(a) {
+      if (!a) return `<span class="muted-note">—</span>`;
+      const def = (DB.capabilityDefs.safActions || {})[a] || "";
+      const tone = { "Emulate": "good", "Trial": "scaling", "Review": "warn", "Do not assume": "bad", "Watch": "neutral" }[a] || "neutral";
+      return `<span class="saf-act saf-${tone} tip" tabindex="0">${esc(a)}<span class="tip-body">${esc(def)}</span></span>`;
+    },
+    // "View supporting briefs" drawer for a set of evidence rows.
+    evItem(x) {
+      return `<div class="ev-item"><span class="ev-meta">${esc(x.rangeLabel || x.weekId)} · ${esc(THEATRE_BY_ID[x.theatre] ? THEATRE_BY_ID[x.theatre].short : x.theatre)}</span> ${esc(x.headline)} ${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.source || "source")} ↗</a>` : ""}</div>`;
+    },
+    evDrawer(rows, observed, obsCount) {
+      if (rows && rows.length) {
+        return `<details class="ev"><summary><span class="ev-badge ev-yes">📎 View supporting briefs ×${rows.length}</span></summary><div class="ev-list">${rows.map(r => this.evItem(r)).join("")}</div></details>`;
+      }
+      if (observed) return `<span class="ev-badge ev-seed" title="Observed via seed signals offline — live brief links appear when editions are loaded">Seed ×${obsCount || 0}</span>`;
+      return `<span class="ev-badge ev-est" title="Not yet evidenced in the loaded weekly briefs — analyst judgement">Not yet evidenced</span>`;
+    },
 
     // Is this capability a priority domain for the active division?
     isDivPriority(c) {
@@ -1041,143 +1118,183 @@
     render() {
       const root = el("#view-capabilities .view-body");
       const all = this.list();
-      const div = State.mode === "division" ? DIV_BY_ID[State.division] : null;
-
       el("#meta-range").textContent = "All loaded periods";
 
-      // ---- dynamic BLUF ----
       const ranked = this.heatRanking(all);
+      const obsType = this.briefMode ? "brief-derived" : "seed-observed";
+      const contests = this.contests();
+      const allContests = this.contestsAll();
+      const dataTag = this.briefMode
+        ? `Heat &amp; trend are <strong>brief-derived</strong> from ${this.axisLen} live brief edition(s); contest narratives (effect / adaptation / judgment) are <strong>analyst-judged</strong>, grounded in the cited briefs.`
+        : `Offline preview — heat &amp; trend computed from ${DB.weeklyReports.length} seed signal weeks (the brief stand-in); narratives are analyst-judged.`;
+
+      // ---- BLUF — operational capability picture --------------------------
+      // Hot / Rising / Fading are computed from brief observations (brief-derived).
+      // Stressed counters / bypasses / uncountered come from the contest layer
+      // (analyst-judged interpretation, grounded in the cited briefs).
       const hot = ranked.slice(0, 4).map(c => c.name);
       const rising = all.filter(c => this.trendOf(c) === "Rising").map(c => c.name);
       const fading = all.filter(c => ["Superseded", "Obsolete"].includes(c.lifecycle) || this.trendOf(c) === "Declining").map(c => c.name);
-      const tempo = this.adaptationTempo(all);
-      const unc = this.uncountered(all);
-
-      let html = "";
-      if (div) {
-        html += `<div class="note-banner"><strong>Division View — ${esc(div.name)}.</strong> ${esc(div.doctrinalAssumption)} ` +
-          `Capabilities in this division's priority domains (${esc(div.emphasizedDomains.join(", "))}) are flagged ★.</div>`;
-      }
-
-      html += `<div class="card bluf-card card-pad section">
+      const stressedCtr = contests.filter(ct => ct.operationalJudgment === "stressed" && this.counterOf(ct)).map(ct => this.counterOf(ct).name);
+      const bypassCt = contests.filter(ct => ["bypassed", "uncountered", "stressed"].includes(ct.operationalJudgment) && ct.adaptationBypass).map(ct => this.measureOf(ct) ? this.measureOf(ct).name : ct.title);
+      const uncCt = contests.filter(ct => ct.operationalJudgment === "uncountered").map(ct => this.measureOf(ct) ? this.measureOf(ct).name : ct.title);
+      const bTag = `<span class="prov-tag pt-brief" title="Computed from weekly-brief observations">brief-derived</span>`;
+      const aTag = `<span class="prov-tag pt-analyst" title="Analyst interpretation, grounded in the cited briefs">analyst-judged</span>`;
+      const blufLine = (label, val, tag) => `<div class="bluf-line"><span class="bluf-k">${esc(label)}</span><span class="bluf-v">${esc(val || "—")}</span> ${tag}</div>`;
+      let html = `<div class="card bluf-card card-pad section">
         <div class="bluf-label">BLUF — Capability Picture</div>
-        <p><strong>Hot now:</strong> ${esc(hot.join(", ") || "—")}.
-        <strong>Rising:</strong> ${esc(rising.slice(0, 5).join(", ") || "—")}.
-        <strong>Fading / superseded:</strong> ${esc(fading.slice(0, 5).join(", ") || "—")}.</p>
-        <div class="bluf-sub">${all.length} capabilities tracked · mean time-to-counter ${tempo.avg} days · ${unc.length} currently un-countered measure(s)</div>
+        ${blufLine("Hot now", hot.join(", "), bTag)}
+        ${blufLine("Rising", rising.slice(0, 5).join(", "), bTag)}
+        ${blufLine("Fading / superseded", fading.slice(0, 5).join(", "), aTag)}
+        ${blufLine("Most stressed countermeasures", [...new Set(stressedCtr)].join(", "), aTag)}
+        ${blufLine("Most consequential bypasses", [...new Set(bypassCt)].join(", "), aTag)}
+        ${blufLine("Currently uncountered / weakly countered", [...new Set(uncCt)].join(", "), aTag)}
+        <div class="bluf-sub">${dataTag}</div>
       </div>`;
 
-      // ---- lifecycle filter chips ----
+      // ---- filter chips: lifecycle + brief-evidenced/analyst toggle ----
       const lcChips = Object.keys(DB.capabilityDefs.lifecycle).map(lc =>
         `<button class="fchip lc-filter ${State.filters.lifecycle.has(lc) ? "on" : ""}" aria-pressed="${State.filters.lifecycle.has(lc)}" data-lc="${esc(lc)}">${esc(lc)}</button>`).join("");
-      const evCount = DB.capabilities.filter(c => this.isEvidenced(c)).length;
-      const evChip = DB.capabilityEvidence
-        ? `<button class="fchip ev-filter ${State.capEvidencedOnly ? "on" : ""}" aria-pressed="${State.capEvidencedOnly}" id="cap-ev-only">✓ Brief-evidenced only (${evCount})</button>` : "";
+      const obsCount = DB.capabilities.filter(c => this.observed(c)).length;
+      const evChip = `<button class="fchip ev-filter ${State.capEvidencedOnly ? "on" : ""}" aria-pressed="${State.capEvidencedOnly}" id="cap-ev-only" title="When on, only brief-evidenced contests &amp; capabilities are shown. Turn off to reveal analyst-judged items that the current briefs haven't yet named.">${State.capEvidencedOnly ? "✓ " : ""}Brief-evidenced only (${obsCount})</button>`;
       html += `<div class="section"><div class="section-head"><h2>Capabilities &amp; Countermeasures</h2>
         <span class="hint">Theatre / domain / search filters apply from the sidebar</span></div>
-        <div class="lc-filter-row">${lcChips}${evChip}</div></div>`;
+        <div class="lc-filter-row">${evChip}${lcChips}</div></div>`;
 
-      // ---- KPI strip ----
-      const kpi = (label, val, sub) => `<div class="kpi"><div class="kpi-val">${val}</div><div class="kpi-label">${esc(label)}</div>${sub ? `<div class="kpi-sub">${esc(sub)}</div>` : ""}</div>`;
+      // ---- summary cards (explainable) ----
+      const kpi = (label, val, sub, tipKey, tipText) => `<div class="kpi"><div class="kpi-val">${val}</div><div class="kpi-label">${esc(label)} ${tipKey ? this.metricTip(tipKey) : (tipText ? `<span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">${esc(tipText)}</span></span>` : "")}</div>${sub ? `<div class="kpi-sub">${esc(sub)}</div>` : ""}</div>`;
       html += `<div class="kpi-strip section">
-        ${kpi("Tracked", all.length, "capabilities")}
-        ${kpi("Hot (Peak)", ranked.filter(c => c.lifecycle === "Peak").length, "dominant now")}
-        ${kpi("Rising", rising.length, "adoption ↑")}
-        ${kpi("Un-countered", unc.length, "no effective counter")}
-        ${kpi("Adaptation tempo", tempo.avg + "d", "mean time-to-counter")}
+        ${kpi("Tracked contests", contests.length, "measure ⇄ counter", null, "Capability contests with ≥1 brief observation on the measure or counter. Analyst-judged contests are hidden unless the toggle is off.")}
+        ${kpi("Hot now", ranked.filter(c => this.heatOf(c) >= 60).length, "heat ≥ 60", "heat")}
+        ${kpi("Rising", rising.length, "adoption ↑", "trend")}
+        ${kpi("Currently uncountered", uncCt.length, "no counter evidenced", null, "Contests whose operational judgment is 'uncountered' — no effective countermeasure evidenced in current reporting.")}
+        ${kpi("Bypassed counters", contests.filter(ct => ct.operationalJudgment === "bypassed" || (ct.operationalJudgment === "uncountered" && this.counterOf(ct))).length, "defeated by adaptation", null, "Contests where an adaptation defeats the named countermeasure (e.g. fibre-optic FPV vs EW).")}
+        ${kpi("Stressed counters", new Set(stressedCtr).size, "under strain", null, "Distinct countermeasures judged 'under strain' across the tracked contests.")}
       </div>`;
 
-      // ---- charts ----
-      html += `<div class="section"><div class="section-head"><h2>Capability Analytics</h2></div>
-        <div class="card chart-card chart-wide" style="margin-bottom:14px"><h3>What's hot across the five theatres</h3><div class="chart-sub">Computed heat of leading capabilities, stacked by theatre of employment — re-scopes to the theatre filter</div><div class="chart-holder tall"><canvas id="cap-theatre-heat"></canvas></div>
+      // ---- charts (only the brief-defensible ones) ----
+      html += `<div class="section"><div class="section-head"><h2>Capability Analytics</h2>
+        <span class="hint">Only charts defensible from brief observations are kept — time-to-counter &amp; category doughnuts were removed as un-sourced</span></div>
+        <div class="card chart-card chart-wide" style="margin-bottom:14px"><h3>What's hot across the theatres</h3><div class="chart-sub">Brief-derived heat of leading capabilities, stacked by theatre of employment — re-scopes to the theatre filter</div><div class="chart-holder tall"><canvas id="cap-theatre-heat"></canvas></div>
           <div class="theatre-leaders">${this.theatreLeaders(all, this.selectedTheatreIds()).map(x =>
             `<div class="tl"><span class="tl-dot" style="background:${this.theatreColor(x.t)}"></span><span class="tl-theatre">${esc(THEATRE_BY_ID[x.t].name)}</span><span class="tl-label">hottest:</span> <strong>${esc(x.cap.name)}</strong> <span class="tl-heat">heat ${x.heat}</span> ${this.capTrend(this.trendOf(x.cap))} ${this.lcChip(x.cap.lifecycle)}</div>`).join("")}</div>
         </div>
         <div class="chart-grid">
-          <div class="card chart-card"><h3>Heat index (top capabilities)</h3><div class="chart-sub">Current employment intensity, coloured by lifecycle</div><div class="chart-holder"><canvas id="cap-heat"></canvas></div></div>
-          <div class="card chart-card"><h3>Lifecycle distribution</h3><div class="chart-sub">Where tracked capabilities sit in their lifecycle</div><div class="chart-holder"><canvas id="cap-lifecycle"></canvas></div></div>
-          <div class="card chart-card"><h3>Proliferation by theatre</h3><div class="chart-sub">Capabilities observed per theatre, stacked by lifecycle</div><div class="chart-holder"><canvas id="cap-theatre"></canvas></div></div>
-          <div class="card chart-card"><h3>Proliferation vector</h3><div class="chart-sub">How capabilities spread</div><div class="chart-holder"><canvas id="cap-vector"></canvas></div></div>
-          <div class="card chart-card"><h3>Adaptation tempo (time-to-counter)</h3><div class="chart-sub">Days from first use to an effective countermeasure — shorter = faster co-evolution</div><div class="chart-holder"><canvas id="cap-tempo"></canvas></div></div>
+          <div class="card chart-card"><h3>Proliferation by theatre</h3><div class="chart-sub">Count of observed capabilities per theatre (brief-derived)</div><div class="chart-holder"><canvas id="cap-theatre"></canvas></div></div>
+          <div class="card chart-card"><h3>Observation activity over editions</h3><div class="chart-sub">Total brief observations per edition — adaptation tempo / reporting volume</div><div class="chart-holder"><canvas id="cap-activity"></canvas></div></div>
         </div></div>`;
 
-      // ---- measure ⇄ countermeasure cycles (shown above the leaderboard) ----
-      const pairCards = this.pairs(all).map(p => `
-        <div class="cycle-card">
-          <div class="cycle-measure">${this.lcChip(p.measure.lifecycle)} <strong>${esc(p.measure.name)}</strong>
-            ${typeof p.measure.timeToCounterDays === "number" ? `<span class="ttc">countered in ~${p.measure.timeToCounterDays}d</span>` : ""}</div>
-          <div class="cycle-arrow">countered by →</div>
-          <div class="cycle-counters">${p.counters.map(c => `<span class="counter-chip">${esc(c.name)} ${this.lcChip(c.lifecycle)}</span>`).join("")}</div>
-        </div>`).join("");
-      const uncCards = this.uncountered(all).map(c =>
-        `<span class="counter-chip warn">${esc(c.name)} ${this.lcChip(c.lifecycle)}</span>`).join("");
+      // ---- Measure ⇄ Countermeasure Cycles (the heart) --------------------
+      const contestCards = contests.map(ct => this.contestCard(ct)).join("");
+      const hiddenN = allContests.length - contests.length;
       html += `<div class="section"><div class="section-head"><h2>Measure ⇄ Countermeasure Cycles</h2>
-        <span class="hint">The action–reaction duel and how fast each measure was countered</span></div>
-        ${uncCards ? `<div class="card card-pad" style="margin-bottom:12px"><div class="subhead" style="margin-top:0">⚠ Currently un-countered measures — watch closely</div><div class="chip-wrap">${uncCards}</div></div>` : ""}
-        <div class="cycle-grid">${pairCards || `<div class="empty">No measure–countermeasure pairs in the current filter.</div>`}</div></div>`;
+        <span class="hint">Each contest: attack → what it threatens → countermeasure → observed effect → adaptation → judgment → SAF learning</span></div>
+        <div class="cycle-grid">${contestCards || `<div class="empty">No brief-evidenced contests in the current filter. ${hiddenN ? "Turn off 'Brief-evidenced only' to see analyst-judged contests." : ""}</div>`}</div>
+        ${(State.capEvidencedOnly && hiddenN > 0) ? `<div class="muted-note" style="margin-top:8px">${hiddenN} analyst-judged contest(s) hidden — not yet named in the loaded briefs. Turn off <em>Brief-evidenced only</em> to view.</div>` : ""}</div>`;
 
-      // ---- heat leaderboard ----
-      const evItem = (x) => `<div class="ev-item"><span class="ev-meta">${esc(x.rangeLabel || x.weekId)} · ${esc(THEATRE_BY_ID[x.theatre] ? THEATRE_BY_ID[x.theatre].short : x.theatre)}</span> ${esc(x.headline)} <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.source || "source")} ↗</a></div>`;
+      // ---- Learning table (was the heat leaderboard) ----------------------
       const rows = ranked.map((c, i) => {
-        const star = this.isDivPriority(c) ? '<span class="prio" title="Priority domain for this division">★</span> ' : "";
         const heat = this.heatOf(c);
-        const ev = this.evidence(c);
-        const evCell = ev.length
-          ? `<details class="ev"><summary><span class="ev-badge ev-yes">✓ Brief ×${ev.length}</span></summary><div class="ev-list">${ev.map(evItem).join("")}</div></details>`
-          : `<span class="ev-badge ev-est" title="Not yet named in the loaded brief editions — analyst estimate">Analyst est.</span>`;
+        const ct = allContests.find(x => x.measureCapId === c.id);
+        const judg = ct ? this.judgmentBadge(ct.operationalJudgment) : `<span class="muted-note">—</span>`;
+        const st = this.obsSourceType(c);
         return `<tr>
           <td class="matrix-cell-num">${i + 1}</td>
-          <td class="theatre-cell">${star}${esc(c.name)}<div style="font-size:11px;color:var(--text-faint)">${esc(c.aka)} · ${esc(c.category)}</div></td>
+          <td class="theatre-cell">${esc(c.name)}<div style="font-size:11px;color:var(--text-faint)">${esc(c.aka)} · ${esc(c.category)}</div></td>
           <td><span class="role-tag role-${c.role.toLowerCase()}">${esc(c.role)}</span></td>
-          <td>${esc(c.domain)}</td>
+          <td style="font-size:12px">${esc(c.threatens || "—")}</td>
           <td>${this.theatreChips(c.theatres)}</td>
           <td>${this.lcChip(c.lifecycle)}</td>
-          <td><div class="matrix-cell-num">${heat}</div><div class="progress-mini"><span style="width:${heat}%;background:${this.lcPalette[(DB.capabilityDefs.lifecycle[c.lifecycle] || {}).tone]}"></span></div><div class="heat-basis hb-${this.basisOf(c)}" title="${this.basisOf(c) === "brief" ? "Heat driven by brief evidence" : "Heat from the analyst model (not yet named in the briefs)"}">${this.basisOf(c) === "brief" ? "brief-driven" : "model"}</div></td>
+          <td>${judg}</td>
+          <td><div class="matrix-cell-num">${heat}</div><div class="progress-mini"><span style="width:${heat}%;background:${this.lcPalette[(DB.capabilityDefs.lifecycle[c.lifecycle] || {}).tone]}"></span></div></td>
           <td>${this.sparkline(c)}<div style="font-size:10px;color:var(--text-faint)">${this.observations(c)} obs</div></td>
           <td>${this.capTrend(this.trendOf(c))}</td>
-          <td class="ev-cell">${evCell}</td>
+          <td>${this.srcBadge(st)}</td>
+          <td>${this.safActionBadge(c.safAction || this.defaultSaf(c))}</td>
+          <td class="ev-cell">${this.evDrawer(this.evidence(c), this.observed(c), this.observations(c))}</td>
         </tr>`;
       }).join("");
-      const lifeTip = Object.entries(DB.capabilityDefs.lifecycle).sort((a, b) => (a[1].rank || 0) - (b[1].rank || 0))
-        .map(([n, d]) => `${n}: ${d.desc}`).join(" ");
       html += `<div class="section"><div class="section-head"><h2>Heat Leaderboard</h2>
-        <span class="hint">${this.briefMode
-          ? `Heat is <strong>driven by the weekly brief</strong> — recency-weighted observation intensity across ${this.axisLen} editions, normalised 0–100. Capabilities the briefs haven't named fall back to the analyst model (see the Evidence column / 'model' tag).`
-          : `Heat &amp; adoption are computed from ${DB.weeklyReports.length} weeks of observations — recency-weighted intensity, normalised 0–100; trend = recent vs earlier weeks`}</span></div>
+        <span class="hint">A learning table — what each capability threatens, how the contest is going, and what SAF should do about it. ${dataTag}</span></div>
         <div class="card matrix-wrap"><table class="matrix"><thead><tr>
-          <th>#</th><th>Capability</th><th>Role</th><th>Domain</th><th>Theatres</th>
-          <th>Lifecycle <span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">${esc(lifeTip)} (hover any chip for its definition.)</span></span></th>
-          <th>Heat <span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">Recency-weighted sum of weekly employment intensity (1–3), normalised 0–100 across capabilities; recent weeks weigh ×0.55→×1.0, so the busiest ≈96.</span></span></th>
+          <th>#</th><th>Capability / contest</th><th>Role</th><th>Threatened function</th><th>Theatres</th>
+          <th>Lifecycle ${this.metricTip("lifecycle")}</th>
+          <th>Judgment</th>
+          <th>Heat ${this.metricTip("heat")}</th>
           <th>Activity (${this.briefMode ? this.axisLen + "&nbsp;ed" : "8&nbsp;wk"})</th>
-          <th>Adoption <span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">Recent half of weeks vs earlier half: Rising &gt; 1.25×, Declining &lt; 0.75×, else Steady.</span></span></th>
-          <th>Evidence <span class="th-info tip" tabindex="0">ⓘ<span class="tip-body">Brief observations that substantiate this capability — expand for the edition, theatre and a link to the reporting. 'Analyst est.' = not yet named in the loaded brief editions.</span></span></th>
-        </tr></thead><tbody>${rows || `<tr><td colspan="10"><div class="empty">No capabilities match the filters.</div></td></tr>`}</tbody></table></div></div>`;
+          <th>Trend ${this.metricTip("trend")}</th>
+          <th>Source</th>
+          <th>SAF action</th>
+          <th>Supporting briefs</th>
+        </tr></thead><tbody>${rows || `<tr><td colspan="13"><div class="empty">No capabilities match the filters.</div></td></tr>`}</tbody></table></div></div>`;
 
-      // ---- supersession chains ----
-      const supRows = this.supersession(all).map(s =>
-        `<div class="sup-row"><span class="sup-from">${esc(s.from.name)} ${this.lcChip(s.from.lifecycle)}</span>
-          <span class="sup-arrow">superseded by →</span>
-          <span class="sup-to">${s.to.map(t => `${esc(t.name)} ${this.lcChip(t.lifecycle)}`).join(" · ")}</span></div>`).join("");
+      // ---- Supersession (graded: fully / partially / niche) ----
+      const supRows = this.supersession(all).map(s => {
+        const grade = s.from.displacement || "Partially displaced";
+        const tone = grade === "Fully superseded" ? "bad" : grade === "Still valid in niche" ? "good" : "warn";
+        return `<div class="sup-row"><span class="sup-from">${esc(s.from.name)} ${this.lcChip(s.from.lifecycle)}</span>
+          <span class="sup-arrow">→</span>
+          <span class="sup-to">${s.to.map(t => `${esc(t.name)} ${this.lcChip(t.lifecycle)}`).join(" · ")}</span>
+          <span class="sup-grade sg-${tone}">${esc(grade)}</span>
+          ${s.from.niche ? `<div class="sup-niche">Niche: ${esc(s.from.niche)}</div>` : ""}</div>`;
+      }).join("");
       html += `<div class="section"><div class="section-head"><h2>Supersession — What Replaced What</h2>
-        <span class="hint">The capability "tech tree": measures displaced by newer ones</span></div>
+        <span class="hint">Analyst-judged ${this.metricTip("supersession")} — graded by how completely the older capability was displaced</span></div>
         <div class="card card-pad">${supRows || `<div class="empty">No supersession links in the current filter.</div>`}</div></div>`;
 
-      // ---- cross-theatre proliferation / diffusion ----
+      // ---- Cross-theatre proliferation (enriched) ----
       const diff = this.diffusion(all).map(c => `<tr>
         <td class="theatre-cell">${esc(c.name)}</td>
         <td>${this.theatreChips(c.theatres)}</td>
-        <td>${esc(c.vector)}</td>
-        <td>${this.lcChip(c.lifecycle)}</td>
-        <td style="font-size:12px;color:var(--text-muted)">${esc(c.note)}</td>
+        <td style="font-size:12px;color:var(--text-muted)">${esc(c.spreadWhy || c.note || "—")}</td>
+        <td style="font-size:12px;color:var(--text-muted)">${esc(c.transferLimits || "—")}</td>
+        <td style="font-size:12px">${esc(c.safRelevance || "—")}</td>
       </tr>`).join("");
       html += `<div class="section"><div class="section-head"><h2>Cross-Theatre Proliferation</h2>
-        <span class="hint">Capabilities observed in more than one theatre, and how they spread</span></div>
-        <div class="card matrix-wrap"><table class="cmp-table"><thead><tr><th>Capability</th><th>Theatres</th><th>Vector</th><th>Lifecycle</th><th>Diffusion note</th></tr></thead>
+        <span class="hint">Theatre count is ${this.metricTip("proliferation")} brief-derived; why-it-spreads / limits / SAF relevance are analyst-judged</span></div>
+        <div class="card matrix-wrap"><table class="cmp-table"><thead><tr><th>Capability</th><th>Theatres</th><th>Why it spreads</th><th>What limits transfer</th><th>SAF relevance</th></tr></thead>
         <tbody>${diff || `<tr><td colspan="5"><div class="empty">No multi-theatre capabilities in the current filter.</div></td></tr>`}</tbody></table></div></div>`;
 
       root.innerHTML = html;
       this.wire(root);
       this.renderCharts(all);
+    },
+
+    // Default SAF action when a capability has no authored one (role heuristic).
+    defaultSaf(c) { return c.role === "Countermeasure" ? "Trial" : "Review"; },
+
+    // One measure ⇄ countermeasure contest card.
+    contestCard(ct) {
+      const m = this.measureOf(ct), c = this.counterOf(ct);
+      const heat = this.contestHeat(ct), trend = this.contestTrend(ct);
+      const weeks = this.contestWeeks(ct);
+      const evRows = this.contestEvidence(ct);
+      const obsBacked = this.contestObserved(ct);
+      const obsCount = (m ? this.observations(m) : 0) + (c ? this.observations(c) : 0);
+      const st = obsBacked ? (this.briefMode ? "brief-derived" : "seed-observed") : "analyst-judged";
+      const tone = (DB.capabilityDefs.judgments[ct.operationalJudgment] || {}).tone || "neutral";
+      const counterCell = c
+        ? `${esc(c.name)} ${this.lcChip(c.lifecycle)}`
+        : `<span class="cc-uncountered">⚠ ${esc(ct.countermeasureNote || "Countermeasure not yet evidenced in current weekly briefs")}</span>`;
+      return `<article class="contest-card cj-${tone}">
+        <div class="cc-head"><span class="cc-title">${esc(ct.title)}</span>
+          <span class="cc-metrics">${heat ? `<span class="cc-heat">heat ${heat}</span>` : ""} ${this.capTrend(trend)} ${this.judgmentBadge(ct.operationalJudgment)}</span></div>
+        <div class="cc-grid">
+          <div class="cc-f"><div class="cc-h">Measure / attack</div><div class="cc-b">${m ? `${esc(m.name)} ${this.lcChip(m.lifecycle)}` : esc(ct.measureCapId)}</div></div>
+          <div class="cc-f"><div class="cc-h">Threatens</div><div class="cc-b">${esc(ct.threatens || "—")}</div></div>
+          <div class="cc-f"><div class="cc-h">Countermeasure</div><div class="cc-b">${counterCell}</div></div>
+          <div class="cc-f"><div class="cc-h">Observed effect</div><div class="cc-b">${esc(ct.observedEffect || "—")}</div></div>
+          <div class="cc-f"><div class="cc-h">Adaptation / bypass</div><div class="cc-b">${esc(ct.adaptationBypass || "—")}</div></div>
+          <div class="cc-f"><div class="cc-h">Operational judgment</div><div class="cc-b">${this.judgmentBadge(ct.operationalJudgment)} ${esc(ct.judgmentNote || "")}</div></div>
+        </div>
+        <div class="cc-saf"><span class="cc-h">SAF learning</span> ${esc(ct.safImplication || "—")} ${this.safActionBadge(ct.safAction)}</div>
+        <div class="cc-foot">
+          <span class="cc-prov">Observations: ${this.srcBadge(st)} · ${weeks.length} supporting week(s)</span>
+          <span class="cc-prov">Assessment: ${this.srcBadge(ct.assessmentSource || "analyst-judged")}</span>
+          <span class="cc-conf">Confidence: <strong>${esc(ct.confidence || "—")}</strong></span>
+          ${this.evDrawer(evRows, obsBacked, obsCount)}
+        </div>
+      </article>`;
     },
 
     wire(root) {
@@ -1220,50 +1337,28 @@
         })
       });
 
-      // Heat — horizontal bar, top 12
-      const top = this.heatRanking(list).slice(0, 12);
-      Charts.make("cap-heat", {
-        type: "bar",
-        data: { labels: top.map(c => c.name), datasets: [{ label: "Heat", data: top.map(c => this.heatOf(c)), backgroundColor: top.map(c => lcColor(c.lifecycle)) }] },
-        options: Object.assign(Charts.baseOpts(), { indexAxis: "y", plugins: { legend: { display: false } } })
-      });
-
-      // Lifecycle doughnut
-      const ld = this.lifecycleDist(list);
-      const lk = lcKeys.filter(k => ld[k] > 0);
-      Charts.make("cap-lifecycle", {
-        type: "doughnut",
-        data: { labels: lk, datasets: [{ data: lk.map(k => ld[k]), backgroundColor: lk.map(lcColor) }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "right", labels: { color: Charts.css("--text-muted"), font: { size: 10 }, boxWidth: 12 } } } }
-      });
-
-      // Proliferation by theatre — stacked bar by lifecycle
-      const ta = this.theatreAdoption(list);
+      // Proliferation by theatre — count of OBSERVED capabilities per theatre (brief-derived).
       const tIds = DB.theatres.map(t => t.id);
+      const obsPerTheatre = tIds.map(id => list.filter(c => this.observed(c) && c.theatres.includes(id)).length);
       Charts.make("cap-theatre", {
         type: "bar",
         data: { labels: tIds.map(id => THEATRE_BY_ID[id].short),
-          datasets: lcKeys.map(lc => ({ label: lc, data: tIds.map(id => ta[id][lc]), backgroundColor: lcColor(lc) })) },
-        options: Object.assign(Charts.baseOpts(), {
-          scales: { x: Object.assign(Charts.baseOpts().scales.x, { stacked: true }), y: Object.assign(Charts.baseOpts().scales.y, { stacked: true }) }
-        })
+          datasets: [{ label: "Observed capabilities", data: obsPerTheatre, backgroundColor: tIds.map(id => this.theatreColor(id)) }] },
+        options: Object.assign(Charts.baseOpts(), { plugins: { legend: { display: false } } })
       });
 
-      // Vector doughnut
-      const vd = this.vectorDist(list);
-      const vk = Object.keys(vd).filter(k => vd[k] > 0);
-      const vColors = ["#a01f2e", "#1f5fa8", "#8a5a00", "#1d6b4c"];
-      Charts.make("cap-vector", {
-        type: "doughnut",
-        data: { labels: vk, datasets: [{ data: vk.map(k => vd[k]), backgroundColor: vk.map((_, i) => vColors[i % vColors.length]) }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "right", labels: { color: Charts.css("--text-muted"), font: { size: 10 }, boxWidth: 12 } } } }
-      });
-
-      // Adaptation tempo — bar of time-to-counter
-      const tt = this.adaptationTempo(list).items;
-      Charts.make("cap-tempo", {
-        type: "bar",
-        data: { labels: tt.map(c => c.name), datasets: [{ label: "Days to counter", data: tt.map(c => c.timeToCounterDays), backgroundColor: tt.map(c => lcColor(c.lifecycle)) }] },
+      // Observation activity over editions — total brief observations per edition
+      // (reporting volume / adaptation tempo). Brief-derived; the x-axis is the
+      // loaded brief editions (or seed weeks offline).
+      const n = this.axisLen || 0;
+      const perEdition = new Array(n).fill(0);
+      list.forEach(c => { const d = this.dynamics[c.id]; if (d && d.weekly) d.weekly.forEach((v, i) => (perEdition[i] += v)); });
+      const labels = this.briefMode
+        ? [...(DB.liveEditions || [])].sort((a, b) => String(a.weekEnd || "").localeCompare(String(b.weekEnd || ""))).map(e => e.rangeLabel || e.weekId)
+        : (DB.weeklyReports || []).map(w => w.weekId);
+      Charts.make("cap-activity", {
+        type: "line",
+        data: { labels, datasets: [{ label: "Brief observations", data: perEdition, borderColor: "#a01f2e", backgroundColor: "rgba(160,31,46,0.12)", fill: true, tension: 0.3 }] },
         options: Object.assign(Charts.baseOpts(), { plugins: { legend: { display: false } } })
       });
     }

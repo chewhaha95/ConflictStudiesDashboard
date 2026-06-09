@@ -179,18 +179,40 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   const cb = doc.querySelector("#view-capabilities .view-body");
   check("capabilities view is active", doc.querySelector("#view-capabilities").classList.contains("active"));
   check("capability BLUF rendered", cb.textContent.includes("BLUF — Capability Picture"));
-  check("KPI strip rendered (5 KPIs)", cb.querySelectorAll(".kpi").length === 5);
-  check("heat computation explained in leaderboard hint", /recency-weighted/.test(cb.textContent) && /normalised 0–100/.test(cb.textContent));
-  check("Heat & Lifecycle headers carry info tooltips", cb.querySelectorAll(".matrix thead .th-info .tip-body").length >= 2);
+  check("BLUF shows operational picture (stressed / bypass / uncountered)",
+    /Most stressed countermeasures/.test(cb.textContent) && /Most consequential bypasses/.test(cb.textContent) && /Currently uncountered/.test(cb.textContent));
+  check("BLUF claims carry provenance tags (brief-derived / analyst-judged)",
+    cb.querySelectorAll(".bluf-card .pt-brief").length >= 1 && cb.querySelectorAll(".bluf-card .pt-analyst").length >= 1);
+  check("summary cards rendered (6, explainable)", cb.querySelectorAll(".kpi").length === 6 && [...cb.querySelectorAll(".kpi")].every(k => !!k.querySelector(".tip-body, .th-info")));
+  check("contest is the analytic unit (Tracked contests card)", /Tracked contests/.test(cb.textContent));
+  check("heat methodology explained (inputs/method/fallback in tooltip)", /Recency-weighted/.test(cb.textContent) && /normalised 0–100/.test(cb.textContent) && /Fallback:/.test(cb.textContent));
+  check("metric tooltips on Heat / Lifecycle / Trend headers", cb.querySelectorAll(".matrix thead .th-info .tip-body").length >= 3);
   check("lifecycle chips define phases on hover/tap", [...cb.querySelectorAll(".matrix tbody .lc-chip .tip-body")].some(t => /Newly observed|Dominant and widely employed/.test(t.textContent)));
-  check("heat leaderboard populated", cb.querySelectorAll(".matrix tbody tr").length >= 20);
-  check("evidence column + provenance badges present", [...cb.querySelectorAll(".matrix thead th")].some(th => /Evidence/.test(th.textContent)) && cb.querySelectorAll(".matrix tbody .ev-badge").length >= 20);
-  check("measure-countermeasure cycle cards present", cb.querySelectorAll(".cycle-card").length > 0);
-  check("supersession chains present", cb.querySelectorAll(".sup-row").length > 0);
-  check("cross-theatre proliferation rows present", cb.querySelectorAll(".cmp-table tbody tr").length > 0);
-  check("6 capability charts rendered", cb.querySelectorAll("canvas").length === 6);
-  check("'what's hot across five theatres' chart present", !!cb.querySelector("#cap-theatre-heat"));
-  check("'heat by theatre over weeks' line chart removed", !cb.querySelector("#cap-theatre-series"));
+  check("learning table populated", cb.querySelectorAll(".matrix tbody tr").length >= 5);
+  check("learning table has contest columns (Threatened function / Judgment / SAF action)",
+    [...cb.querySelectorAll(".matrix thead th")].map(th => th.textContent.replace(/\s+/g, " ")).join("|").match(/Threatened function/) &&
+    [...cb.querySelectorAll(".matrix thead th")].some(th => /Judgment/.test(th.textContent)) &&
+    [...cb.querySelectorAll(".matrix thead th")].some(th => /SAF action/.test(th.textContent)));
+  check("Supporting-briefs column + source-type badges present",
+    [...cb.querySelectorAll(".matrix thead th")].some(th => /Supporting briefs/.test(th.textContent)) &&
+    cb.querySelectorAll(".matrix tbody .src-badge").length >= 5 && cb.querySelectorAll(".matrix tbody .saf-act").length >= 5);
+  check("contest cards are the heart (measure ⇄ counter)", cb.querySelectorAll(".contest-card").length > 0);
+  check("each contest card exposes the full chain", [...cb.querySelectorAll(".contest-card")].every(c =>
+    /Threatens/.test(c.textContent) && /Countermeasure/.test(c.textContent) && /Observed effect/.test(c.textContent) &&
+    /Adaptation \/ bypass/.test(c.textContent) && /Operational judgment/.test(c.textContent) && /SAF learning/.test(c.textContent) &&
+    c.querySelector(".src-badge") && c.querySelector(".judg")));
+  check("an uncountered contest is shown honestly (no invented counter)",
+    [...cb.querySelectorAll(".contest-card")].some(c => /not yet evidenced|Currently uncountered/i.test(c.textContent)));
+  check("supersession graded (fully / partial / niche)", cb.querySelectorAll(".sup-row .sup-grade").length > 0);
+  check("cross-theatre proliferation enriched (why spreads / limits / SAF relevance)",
+    [...cb.querySelectorAll(".cmp-table thead th")].some(th => /Why it spreads/.test(th.textContent)) &&
+    [...cb.querySelectorAll(".cmp-table thead th")].some(th => /limits transfer/.test(th.textContent)) &&
+    cb.querySelectorAll(".cmp-table tbody tr").length > 0);
+  check("3 brief-defensible charts rendered (tempo & doughnuts removed)", cb.querySelectorAll("canvas").length === 3);
+  check("'what's hot across theatres' chart present", !!cb.querySelector("#cap-theatre-heat"));
+  check("observation-activity chart present (replaces time-to-counter)", !!cb.querySelector("#cap-activity"));
+  check("removed un-sourced charts (heat doughnut / lifecycle / vector / tempo)",
+    !cb.querySelector("#cap-heat") && !cb.querySelector("#cap-lifecycle") && !cb.querySelector("#cap-vector") && !cb.querySelector("#cap-tempo"));
   check("per-theatre hottest-capability captions (5)", cb.querySelectorAll(".theatre-leaders .tl").length === 5);
   // Cycles section must appear before the Heat Leaderboard
   const h2s = [...cb.querySelectorAll(".section-head h2")].map(h => h.textContent);
@@ -220,7 +242,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("all signal capIds resolve (" + sigCount + " signals)", sigOk);
   const capView = doc.querySelector("#view-capabilities .view-body");
   check("activity sparklines rendered", capView.querySelectorAll("svg.sparkline").length >= 20);
-  check("'computed from ... observations' note shown", /computed from \d+ weeks of observations/.test(capView.textContent));
+  check("observation-source methodology note shown", /seed signal weeks|live brief edition/.test(capView.textContent));
   // Fibre-optic FPV (signals ramp up over time) should read as Rising
   const fiberRow = [...capView.querySelectorAll(".matrix tbody tr")].find(tr => tr.textContent.includes("Fibre-optic FPV"));
   check("rising capability shows Rising trend", fiberRow && fiberRow.textContent.includes("Rising"), fiberRow ? fiberRow.textContent.replace(/\s+/g, " ").slice(0, 80) : "row missing");
@@ -234,7 +256,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   const scoped = doc.querySelector("#view-capabilities .view-body");
   const allGaza = [...scoped.querySelectorAll(".matrix tbody tr td:nth-child(5)")].every(td => td.textContent.includes("ISR-GAZ"));
   check("theatre filter re-scopes capabilities to selected theatre", scoped.querySelectorAll(".matrix tbody tr").length > 0 && allGaza);
-  check("charts still render after theatre filter", scoped.querySelectorAll("canvas").length === 6);
+  check("charts still render after theatre filter", scoped.querySelectorAll("canvas").length === 3);
   gazaCb.checked = false; gazaCb.dispatchEvent(new window.Event("change", { bubbles: true })); await sleep(40);
 
   // --- 7. Live weekly edition (sync integration) --------------------------
@@ -283,7 +305,18 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       { __live: true, weekId: "BRIEF-NEW", rangeLabel: "25 May – 4 June 2026", weekStart: "2026-05-25", weekEnd: "2026-06-04", sourceUrl: "https://example.org/new", bluf: "LATEST-BLUF", theatres: mkTheatres("LATEST") },
       { __live: true, weekId: "BRIEF-OLD", rangeLabel: "18 May – 25 May 2026", weekStart: "2026-05-18", weekEnd: "2026-05-25", sourceUrl: "https://example.org/old", bluf: "ARCHIVED-BLUF", theatres: mkTheatres("ARCHIVED") }
     ],
-    capabilityEvidence: { cap_shahed: [{ weekId: "BRIEF-NEW", rangeLabel: "25 May – 4 June 2026", theatre: "RU_UA", headline: "EVIDENCE-HEADLINE", url: "https://example.org/evidence", source: "ISW" }] }
+    capabilityEvidence: (() => {
+      const row = (t, hl) => ({ weekId: "BRIEF-NEW", rangeLabel: "25 May – 4 June 2026", theatre: t, headline: hl, url: "https://example.org/evidence", source: "ISW" });
+      return {
+        cap_shahed: [row("RU_UA", "EVIDENCE-HEADLINE")],
+        cap_fpv: [row("RU_UA", "FPV-EVIDENCE")],
+        cap_fpv_fiber: [row("RU_UA", "FIBRE-EVIDENCE")],
+        cap_ew_tac: [row("RU_UA", "EW-EVIDENCE")],
+        cap_patriot: [row("RU_UA", "PATRIOT-EVIDENCE")],
+        cap_iran_brm: [row("IL_US_IR", "IRAN-EVIDENCE")],
+        cap_iron_dome: [row("IL_LB", "IRONDOME-EVIDENCE")]
+      };
+    })()
   };
   const dom2 = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true });
   global.window = dom2.window; global.document = dom2.window.document;
@@ -312,16 +345,22 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   // capability brief-evidence wired through to the leaderboard
   d2.querySelector('.tab-btn[data-horizon="capabilities"]').click(); await sleep(60);
   const cb2 = d2.querySelector("#view-capabilities .view-body");
-  check("brief-evidence badge + cited link shown on evidenced capability",
+  check("brief-evidence drawer + cited link shown on evidenced capability",
     cb2.querySelectorAll(".ev-badge.ev-yes").length >= 1 && /EVIDENCE-HEADLINE/.test(cb2.textContent) && !!cb2.querySelector(".ev-list a[href^='http']"));
-  check("heat is brief-driven when evidence present (model fallback for rest)",
-    /driven by the weekly brief/.test(cb2.textContent) && cb2.querySelectorAll(".heat-basis.hb-brief").length >= 1 && cb2.querySelectorAll(".heat-basis.hb-model").length >= 1);
-  check("'Brief-evidenced only' filter present and narrows", (() => {
-    const chip = cb2.querySelector("#cap-ev-only"); if (!chip) return false;
-    const before = cb2.querySelectorAll(".matrix tbody tr").length;
+  check("heat is brief-derived in live mode (source badges shown)",
+    /brief-derived/.test(cb2.textContent) && cb2.querySelectorAll(".src-badge.src-brief").length >= 1);
+  check("lean default: only brief-evidenced contests shown, analyst-judged hidden",
+    cb2.querySelectorAll(".contest-card").length >= 1 &&
+    [...cb2.querySelectorAll(".contest-card")].length < (JSON.parse(data).capabilityContests || []).length);
+  check("an uncountered contest renders without an invented counter (live)",
+    [...cb2.querySelectorAll(".contest-card")].some(c => /not yet evidenced|Currently uncountered/i.test(c.textContent)));
+  check("'Brief-evidenced only' default ON; toggling OFF reveals analyst-judged items", (() => {
+    const chip = cb2.querySelector("#cap-ev-only"); if (!chip || chip.getAttribute("aria-pressed") !== "true") return false;
+    const beforeRows = cb2.querySelectorAll(".matrix tbody tr").length;
+    const beforeContests = cb2.querySelectorAll(".contest-card").length;
     chip.click();
-    const after = d2.querySelector("#view-capabilities .view-body").querySelectorAll(".matrix tbody tr").length;
-    return after > 0 && after < before;
+    const after = d2.querySelector("#view-capabilities .view-body");
+    return after.querySelectorAll(".matrix tbody tr").length > beforeRows && after.querySelectorAll(".contest-card").length > beforeContests;
   })());
   // restore globals for any later use
   global.window = window; global.document = doc;
