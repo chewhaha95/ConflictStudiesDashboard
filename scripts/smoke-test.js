@@ -127,10 +127,13 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("SOP lane carries both Train and Adjust-SOP sub-lanes",
     [...mb.querySelectorAll(".tac-card .lane-sop")].every(l => l.querySelectorAll(".sop-sub .sop-k").length === 2));
   check("cards show echelon badges", mb.querySelectorAll(".tac-card .ech-badge").length >= 1);
-  check("observation carries cited articles readers can open", mb.querySelectorAll(".tf-observed .obs-cites a[href^='http']").length >= 1);
-  check("cards expose a prominent supporting-findings block", mb.querySelectorAll(".tac-card .tac-evidence .ev-h").length === mb.querySelectorAll(".tac-card").length);
-  check("cards show research findings from cited sources", mb.querySelectorAll(".ev-findings li .find-src").length >= 1);
-  check("evidence block shows a confidence note", mb.querySelectorAll(".tac-evidence .ev-conf").length >= 1);
+  check("observation carries cited articles readers can open", mb.querySelectorAll(".tf-observed a[href^='http']").length >= 1);
+  check("observation is structured into labelled sub-blocks (advance/counter/outcome)",
+    [...mb.querySelectorAll(".tac-card")].every(c => c.querySelectorAll(".tf-observed .obs-block .obs-block-h").length >= 1) &&
+    [...mb.querySelectorAll(".tac-card")].some(c => c.querySelectorAll(".tf-observed .obs-block").length >= 3));
+  check("observation sub-blocks carry inline citations", mb.querySelectorAll(".tf-observed .obs-cite-inline a[href^='http']").length >= 1);
+  check("card header shows a confidence chip", mb.querySelectorAll(".tac-card .tac-conf").length >= 1);
+  check("no separate supporting-findings block on structured cards", mb.querySelectorAll(".tac-card .tac-evidence").length === 0);
   check("monthly BLUF still visible inside a group", /Monthly BLUF — Tactical Learning/.test(mb.textContent));
   // echelon sub-filter narrows the cards
   const allCards = mb.querySelectorAll(".tac-card").length;

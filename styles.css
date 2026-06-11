@@ -717,6 +717,15 @@ body.capabilities-view .app-shell { grid-template-columns: 1fr; }
 .obs-cites { margin-top: 7px; padding-top: 6px; border-top: 1px dashed var(--border); font-size: 12px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
 .obs-cites-k { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; color: var(--text-faint); }
 .obs-cites a { font-weight: 600; }
+/* labelled observation sub-blocks (Advance / Countermeasure / Outcome …) */
+.obs-block { margin-top: 8px; }
+.obs-block:first-child { margin-top: 2px; }
+.obs-block-h { font-size: 10.5px; font-weight: 700; color: var(--tone-neutral-fg); margin-bottom: 2px; }
+.obs-block-b { font-size: 12.5px; line-height: 1.55; }
+.obs-cite-inline a { font-weight: 600; font-size: 12px; white-space: nowrap; }
+.obs-cite-inline a + a { margin-left: 8px; }
+/* per-card confidence chip in the header */
+.tac-conf { font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 4px; }
 
 .tac-lanes { display: grid; grid-template-columns: 1fr; gap: 10px; }
 .lane { background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; }
