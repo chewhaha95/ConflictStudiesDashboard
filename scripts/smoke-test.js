@@ -116,19 +116,19 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("group panel: audience banner shown", /Audience —/.test((mb.querySelector(".fg-audience-banner") || {}).textContent || ""));
   check("group panel: echelon filter (4 chips)", mb.querySelectorAll(".ech-filter .ech-chip").length === 4);
   check("group panel: tactical insight cards", mb.querySelectorAll(".tac-card").length >= 1);
-  check("each card exposes 4 tactical-decision fields (observed / problem / experiment / SOP)",
+  check("cards follow the 4-step flow (Observed → Insights → Experiment → SOP)",
     [...mb.querySelectorAll(".tac-card")].every(c =>
       c.querySelectorAll(".tac-fields .tfield").length === 2 &&
-      c.querySelector(".tf-observed .tfield-h").textContent.includes("Observed in theatre") &&
-      c.querySelector(".tf-problem .tfield-h").textContent.includes("Tactical problem") &&
+      /1 · Observed in theatre/.test(c.querySelector(".tf-observed .tfield-h").textContent) &&
+      /2 · Insights/.test(c.querySelector(".tf-insights .tfield-h").textContent) &&
       c.querySelectorAll(".tac-lanes .lane").length === 2 &&
-      /Experiment with/.test(c.querySelector(".lane-exp").textContent) &&
-      /SOP \/ Training implication/.test(c.querySelector(".lane-sop").textContent)));
+      /3 · Experiment with/.test(c.querySelector(".lane-exp").textContent) &&
+      /4 · SOP \/ Training implication/.test(c.querySelector(".lane-sop").textContent)));
   check("SOP lane carries both Train and Adjust-SOP sub-lanes",
     [...mb.querySelectorAll(".tac-card .lane-sop")].every(l => l.querySelectorAll(".sop-sub .sop-k").length === 2));
   check("cards show echelon badges", mb.querySelectorAll(".tac-card .ech-badge").length >= 1);
-  check("cards expose a prominent evidence block", mb.querySelectorAll(".tac-card .tac-evidence .ev-h").length === mb.querySelectorAll(".tac-card").length);
-  check("cards cite articles (deeper-look links)", mb.querySelectorAll(".tac-evidence .ev-links a[href^='http']").length >= 1);
+  check("observation carries cited articles readers can open", mb.querySelectorAll(".tf-observed .obs-cites a[href^='http']").length >= 1);
+  check("cards expose a prominent supporting-findings block", mb.querySelectorAll(".tac-card .tac-evidence .ev-h").length === mb.querySelectorAll(".tac-card").length);
   check("cards show research findings from cited sources", mb.querySelectorAll(".ev-findings li .find-src").length >= 1);
   check("evidence block shows a confidence note", mb.querySelectorAll(".tac-evidence .ev-conf").length >= 1);
   check("monthly BLUF still visible inside a group", /Monthly BLUF — Tactical Learning/.test(mb.textContent));

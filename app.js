@@ -1591,9 +1591,9 @@
 
     insightCard(i) {
       const t = THEATRE_BY_ID[i.theatre];
-      const sources = (i.sources || []).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)} ↗</a>`).join("");
+      const cites = (i.sources || []).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)} ↗</a>`).join("");
       const tags = (i.tags || []).map(tg => `<span class="tag">#${esc(tg)}</span>`).join("");
-      const sopBlock = `<div class="lane lane-sop"><div class="lane-h">SOP / Training implication</div>
+      const sopBlock = `<div class="lane lane-sop"><div class="lane-h">4 · SOP / Training implication</div>
         <div class="sop-sub"><span class="sop-k">Train</span>${(i.train || []).length ? `<ul>${i.train.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="muted-note">—</p>`}</div>
         <div class="sop-sub"><span class="sop-k">Adjust SOPs</span>${(i.adjustSOP || []).length ? `<ul>${i.adjustSOP.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="muted-note">—</p>`}</div></div>`;
       return `<article class="tac-card">
@@ -1603,19 +1603,19 @@
           <span class="tac-meta">${esc(i.sourceWeek)} · ${esc(i.sourceDomain)}</span>
         </div>
         <div class="tac-fields">
-          <div class="tfield tf-observed"><div class="tfield-h">Observed in theatre</div>
-            <div class="tfield-b"><span class="t-chip" title="${esc(t.name)}">${esc(t.short)}</span> ${esc(i.observedInTheatre || i.soWhat || "")}</div></div>
-          <div class="tfield tf-problem"><div class="tfield-h">Tactical problem</div>
+          <div class="tfield tf-observed"><div class="tfield-h">1 · Observed in theatre</div>
+            <div class="tfield-b"><span class="t-chip" title="${esc(t.name)}">${esc(t.short)}</span> ${esc(i.observedInTheatre || i.soWhat || "")}</div>
+            ${cites ? `<div class="obs-cites"><span class="obs-cites-k">Read the reporting:</span> ${cites}</div>` : `<div class="obs-cites"><span class="muted-note">No external citation for this observation yet.</span></div>`}</div>
+          <div class="tfield tf-insights"><div class="tfield-h">2 · Insights</div>
             <div class="tfield-b">${esc(i.tacticalProblem || "")}</div></div>
         </div>
         <div class="tac-lanes">
-          ${this.lane("Experiment with", "lane-exp", i.experiment)}
+          ${this.lane("3 · Experiment with", "lane-exp", i.experiment)}
           ${sopBlock}
         </div>
         <div class="tac-evidence">
-          <div class="ev-h">Evidence / cited articles <span class="ev-conf conf-${esc((i.confidence || "").toLowerCase())}">${esc(i.confidence || "—")} confidence</span></div>
-          ${(i.findings && i.findings.length) ? `<ul class="ev-findings">${i.findings.map(f => `<li>${esc(f.text)} <span class="find-src">— ${esc(f.source)}</span></li>`).join("")}</ul>` : ""}
-          ${sources ? `<div class="ev-links">${sources}</div>` : `<p class="muted-note">No external citation for this learning yet.</p>`}
+          <div class="ev-h">Supporting findings <span class="ev-conf conf-${esc((i.confidence || "").toLowerCase())}">${esc(i.confidence || "—")} confidence</span></div>
+          ${(i.findings && i.findings.length) ? `<ul class="ev-findings">${i.findings.map(f => `<li>${esc(f.text)} <span class="find-src">— ${esc(f.source)}</span></li>`).join("")}</ul>` : `<p class="muted-note">—</p>`}
         </div>
         ${tags ? `<div class="tags">${tags}</div>` : ""}
       </article>`;

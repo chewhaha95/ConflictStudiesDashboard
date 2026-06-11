@@ -706,16 +706,19 @@ body.capabilities-view .app-shell { grid-template-columns: 1fr; }
 .ech-company   { color: var(--tone-neutral-fg); background: var(--tone-neutral-bg); }
 
 /* Four-field tactical decision object */
-.tac-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0 12px; }
+.tac-fields { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 10px 0 12px; }
 .tfield { border-radius: var(--radius-sm); padding: 9px 12px; background: var(--bg-elev-2); border: 1px solid var(--border); }
 .tf-observed { border-left: 3px solid var(--tone-neutral-fg); }
-.tf-problem  { border-left: 3px solid var(--tone-bad-fg); }
+.tf-insights { border-left: 3px solid var(--accent); }
 .tfield-h { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
 .tf-observed .tfield-h { color: var(--tone-neutral-fg); }
-.tf-problem .tfield-h { color: var(--tone-bad-fg); }
+.tf-insights .tfield-h { color: var(--accent); }
 .tfield-b { font-size: 13px; line-height: 1.55; }
+.obs-cites { margin-top: 7px; padding-top: 6px; border-top: 1px dashed var(--border); font-size: 12px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.obs-cites-k { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; color: var(--text-faint); }
+.obs-cites a { font-weight: 600; }
 
-.tac-lanes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tac-lanes { display: grid; grid-template-columns: 1fr; gap: 10px; }
 .lane { background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; }
 .lane-h { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
 .lane-exp { border-top: 2px solid var(--accent); }
