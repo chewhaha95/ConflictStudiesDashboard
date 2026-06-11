@@ -116,24 +116,17 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("group panel: audience banner shown", /Audience —/.test((mb.querySelector(".fg-audience-banner") || {}).textContent || ""));
   check("group panel: echelon filter (4 chips)", mb.querySelectorAll(".ech-filter .ech-chip").length === 4);
   check("group panel: tactical insight cards", mb.querySelectorAll(".tac-card").length >= 1);
-  check("cards follow the 4-step flow (Observed → Insights → Experiment → SOP)",
-    [...mb.querySelectorAll(".tac-card")].every(c =>
-      c.querySelectorAll(".tac-fields .tfield").length === 2 &&
-      /1 · Observed in theatre/.test(c.querySelector(".tf-observed .tfield-h").textContent) &&
-      /2 · Insights/.test(c.querySelector(".tf-insights .tfield-h").textContent) &&
-      c.querySelectorAll(".tac-lanes .lane").length === 2 &&
-      /3 · Experiment with/.test(c.querySelector(".lane-exp").textContent) &&
-      /4 · SOP \/ Training implication/.test(c.querySelector(".lane-sop").textContent)));
-  check("SOP lane carries both Train and Adjust-SOP sub-lanes",
-    [...mb.querySelectorAll(".tac-card .lane-sop")].every(l => l.querySelectorAll(".sop-sub .sop-k").length === 2));
+  check("cards reproduce the report as labelled sections (no forced fixed lanes)",
+    [...mb.querySelectorAll(".tac-card")].every(c => c.querySelectorAll(".tac-sections .tac-sec .tac-sec-h").length >= 2) &&
+    mb.querySelectorAll(".tac-card .tac-fields").length === 0 && mb.querySelectorAll(".tac-card .tac-lanes").length === 0);
+  check("section flow varies by report (some cards carry an Insights / To Consider section)",
+    [...mb.querySelectorAll(".tac-card")].some(c => /Insights/.test(c.textContent)) &&
+    [...mb.querySelectorAll(".tac-card")].some(c => /To Consider/.test(c.textContent)));
   check("cards show echelon badges", mb.querySelectorAll(".tac-card .ech-badge").length >= 1);
-  check("observation carries cited articles readers can open", mb.querySelectorAll(".tf-observed a[href^='http']").length >= 1);
-  check("observation is structured into labelled sub-blocks (advance/counter/outcome)",
-    [...mb.querySelectorAll(".tac-card")].every(c => c.querySelectorAll(".tf-observed .obs-block .obs-block-h").length >= 1) &&
-    [...mb.querySelectorAll(".tac-card")].some(c => c.querySelectorAll(".tf-observed .obs-block").length >= 3));
-  check("observation sub-blocks carry inline citations", mb.querySelectorAll(".tf-observed .obs-cite-inline a[href^='http']").length >= 1);
+  check("observation carries cited articles readers can open", mb.querySelectorAll(".tac-sections a[href^='http']").length >= 1);
+  check("sections carry their own inline citations", mb.querySelectorAll(".tac-sec .tac-sec-cites a[href^='http']").length >= 1);
   check("card header shows a confidence chip", mb.querySelectorAll(".tac-card .tac-conf").length >= 1);
-  check("no separate supporting-findings block on structured cards", mb.querySelectorAll(".tac-card .tac-evidence").length === 0);
+  check("no fixed 4-step scaffolding remains on these cards", mb.querySelectorAll(".tac-card .tac-evidence, .tac-card .lane-sop").length === 0);
   check("monthly BLUF still visible inside a group", /Monthly BLUF — Tactical Learning/.test(mb.textContent));
   // echelon sub-filter narrows the cards
   const allCards = mb.querySelectorAll(".tac-card").length;
