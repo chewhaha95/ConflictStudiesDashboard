@@ -1589,23 +1589,56 @@
         (items && items.length ? `<ul>${items.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="muted-note">—</p>`) + `</div>`;
     },
 
+    // All citation URLs an insight carries (structured observed blocks, or legacy
+    // sources + finding links) — used for the overview "N cited" count.
+    citeUrls(i) {
+      const u = [];
+      (i.observed || []).forEach(b => (b.sources || []).forEach(s => s.url && u.push(s.url)));
+      (i.sources || []).forEach(s => s.url && u.push(s.url));
+      (i.findings || []).forEach(f => f.url && u.push(f.url));
+      return this.dedup(u);
+    },
+    citeLinks(sources) {
+      return (sources || []).filter(s => s && s.url).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label || "source")} ↗</a>`).join("");
+    },
+
     insightCard(i) {
       const t = THEATRE_BY_ID[i.theatre];
-      const cites = (i.sources || []).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)} ↗</a>`).join("");
       const tags = (i.tags || []).map(tg => `<span class="tag">#${esc(tg)}</span>`).join("");
+      const conf = (i.confidence || "").toLowerCase();
+      const confChip = i.confidence ? `<span class="tac-conf ev-conf conf-${esc(conf)}">${esc(i.confidence)} confidence</span>` : "";
       const sopBlock = `<div class="lane lane-sop"><div class="lane-h">4 · SOP / Training implication</div>
         <div class="sop-sub"><span class="sop-k">Train</span>${(i.train || []).length ? `<ul>${i.train.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="muted-note">—</p>`}</div>
         <div class="sop-sub"><span class="sop-k">Adjust SOPs</span>${(i.adjustSOP || []).length ? `<ul>${i.adjustSOP.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="muted-note">—</p>`}</div></div>`;
+
+      // 1 · Observed in theatre — labelled sub-blocks (mirrors the report) when
+      // i.observed is present, else the legacy single paragraph + findings block.
+      const structured = Array.isArray(i.observed) && i.observed.length;
+      const observedBody = structured
+        ? i.observed.map(b => {
+            const links = this.citeLinks(b.sources);
+            return `<div class="obs-block">
+              <div class="obs-block-h">${esc(b.label)}</div>
+              <div class="obs-block-b">${esc(b.text)}${links ? ` <span class="obs-cite-inline">${links}</span>` : ""}</div>
+            </div>`;
+          }).join("")
+        : `<div class="tfield-b"><span class="t-chip" title="${esc(t.name)}">${esc(t.short)}</span> ${esc(i.observedInTheatre || i.soWhat || "")}</div>
+            ${this.citeLinks(i.sources) ? `<div class="obs-cites"><span class="obs-cites-k">Read the reporting:</span> ${this.citeLinks(i.sources)}</div>` : ""}`;
+      const legacyEvidence = structured ? "" : `<div class="tac-evidence">
+          <div class="ev-h">Supporting findings <span class="ev-conf conf-${esc(conf)}">${esc(i.confidence || "—")} confidence</span></div>
+          ${(i.findings && i.findings.length) ? `<ul class="ev-findings">${i.findings.map(f => `<li>${esc(f.text)} ${f.url ? `<a class="find-src" href="${esc(f.url)}" target="_blank" rel="noopener">— ${esc(f.source)} ↗</a>` : `<span class="find-src">— ${esc(f.source)}</span>`}</li>`).join("")}</ul>` : `<p class="muted-note">—</p>`}
+        </div>`;
+
       return `<article class="tac-card">
         <div class="tac-head">
           ${this.echBadge(i.echelon)}
           <span class="tac-title">${esc(i.title)}</span>
           <span class="tac-meta">${esc(i.sourceWeek)} · ${esc(i.sourceDomain)}</span>
+          ${confChip}
         </div>
         <div class="tac-fields">
-          <div class="tfield tf-observed"><div class="tfield-h">1 · Observed in theatre</div>
-            <div class="tfield-b"><span class="t-chip" title="${esc(t.name)}">${esc(t.short)}</span> ${esc(i.observedInTheatre || i.soWhat || "")}</div>
-            ${cites ? `<div class="obs-cites"><span class="obs-cites-k">Read the reporting:</span> ${cites}</div>` : `<div class="obs-cites"><span class="muted-note">No external citation for this observation yet.</span></div>`}</div>
+          <div class="tfield tf-observed"><div class="tfield-h">1 · Observed in theatre <span class="t-chip" title="${esc(t.name)}">${esc(t.short)}</span></div>
+            ${observedBody}</div>
           <div class="tfield tf-insights"><div class="tfield-h">2 · Insights</div>
             <div class="tfield-b">${esc(i.tacticalProblem || "")}</div></div>
         </div>
@@ -1613,17 +1646,14 @@
           ${this.lane("3 · Experiment with", "lane-exp", i.experiment)}
           ${sopBlock}
         </div>
-        <div class="tac-evidence">
-          <div class="ev-h">Supporting findings <span class="ev-conf conf-${esc((i.confidence || "").toLowerCase())}">${esc(i.confidence || "—")} confidence</span></div>
-          ${(i.findings && i.findings.length) ? `<ul class="ev-findings">${i.findings.map(f => `<li>${esc(f.text)} ${f.url ? `<a class="find-src" href="${esc(f.url)}" target="_blank" rel="noopener">— ${esc(f.source)} ↗</a>` : `<span class="find-src">— ${esc(f.source)}</span>`}</li>`).join("")}</ul>` : `<p class="muted-note">—</p>`}
-        </div>
+        ${legacyEvidence}
         ${tags ? `<div class="tags">${tags}</div>` : ""}
       </article>`;
     },
 
     overviewCard(g, gi) {
       const ech = this.echelonsPresent(gi);
-      const srcN = this.dedup(gi.flatMap(i => (i.sources || []).map(s => s.url))).length;
+      const srcN = this.dedup(gi.flatMap(i => this.citeUrls(i))).length;
       const takes = gi.slice(0, 3).map(i => `<li>${this.echBadge(i.echelon)} ${esc(i.title)}</li>`).join("");
       return `<button class="fg-card" data-group="${g.id}" aria-label="Open ${esc(g.name)} tactical learnings (${esc(g.short)})">
         <div class="fg-card-head"><span class="fg-card-name">${esc(g.name)}</span><span class="fg-card-aud">${esc(g.short)}</span></div>
