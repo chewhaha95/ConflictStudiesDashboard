@@ -705,6 +705,31 @@ body.capabilities-view .app-shell { grid-template-columns: 1fr; }
 .ech-battalion { color: var(--tone-warn-fg);    background: var(--tone-warn-bg); }
 .ech-company   { color: var(--tone-neutral-fg); background: var(--tone-neutral-bg); }
 
+/* Document-faithful section flow (replicates the monthly report layout) */
+.tac-sections { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.tac-sec { border-left: 3px solid var(--border-strong); padding: 8px 12px; border-radius: var(--radius-sm); background: var(--bg-elev-2); }
+.tac-sec-h { font-size: 11px; font-weight: 800; letter-spacing: .2px; margin-bottom: 4px; color: var(--text-muted); }
+.tac-sec-b { font-size: 13px; line-height: 1.6; }
+.tac-sec-list { margin: 4px 0 0; padding-left: 18px; }
+.tac-sec-list li { font-size: 12.5px; line-height: 1.55; margin-bottom: 5px; }
+.tac-sec-cites { margin-top: 6px; font-size: 12px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.tac-sec-cites-k { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; color: var(--text-faint); }
+.tac-sec-cites a { font-weight: 600; }
+/* section accents by kind */
+.tac-sec.sec-observed { border-left-color: var(--tone-neutral-fg); }
+.tac-sec.sec-observed .tac-sec-h { color: var(--tone-neutral-fg); }
+.tac-sec.sec-counter  { border-left-color: var(--tone-warn-fg); }
+.tac-sec.sec-counter .tac-sec-h { color: var(--tone-warn-fg); }
+.tac-sec.sec-outcome  { border-left-color: var(--accent); background: var(--accent-soft); }
+.tac-sec.sec-outcome .tac-sec-h { color: var(--accent); }
+.tac-sec.sec-problem  { border-left-color: var(--tone-bad-fg); }
+.tac-sec.sec-problem .tac-sec-h { color: var(--tone-bad-fg); }
+.tac-sec.sec-insights { border-left-color: var(--accent); border-width: 0 0 0 4px; background: linear-gradient(180deg, var(--accent-soft), transparent); }
+.tac-sec.sec-insights .tac-sec-h { color: var(--accent); }
+.tac-sec.sec-consider { border-left-color: var(--tone-good-fg); background: var(--tone-good-bg); }
+.tac-sec.sec-consider .tac-sec-h { color: var(--tone-good-fg); }
+.tac-conf { font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 4px; }
+
 /* Four-field tactical decision object */
 .tac-fields { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 10px 0 12px; }
 .tfield { border-radius: var(--radius-sm); padding: 9px 12px; background: var(--bg-elev-2); border: 1px solid var(--border); }

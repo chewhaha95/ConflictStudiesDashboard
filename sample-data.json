@@ -1646,28 +1646,33 @@
         "dispersion"
       ],
       "soWhat": "Guided glide bombs made fixed positions costly — survivability now depends on dispersion, hardening and deception, not occupation time.",
-      "experiment": [
-        "Decoy positions and thermal/EM decoys at company strongpoints.",
-        "Position-rotation rhythm based on detection risk."
-      ],
-      "train": [
-        "Survivability-move drills under stand-off precision threat.",
-        "Hasty hardening and overhead protection."
-      ],
-      "adjustSOP": [
-        "Set maximum position-occupation times; require alternate/decoy positions in defence SOPs."
-      ],
       "observedInTheatre": "Guided glide bombs made fixed positions costly — survivability now depends on dispersion, hardening and deception, not occupation time.",
-      "tacticalProblem": "Any static, un-hardened position is attritable from stand-off range, so holding ground without dispersal and deception is a liability.",
-      "observed": [
+      "sections": [
         {
           "label": "What happened",
+          "kind": "observed",
           "text": "Guided glide bombs made fixed positions costly — survivability now depends on dispersion, hardening and deception, not occupation time.",
           "sources": [
             {
               "label": "ISW — campaign assessment (23 May 2026)",
               "url": "https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-may-23-2026/"
             }
+          ]
+        },
+        {
+          "label": "Insights",
+          "kind": "insights",
+          "text": "Any static, un-hardened position is attritable from stand-off range, so holding ground without dispersal and deception is a liability."
+        },
+        {
+          "label": "To Consider",
+          "kind": "consider",
+          "bullets": [
+            "Decoy positions and thermal/EM decoys at company strongpoints.",
+            "Position-rotation rhythm based on detection risk.",
+            "Survivability-move drills under stand-off precision threat.",
+            "Hasty hardening and overhead protection.",
+            "Set maximum position-occupation times; require alternate/decoy positions in defence SOPs."
           ]
         }
       ]
@@ -1686,28 +1691,33 @@
         "subterranean"
       ],
       "soWhat": "Defended urban and tunnel terrain denied air/ISR overmatch and forced slow, costly combined-arms clearance.",
-      "experiment": [
-        "Combined-arms urban breaching teams with engineer and counter-subterranean enablers.",
-        "Small-UAS for internal-building and tunnel reconnaissance."
-      ],
-      "train": [
-        "Subterranean clearance and urban breaching as a graded ICT serial.",
-        "Fighting in degraded comms/GPS inside structures."
-      ],
-      "adjustSOP": [
-        "Add subterranean threat handling and urban breach task-org to the clearance SOP."
-      ],
       "observedInTheatre": "Defended urban and tunnel terrain denied air/ISR overmatch and forced slow, costly combined-arms clearance.",
-      "tacticalProblem": "Air and ISR overmatch evaporates in tunnels and dense urban terrain, forcing slow, manpower-intensive clearance under constant ambush risk.",
-      "observed": [
+      "sections": [
         {
           "label": "What happened",
+          "kind": "observed",
           "text": "Defended urban and tunnel terrain denied air/ISR overmatch and forced slow, costly combined-arms clearance.",
           "sources": [
             {
               "label": "Jerusalem Post — Gaza operations update",
               "url": "https://www.jpost.com/middle-east/article-897395"
             }
+          ]
+        },
+        {
+          "label": "Insights",
+          "kind": "insights",
+          "text": "Air and ISR overmatch evaporates in tunnels and dense urban terrain, forcing slow, manpower-intensive clearance under constant ambush risk."
+        },
+        {
+          "label": "To Consider",
+          "kind": "consider",
+          "bullets": [
+            "Combined-arms urban breaching teams with engineer and counter-subterranean enablers.",
+            "Small-UAS for internal-building and tunnel reconnaissance.",
+            "Subterranean clearance and urban breaching as a graded ICT serial.",
+            "Fighting in degraded comms/GPS inside structures.",
+            "Add subterranean threat handling and urban breach task-org to the clearance SOP."
           ]
         }
       ]
@@ -2596,21 +2606,11 @@
         "deep-strike"
       ],
       "soWhat": "Ukraine targeted moving freight trains, highway nodes and oil refineries — not front-line units — degrading Russian offensive tempo by cutting fuel and ammunition flow rather than attriting the consumers of it. By late May Russia's supply trucks moved in armed convoys and military vehicles were repainted white to mimic civilian traffic; Russian advances stalled and milbloggers reported fuel shortages.",
-      "tacticalProblem": "A defending formation can halt an adversary's offensive without matching its combat power — by targeting the fuel, ammunition and transport arteries that sustain it. Targeting boards therefore need a logistics-interdiction layer, and a formation's own fuel/ammo nodes become high-priority protected assets.",
-      "experiment": [
-        "Add a logistics-interdiction layer to 3 Div / 9 Div targeting boards: 'which nodes, if degraded or destroyed, would stop or delay an adversary advance by 48–72 hours even without frontline attrition?'"
-      ],
-      "train": [
-        "Harden, disperse and pre-plan alternate supply routes for own fuel and ammunition nodes from day one.",
-        "Rehearse sustaining manoeuvre when an own logistics node is lost."
-      ],
-      "adjustSOP": [
-        "Treat Armour and manoeuvre-unit fuel/ammunition nodes as high-priority protected assets with hardening, dispersal and alternate routes built into the plan."
-      ],
       "observedInTheatre": "Ukraine targeted moving freight trains, highway nodes and oil refineries — not front-line units — degrading Russian offensive tempo by cutting fuel and ammunition flow rather than attriting the consumers of it. By late May Russia's supply trucks moved in armed convoys and military vehicles were repainted white to mimic civilian traffic; Russian advances stalled and milbloggers reported fuel shortages.",
-      "observed": [
+      "sections": [
         {
           "label": "Ukraine's advance",
+          "kind": "observed",
           "text": "Ukraine targeted moving freight trains (locomotives, fuel tankers), highway nodes and oil refineries — not front-line units — degrading Russian offensive tempo by cutting the flow of fuel and ammunition rather than attriting its consumers. By late May, Russia's supply trucks moved in armed convoys and military vehicles were repainted white to mimic civilian traffic on surveilled highways.",
           "sources": [
             {
@@ -2629,6 +2629,7 @@
         },
         {
           "label": "Countermeasure — Russian response",
+          "kind": "counter",
           "text": "Russia dispersed convoys and repainted vehicles, bolted jammer modules onto the Geran-2 (Shahed) to disrupt Ukrainian interceptor-drone RF links, and first deployed the jet-powered Geran-4 in May (Chinese Telefly turbojet, 300–500 km/h, up to 5,000 m, ~450 km range). None of these measures restored forward momentum.",
           "sources": [
             {
@@ -2639,6 +2640,7 @@
         },
         {
           "label": "Success or failure",
+          "kind": "outcome",
           "text": "Success from Ukraine's perspective — Russian advances stalled and milbloggers reported fuel shortages and logistics crises. ISW assessed the strikes would 'likely cascade into deeper disruption across Russia's rear supply network'.",
           "sources": [
             {
@@ -2646,6 +2648,11 @@
               "url": "https://euromaidanpress.com/2026/06/08/isw-the-strikes-will-likely-cascade-into-deeper-disruption-across-russias-rear-supply-network/"
             }
           ]
+        },
+        {
+          "label": "Insights",
+          "kind": "insights",
+          "text": "A defending formation can halt an adversary's offensive without matching its combat power — by targeting the fuel, ammunition and transport arteries that sustain it. For 3 Div and 9 Div planning, targeting boards should include a logistics-interdiction layer: which nodes, if degraded, would stop or delay an advance by 48–72 hours even without frontline attrition? Equally, Armour and manoeuvre commanders should treat their own fuel and ammunition nodes as high-priority protected assets — hardening, dispersal and alternate supply routes built in from day one."
         }
       ]
     },
@@ -2664,23 +2671,11 @@
         "tempo"
       ],
       "soWhat": "ISW's 24 May special assessment confirmed Ukraine had begun to combine intermediate-range drone strikes on Russian ground lines of communication with localised mechanised attacks (Pokrovsk, Borova, Kostiantynivka–Druzhkivka, Hulyaipole). Interdiction degraded Russian combat power; the mechanised advance then forced Russia to expend its remaining stocks defending the gains — the two lines of operation were mutually reinforcing.",
-      "tacticalProblem": "The decisive model is two simultaneous operational effects — degrade the adversary's logistics, then exploit the degraded combat power with manoeuvre — with the manoeuvre element conditioned on the interdiction phase reaching a specified degradation threshold rather than planned independently.",
-      "experiment": [
-        "Practise sequenced targeting in ICT: identify the adversary's key logistics nodes, plan interdiction sequencing, then plan the mechanised exploitation axis.",
-        "Force the question: 'If I had 10 interdiction sorties, which 10 logistics nodes would I hit to cut enemy assault rates by 50%?' and rehearse the effect on the scheme of manoeuvre."
-      ],
-      "train": [
-        "'Tempo exploitation': once key logistics nodes are hit and enemy assault frequency drops, push armour into depth and seize key terrain instead of pausing to refit by habit."
-      ],
-      "adjustSOP": [
-        "Add a GO/NO-GO pre-conditions paragraph to every brigade/divisional offensive plan: 'which enemy fuel / ammo / rail / highway nodes must be degraded before H-hour?'",
-        "Make attack H-hour contingent on ISR confirming an X% throughput reduction on specific MSRs/rail segments; couple each axis of advance to the GLOC segments that support it.",
-        "Hold a formation logistics-survivability concept: disperse fuel across multiple small sites, time-window loading at MSRs, and rehearse rapid relocation of supply points instead of static POL farms."
-      ],
       "observedInTheatre": "ISW's 24 May special assessment confirmed Ukraine had begun to combine intermediate-range drone strikes on Russian ground lines of communication with localised mechanised attacks (Pokrovsk, Borova, Kostiantynivka–Druzhkivka, Hulyaipole). Interdiction degraded Russian combat power; the mechanised advance then forced Russia to expend its remaining stocks defending the gains — the two lines of operation were mutually reinforcing.",
-      "observed": [
+      "sections": [
         {
           "label": "What happened",
+          "kind": "observed",
           "text": "ISW's 24 May special assessment confirmed Ukraine had begun to combine intermediate-range drone strikes against Russian ground lines of communication (GLOCs) with localised mechanised attacks in the Pokrovsk, Borova, Kostiantynivka–Druzhkivka and Hulyaipole directions, deliberately targeting dynamic targets — moving trains, fuel trucks and troop-transport convoys.",
           "sources": [
             {
@@ -2695,7 +2690,8 @@
         },
         {
           "label": "Ukraine's advance",
-          "text": "Ukraine denied Russian forward units the fuel and ammunition to sustain defensive positions, then exploited the resulting degraded combat power with localised mechanised advances — the two lines of operation were mutually reinforcing.",
+          "kind": "observed",
+          "text": "Ukraine denied Russian forward units the fuel and ammunition to sustain defensive positions, then exploited the degraded combat power with localised mechanised advances — the two lines of operation were mutually reinforcing.",
           "sources": [
             {
               "label": "ISW — special assessment",
@@ -2705,12 +2701,32 @@
         },
         {
           "label": "Success or failure",
+          "kind": "outcome",
           "text": "Ukraine achieved its best net territorial performance since late 2024 — in the four weeks ending 26 May, Russian forces registered a net loss of 100 square miles of Ukrainian territory.",
           "sources": [
             {
               "label": "Mick Ryan — 'Highway to Hell'",
               "url": "https://mickryan.substack.com/p/highway-to-hell-ukraines-logistics"
-            },
+            }
+          ]
+        },
+        {
+          "label": "Insights",
+          "kind": "insights",
+          "text": "For 3 Div and 9 Div combined-arms planning, this confirms a model of two simultaneous operational effects: degrade logistics, then exploit with manoeuvre. ICT should practise sequenced targeting — identify the adversary's key logistics nodes, plan interdiction sequencing, and only then plan the mechanised exploitation axis. The manoeuvre element should be conditioned on the interdiction phase achieving a specified degradation threshold rather than planned independently."
+        },
+        {
+          "label": "To Consider",
+          "kind": "consider",
+          "bullets": [
+            "Make logistics attack a manoeuvre planning input: require a pre-conditions paragraph — 'Which enemy fuel / ammo / rail / highway nodes must be degraded before H-hour?' — and codify it as a GO/NO-GO criterion for the main ground attack.",
+            "Couple manoeuvre axes directly to logistics targets: for each axis, map the GLOC segments, refuel points and staging areas that support it; require the fire plan to degrade those nodes 24–72 hours before ground attack.",
+            "Define 'logistics damage conditions' to trigger the ground attack: make attack H-hour contingent on ISR confirming an X% throughput reduction on specific MSRs/rail segments.",
+            "Rehearse 'tempo exploitation' once enemy logistics degrade: when assault frequency drops, push armour into depth and seize key terrain instead of pausing to refit by habit.",
+            "Build a formation logistics-survivability concept: disperse fuel across multiple small sites, enforce time-window loading at MSRs, and rehearse rapid relocation of supply points instead of static large POL farms.",
+            "Integrate mid-range strikes into manoeuvre wargaming: assume a limited number of strike sorties and require planners to specify, 'If I had 10 interdiction sorties, which 10 nodes would I hit to cut enemy assault rates by 50%?'"
+          ],
+          "sources": [
             {
               "label": "New York Times",
               "url": "https://www.nytimes.com/2026/06/10/world/europe/ukraine-midrange-logistics-strikes.html"
@@ -2742,21 +2758,11 @@
         "mobility"
       ],
       "soWhat": "IDF ran a four-axis ground push (Debbin, Zawtar al-Sharqiyah, Yohmor al-Shaqif, Haddatha) with 100+ overnight airstrikes and new Nabatieh evacuation orders, reaching the outskirts of Nabatieh by 30 May. Hezbollah contested with Ababil attack drones, anti-tank missiles and rocket barrages, creating a layered anti-armour / anti-personnel zone IDF had to operate through. The advance did not solve the FPV problem — Hezbollah simply launched from greater stand-off, making Nabatieh caza the most heavily targeted area.",
-      "tacticalProblem": "Static defensive postures under persistent stand-off UAS are tactically unsustainable; forward advance can remove the immediate threat but only by accepting a more complex combined-arms contact — so mobility, not just concentration, must be planned as a protection measure.",
-      "experiment": [
-        "Exercise the advance-to-disrupt concept as a commander's decision point in ICT: 'Is the cost of staying higher than the cost of advancing?'"
-      ],
-      "train": [
-        "Operate through (not around) a layered UAS / AT engagement zone.",
-        "Mobility-as-protection drills where holding a position under high FPV density is the higher-risk option."
-      ],
-      "adjustSOP": [
-        "Do not default to holding static positions under persistent stand-off UAS; build displacement / advance triggers into the close-terrain SOP."
-      ],
       "observedInTheatre": "IDF ran a four-axis ground push (Debbin, Zawtar al-Sharqiyah, Yohmor al-Shaqif, Haddatha) with 100+ overnight airstrikes and new Nabatieh evacuation orders, reaching the outskirts of Nabatieh by 30 May. Hezbollah contested with Ababil attack drones, anti-tank missiles and rocket barrages, creating a layered anti-armour / anti-personnel zone IDF had to operate through. The advance did not solve the FPV problem — Hezbollah simply launched from greater stand-off, making Nabatieh caza the most heavily targeted area.",
-      "observed": [
+      "sections": [
         {
           "label": "IDF advance",
+          "kind": "observed",
           "text": "A four-axis ground push (Debbin, Zawtar al-Sharqiyah, Yohmor al-Shaqif, Haddatha) supported by 100+ overnight airstrikes and new evacuation orders for Nabatieh; by 30 May IDF reached the outskirts of Nabatieh, which overlooks much of southern Lebanon.",
           "sources": [
             {
@@ -2771,6 +2777,7 @@
         },
         {
           "label": "Countermeasure — Hezbollah response",
+          "kind": "counter",
           "text": "Hezbollah used Ababil attack drones against IDF troop concentrations and tanks near Beaufort Castle, alongside anti-tank missiles and rocket barrages on Kiryat Shmona — a layered anti-armour and anti-personnel engagement zone IDF had to operate through rather than around.",
           "sources": [
             {
@@ -2785,8 +2792,13 @@
         },
         {
           "label": "Success or failure",
-          "text": "Mixed — IDF achieved territorial advance but at increasing cost. The FPV problem was not solved by advancing: Hezbollah adapted by launching FPVs from greater stand-off, with the Nabatieh caza the most heavily targeted area.",
-          "sources": []
+          "kind": "outcome",
+          "text": "Mixed — IDF achieved territorial advance but at increasing cost. The FPV problem was not solved by advancing: Hezbollah adapted by launching FPVs from greater stand-off range, with the Nabatieh caza the most heavily targeted area."
+        },
+        {
+          "label": "Insights",
+          "kind": "insights",
+          "text": "Static defensive postures under persistent UAS attack are tactically unsustainable if the adversary can continuously reach positions at stand-off range. Forward advance can remove the immediate threat but requires accepting a more complex combined-arms contact. For 3 Div and 9 Div urban and close-terrain operations, plan for mobility as a protection measure — not just concentration — when FPV density makes holding costly. Exercise the advance-to-disrupt concept as a commander's decision point in ICT: 'Is the cost of staying higher than the cost of advancing?'"
         }
       ]
     },
@@ -2805,23 +2817,11 @@
         "displacement"
       ],
       "soWhat": "Three contrasting tactical postures decided outcomes in May. Rigid, predictable static defensive lines in contested buffer zones (Israel–Lebanon) suffered severe casualties because daylight let the adversary map vehicle configurations and strike. Phased, high-tempo 'Evacuate–Strike–Occupy' annexation achieved rapid breakthroughs. In Thailand–Cambodia, absolute fire discipline at the O'Smach sector — refusing to return fire to small-arms probing and sniper warning shots — denied the adversary the ability to map defensive geometries via muzzle flashes.",
-      "tacticalProblem": "Posture determines survival: rigid static defence under persistent surveillance is punished, while disciplined movement and, where appropriate, deliberate fire restraint preserve the force and deny the adversary targeting data.",
-      "experiment": [
-        "Run an OPFOR scenario contrasting a static hold against tactical displacement under daylight surveillance, scored on whether the adversary can map and strike the force.",
-        "Insert a fire-discipline serial where units must NOT return fire to sub-threshold probing, and are assessed on signature/geometry concealment."
-      ],
-      "train": [
-        "Tactical displacement cadence to defeat daylight mapping of vehicle configurations.",
-        "Fire discipline and signature management under small-arms probing and warning shots."
-      ],
-      "adjustSOP": [
-        "Prohibit predictable static lines in contested zones; codify a displacement cadence.",
-        "Set restraint ROE for sub-threshold probing so units do not reveal hidden defensive geometry."
-      ],
       "observedInTheatre": "Three contrasting tactical postures decided outcomes in May. Rigid, predictable static defensive lines in contested buffer zones (Israel–Lebanon) suffered severe casualties because daylight let the adversary map vehicle configurations and strike. Phased, high-tempo 'Evacuate–Strike–Occupy' annexation achieved rapid breakthroughs. In Thailand–Cambodia, absolute fire discipline at the O'Smach sector — refusing to return fire to small-arms probing and sniper warning shots — denied the adversary the ability to map defensive geometries via muzzle flashes.",
-      "observed": [
+      "sections": [
         {
           "label": "Failure — rigid static border defence (Israel–Lebanon)",
+          "kind": "outcome",
           "text": "Units holding static, highly predictable defensive lines inside contested buffer zones suffered severe casualties; reliance on the political nominalism of a pause rather than active displacement let adversary teams map vehicle configurations in daylight and execute precision strikes.",
           "sources": [
             {
@@ -2832,6 +2832,7 @@
         },
         {
           "label": "Success — phased 'Evacuate–Strike–Occupy' (Israel–Lebanon)",
+          "kind": "observed",
           "text": "Armoured and mechanised forces achieved rapid breakthroughs by warning and displacing civilian components, unleashing concentrated precision strikes on structural strongpoints, then pushing heavy armour forward to establish fortified, permanent positions before the adversary could organise a coherent counter-attack.",
           "sources": [
             {
@@ -2842,8 +2843,8 @@
         },
         {
           "label": "Success — tactical restraint under probing (Thailand–Cambodia)",
-          "text": "Frontline elements holding contested terrain (the O'Smach sector) mitigated major escalation through strict fire discipline — deliberately refusing to return fire to cross-border small-arms probing and sniper warning shots, denying the adversary the ability to map hidden defensive geometries and weapon emplacements through muzzle flashes.",
-          "sources": []
+          "kind": "observed",
+          "text": "Frontline elements holding contested terrain (the O'Smach sector) mitigated major escalation through strict fire discipline — deliberately refusing to return fire to cross-border small-arms probing and sniper warning shots, denying the adversary the ability to map hidden defensive geometries and weapon emplacements through muzzle flashes."
         }
       ]
     },
@@ -2863,22 +2864,11 @@
         "armour"
       ],
       "soWhat": "Platoon-level, unjammable precision loitering munitions and FPVs now carry up to 6 kg of HEAT warhead out to 30–50 km. Physical, unspooling fibre-optic command links remove all radio-frequency emissions, so vehicle-mounted directional jammer suites and RF-based electronic-warfare networks are rendered impotent — leaving vehicle engine grills and upper turret seams highly vulnerable.",
-      "tacticalProblem": "Because RF-based EW cannot defeat fibre-optic FPVs, Armour survivability now depends on kinetic hard-kill and physical / overhead protection rather than jamming.",
-      "experiment": [
-        "Trial smart slew-to-cue multi-spectral Active Protection Systems on heavy armour: link acoustic and radar shot-detection directly to the Remote Weapon Station firing programmable airburst ammunition to kinetically shred incoming drones (Hunter AFV digital architecture)."
-      ],
-      "train": [
-        "Crew drills for APS / RWS airburst engagement of low, slow drone approaches.",
-        "Recognise and protect the vulnerable aspects — engine grills and upper turret seams — at every halt."
-      ],
-      "adjustSOP": [
-        "Retrofit Leopard 2SG and Hunter platforms with dual-layered modular slat-armour arrays and overhead multi-spectral mesh canopies to capture or prematurely detonate drone-borne shaped charges.",
-        "Do not rely on RF jamming against fibre-optic FPVs; treat kinetic / physical defeat as the primary measure."
-      ],
       "observedInTheatre": "Platoon-level, unjammable precision loitering munitions and FPVs now carry up to 6 kg of HEAT warhead out to 30–50 km. Physical, unspooling fibre-optic command links remove all radio-frequency emissions, so vehicle-mounted directional jammer suites and RF-based electronic-warfare networks are rendered impotent — leaving vehicle engine grills and upper turret seams highly vulnerable.",
-      "observed": [
+      "sections": [
         {
           "label": "The threat",
+          "kind": "problem",
           "text": "Platoon-level, unjammable precision loitering munitions and First-Person View (FPV) drones carrying up to 6 kg of HEAT warhead out to ranges of 30–50 km.",
           "sources": [
             {
@@ -2889,6 +2879,7 @@
         },
         {
           "label": "The problem",
+          "kind": "problem",
           "text": "Physical, unspooling fibre-optic command links completely remove radio-frequency emissions, so vehicle-mounted directional jammer suites and RF-based electronic-warfare networks are rendered impotent — leaving vehicle engine grills and upper turret seams highly vulnerable.",
           "sources": [
             {
@@ -2899,8 +2890,11 @@
         },
         {
           "label": "Countermeasures & adaptation",
-          "text": "Integrate smart slew-to-cue multi-spectral Active Protection Systems linking acoustic/radar shot-detection to Remote Weapon Stations firing programmable airburst to shred incoming drones (Hunter AFV); plus dual-layered modular slat armour and overhead multi-spectral mesh canopies on Leopard 2SG / Hunter to capture or pre-detonate shaped charges.",
-          "sources": []
+          "kind": "consider",
+          "bullets": [
+            "Technical implementation: integrate smart slew-to-cue multi-spectral Active Protection Systems onto heavy armour — link acoustic and radar shot-detection directly to Remote Weapon Stations firing programmable airburst ammunition to kinetically shred incoming drones (Hunter AFV digital architecture).",
+            "Physical defences: retrofit Leopard 2SG and Hunter platforms with dual-layered modular slat-armour arrays and overhead multi-spectral mesh canopies to physically capture or prematurely detonate drone-borne shaped charges away from primary armour."
+          ]
         }
       ]
     }
