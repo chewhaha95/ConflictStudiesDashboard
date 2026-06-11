@@ -2583,52 +2583,62 @@
     },
     {
       "group": "MANOEUVRE",
-      "sourceDomain": "Intelligence",
+      "sourceDomain": "Sustainment",
       "confidence": "High",
       "id": "INS-M01",
       "echelon": "Brigade",
       "theatre": "RU_UA",
-      "sourceWeek": "2026-W19",
-      "title": "Ceasefire windows demand offensive ISR, not tactical rest",
+      "sourceWeek": "2026-W22",
+      "title": "Deep interdiction stops advances without frontline engagements",
       "tags": [
-        "ceasefire",
-        "ISR",
-        "tempo"
+        "logistics",
+        "interdiction",
+        "deep-strike"
       ],
-      "soWhat": "Russia's Victory Day ceasefire (9–11 May) was used immediately for observable repositioning — rotations, reinforcements and daylight logistics with reduced concealment — the highest-value collection window of the period.",
-      "tacticalProblem": "A ceasefire is the adversary's best repositioning opportunity; a force that treats the pause as rest and does not update its order of battle cannot mass at the right place and time when fighting resumes.",
+      "soWhat": "Ukraine targeted moving freight trains, highway nodes and oil refineries — not front-line units — degrading Russian offensive tempo by cutting fuel and ammunition flow rather than attriting the consumers of it. By late May Russia's supply trucks moved in armed convoys and military vehicles were repainted white to mimic civilian traffic; Russian advances stalled and milbloggers reported fuel shortages.",
+      "tacticalProblem": "A defending formation can halt an adversary's offensive without matching its combat power — by targeting the fuel, ammunition and transport arteries that sustain it. Targeting boards therefore need a logistics-interdiction layer, and a formation's own fuel/ammo nodes become high-priority protected assets.",
       "experiment": [
-        "Insert a 'Ceasefire Phase' into the next high-key ICT outfield: a ceasefire is declared at H-hour but the exercise does not stop.",
-        "Produce a 'Post-Ceasefire OB Brief' to CO level within 24h and identify the single most dangerous enemy course of action for the first 72h after the ceasefire expires."
+        "Add a logistics-interdiction layer to 3 Div / 9 Div targeting boards: 'which nodes, if degraded or destroyed, would stop or delay an adversary advance by 48–72 hours even without frontline attrition?'"
       ],
       "train": [
-        "Maintain or increase ISR-drone task frequency on adversary assembly areas through the pause.",
-        "Update the order of battle within 6h using observation only (no signals-intelligence assumed)."
+        "Harden, disperse and pre-plan alternate supply routes for own fuel and ammunition nodes from day one.",
+        "Rehearse sustaining manoeuvre when an own logistics node is lost."
       ],
       "adjustSOP": [
-        "Assessment standard: did the unit correctly identify the adversary's new disposition before kinetic activity resumed? Make the Post-Ceasefire OB Brief a mandatory serial."
+        "Treat Armour and manoeuvre-unit fuel/ammunition nodes as high-priority protected assets with hardening, dispersal and alternate routes built into the plan."
       ],
       "sources": [
         {
-          "label": "ISW — campaign assessment (23 May 2026)",
-          "url": "https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-may-23-2026/"
+          "label": "Straits Times — Ukraine can hit Russian logistics throughout occupied areas",
+          "url": "https://www.straitstimes.com/world/europe/zelenskiy-says-ukrainian-military-can-hit-russian-logistics-throughout-occupied-areas"
         },
         {
-          "label": "ISW — campaign assessment (31 May 2026)",
-          "url": "https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-may-31-2026/"
+          "label": "Euromaidan Press — heaviest deep-strike month, 18 oil & gas facilities hit",
+          "url": "https://euromaidanpress.com/2026/06/04/ukraine-logs-heaviest-deep-strike-month-of-the-year-hitting-18-oil-and-gas-facilities-in-russia/"
+        },
+        {
+          "label": "ISW — campaign assessment (1 June 2026)",
+          "url": "https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-june-1-2026/"
         }
       ],
       "findings": [
         {
-          "text": "ISW confirmed Russia conducted rotations, reinforcements, redeployments and logistics throughout the 9–11 May pause, with supply convoys moving in daylight in larger, less-concealed formations.",
-          "source": "ISW, May 2026"
+          "text": "Ukraine logged its heaviest deep-strike month of the year, hitting 18 oil and gas facilities in Russia.",
+          "source": "Euromaidan Press",
+          "url": "https://euromaidanpress.com/2026/06/04/ukraine-logs-heaviest-deep-strike-month-of-the-year-hitting-18-oil-and-gas-facilities-in-russia/"
         },
         {
-          "text": "The first 72 hours after the ceasefire ended were assessed as the key indicator window for renewed offensive action.",
-          "source": "ISW, May 2026"
+          "text": "Russia bolted jammer modules onto Geran-2 (Shahed) and first deployed the jet-powered Geran-4 in May — Chinese Telefly turbojet, 300–500 km/h, up to 5,000 m, ~450 km range — to evade interceptors.",
+          "source": "United24 Media",
+          "url": "https://united24media.com/war-in-ukraine/ukraines-intelligence-reveals-russias-new-jet-powered-geran-4-drone-built-to-evade-interceptors-19125"
+        },
+        {
+          "text": "ISW assessed the strikes 'will likely cascade into deeper disruption across Russia's rear supply network'.",
+          "source": "ISW via Euromaidan Press",
+          "url": "https://euromaidanpress.com/2026/06/08/isw-the-strikes-will-likely-cascade-into-deeper-disruption-across-russias-rear-supply-network/"
         }
       ],
-      "observedInTheatre": "Russia's Victory Day ceasefire (9–11 May) was used immediately for observable repositioning — rotations, reinforcements and daylight logistics with reduced concealment — the highest-value collection window of the period."
+      "observedInTheatre": "Ukraine targeted moving freight trains, highway nodes and oil refineries — not front-line units — degrading Russian offensive tempo by cutting fuel and ammunition flow rather than attriting the consumers of it. By late May Russia's supply trucks moved in armed convoys and military vehicles were repainted white to mimic civilian traffic; Russian advances stalled and milbloggers reported fuel shortages."
     },
     {
       "group": "MANOEUVRE",
@@ -2636,239 +2646,229 @@
       "confidence": "High",
       "id": "INS-M02",
       "echelon": "Brigade",
-      "theatre": "IL_LB",
-      "sourceWeek": "2026-W19",
-      "title": "Sub-threshold encroachment as an adversary manoeuvre TTP",
-      "tags": [
-        "sub-threshold",
-        "terrain",
-        "shaping"
-      ],
-      "soWhat": "IDF ran an 'Evacuate → Strike → Occupy' sequence to expand control beyond the declared 10-km buffer without declaring a new offensive (evacuation orders for Qana, Debaal, Srifa on 4 May; nine more villages toward Nabatieh on 11 May). In parallel, Cambodia used farmers, construction and repositioned bases to advance terrain claims below any kinetic threshold.",
-      "tacticalProblem": "An adversary can seize tactical depth through sub-threshold shaping — civilian movement, construction, incremental patrol lines — so fixed defensive positions are outflanked and become FPV kill zones before any overt attack is recognised.",
-      "experiment": [
-        "Run a 'Slow Creep' OPFOR scenario: OPFOR opens with sub-threshold acts (civilians clearing terrain near a defended feature, an 'observation hut', patrol lines edging closer).",
-        "BLUFOR must identify when the cumulative effect crosses a doctrinal threshold requiring response, and propose a holding response that denies terrain without triggering escalation."
-      ],
-      "train": [
-        "Recognise the cumulative pattern without reacting kinetically to individual sub-threshold acts.",
-        "Report with evidence (location, date, method, cumulative effect); hold key terrain (the Thai O'Smach model) and force the adversary into overt action."
-      ],
-      "adjustSOP": [
-        "Account for sub-threshold shaping as a manoeuvre preparatory phase in Urban Operations / combined-arms doctrine, with pre-defined thresholds that trigger a response."
-      ],
-      "sources": [
-        {
-          "label": "ISW — campaign assessment (23 May 2026)",
-          "url": "https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-may-23-2026/"
-        },
-        {
-          "label": "ISW — campaign assessment (31 May 2026)",
-          "url": "https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-may-31-2026/"
-        }
-      ],
-      "findings": [
-        {
-          "text": "Hezbollah's fixed positions in the security zone became FPV kill zones with no freedom of action to respond or withdraw once the adversary operated forward of the perimeter.",
-          "source": "Open-source reporting, May 2026"
-        },
-        {
-          "text": "Thai counter to the Cambodian 'silent offensive': hold key terrain (O'Smach compound), sustain surveillance, and force the adversary to take overt action to advance.",
-          "source": "Open-source reporting, May 2026"
-        }
-      ],
-      "observedInTheatre": "IDF ran an 'Evacuate → Strike → Occupy' sequence to expand control beyond the declared 10-km buffer without declaring a new offensive (evacuation orders for Qana, Debaal, Srifa on 4 May; nine more villages toward Nabatieh on 11 May). In parallel, Cambodia used farmers, construction and repositioned bases to advance terrain claims below any kinetic threshold."
-    },
-    {
-      "group": "MANOEUVRE",
-      "sourceDomain": "Protection",
-      "confidence": "High",
-      "id": "INS-M03",
-      "echelon": "Company",
-      "theatre": "RU_UA",
-      "sourceWeek": "2026-W20",
-      "title": "FPV drones have changed the tactical halt",
-      "tags": [
-        "FPV",
-        "fibre-optic",
-        "halt",
-        "C-UAS"
-      ],
-      "soWhat": "Fibre-optic FPVs operating at 30–50 km in Donetsk — immune to RF jamming — struck a Mi-28 and Mi-17 at a refuelling halt (29 Apr) and downed a Ka-52 on approach over Pokrovsk. In Lebanon, $400 / 6 kg / 50 km fibre-optic FPVs forced IDF to cancel all daytime operations in the buffer zone.",
-      "tacticalProblem": "The highest-risk moment for vehicles and rotary-wing assets is now the tactical halt — refuelling, staging, repair, CASEVAC — and a $400 FPV can mission-kill an MBT or CASEVAC helicopter, so any doctrine that assumes halts are low-risk is operationally dangerous.",
-      "experiment": [
-        "Drill C — Nighttime Transition Decision: with daytime operation suppressed by FPV activity, the commander must choose (a) continue daytime with a specified C-UAS posture, (b) transition to night, or (c) abort — and articulate the criteria for each (mirrors IDF's forced night-only operations in Lebanon)."
-      ],
-      "train": [
-        "Drill A — 'Hot Halt' C-UAS SOP: on every halt, post a visual FPV sentry (binoculars, 360° low-angle scan), disperse vehicles to ≥50 m, and produce a dispersal plan within 3 minutes of the halt order.",
-        "Drill B — 'Abort and Move': on an FPV sighting, report on the correct net within 30 seconds, execute immediate self-organised dispersal without awaiting orders, and continue to an alternate staging point."
-      ],
-      "adjustSOP": [
-        "Make a visual overhead sentry, ≥50 m dispersal and a 3-minute dispersal plan mandatory at every staging / vehicle-park halt; an FPV sighting triggers immediate dispersal without platoon-commander confirmation."
-      ],
-      "sources": [
-        {
-          "label": "ISW — campaign assessment (23 May 2026)",
-          "url": "https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-may-23-2026/"
-        },
-        {
-          "label": "ISW — campaign assessment (31 May 2026)",
-          "url": "https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-may-31-2026/"
-        }
-      ],
-      "findings": [
-        {
-          "text": "On 29 April FPVs struck a Mi-28 and Mi-17 at a refuelling halt; a Ka-52 was downed mid-air on approach over Pokrovsk.",
-          "source": "Open-source reporting, Apr–May 2026"
-        },
-        {
-          "text": "Hezbollah fibre-optic FPVs ($400/unit, up to 6 kg, 50 km cable) forced IDF to cancel all daytime operations in the buffer zone; IDF commanders stated 'no clear or definitive solution available'.",
-          "source": "Open-source reporting, May 2026"
-        },
-        {
-          "text": "Cost-exchange: one $400 FPV can mission-kill a main battle tank or CASEVAC helicopter, strongly favouring mass drone employment over any single intercept system.",
-          "source": "Package 1 assessment, May 2026"
-        }
-      ],
-      "observedInTheatre": "Fibre-optic FPVs operating at 30–50 km in Donetsk — immune to RF jamming — struck a Mi-28 and Mi-17 at a refuelling halt (29 Apr) and downed a Ka-52 on approach over Pokrovsk. In Lebanon, $400 / 6 kg / 50 km fibre-optic FPVs forced IDF to cancel all daytime operations in the buffer zone."
-    },
-    {
-      "group": "MANOEUVRE",
-      "sourceDomain": "Command & Control",
-      "confidence": "High",
-      "id": "INS-M04",
-      "echelon": "Brigade",
       "theatre": "RU_UA",
       "sourceWeek": "2026-W21",
-      "title": "Formation C2 survivability is a manoeuvre requirement",
+      "title": "Manoeuvre and interdict: degrade logistics, then exploit with armour",
       "tags": [
-        "C2",
-        "survivability",
-        "deep-strike"
+        "manoeuvre",
+        "interdiction",
+        "tempo"
       ],
-      "soWhat": "On 23–24 May Russia executed its most complex combined strike — 90 missiles plus ~600 drones in multiple waves and a third Oreshnik IRBM — and directly hit Ukraine's Cabinet of Ministers, a national C2 node. The logic was explicit: exhaust GBAD interceptor magazines with cheap mass, then strike C2. Despite advance ISR warning, the Oreshnik could not be intercepted.",
-      "tacticalProblem": "If national C2 nodes are now primary (not incidental) strike targets, divisional and brigade HQs face the same targeting logic; a formation that cannot keep fighting when its main HQ is struck is doctrinally brittle, and networked CAD C2 becomes a single point of failure.",
+      "soWhat": "ISW's 24 May special assessment confirmed Ukraine had begun to combine intermediate-range drone strikes on Russian ground lines of communication with localised mechanised attacks (Pokrovsk, Borova, Kostiantynivka–Druzhkivka, Hulyaipole). Interdiction degraded Russian combat power; the mechanised advance then forced Russia to expend its remaining stocks defending the gains — the two lines of operation were mutually reinforcing.",
+      "tacticalProblem": "The decisive model is two simultaneous operational effects — degrade the adversary's logistics, then exploit the degraded combat power with manoeuvre — with the manoeuvre element conditioned on the interdiction phase reaching a specified degradation threshold rather than planned independently.",
       "experiment": [
-        "Introduce a mid-exercise 'HQ Strike' event: the main CP is declared destroyed while three concurrent tasks are in execution.",
-        "Assessment question: can the formation continue to fight for 6 hours with the main HQ out of the picture? If not, that is the gap to fix before the next ATEC."
+        "Practise sequenced targeting in ICT: identify the adversary's key logistics nodes, plan interdiction sequencing, then plan the mechanised exploitation axis.",
+        "Force the question: 'If I had 10 interdiction sorties, which 10 logistics nodes would I hit to cut enemy assault rates by 50%?' and rehearse the effect on the scheme of manoeuvre."
       ],
       "train": [
-        "Alternate CP assumes command within 10 minutes — actually up on the correct nets, issuing a continuity order, not notionally.",
-        "All sub-units acknowledge receipt and confirm task continuation on pre-delegated authority."
+        "'Tempo exploitation': once key logistics nodes are hit and enemy assault frequency drops, push armour into depth and seize key terrain instead of pausing to refit by habit."
       ],
       "adjustSOP": [
-        "Redistribute the CO's intent for the next 6 hours without requiring the main CP to be re-established; rehearse alternate C2 and pre-delegated authority so command continuity survives a strike on the main HQ."
+        "Add a GO/NO-GO pre-conditions paragraph to every brigade/divisional offensive plan: 'which enemy fuel / ammo / rail / highway nodes must be degraded before H-hour?'",
+        "Make attack H-hour contingent on ISR confirming an X% throughput reduction on specific MSRs/rail segments; couple each axis of advance to the GLOC segments that support it.",
+        "Hold a formation logistics-survivability concept: disperse fuel across multiple small sites, time-window loading at MSRs, and rehearse rapid relocation of supply points instead of static POL farms."
       ],
       "sources": [
         {
-          "label": "ISW — campaign assessment (23 May 2026)",
-          "url": "https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-may-23-2026/"
+          "label": "ISW — special assessment: Ukraine's intermediate-range strike campaign & new mechanised attacks (24 May 2026)",
+          "url": "https://understandingwar.org/research/russia-ukraine/ukraines-intermediate-range-strike-campaign-and-new-mechanized-attacks-herald-the-start-of-a-new-phase-of-the-war/"
         },
         {
-          "label": "ISW — campaign assessment (31 May 2026)",
-          "url": "https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-may-31-2026/"
+          "label": "Mick Ryan — 'Highway to Hell': Ukraine's logistics interdiction",
+          "url": "https://mickryan.substack.com/p/highway-to-hell-ukraines-logistics"
+        },
+        {
+          "label": "ISW (X / @TheStudyofWar)",
+          "url": "https://x.com/TheStudyofWar/status/2059332424065044704"
+        },
+        {
+          "label": "New York Times — Ukraine mid-range logistics strikes",
+          "url": "https://www.nytimes.com/2026/06/10/world/europe/ukraine-midrange-logistics-strikes.html"
+        },
+        {
+          "label": "LB.ua — logistics lockdown & defence",
+          "url": "https://en.lb.ua/news/2026/05/27/38186_logistics_lockdown_defence.html"
+        },
+        {
+          "label": "Video analysis (YouTube)",
+          "url": "https://www.youtube.com/watch?v=tYHox6Lm_Gg"
         }
       ],
       "findings": [
         {
-          "text": "23–24 May: 90 missiles + ~600 drones in multiple waves plus a third Oreshnik IRBM; a direct hit on the Cabinet of Ministers and damage across Kyiv's districts.",
-          "source": "ISW, 23–24 May 2026"
+          "text": "By 24 May ISW confirmed Ukrainian forces had 'begun to interdict key Russian GLOCs in occupied Donetsk, Zaporizhia and Luhansk', heralding a new phase of the war.",
+          "source": "ISW special assessment",
+          "url": "https://understandingwar.org/research/russia-ukraine/ukraines-intermediate-range-strike-campaign-and-new-mechanized-attacks-herald-the-start-of-a-new-phase-of-the-war/"
         },
         {
-          "text": "No interception of the Oreshnik component was possible despite advance ISR warning — warning did not equal protection.",
-          "source": "ISW, 23–24 May 2026"
+          "text": "In the four weeks ending 26 May, Russian forces registered a net loss of 100 square miles of Ukrainian territory — Ukraine's best net territorial performance since late 2024.",
+          "source": "Mick Ryan",
+          "url": "https://mickryan.substack.com/p/highway-to-hell-ukraines-logistics"
         }
       ],
-      "observedInTheatre": "On 23–24 May Russia executed its most complex combined strike — 90 missiles plus ~600 drones in multiple waves and a third Oreshnik IRBM — and directly hit Ukraine's Cabinet of Ministers, a national C2 node. The logic was explicit: exhaust GBAD interceptor magazines with cheap mass, then strike C2. Despite advance ISR warning, the Oreshnik could not be intercepted."
-    },
-    {
-      "group": "MANOEUVRE",
-      "sourceDomain": "Fires & Strikes",
-      "confidence": "High",
-      "id": "INS-M06",
-      "echelon": "Brigade",
-      "theatre": "RU_UA",
-      "sourceWeek": "2026-W21",
-      "title": "Even a 'successful' GBAD intercept still leaves manoeuvre exposed",
-      "tags": [
-        "GBAD",
-        "saturation",
-        "leakage"
-      ],
-      "soWhat": "In the 23–24 May Kyiv / Bila Tserkva strike, Ukrainian air defence reportedly intercepted 'the majority of drones and over half of the missiles', yet 4–12 civilians were killed, 80+ wounded, and key urban infrastructure including government buildings were still hit.",
-      "tacticalProblem": "Even a good intercept rate still allows significant leakage, so manoeuvre units and HQs cannot assume they are safe just because GBAD is performing well — 'intercepted' is not a binary success/fail.",
-      "experiment": [
-        "Design an ICT CPX inject: '50–60% of incoming threats were intercepted; 40–50% leaked. One brigade FUP, one logistics node and one HQ support area were hit.'",
-        "Units must execute dispersion, re-task reserves and re-constitute the plan under reduced combat power — not treat 'intercepted' as binary success."
-      ],
-      "train": [
-        "Dispersion and reserve re-tasking under partial penetration.",
-        "Reconstituting the plan and continuing the mission with reduced combat power."
-      ],
-      "adjustSOP": [
-        "Every brigade / divisional war game assumes partial penetration of any saturation strike, even with strong GBAD."
-      ],
-      "sources": [
-        {
-          "label": "Reuters — Kyiv hit by massive missile & drone attack (23 May 2026)",
-          "url": "https://www.reuters.com/world/europe/ukraines-capital-kyiv-hit-by-massive-missile-drone-attack-2026-05-23/"
-        },
-        {
-          "label": "NBC News — Kyiv hit by massive missile & drone attack (24 May 2026)",
-          "url": "https://www.nbcnews.com/world/ukraine/ukraine-capital-kyiv-hit-massive-missile-drone-attack-rcna346673"
-        }
-      ],
-      "findings": [
-        {
-          "text": "Air defence intercepted 'the majority of drones and over half of the missiles', yet 4–12 were killed, 80+ wounded, and government buildings were hit.",
-          "source": "Reuters / NPR, 23 May 2026"
-        }
-      ],
-      "observedInTheatre": "In the 23–24 May Kyiv / Bila Tserkva strike, Ukrainian air defence reportedly intercepted 'the majority of drones and over half of the missiles', yet 4–12 civilians were killed, 80+ wounded, and key urban infrastructure including government buildings were still hit."
+      "observedInTheatre": "ISW's 24 May special assessment confirmed Ukraine had begun to combine intermediate-range drone strikes on Russian ground lines of communication with localised mechanised attacks (Pokrovsk, Borova, Kostiantynivka–Druzhkivka, Hulyaipole). Interdiction degraded Russian combat power; the mechanised advance then forced Russia to expend its remaining stocks defending the gains — the two lines of operation were mutually reinforcing."
     },
     {
       "group": "MANOEUVRE",
       "sourceDomain": "Manoeuvre",
       "confidence": "High",
-      "id": "INS-M08",
-      "echelon": "Battalion",
-      "theatre": "RU_UA",
+      "id": "INS-M03",
+      "echelon": "Brigade",
+      "theatre": "IL_LB",
       "sourceWeek": "2026-W22",
-      "title": "Urban manoeuvre under deep-strike risk",
+      "title": "FPV pressure forces the advance-versus-hold decision",
       "tags": [
-        "urban",
-        "deep-strike",
-        "HQ-siting"
+        "FPV",
+        "advance-to-disrupt",
+        "mobility"
       ],
-      "soWhat": "Russia's MoD said the Oreshnik and other 23–24 May missiles targeted 'military command and control facilities, air bases and military industrial sites'; impact points included mixed civil–military areas inside Kyiv and Bila Tserkva — meaning any brigade HQ, FARP or armour concentration near urban infrastructure is a high-payoff target.",
-      "tacticalProblem": "Brigade HQs, FARPs and armour concentrations sited near predictable urban-infrastructure clusters (government buildings, stadiums, rail yards) are high-payoff targets under deep strike.",
+      "soWhat": "IDF ran a four-axis ground push (Debbin, Zawtar al-Sharqiyah, Yohmor al-Shaqif, Haddatha) with 100+ overnight airstrikes and new Nabatieh evacuation orders, reaching the outskirts of Nabatieh by 30 May. Hezbollah contested with Ababil attack drones, anti-tank missiles and rocket barrages, creating a layered anti-armour / anti-personnel zone IDF had to operate through. The advance did not solve the FPV problem — Hezbollah simply launched from greater stand-off, making Nabatieh caza the most heavily targeted area.",
+      "tacticalProblem": "Static defensive postures under persistent stand-off UAS are tactically unsustainable; forward advance can remove the immediate threat but only by accepting a more complex combined-arms contact — so mobility, not just concentration, must be planned as a protection measure.",
       "experiment": [
-        "When siting urban brigade / task-force HQs in exercises, enforce a rule: no HQ or staging area inside a predictable civil-infrastructure cluster."
+        "Exercise the advance-to-disrupt concept as a commander's decision point in ICT: 'Is the cost of staying higher than the cost of advancing?'"
       ],
       "train": [
-        "Selecting 'boring' but survivable HQ / staging sites.",
-        "Pre-surveying at least one displacement site ready for immediate occupation."
+        "Operate through (not around) a layered UAS / AT engagement zone.",
+        "Mobility-as-protection drills where holding a position under high FPV density is the higher-risk option."
       ],
       "adjustSOP": [
-        "Mandate at least one pre-surveyed displacement site per HQ; prohibit siting inside predictable infrastructure clusters."
+        "Do not default to holding static positions under persistent stand-off UAS; build displacement / advance triggers into the close-terrain SOP."
       ],
       "sources": [
         {
-          "label": "NBC News — Kyiv hit by massive missile & drone attack (24 May 2026)",
-          "url": "https://www.nbcnews.com/world/ukraine/ukraine-capital-kyiv-hit-massive-missile-drone-attack-rcna346673"
+          "label": "Al Jazeera — Israeli soldiers reach Nabatieh",
+          "url": "https://www.aljazeera.com/news/2026/5/30/israeli-soldiers-reach-nabatieh-one-of-southern-lebanons-biggest-cities"
         },
         {
-          "label": "Reuters — Kyiv hit by massive missile & drone attack (23 May 2026)",
-          "url": "https://www.reuters.com/world/europe/ukraines-capital-kyiv-hit-by-massive-missile-drone-attack-2026-05-23/"
+          "label": "RTÉ — Israel–Lebanon",
+          "url": "https://www.rte.ie/news/middle-east/2026/0526/1575369-israel-lebanon/"
+        },
+        {
+          "label": "Anadolu Agency — Hezbollah says it hit 6 Israeli tanks",
+          "url": "https://www.aa.com.tr/en/middle-east/hezbollah-says-it-hit-6-israeli-tanks-amid-drone-missile-attacks-in-southern-lebanon/3951600"
         }
       ],
       "findings": [
         {
-          "text": "Russian MoD stated the strikes targeted C2 facilities, air bases and military-industrial sites; impacts included mixed civil–military areas in Kyiv and Bila Tserkva.",
-          "source": "NBC News, 24 May 2026"
+          "text": "Hezbollah said it hit 6 Israeli tanks amid drone and missile attacks in southern Lebanon, using Ababil drones, AT missiles and rocket barrages on Kiryat Shmona.",
+          "source": "Anadolu Agency",
+          "url": "https://www.aa.com.tr/en/middle-east/hezbollah-says-it-hit-6-israeli-tanks-amid-drone-missile-attacks-in-southern-lebanon/3951600"
+        },
+        {
+          "text": "By 30 May IDF reached the outskirts of Nabatieh, which overlooks much of southern Lebanon.",
+          "source": "Al Jazeera",
+          "url": "https://www.aljazeera.com/news/2026/5/30/israeli-soldiers-reach-nabatieh-one-of-southern-lebanons-biggest-cities"
+        },
+        {
+          "text": "Footage of the layered Hezbollah anti-armour engagement zone.",
+          "source": "Field video",
+          "url": "https://www.facebook.com/reel/1737563077259213"
         }
       ],
-      "observedInTheatre": "Russia's MoD said the Oreshnik and other 23–24 May missiles targeted 'military command and control facilities, air bases and military industrial sites'; impact points included mixed civil–military areas inside Kyiv and Bila Tserkva — meaning any brigade HQ, FARP or armour concentration near urban infrastructure is a high-payoff target."
+      "observedInTheatre": "IDF ran a four-axis ground push (Debbin, Zawtar al-Sharqiyah, Yohmor al-Shaqif, Haddatha) with 100+ overnight airstrikes and new Nabatieh evacuation orders, reaching the outskirts of Nabatieh by 30 May. Hezbollah contested with Ababil attack drones, anti-tank missiles and rocket barrages, creating a layered anti-armour / anti-personnel zone IDF had to operate through. The advance did not solve the FPV problem — Hezbollah simply launched from greater stand-off, making Nabatieh caza the most heavily targeted area."
+    },
+    {
+      "group": "MANOEUVRE",
+      "sourceDomain": "Manoeuvre",
+      "confidence": "Medium",
+      "id": "INS-M04",
+      "echelon": "Battalion",
+      "theatre": "IL_LB",
+      "sourceWeek": "2026-W21",
+      "title": "Posture decides survival: static defence fails, disciplined movement and restraint succeed",
+      "tags": [
+        "posture",
+        "fire-discipline",
+        "displacement"
+      ],
+      "soWhat": "Three contrasting tactical postures decided outcomes in May. Rigid, predictable static defensive lines in contested buffer zones (Israel–Lebanon) suffered severe casualties because daylight let the adversary map vehicle configurations and strike. Phased, high-tempo 'Evacuate–Strike–Occupy' annexation achieved rapid breakthroughs. In Thailand–Cambodia, absolute fire discipline at the O'Smach sector — refusing to return fire to small-arms probing and sniper warning shots — denied the adversary the ability to map defensive geometries via muzzle flashes.",
+      "tacticalProblem": "Posture determines survival: rigid static defence under persistent surveillance is punished, while disciplined movement and, where appropriate, deliberate fire restraint preserve the force and deny the adversary targeting data.",
+      "experiment": [
+        "Run an OPFOR scenario contrasting a static hold against tactical displacement under daylight surveillance, scored on whether the adversary can map and strike the force.",
+        "Insert a fire-discipline serial where units must NOT return fire to sub-threshold probing, and are assessed on signature/geometry concealment."
+      ],
+      "train": [
+        "Tactical displacement cadence to defeat daylight mapping of vehicle configurations.",
+        "Fire discipline and signature management under small-arms probing and warning shots."
+      ],
+      "adjustSOP": [
+        "Prohibit predictable static lines in contested zones; codify a displacement cadence.",
+        "Set restraint ROE for sub-threshold probing so units do not reveal hidden defensive geometry."
+      ],
+      "sources": [
+        {
+          "label": "Al Jazeera — Israeli soldiers reach Nabatieh",
+          "url": "https://www.aljazeera.com/news/2026/5/30/israeli-soldiers-reach-nabatieh-one-of-southern-lebanons-biggest-cities"
+        },
+        {
+          "label": "RTÉ — Israel–Lebanon",
+          "url": "https://www.rte.ie/news/middle-east/2026/0526/1575369-israel-lebanon/"
+        }
+      ],
+      "findings": [
+        {
+          "text": "Static units relied on the political nominalism of a pause rather than active displacement; the lack of movement let adversary teams map vehicle configurations in daylight and strike with precision.",
+          "source": "Open-source reporting",
+          "url": "https://www.rte.ie/news/middle-east/2026/0526/1575369-israel-lebanon/"
+        },
+        {
+          "text": "Phased 'Evacuate–Strike–Occupy' annexation pushed heavy armour forward to establish fortified positions before the adversary could mount a coherent counter-attack.",
+          "source": "Al Jazeera",
+          "url": "https://www.aljazeera.com/news/2026/5/30/israeli-soldiers-reach-nabatieh-one-of-southern-lebanons-biggest-cities"
+        }
+      ],
+      "observedInTheatre": "Three contrasting tactical postures decided outcomes in May. Rigid, predictable static defensive lines in contested buffer zones (Israel–Lebanon) suffered severe casualties because daylight let the adversary map vehicle configurations and strike. Phased, high-tempo 'Evacuate–Strike–Occupy' annexation achieved rapid breakthroughs. In Thailand–Cambodia, absolute fire discipline at the O'Smach sector — refusing to return fire to small-arms probing and sniper warning shots — denied the adversary the ability to map defensive geometries via muzzle flashes."
+    },
+    {
+      "group": "MANOEUVRE",
+      "sourceDomain": "Protection",
+      "confidence": "Medium",
+      "id": "INS-M06",
+      "echelon": "Company",
+      "theatre": "RU_UA",
+      "sourceWeek": "2026-W20",
+      "title": "Unjammable fibre-optic FPVs: armour must defeat the overhead threat kinetically",
+      "tags": [
+        "fibre-optic",
+        "FPV",
+        "APS",
+        "armour"
+      ],
+      "soWhat": "Platoon-level, unjammable precision loitering munitions and FPVs now carry up to 6 kg of HEAT warhead out to 30–50 km. Physical, unspooling fibre-optic command links remove all radio-frequency emissions, so vehicle-mounted directional jammer suites and RF-based electronic-warfare networks are rendered impotent — leaving vehicle engine grills and upper turret seams highly vulnerable.",
+      "tacticalProblem": "Because RF-based EW cannot defeat fibre-optic FPVs, Armour survivability now depends on kinetic hard-kill and physical / overhead protection rather than jamming.",
+      "experiment": [
+        "Trial smart slew-to-cue multi-spectral Active Protection Systems on heavy armour: link acoustic and radar shot-detection directly to the Remote Weapon Station firing programmable airburst ammunition to kinetically shred incoming drones (Hunter AFV digital architecture)."
+      ],
+      "train": [
+        "Crew drills for APS / RWS airburst engagement of low, slow drone approaches.",
+        "Recognise and protect the vulnerable aspects — engine grills and upper turret seams — at every halt."
+      ],
+      "adjustSOP": [
+        "Retrofit Leopard 2SG and Hunter platforms with dual-layered modular slat-armour arrays and overhead multi-spectral mesh canopies to capture or prematurely detonate drone-borne shaped charges.",
+        "Do not rely on RF jamming against fibre-optic FPVs; treat kinetic / physical defeat as the primary measure."
+      ],
+      "sources": [
+        {
+          "label": "United24 Media — jet-powered Geran-4 built to evade interceptors",
+          "url": "https://united24media.com/war-in-ukraine/ukraines-intelligence-reveals-russias-new-jet-powered-geran-4-drone-built-to-evade-interceptors-19125"
+        },
+        {
+          "label": "Anadolu Agency — Hezbollah drone & missile attacks on armour",
+          "url": "https://www.aa.com.tr/en/middle-east/hezbollah-says-it-hit-6-israeli-tanks-amid-drone-missile-attacks-in-southern-lebanon/3951600"
+        }
+      ],
+      "findings": [
+        {
+          "text": "Fibre-optic command links remove all RF emissions, rendering vehicle-mounted directional jammers and RF-EW networks completely impotent.",
+          "source": "Package assessment (capability development)"
+        },
+        {
+          "text": "Unjammable FPVs carry up to 6 kg HEAT to 30–50 km, exploiting engine grills and upper turret seams.",
+          "source": "Anadolu Agency",
+          "url": "https://www.aa.com.tr/en/middle-east/hezbollah-says-it-hit-6-israeli-tanks-amid-drone-missile-attacks-in-southern-lebanon/3951600"
+        }
+      ],
+      "observedInTheatre": "Platoon-level, unjammable precision loitering munitions and FPVs now carry up to 6 kg of HEAT warhead out to 30–50 km. Physical, unspooling fibre-optic command links remove all radio-frequency emissions, so vehicle-mounted directional jammer suites and RF-based electronic-warfare networks are rendered impotent — leaving vehicle engine grills and upper turret seams highly vulnerable."
     }
   ],
 

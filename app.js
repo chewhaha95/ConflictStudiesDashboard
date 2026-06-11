@@ -1615,7 +1615,7 @@
         </div>
         <div class="tac-evidence">
           <div class="ev-h">Supporting findings <span class="ev-conf conf-${esc((i.confidence || "").toLowerCase())}">${esc(i.confidence || "—")} confidence</span></div>
-          ${(i.findings && i.findings.length) ? `<ul class="ev-findings">${i.findings.map(f => `<li>${esc(f.text)} <span class="find-src">— ${esc(f.source)}</span></li>`).join("")}</ul>` : `<p class="muted-note">—</p>`}
+          ${(i.findings && i.findings.length) ? `<ul class="ev-findings">${i.findings.map(f => `<li>${esc(f.text)} ${f.url ? `<a class="find-src" href="${esc(f.url)}" target="_blank" rel="noopener">— ${esc(f.source)} ↗</a>` : `<span class="find-src">— ${esc(f.source)}</span>`}</li>`).join("")}</ul>` : `<p class="muted-note">—</p>`}
         </div>
         ${tags ? `<div class="tags">${tags}</div>` : ""}
       </article>`;
