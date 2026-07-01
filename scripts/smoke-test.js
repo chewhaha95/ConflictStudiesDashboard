@@ -150,6 +150,19 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("no Theatre/Division mode switch", !doc.querySelector("[data-mode]"));
   check("no top division dropdown", !doc.querySelector("#division-select") && !doc.querySelector("#division-wrap"));
 
+  // weekly-briefs quick access sits beside the horizon tabs
+  check("Weekly Briefs quick-access button present beside the tabs",
+    !!doc.querySelector(".control-bar .briefs-access #briefs-toggle") &&
+    doc.querySelector(".seg").nextElementSibling.classList.contains("briefs-access"));
+  check("briefs menu is closed until opened", doc.querySelector("#briefs-menu").hidden === true);
+  doc.querySelector("#briefs-toggle").click(); await sleep(20);
+  check("clicking Weekly Briefs opens a menu with items", doc.querySelector("#briefs-menu").hidden === false && doc.querySelectorAll("#briefs-menu .briefs-item").length >= 2);
+  check("briefs menu links to the brief site + offers in-app Weekly tab",
+    !!doc.querySelector("#briefs-menu .briefs-site[href^='http']") && !!doc.querySelector("#briefs-menu [data-open-weekly]"));
+  // in-app item jumps to the Weekly view
+  doc.querySelector("#briefs-menu [data-open-weekly]").click(); await sleep(30);
+  check("in-app briefs item switches to the Weekly tab", doc.querySelector("#view-weekly").classList.contains("active"));
+
   // --- 5. Filters ----------------------------------------------------------
   console.log("\nFilters:");
   doc.querySelector('.tab-btn[data-horizon="weekly"]').click(); await sleep(40);
@@ -394,6 +407,14 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const after = d2.querySelector("#view-capabilities .view-body");
     return after.querySelectorAll(".matrix tbody tr").length > beforeRows && after.querySelectorAll(".contest-card").length > beforeContests;
   })());
+  // in live mode the briefs menu lists the actual synced editions (newest ● LIVE)
+  d2.querySelector("#briefs-toggle").click(); await sleep(20);
+  check("live briefs menu lists synced editions with source links", (() => {
+    const items = [...d2.querySelectorAll("#briefs-menu .briefs-item[href^='http']")];
+    const edLinks = items.filter(a => /example\.org\/(new|old)/.test(a.getAttribute("href") || ""));
+    return edLinks.length >= 2 && !!d2.querySelector("#briefs-menu .briefs-live");
+  })());
+
   // restore globals for any later use
   global.window = window; global.document = doc;
 
