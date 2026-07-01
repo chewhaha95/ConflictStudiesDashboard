@@ -56,7 +56,7 @@
   <title>Conflict Studies and Insights Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260609j" />
+  <link rel="stylesheet" href="styles.css?v=20260609k" />
 </head>
 <body>
   <!-- ===== Header ===== -->
@@ -87,6 +87,12 @@
       <button class="tab-btn active" role="tab" data-horizon="weekly" aria-selected="true">Weekly</button>
       <button class="tab-btn" role="tab" data-horizon="monthly">Monthly</button>
       <button class="tab-btn" role="tab" data-horizon="capabilities">Capabilities</button>
+    </div>
+
+    <!-- Quick access to the weekly briefs (beside the horizon tabs) -->
+    <div class="briefs-access no-print">
+      <button class="btn briefs-btn" id="briefs-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="briefs-menu" title="Open the weekly briefs">📰 <span class="lbl-full">Weekly Briefs</span><span class="lbl-short">Briefs</span> <span class="briefs-caret" aria-hidden="true">▾</span></button>
+      <div class="briefs-menu" id="briefs-menu" role="menu" aria-label="Weekly briefs" hidden></div>
     </div>
 
     <div class="spacer"></div>
@@ -160,6 +166,6 @@
 
   <!-- Chart.js (stable CDN). The app degrades gracefully if it fails to load. -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="app.js?v=20260609j"></script>
+  <script src="app.js?v=20260609k"></script>
 </body>
 </html>

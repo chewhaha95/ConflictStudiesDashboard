@@ -162,6 +162,31 @@ select:hover { border-color: var(--accent); }
 
 .control-bar .spacer { margin-left: auto; }
 .export-group { display: inline-flex; gap: 8px; }
+
+/* Weekly-briefs quick access (beside the horizon tabs) */
+.briefs-access { position: relative; display: inline-flex; }
+.briefs-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 650; }
+.briefs-btn:hover { background: #16406f; border-color: #16406f; }
+.briefs-caret { font-size: 10px; transition: transform .15s; }
+.briefs-access.open .briefs-caret { transform: rotate(180deg); }
+.briefs-menu {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 40;
+  min-width: 280px; max-width: 360px; max-height: 70vh; overflow-y: auto;
+  background: var(--bg-elev); border: 1px solid var(--border-strong);
+  border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 6px;
+}
+.briefs-item {
+  display: flex; align-items: center; gap: 6px; width: 100%; text-align: left;
+  padding: 8px 10px; border-radius: var(--radius-sm); font-size: 13px;
+  color: var(--text); background: none; border: 0; cursor: pointer; text-decoration: none;
+}
+.briefs-item:hover { background: var(--accent-soft); }
+.briefs-item .briefs-ext { margin-left: auto; color: var(--accent); font-weight: 700; }
+.briefs-inapp { font-weight: 650; color: var(--accent); }
+.briefs-site { border-top: 1px solid var(--border); margin-top: 4px; font-weight: 600; }
+.briefs-live { font-size: 10px; font-weight: 800; color: var(--tone-bad-fg); }
+.briefs-sep { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--text-faint); padding: 8px 10px 4px; }
+.briefs-note { font-size: 12px; color: var(--text-muted); padding: 6px 10px 8px; line-height: 1.5; }
 .btn {
   display: inline-flex; align-items: center; gap: 6px;
   border: 1px solid var(--border-strong); background: var(--bg-elev);

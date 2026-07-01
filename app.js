@@ -1805,6 +1805,38 @@
       Render.renderActiveView();
     },
 
+    // Quick-access "Weekly Briefs" menu in the top control bar: links straight to
+    // each synced brief edition (and the source site), plus an in-app jump to the
+    // Weekly tab. Falls back to the brief site when no live editions are loaded.
+    briefSite() { return DB.liveSiteUrl || "https://conflictstudiesandinsights.pages.dev"; },
+    buildBriefsMenu() {
+      const menu = el("#briefs-menu"); if (!menu) return;
+      const site = this.briefSite();
+      const eds = DB.liveEditions || [];
+      const rows = [`<button class="briefs-item briefs-inapp" data-open-weekly role="menuitem">📊 Open the Weekly tab (in dashboard)</button>`];
+      if (eds.length) {
+        rows.push(`<div class="briefs-sep">Read the original briefs${DB.liveSyncedAt ? ` · synced ${esc(Time.fmtDate ? Time.fmtDate(DB.liveSyncedAt) : DB.liveSyncedAt.slice(0, 10))}` : ""}</div>`);
+        eds.forEach((e, i) => {
+          const url = e.sourceUrl || site;
+          rows.push(`<a class="briefs-item" role="menuitem" href="${esc(url)}" target="_blank" rel="noopener">${i === 0 ? `<span class="briefs-live">● LIVE</span> ` : ""}${esc(e.rangeLabel || Time.fmtRange(e.weekStart, e.weekEnd))} <span class="briefs-ext">↗</span></a>`);
+        });
+      } else {
+        rows.push(`<div class="briefs-note">Live editions sync automatically — open the brief site to read the latest.</div>`);
+      }
+      rows.push(`<a class="briefs-item briefs-site" role="menuitem" href="${esc(site)}" target="_blank" rel="noopener">🌐 Open the full brief site <span class="briefs-ext">↗</span></a>`);
+      menu.innerHTML = rows.join("");
+      const inapp = menu.querySelector("[data-open-weekly]");
+      if (inapp) inapp.addEventListener("click", () => { this.toggleBriefsMenu(false); State.horizon = "weekly"; this.rerender(); });
+    },
+    toggleBriefsMenu(force) {
+      const btn = el("#briefs-toggle"), menu = el("#briefs-menu"), wrap = document.querySelector(".briefs-access");
+      if (!btn || !menu) return;
+      const open = force != null ? force : menu.hidden;
+      menu.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+      if (wrap) wrap.classList.toggle("open", open);
+    },
+
     buildFilterControls() {
       // theatre checkboxes
       el("#filter-theatres").innerHTML = DB.theatres.map(t =>
@@ -1824,6 +1856,14 @@
       // horizon tabs
       document.querySelectorAll(".tab-btn").forEach(b =>
         b.addEventListener("click", () => { State.horizon = b.dataset.horizon; this.rerender(); }));
+
+      // weekly-briefs quick-access menu (top bar)
+      const briefsBtn = el("#briefs-toggle");
+      if (briefsBtn) {
+        briefsBtn.addEventListener("click", e => { e.stopPropagation(); this.toggleBriefsMenu(); });
+        document.addEventListener("click", e => { if (!e.target.closest(".briefs-access")) this.toggleBriefsMenu(false); });
+        document.addEventListener("keydown", e => { if (e.key === "Escape") this.toggleBriefsMenu(false); });
+      }
 
       // period select + date picker
       el("#period-select").addEventListener("change", e => { State.periodId = e.target.value; Render.renderActiveView(); });
@@ -1918,6 +1958,7 @@
             eds.sort((a, b) => String(b.weekEnd || "").localeCompare(String(a.weekEnd || "")));
             DB.liveEditions = eds;
             DB.liveSyncedAt = lw.syncedAt || null;
+            DB.liveSiteUrl = lw.sourceUrl || null;   // the brief site (pages.dev)
             DB.liveWeek = eds[0];   // newest = the "● LIVE" edition
             DB.capabilityEvidence = lw.capabilityEvidence || {};   // brief-derived, traceable
           }
@@ -1932,6 +1973,7 @@
       el("#meta-updated").textContent = Time.fmtDateTime(DB.meta.lastUpdated);
 
       this.buildFilterControls();
+      this.buildBriefsMenu();
       this.wire();
       this.rerender();
     }
