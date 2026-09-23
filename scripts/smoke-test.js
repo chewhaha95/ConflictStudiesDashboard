@@ -25,6 +25,16 @@ const root = path.resolve(__dirname, "..");
 const html  = fs.readFileSync(path.join(root, "conflict-dashboard.html"), "utf8");
 const data  = fs.readFileSync(path.join(root, "sample-data.json"), "utf8");
 const appjs = fs.readFileSync(path.join(root, "app.js"), "utf8");
+const wlRaw = fs.readFileSync(path.join(root, "watchlist.json"), "utf8");
+const worldRaw = fs.readFileSync(path.join(root, "assets", "world-110m.json"), "utf8");
+// fetch router shared by both DOM boots: seed data, the watchlist register and the base map
+const routeFetch = (liveResp) => async (u) => {
+  const s = String(u);
+  if (s.includes("weekly-live")) return liveResp;
+  if (s.includes("watchlist.json")) return { ok: true, status: 200, json: async () => JSON.parse(wlRaw) };
+  if (s.includes("world-110m")) return { ok: true, status: 200, json: async () => JSON.parse(worldRaw) };
+  return { ok: true, status: 200, json: async () => JSON.parse(data) };
+};
 
 let failures = 0;
 function check(name, cond, detail) {
@@ -60,21 +70,173 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   });
   check("every weekly entry has all required fields + 6 domains", fieldOk);
 
+  // watchlist register contract
+  let wl;
+  try { wl = JSON.parse(wlRaw); check("watchlist.json parses", true); }
+  catch (e) { check("watchlist.json parses", false, e.message); process.exit(1); }
+  check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
+  check("watchlist defines 3 tiers / 4 states / 5 CSI actions",
+    Object.keys(wl.definitions.tiers).join(",") === "1,2,3" &&
+    Object.keys(wl.definitions.states).sort().join(",") === "Active,Archive,Priority,Watch" &&
+    Object.keys(wl.definitions.actions).length === 5);
+  check("12 watchlist items across the three tiers", wl.items.length === 12 && [1, 2, 3].every(n => wl.items.some(i => i.tier === n)), "got " + wl.items.length);
+  const DIMS = ["phase", "escalation", "tempo", "adaptation", "sgExposure"];
+  const wlOk = wl.items.every(i => i.id && i.name && [1, 2, 3].includes(i.tier) && wl.definitions.states[i.state] && wl.definitions.states[i.prevState] &&
+    i.geo && typeof i.geo.lat === "number" && typeof i.geo.lon === "number" && Array.isArray(i.geo.countries) &&
+    DIMS.every(d => i.dims[d] && i.dims[d].now != null && i.dims[d].prev != null) &&
+    Array.isArray(i.changes) && Array.isArray(i.next) && i.next.every(n => wl.definitions.indicatorTypes.includes(n.type) && n.text) &&
+    i.csi && wl.definitions.actions[i.csi.action] && i.ignore && typeof i.ignore.flag === "boolean" && Array.isArray(i.history) && i.history.length >= 1);
+  check("every watchlist item has state, geo, 5 dims (now+prev), changes, typed indicators, CSI action, ignore verdict, history", wlOk);
+  check("Tier 1 = Russia-Ukraine / Israel-Palestine / US-Israel-Iran / Israel-Lebanon / Thailand-Cambodia",
+    wl.items.filter(i => i.tier === 1).map(i => i.id).sort().join(",") === "IL_GZ,IL_LB,IL_US_IR,RU_UA,TH_KH");
+  check("Tier 2 = US-Venezuela / South China Sea / Taiwan Strait / China-Japan",
+    wl.items.filter(i => i.tier === 2).map(i => i.id).sort().join(",") === "CN_JP,SCS,TW,US_VE");
+  check("Tier 3 = India-Pakistan / Myanmar / other Middle East spillover",
+    wl.items.filter(i => i.tier === 3).map(i => i.id).sort().join(",") === "IN_PK,ME_SPILL,MM");
+  check("linked theatres resolve to seed theatre ids", wl.items.every(i => !i.briefTheatre || db.theatres.some(th => th.id === i.briefTheatre)));
+  const world = JSON.parse(worldRaw);
+  check("base map asset: >150 countries with rings; watchlist country ids resolve",
+    world.countries.length > 150 && wl.items.every(i => i.geo.countries.every(c => world.countries.some(w => w.id === c))));
+
   // --- 1. Boot the app in a DOM -------------------------------------------
   const dom = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true });
   const { window } = dom;
   global.window = window; global.document = window.document;
   // Seed-only fetch: weekly-live.json returns 404 so the main harness exercises
   // the seed/fallback path deterministically.
-  window.fetch = async (u) => String(u).includes("weekly-live")
-    ? ({ ok: false, status: 404, json: async () => ({}) })
-    : ({ ok: true, status: 200, json: async () => JSON.parse(data) });
+  window.fetch = routeFetch({ ok: false, status: 404, json: async () => ({}) });
   window.Chart = function () { return { destroy() {} }; };
   window.Chart.prototype = {};
   window.HTMLCanvasElement.prototype.getContext = () => ({});
   window.eval(appjs);
   await sleep(250);
   const doc = window.document;
+
+  // --- 1b. Watchlist tab (attention tracker + map) is the landing view ----
+  console.log("\nWatchlist (attention tracker + map):");
+  check("no boot error", doc.querySelector("#boot-error").style.display === "none");
+  check("Watchlist is the first tab and the landing view",
+    doc.querySelector(".tab-btn").dataset.horizon === "watchlist" && doc.querySelector("#view-watchlist").classList.contains("active") && doc.body.classList.contains("watchlist-view"));
+  let wv = doc.querySelector("#view-watchlist .view-body");
+  check("period selector disabled (register is review-dated)", doc.querySelector("#period-select").disabled && /Review as of/.test(doc.querySelector("#period-select").textContent));
+  check("header: review date, previous review, cadence and state counts", /review as of 29 Jun 2026/.test(wv.textContent) && /Previous review 22 Jun 2026/.test(wv.textContent) && wv.querySelectorAll(".wl-sub .wl-state").length === 4);
+  check("staleness flag is computed against today", !!wv.querySelector(".wl-stale") && (wv.querySelector(".wl-stale").classList.contains("overdue") || wv.querySelector(".wl-stale").classList.contains("fresh")));
+  check("tier + state filter chips and hide-ignorable toggle", wv.querySelectorAll(".wl-f-tier").length === 3 && wv.querySelectorAll(".wl-f-state").length === 4 && !!wv.querySelector(".wl-f-ignored"));
+  // the seven questions, in order
+  const h2s = [...wv.querySelectorAll(".section-head h2")].map(h => h.textContent);
+  check("answers the 7 questions as ordered sections (Q1 → Q7)",
+    /Q1/.test(h2s[0]) && /Q2/.test(h2s[1]) && /Q3/.test(h2s[2]) && /Q4/.test(h2s[2]) && /Q5/.test(h2s[3]) && /Q6/.test(h2s[4]) && /Q7/.test(h2s[5]), h2s.join(" | "));
+  // Q1 attention ranking
+  const rank = [...wv.querySelectorAll(".wl-rank .wl-rank-item")];
+  check("Q1: top-5 attention list with explainable score chips", rank.length === 5 && rank.every(r => r.querySelector(".wl-score .tip-body") && /Attention score/.test(r.querySelector(".wl-score .tip-body").textContent)));
+  check("Q1: US-Israel-Iran (CSI Flash, severe, high SG exposure) ranks first", /US–Israel–Iran/.test(rank[0].textContent), rank[0].textContent.slice(0, 60));
+  check("Q1: ignorable items never enter the top list", rank.every(r => !/China–Japan|Myanmar|India–Pakistan/.test(r.textContent)));
+  // map
+  const svg = wv.querySelector("svg.wl-svg");
+  check("map: self-contained SVG rendered (no tiles / map library)", !!svg && svg.getAttribute("viewBox") === "0 0 1000 394");
+  check("map: base-map country paths drawn (>150)", svg.querySelectorAll("path.wl-land").length > 150);
+  check("map: 12 conflict markers, one per watchlist item", svg.querySelectorAll(".wl-marker").length === 12);
+  check("map: involved countries shaded by state (Ukraine/Russia/Iran/Lebanon…)", svg.querySelectorAll("path.wl-land[data-wl-country]").length >= 12);
+  check("map: maritime zones drawn as dashed circles (Hormuz / SCS / Strait / ECS / Red Sea / Caribbean)", svg.querySelectorAll(".wl-zone").length === 6);
+  check("map: marker size encodes tier (T1 > T3)", (() => {
+    const r = id => parseFloat(svg.querySelector(`.wl-marker[data-wl="${id}"] .wl-dot`).getAttribute("r"));
+    return r("RU_UA") > r("SCS") && r("SCS") > r("MM");
+  })());
+  check("map: state move glyph on the marker that moved (Israel-Lebanon ▲)", !!svg.querySelector('.wl-marker[data-wl="IL_LB"] .wl-mv-up') && !svg.querySelector('.wl-marker[data-wl="RU_UA"] .wl-mv'));
+  check("map: legend + region focus buttons", wv.querySelectorAll(".wl-legend .wl-lg").length >= 6 && wv.querySelectorAll(".wl-region").length === 6);
+  // Q2 movements + state board
+  check("Q2: Israel-Lebanon listed as moved Active → Priority this review", (() => {
+    const mv = [...wv.querySelectorAll(".wl-moves-card .wl-mv-item:not(.minor)")];
+    return mv.length === 1 && /Israel–Lebanon/.test(mv[0].textContent) && /Active/.test(mv[0].textContent) && /Priority/.test(mv[0].textContent);
+  })());
+  check("Q2: earlier move (Middle East spillover Archive → Watch, 15 Jun) shown from history", [...wv.querySelectorAll(".wl-moves-card .wl-mv-item.minor")].some(li => /spillover/.test(li.textContent) && /Archive → Watch/.test(li.textContent) && /15 Jun 2026/.test(li.textContent)));
+  const cols = [...wv.querySelectorAll(".wl-board .wl-col")];
+  check("Q2: state board has the 4 monitoring states in order", cols.length === 4 && cols.map(c => c.querySelector(".wl-state").textContent.trim()).join(",") === "Priority,Active,Watch,Archive");
+  check("Q2: board counts — 3 Priority / 5 Active / 4 Watch / 0 Archive", cols.map(c => c.querySelectorAll(".wl-card-chip").length).join(",") === "3,5,4,0", cols.map(c => c.querySelectorAll(".wl-card-chip").length).join(","));
+  // Q3/Q4 register
+  const reg = wv.querySelector("#wl-register");
+  check("Q3/Q4: register has 12 rows ordered by attention", reg.querySelectorAll("tbody tr.wl-row").length === 12 && /US–Israel–Iran/.test(reg.querySelector("tbody tr.wl-row").textContent));
+  check("Q4: changed dimensions highlighted with previous → now (Gaza escalation Moderate → High)", (() => {
+    const row = reg.querySelector('tr[data-wl-row="IL_GZ"]');
+    const chg = [...row.querySelectorAll("td.wl-dim.wl-chg")];
+    return chg.length === 1 && /Moderate/.test(chg[0].textContent) && /High/.test(chg[0].textContent) && /1 changed/.test(row.textContent);
+  })());
+  check("Q4: unchanged item shows no change flags (Russia-Ukraine)", reg.querySelector('tr[data-wl-row="RU_UA"]').querySelectorAll("td.wl-chg").length === 0);
+  check("register: 'brief' link tag only on theatres carried in the weekly brief", reg.querySelectorAll("tr.wl-row .t-chip").length === 5);
+  check("register: rows collapsed by default", reg.querySelectorAll("tr.wl-detail-row").length === 0);
+  // expand a row → detail with Q3/Q5/Q6/Q7 + brief signal + history
+  reg.querySelector('[data-wl-toggle="IL_US_IR"]').click(); await sleep(40);
+  wv = doc.querySelector("#view-watchlist .view-body");
+  const det = wv.querySelector('tr[data-wl-detail="IL_US_IR"]');
+  check("expanded row shows what changed / what next / CSI call / ignore verdict / brief signal / history", !!det &&
+    /Q3 · What materially changed/.test(det.textContent) && /Q5 · What might happen next/.test(det.textContent) && /Q6 · What CSI should do/.test(det.textContent) &&
+    /Q7 · Ignore for now\?/.test(det.textContent) && /Brief signal/.test(det.textContent) && /State history/.test(det.textContent));
+  check("detail: phase change spelled out (prev → now)", det.querySelectorAll(".wl-chg-line .wl-chg-pill").length === 2 && /Ceasefire under strain/.test(det.textContent));
+  check("detail: typed, dated indicators with 'If seen →' consequences", det.querySelectorAll(".wl-ind").length === 4 && det.querySelectorAll(".wl-ind .wl-ind-type").length === 4 && det.querySelectorAll(".wl-ind-if").length === 4 && /22 Aug 2026/.test(det.textContent));
+  check("detail: brief signal from the seed weekly report (phase / trend / score, no LIVE badge)", !!det.querySelector(".wl-brief .phase-tag") && !!det.querySelector(".wl-brief .trend") && /score \d+/.test(det.textContent) && !det.querySelector(".wl-brief .briefs-live"));
+  check("detail: CSI Flash is the primary action with rationale", !!det.querySelector(".wl-action") && /CSI Flash/.test(det.querySelector(".wl-action").textContent) && /Hormuz/.test(det.textContent));
+  // Q5 indicators table
+  const ind = wv.querySelector("#wl-indicators");
+  const indRows = [...ind.querySelectorAll("tbody tr:not(.wl-sep)")];
+  check("Q5: indicators table lists every item's indicators, dated first", indRows.length === wl.items.reduce((a, i) => a + i.next.length, 0) && !!ind.querySelector("tr.wl-sep"));
+  check("Q5: dated indicators are in date order with a due status", (() => {
+    const dated = indRows.slice(0, indRows.findIndex(r => r.previousElementSibling && r.previousElementSibling.classList.contains("wl-sep")) + 0);
+    const sep = [...ind.querySelectorAll("tbody tr")].findIndex(r => r.classList.contains("wl-sep"));
+    const before = [...ind.querySelectorAll("tbody tr")].slice(0, sep);
+    const dues = before.map(r => r.querySelector(".wl-due").textContent);
+    return before.length >= 8 && before.every(r => r.querySelector(".wl-due-sub")) && /30 Jun 2026/.test(dues[0]) && /15 Nov 2026/.test(dues[dues.length - 1]);
+  })());
+  check("Q5: indicator types are the seven named kinds", [...ind.querySelectorAll(".wl-ind-type")].every(s => wl.definitions.indicatorTypes.includes(s.textContent.trim())));
+  // Q6 actions
+  const acts = [...wv.querySelectorAll(".wl-act-grid .wl-act-col")];
+  check("Q6: 5 action columns in escalation order (Flash → Weekly → Monthly → Quarterly → Dashboard only)", acts.length === 5 && acts.map(a => a.querySelector(".wl-action").textContent.trim()).join("|") === "CSI Flash|Weekly awareness post|Monthly pattern review|Quarterly candidate|Dashboard only");
+  check("Q6: every item placed under exactly one primary action", acts.reduce((n, a) => n + a.querySelectorAll(".wl-act-item").length, 0) === 12);
+  check("Q6: secondary feeds listed ('Also feeds')", acts.some(a => /Also feeds/.test(a.textContent)));
+  // Q7 ignore
+  const ig = [...wv.querySelectorAll(".wl-ig-list .wl-ig-item")];
+  check("Q7: ignore-for-now list = China-Japan / India-Pakistan / Myanmar with reason tags + revisit trigger", ig.length === 3 && ig.every(li => li.querySelectorAll(".tag").length >= 1 && /Revisit trigger/.test(li.textContent)) && /China–Japan/.test(wv.querySelector(".wl-ig-list").textContent));
+  check("Q7: quiet-but-not-flagged items called out (South China Sea, Thailand-Cambodia)", /Quiet this review/.test(wv.textContent) && /South China Sea/.test(wv.querySelector(".wl-quiet").textContent) && /Thailand–Cambodia/.test(wv.querySelector(".wl-quiet").textContent));
+  check("method note explains the derivation + how to update watchlist.json", /Attention score/.test(wv.querySelector(".wl-method").textContent) && /watchlist\.json/.test(wv.querySelector(".wl-method").textContent));
+  // interactions: marker click opens + selects the row; region focus zooms the map; filters narrow everything
+  wv.querySelector('.wl-marker[data-wl="TH_KH"]').dispatchEvent(new window.Event("click", { bubbles: true })); await sleep(40);
+  wv = doc.querySelector("#view-watchlist .view-body");
+  check("map: clicking a marker selects + expands its register row", wv.querySelector('tr[data-wl-row="TH_KH"]').classList.contains("selected") && !!wv.querySelector('tr[data-wl-detail="TH_KH"]') && !!wv.querySelector('.wl-marker[data-wl="TH_KH"].selected .wl-ring'));
+  wv.querySelector('[data-wl-map="TH_KH"]').click(); await sleep(40);
+  wv = doc.querySelector("#view-watchlist .view-body");
+  check("'Show on map' focuses the Indo-Pacific region (viewBox narrows)", (() => {
+    const vb = wv.querySelector("svg.wl-svg").getAttribute("viewBox").split(" ").map(Number);
+    return wv.querySelector('.wl-region[data-region="indopac"]').getAttribute("aria-pressed") === "true" && vb[2] < 600 && vb[2] > 100;
+  })());
+  wv.querySelector('.wl-region[data-region="world"]').click(); await sleep(40);
+  wv = doc.querySelector("#view-watchlist .view-body");
+  check("focus returns to the world view", wv.querySelector("svg.wl-svg").getAttribute("viewBox") === "0 0 1000 394");
+  wv.querySelector('.wl-f-tier[data-tier="1"]').click(); await sleep(40);
+  wv = doc.querySelector("#view-watchlist .view-body");
+  check("tier filter narrows map, register, indicators and board to Tier 1 (5 items)",
+    wv.querySelectorAll(".wl-marker").length === 5 && wv.querySelectorAll("#wl-register tbody tr.wl-row").length === 5 && wv.querySelectorAll(".wl-board .wl-card-chip").length === 5 && /showing 5/.test(wv.textContent));
+  wv.querySelector("[data-wl-reset]").click(); await sleep(40);
+  wv = doc.querySelector("#view-watchlist .view-body");
+  wv.querySelector(".wl-f-ignored").click(); await sleep(40);
+  wv = doc.querySelector("#view-watchlist .view-body");
+  check("'Hide ignorable' removes the 3 flagged items", wv.querySelectorAll("#wl-register tbody tr.wl-row").length === 9 && wv.querySelectorAll(".wl-marker").length === 9);
+  wv.querySelector("[data-wl-reset]").click(); await sleep(40);
+  check("filters reset to all 12", doc.querySelectorAll("#view-watchlist #wl-register tbody tr.wl-row").length === 12);
+  // exports (JSON/CSV) route to the watchlist register while the tab is active
+  const dl = [];
+  window.URL.createObjectURL = () => "blob:x"; window.URL.revokeObjectURL = () => {};
+  window.HTMLAnchorElement.prototype.click = function () {};   // jsdom cannot navigate to blob: URLs
+  const origBlob = window.Blob;
+  window.Blob = function (parts, opts) { dl.push({ text: parts.join(""), type: opts && opts.type }); return { size: 1, type: opts && opts.type }; };
+  doc.querySelector("#export-json").click(); doc.querySelector("#export-csv").click(); await sleep(20);
+  window.Blob = origBlob;
+  check("export JSON/CSV carry the watchlist (derived score / movement / brief signal columns)", dl.length === 2 && (() => {
+    const j = JSON.parse(dl[0].text); const csvHead = dl[1].text.split("\n")[0];
+    return j.view === "watchlist" && j.items.length === 12 && typeof j.items[0].attentionScore === "number" && "movement" in j.items[0] &&
+      /attentionScore/.test(csvHead) && /stateMove/.test(csvHead) && dl[1].text.split("\n").length === 13;
+  })());
+  // hand over to the Weekly tab for the brief-structure checks below
+  doc.querySelector('.tab-btn[data-horizon="weekly"]').click(); await sleep(60);
+  check("switching to Weekly restores the filter rail", !doc.body.classList.contains("watchlist-view") && doc.querySelector("#view-weekly").classList.contains("active"));
 
   // --- 2. Weekly view + brief-aligned structure ---------------------------
   console.log("\nWeekly view (brief structure):");
@@ -145,7 +307,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
   // --- 4. Top control bar: removed mode switch / quarterly / division dd ---
   console.log("\nTop control bar (trimmed):");
-  check("horizon tabs are Weekly / Monthly / Capabilities only", [...doc.querySelectorAll(".tab-btn")].map(b => b.dataset.horizon).join(",") === "weekly,monthly,capabilities");
+  check("horizon tabs are Watchlist / Weekly / Monthly / Capabilities only", [...doc.querySelectorAll(".tab-btn")].map(b => b.dataset.horizon).join(",") === "watchlist,weekly,monthly,capabilities");
   check("no Quarterly tab", !doc.querySelector('.tab-btn[data-horizon="quarterly"]') && !doc.querySelector("#view-quarterly"));
   check("no Theatre/Division mode switch", !doc.querySelector("[data-mode]"));
   check("no top division dropdown", !doc.querySelector("#division-select") && !doc.querySelector("#division-wrap"));
@@ -365,14 +527,18 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   };
   const dom2 = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true });
   global.window = dom2.window; global.document = dom2.window.document;
-  dom2.window.fetch = async (u) => String(u).includes("weekly-live")
-    ? ({ ok: true, status: 200, json: async () => liveStub })
-    : ({ ok: true, status: 200, json: async () => JSON.parse(data) });
+  dom2.window.fetch = routeFetch({ ok: true, status: 200, json: async () => liveStub });
   dom2.window.Chart = function () { return { destroy() {} }; }; dom2.window.Chart.prototype = {};
   dom2.window.HTMLCanvasElement.prototype.getContext = () => ({});
   dom2.window.eval(appjs);
   await sleep(250);
   const d2 = dom2.window.document;
+  // Watchlist enrichment in live mode: linked theatres show the ● LIVE brief signal + edition link
+  d2.querySelector('#view-watchlist [data-wl-toggle="RU_UA"]').click(); await sleep(40);
+  const liveDet = d2.querySelector('#view-watchlist tr[data-wl-detail="RU_UA"]');
+  check("watchlist: brief signal is ● LIVE with an edition link when live editions are synced",
+    !!liveDet && !!liveDet.querySelector(".wl-brief .briefs-live") && /example\.org\/new/.test((liveDet.querySelector(".wl-brief a") || {}).getAttribute ? liveDet.querySelector(".wl-brief a").getAttribute("href") : "") && /LATEST-HEADLINE/.test(liveDet.textContent));
+  d2.querySelector('.tab-btn[data-horizon="weekly"]').click(); await sleep(60);
   const opts2 = [...d2.querySelectorAll("#period-select option")];
   check("all brief editions listed (current + past), newest first", opts2.length === 2 && /● LIVE/.test(opts2[0].textContent) && /18 May – 25 May/.test(opts2[1].textContent));
   const wb3 = d2.querySelector("#view-weekly .view-body");

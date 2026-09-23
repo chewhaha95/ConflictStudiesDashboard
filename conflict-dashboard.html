@@ -7,8 +7,9 @@
   FILES
   -----
   conflict-dashboard.html  This file. The single-page app shell: header,
-                           mode/horizon controls, filter sidebar, and the
-                           three view containers (Weekly / Monthly / Quarterly).
+                           horizon tabs, filter sidebar, and the view
+                           containers (Watchlist / Weekly / Monthly /
+                           Capabilities).
   styles.css               All styling. Light + dark themes (data-theme),
                            responsive layout, and a print stylesheet for
                            PDF-friendly export.
@@ -20,6 +21,18 @@
                            (x2) and quarterly (x1) reports are NOT stored —
                            they are computed by deterministic aggregation in
                            app.js, so the rollups are genuinely aggregated.
+  watchlist.json           The conflict watchlist register (analyst-maintained):
+                           tiers, monitoring states, the five assessed
+                           dimensions (phase / escalation risk / tempo /
+                           adaptation / Singapore exposure) with previous-review
+                           values, material changes, named indicators, the CSI
+                           action and the ignore-for-now verdict. The Watchlist
+                           tab DERIVES attention rank, movements, change flags
+                           and staleness from it — see its "How this page
+                           derives its answers" note.
+  assets/world-110m.json   Compact Natural Earth 1:110m country outlines (public
+                           domain) for the self-contained SVG watchlist map. No
+                           tiles, no map library, works offline and in print.
 
   HOW TO RUN LOCALLY
   ------------------
@@ -56,7 +69,7 @@
   <title>Conflict Studies and Insights Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260609k" />
+  <link rel="stylesheet" href="styles.css?v=20260923a" />
 </head>
 <body>
   <!-- ===== Header ===== -->
@@ -65,7 +78,7 @@
       <div class="logo" aria-hidden="true">CS</div>
       <div>
         <h1>Conflict Studies and Insights Dashboard</h1>
-        <div class="subtitle">Weekly · Monthly · Capabilities — across five theatres</div>
+        <div class="subtitle">Watchlist · Weekly · Monthly · Capabilities — where to spend attention across the theatres</div>
       </div>
     </div>
     <div class="header-meta">
@@ -84,7 +97,8 @@
   <!-- ===== Control bar: horizon tabs + exports ===== -->
   <div class="control-bar no-print">
     <div class="seg" role="tablist" aria-label="Reporting horizon">
-      <button class="tab-btn active" role="tab" data-horizon="weekly" aria-selected="true">Weekly</button>
+      <button class="tab-btn active" role="tab" data-horizon="watchlist" aria-selected="true">Watchlist</button>
+      <button class="tab-btn" role="tab" data-horizon="weekly">Weekly</button>
       <button class="tab-btn" role="tab" data-horizon="monthly">Monthly</button>
       <button class="tab-btn" role="tab" data-horizon="capabilities">Capabilities</button>
     </div>
@@ -152,7 +166,10 @@
 
     <!-- Main body: one view active at a time -->
     <main class="main">
-      <section id="view-weekly" class="view active" role="tabpanel" aria-label="Weekly report">
+      <section id="view-watchlist" class="view active" role="tabpanel" aria-label="Conflict watchlist tracker">
+        <div class="view-body"></div>
+      </section>
+      <section id="view-weekly" class="view" role="tabpanel" aria-label="Weekly report">
         <div class="view-body"></div>
       </section>
       <section id="view-monthly" class="view" role="tabpanel" aria-label="Monthly formation learning">
@@ -166,6 +183,6 @@
 
   <!-- Chart.js (stable CDN). The app degrades gracefully if it fails to load. -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="app.js?v=20260609k"></script>
+  <script src="app.js?v=20260923a"></script>
 </body>
 </html>

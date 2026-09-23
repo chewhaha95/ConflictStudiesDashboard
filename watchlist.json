@@ -1,0 +1,1244 @@
+{
+  "meta": {
+    "title": "Conflict Watchlist",
+    "reviewDate": "2026-06-29",
+    "previousReviewDate": "2026-06-22",
+    "cadenceDays": 7,
+    "reviewer": "CSI analyst (seed review)",
+    "notes": "Analyst-maintained register. Each review: (1) set reviewDate/previousReviewDate, (2) for every item move `prev` <- `now` on the five dimensions and then set the new `now`, (3) rewrite `changes`, `next` and `csi` for what is true THIS week only, (4) record any state move in `history`. The dashboard derives attention rank, movements, changed-dimension flags, staleness and the brief signal — do not type those in. This is a watchlist, not a news archive: keep `changes` to what materially moved since the previous review, and `next` to named, checkable indicators."
+  },
+  "definitions": {
+    "tiers": {
+      "1": {
+        "name": "Priority Conflicts",
+        "desc": "High relevance to the Army — followed every week in the brief."
+      },
+      "2": {
+        "name": "Active Regional & Escalation Watches",
+        "desc": "Regional theatres where escalation would change Singapore's or the Army's picture."
+      },
+      "3": {
+        "name": "Baseline Regional Research Reserve",
+        "desc": "Held for pattern and case-study value; reviewed on trigger or on the monthly cycle."
+      }
+    },
+    "states": {
+      "Priority": {
+        "order": 1,
+        "tone": "bad",
+        "desc": "Direct strategic relevance or high Army learning value."
+      },
+      "Active": {
+        "order": 2,
+        "tone": "warn",
+        "desc": "Material trend, escalation, or regional relevance."
+      },
+      "Watch": {
+        "order": 3,
+        "tone": "neutral",
+        "desc": "Baseline monitoring; no current learning priority."
+      },
+      "Archive": {
+        "order": 4,
+        "tone": "faint",
+        "desc": "Reserve — retained for reference and pattern work; revisit only on a named trigger."
+      }
+    },
+    "actions": {
+      "CSI Flash": {
+        "order": 1,
+        "tone": "bad",
+        "desc": "Same-day short note: a threshold was crossed or Singapore exposure changed."
+      },
+      "Weekly awareness post": {
+        "order": 2,
+        "tone": "warn",
+        "desc": "One item in this week's brief or awareness post."
+      },
+      "Monthly pattern review": {
+        "order": 3,
+        "tone": "research",
+        "desc": "Feed the monthly tactical-learning / pattern cycle."
+      },
+      "Quarterly candidate": {
+        "order": 4,
+        "tone": "neutral",
+        "desc": "Candidate for a quarterly deep-dive or case study."
+      },
+      "Dashboard only": {
+        "order": 5,
+        "tone": "faint",
+        "desc": "Track here; nothing to publish."
+      }
+    },
+    "dimensions": {
+      "phase": {
+        "label": "Conflict phase",
+        "short": "Phase"
+      },
+      "escalation": {
+        "label": "Escalation risk",
+        "short": "Esc. risk",
+        "scale": [
+          "Low",
+          "Moderate",
+          "High",
+          "Severe"
+        ]
+      },
+      "tempo": {
+        "label": "Operational tempo",
+        "short": "Tempo",
+        "scale": [
+          "Low",
+          "Medium",
+          "High"
+        ]
+      },
+      "adaptation": {
+        "label": "Adaptation behaviour",
+        "short": "Adaptation",
+        "scale": [
+          "Low",
+          "Medium",
+          "High"
+        ]
+      },
+      "sgExposure": {
+        "label": "Singapore exposure",
+        "short": "SG exposure",
+        "scale": [
+          "Low",
+          "Moderate",
+          "High"
+        ]
+      }
+    },
+    "indicatorTypes": [
+      "Named event",
+      "Threshold",
+      "Deadline",
+      "Mobilisation sign",
+      "Force movement",
+      "Diplomatic decision",
+      "Escalation indicator"
+    ],
+    "ignoreReasons": [
+      "Stable",
+      "Repetitive",
+      "Low confidence",
+      "No current Army learning value"
+    ],
+    "attentionScore": {
+      "desc": "Deterministic, explainable rank. state (Priority 40 / Active 25 / Watch 10 / Archive 0) + escalation risk (Severe 20 / High 15 / Moderate 8 / Low 2) + 5 per dimension that changed since the previous review + 10 if the state moved up + CSI action (Flash 20 / Weekly 10 / Monthly 5 / Quarterly 3 / Dashboard 0) + Singapore exposure (High 8 / Moderate 4 / Low 0) + tier (T1 6 / T2 3 / T3 0). Items flagged ignore-for-now are shown but ranked last."
+    }
+  },
+  "items": [
+    {
+      "id": "RU_UA",
+      "name": "Russia–Ukraine",
+      "short": "RUS–UKR",
+      "tier": 1,
+      "state": "Priority",
+      "prevState": "Priority",
+      "briefTheatre": "RU_UA",
+      "region": "Eastern Europe",
+      "geo": {
+        "lat": 48.5,
+        "lon": 36.5,
+        "countries": [
+          "804",
+          "643"
+        ],
+        "labelDx": 0,
+        "labelDy": -12
+      },
+      "dims": {
+        "phase": {
+          "now": "Attritional war",
+          "prev": "Attritional war"
+        },
+        "escalation": {
+          "now": "High",
+          "prev": "High"
+        },
+        "tempo": {
+          "now": "High",
+          "prev": "High"
+        },
+        "adaptation": {
+          "now": "High",
+          "prev": "High"
+        },
+        "sgExposure": {
+          "now": "Low",
+          "prev": "Low"
+        }
+      },
+      "whyNow": "Ukraine's declared 40-day pressure campaign and the confirmation of FPV-as-interceptor make this the richest adaptation feed of the week.",
+      "changes": [
+        "Zelenskyy authorised a 40-day campaign against Russian energy, Crimea supply routes and logistics hubs; Donetsk front static and ISW no longer forecasts a Russian seizure of Donetsk.",
+        "FPV drones confirmed as repeatable Shahed interceptors over Crimea; production-chain strike on the Titan-Barrikady missile plant with an FP-5 Flamingo.",
+        "Crimea under state of emergency (fuel sales halted, rolling power cuts); Russia concentrating air defence on Moscow and the Kerch Bridge."
+      ],
+      "next": [
+        {
+          "type": "Diplomatic decision",
+          "text": "Pre-summit diplomatic engagements in Moscow ahead of US-led tracking initiatives.",
+          "due": "2026-07-04",
+          "ifSeen": "Confirms a live talks track; watch for a strike pause as a bargaining signal."
+        },
+        {
+          "type": "Escalation indicator",
+          "text": "Large Russian retaliatory strike package on Kyiv energy or C2 in answer to the Moscow drone campaign.",
+          "due": null,
+          "ifSeen": "Weekly awareness post on saturation volume and interceptor stocks."
+        },
+        {
+          "type": "Deadline",
+          "text": "End of the declared 40-day campaign window — did Russian posture or logistics visibly change?",
+          "due": "2026-08-04",
+          "ifSeen": "Monthly pattern review: deep-strike campaign as coercive lever."
+        },
+        {
+          "type": "Force movement",
+          "text": "Russian infiltration of Kostiantynivka turns into encirclement or a confirmed withdrawal.",
+          "due": null,
+          "ifSeen": "Phase check: attritional war vs operational breakthrough."
+        }
+      ],
+      "csi": {
+        "action": "Weekly awareness post",
+        "also": [
+          "Monthly pattern review",
+          "Quarterly candidate"
+        ],
+        "rationale": "FPV-as-interceptor and production-chain targeting are directly transferable C-UAS and fires-planning lessons; volume-saturation fires remains the quarterly pattern candidate."
+      },
+      "ignore": {
+        "flag": false,
+        "reasons": [],
+        "note": ""
+      },
+      "confidence": "High",
+      "learningValue": "High",
+      "history": [
+        {
+          "date": "2026-04-27",
+          "state": "Priority",
+          "note": "Baseline: Tier 1, followed weekly."
+        }
+      ]
+    },
+    {
+      "id": "IL_GZ",
+      "name": "Israel–Palestine (Gaza)",
+      "short": "ISR–GAZ",
+      "tier": 1,
+      "state": "Active",
+      "prevState": "Active",
+      "briefTheatre": "IL_GZ",
+      "region": "Levant",
+      "geo": {
+        "lat": 31.4,
+        "lon": 34.4,
+        "countries": [
+          "275"
+        ],
+        "labelDx": -10,
+        "labelDy": 16
+      },
+      "dims": {
+        "phase": {
+          "now": "Phase 1 ceasefire, unresolved disarmament",
+          "prev": "Phase 1 ceasefire, unresolved disarmament"
+        },
+        "escalation": {
+          "now": "High",
+          "prev": "Moderate"
+        },
+        "tempo": {
+          "now": "Low",
+          "prev": "Low"
+        },
+        "adaptation": {
+          "now": "Medium",
+          "prev": "Medium"
+        },
+        "sgExposure": {
+          "now": "Low",
+          "prev": "Low"
+        }
+      },
+      "whyNow": "Escalation risk moved up: Hamas has not accepted the disarmament clauses and the risk of Israel resuming large-scale operations is rising, while organised civilian opposition to Hamas surfaced publicly.",
+      "changes": [
+        "'June 26 Revolution' protests planned at 18 sites were suppressed; Hamas used four hospitals as control and interrogation nodes.",
+        "IDF holds ~64% of Gaza with a stated aim of 70%; no Phase 2 timeline exists and Clauses 8–9 (weapons restrictions, stabilisation force) remain unaccepted.",
+        "Escalation risk raised from Moderate to High on the brief's assessment that a return to large-scale operations is increasingly likely."
+      ],
+      "next": [
+        {
+          "type": "Named event",
+          "text": "UN Security Council open briefing and closed consultations on International Stabilisation Force deployment bottlenecks.",
+          "due": "2026-07-03",
+          "ifSeen": "Note ISF force-generation and mandate gaps for the stabilisation case study."
+        },
+        {
+          "type": "Threshold",
+          "text": "Hamas formally accepts or rejects Clauses 8 and 9 — the last gate before Israel restarts large-scale operations.",
+          "due": null,
+          "ifSeen": "Rejection → move to Priority and CSI Flash on phase change."
+        },
+        {
+          "type": "Force movement",
+          "text": "IDF 'Yellow Line' berms extend beyond the 64% line toward the stated 70%.",
+          "due": null,
+          "ifSeen": "Low-signature territorial consolidation pattern for the monthly review."
+        }
+      ],
+      "csi": {
+        "action": "Monthly pattern review",
+        "also": [],
+        "rationale": "Governance-transfer-without-disarmament and civilian-opposition dynamics are stabilisation and CIMIC learning, not a weekly item unless the ceasefire breaks."
+      },
+      "ignore": {
+        "flag": false,
+        "reasons": [],
+        "note": ""
+      },
+      "confidence": "Medium",
+      "learningValue": "Medium",
+      "history": [
+        {
+          "date": "2026-04-27",
+          "state": "Active",
+          "note": "Baseline: ceasefire holding, stabilisation learning."
+        }
+      ]
+    },
+    {
+      "id": "IL_US_IR",
+      "name": "US–Israel–Iran",
+      "short": "US–ISR–IRN",
+      "tier": 1,
+      "state": "Priority",
+      "prevState": "Priority",
+      "briefTheatre": "IL_US_IR",
+      "region": "Gulf",
+      "geo": {
+        "lat": 27,
+        "lon": 55.5,
+        "countries": [
+          "364",
+          "376"
+        ],
+        "labelDx": 8,
+        "labelDy": 14,
+        "zones": [
+          {
+            "lat": 26.5,
+            "lon": 56.3,
+            "r": 2.2,
+            "label": "Hormuz"
+          }
+        ]
+      },
+      "dims": {
+        "phase": {
+          "now": "Post-war MOU under a fragile stand-down",
+          "prev": "Ceasefire under strain"
+        },
+        "escalation": {
+          "now": "Severe",
+          "prev": "Severe"
+        },
+        "tempo": {
+          "now": "Medium",
+          "prev": "High"
+        },
+        "adaptation": {
+          "now": "High",
+          "prev": "High"
+        },
+        "sgExposure": {
+          "now": "High",
+          "prev": "High"
+        }
+      },
+      "whyNow": "Hormuz transit is conditional and reversible, the 60-day final-deal clock is running, and the week produced both maritime strikes and a stand-down — the highest Singapore-exposure item on the list.",
+      "changes": [
+        "Tit-for-tat Gulf strikes (Iranian drone strikes on merchant ships; US strikes on Iranian surveillance, air-defence and drone sites) before a fresh 28–29 June stand-down.",
+        "Phase moved from ceasefire-under-strain to a post-war MOU: US lifted Iran oil sanctions for 60 days; nuclear working groups start; southern Omani lane open day and night, central channel still restricted with ~80 mines uncleared.",
+        "Cyber domain expansion: ~4,800 Iranian hostile cyber incidents against Israeli networks in one month, three times last year's volume."
+      ],
+      "next": [
+        {
+          "type": "Named event",
+          "text": "US–Iran emergency talks in Doha on the Strait of Hormuz impasse.",
+          "due": "2026-06-30",
+          "ifSeen": "Outcome sets whether transit normalises or the 48-hour permit regime hardens; CSI Flash on any change to transit terms."
+        },
+        {
+          "type": "Deadline",
+          "text": "60-day final-deal deadline under the MOU.",
+          "due": "2026-08-22",
+          "ifSeen": "Missed deadline → escalation indicator; expect blockade or re-closure signalling in the preceding fortnight."
+        },
+        {
+          "type": "Threshold",
+          "text": "Central-channel mine clearance completes (≈80 mines) and daily transits return toward the ~70-ship pre-war baseline.",
+          "due": null,
+          "ifSeen": "Downgrade SG exposure to Moderate; move CSI action to weekly."
+        },
+        {
+          "type": "Escalation indicator",
+          "text": "Any strike on merchant shipping or US basing after the 29 June stand-down.",
+          "due": null,
+          "ifSeen": "CSI Flash the same day."
+        }
+      ],
+      "csi": {
+        "action": "CSI Flash",
+        "also": [
+          "Monthly pattern review"
+        ],
+        "rationale": "Hormuz terms bear directly on Singapore fuel and shipping exposure; Shahed-as-anti-helicopter and cyber volume-saturation feed the monthly pattern review."
+      },
+      "ignore": {
+        "flag": false,
+        "reasons": [],
+        "note": ""
+      },
+      "confidence": "High",
+      "learningValue": "High",
+      "history": [
+        {
+          "date": "2026-04-27",
+          "state": "Priority",
+          "note": "Baseline: Hormuz crisis, direct Singapore exposure."
+        }
+      ]
+    },
+    {
+      "id": "IL_LB",
+      "name": "Israel–Lebanon",
+      "short": "ISR–LBN",
+      "tier": 1,
+      "state": "Priority",
+      "prevState": "Active",
+      "briefTheatre": "IL_LB",
+      "region": "Levant",
+      "geo": {
+        "lat": 33.4,
+        "lon": 35.5,
+        "countries": [
+          "422"
+        ],
+        "labelDx": 10,
+        "labelDy": -8
+      },
+      "dims": {
+        "phase": {
+          "now": "Active ceasefire with daily fighting",
+          "prev": "Ceasefire violated daily"
+        },
+        "escalation": {
+          "now": "High",
+          "prev": "High"
+        },
+        "tempo": {
+          "now": "Medium",
+          "prev": "High"
+        },
+        "adaptation": {
+          "now": "High",
+          "prev": "High"
+        },
+        "sgExposure": {
+          "now": "Moderate",
+          "prev": "Low"
+        }
+      },
+      "whyNow": "Moved up to Priority: the 26 June Washington Framework creates a Military Coordination Group that regional partners may be asked to join, while the IDF struck Lebanon hours after signing and Hezbollah refused the deal.",
+      "changes": [
+        "14-point trilateral framework signed in Washington on 26 June: two LAF pilot zones tied to phased Hezbollah disarmament, no timeline for full Israeli withdrawal, no enforcement mechanism.",
+        "IDF drone strike in southern Lebanon within hours of signing; security zone maintained; Hezbollah publicly rejected the framework.",
+        "Singapore exposure raised to Moderate because the framework's Military Coordination Group may seek regional-partner contributions."
+      ],
+      "next": [
+        {
+          "type": "Named event",
+          "text": "First LAF–mediator working-group sessions on pilot-zone boundaries south of the Litani.",
+          "due": "2026-07-06",
+          "ifSeen": "A dated first handover is the framework's first real test."
+        },
+        {
+          "type": "Diplomatic decision",
+          "text": "Composition and terms of reference of the Military Coordination Group for Lebanon announced.",
+          "due": null,
+          "ifSeen": "Scope what a contribution would require (ROE alongside IDF and LAF); brief up."
+        },
+        {
+          "type": "Escalation indicator",
+          "text": "Hezbollah retaliation for post-signing strikes, or an IDF strike inside a designated pilot zone.",
+          "due": null,
+          "ifSeen": "Framework at risk → Weekly awareness post."
+        }
+      ],
+      "csi": {
+        "action": "Weekly awareness post",
+        "also": [
+          "Quarterly candidate"
+        ],
+        "rationale": "The MCG question is time-sensitive for planners; the prepared ATGM-plus-drone ambush against armour is the quarterly anti-armour candidate."
+      },
+      "ignore": {
+        "flag": false,
+        "reasons": [],
+        "note": ""
+      },
+      "confidence": "High",
+      "learningValue": "High",
+      "history": [
+        {
+          "date": "2026-04-27",
+          "state": "Active",
+          "note": "Baseline: ceasefire extension, daily violations."
+        },
+        {
+          "date": "2026-06-29",
+          "state": "Priority",
+          "note": "Washington Framework signed; Military Coordination Group may seek regional partners; fighting continues."
+        }
+      ]
+    },
+    {
+      "id": "TH_KH",
+      "name": "Thailand–Cambodia",
+      "short": "THA–KHM",
+      "tier": 1,
+      "state": "Active",
+      "prevState": "Active",
+      "briefTheatre": "TH_KH",
+      "region": "Mainland Southeast Asia",
+      "geo": {
+        "lat": 14.4,
+        "lon": 103.6,
+        "countries": [
+          "764",
+          "116"
+        ],
+        "labelDx": 10,
+        "labelDy": -8
+      },
+      "dims": {
+        "phase": {
+          "now": "Ceasefire; UNCLOS conciliation",
+          "prev": "Ceasefire; UNCLOS conciliation"
+        },
+        "escalation": {
+          "now": "Moderate",
+          "prev": "Moderate"
+        },
+        "tempo": {
+          "now": "Low",
+          "prev": "Low"
+        },
+        "adaptation": {
+          "now": "Medium",
+          "prev": "Medium"
+        },
+        "sgExposure": {
+          "now": "Moderate",
+          "prev": "Moderate"
+        }
+      },
+      "whyNow": "Quiet on the ground; the watch is procedural (conciliation chair deadline) and about below-threshold signalling and Chinese capability deliveries.",
+      "changes": [
+        "RTAF issued a formal clarification on F-16 night flights along the border; Cambodia characterised them as military signalling — a calibrated, deniable messaging pattern with miscalculation risk.",
+        "Four UNCLOS conciliators appointed; the five-member commission must elect a chairperson by about 16 July; land border remains economically severed by Cambodian decree.",
+        "No kinetic incidents; Thai National Anti-Drone Centre approved and stood up."
+      ],
+      "next": [
+        {
+          "type": "Deadline",
+          "text": "Conciliation commission elects a chairperson.",
+          "due": "2026-07-16",
+          "ifSeen": "Missed deadline → legal track stalls; watch for Cambodian escalation at sea or on trade."
+        },
+        {
+          "type": "Escalation indicator",
+          "text": "Thai economic countermeasure to Cambodia's land-trade blockade.",
+          "due": null,
+          "ifSeen": "Trade coercion cycle → move CSI action to weekly."
+        },
+        {
+          "type": "Force movement",
+          "text": "Second Chinese tank batch (of the 93 ordered) lands at Sihanoukville or tanks leave containers.",
+          "due": null,
+          "ifSeen": "Grey-zone capability-building under a ceasefire; monthly review."
+        }
+      ],
+      "csi": {
+        "action": "Dashboard only",
+        "also": [
+          "Monthly pattern review"
+        ],
+        "rationale": "Nothing to publish this week; the permanent C-UAS centre and the signalling pattern are already in the monthly cycle via the Capabilities tab."
+      },
+      "ignore": {
+        "flag": false,
+        "reasons": [],
+        "note": ""
+      },
+      "confidence": "High",
+      "learningValue": "Medium",
+      "history": [
+        {
+          "date": "2026-04-27",
+          "state": "Active",
+          "note": "Baseline: near-abroad ceasefire, ASEAN observers."
+        }
+      ]
+    },
+    {
+      "id": "US_VE",
+      "name": "US–Venezuela",
+      "short": "US–VEN",
+      "tier": 2,
+      "state": "Active",
+      "prevState": "Active",
+      "briefTheatre": null,
+      "region": "Caribbean",
+      "geo": {
+        "lat": 8,
+        "lon": -66,
+        "countries": [
+          "862"
+        ],
+        "labelDx": 0,
+        "labelDy": 16,
+        "zones": [
+          {
+            "lat": 13,
+            "lon": -66.5,
+            "r": 4.5,
+            "label": "Caribbean posture"
+          }
+        ]
+      },
+      "dims": {
+        "phase": {
+          "now": "Post-intervention transition under US pressure",
+          "prev": "Post-intervention transition under US pressure"
+        },
+        "escalation": {
+          "now": "Moderate",
+          "prev": "Moderate"
+        },
+        "tempo": {
+          "now": "Low",
+          "prev": "Low"
+        },
+        "adaptation": {
+          "now": "Medium",
+          "prev": "Medium"
+        },
+        "sgExposure": {
+          "now": "Low",
+          "prev": "Low"
+        }
+      },
+      "whyNow": "No material change this week; retained as Active for the case-study value of the January 2026 operation and the post-intervention transition.",
+      "changes": [
+        "No material change since the previous review; US naval and air presence in the Caribbean remains the pressure lever on the transition arrangements."
+      ],
+      "next": [
+        {
+          "type": "Force movement",
+          "text": "Drawdown or reinforcement of the US carrier and amphibious presence in the Caribbean.",
+          "due": null,
+          "ifSeen": "Posture change → re-check escalation risk."
+        },
+        {
+          "type": "Diplomatic decision",
+          "text": "Announced timeline for national elections and sanctions decisions on the oil sector.",
+          "due": null,
+          "ifSeen": "Transition consolidating → consider moving to Watch."
+        },
+        {
+          "type": "Escalation indicator",
+          "text": "Armed-group (colectivo / ELN) violence against the transition authorities or US personnel.",
+          "due": null,
+          "ifSeen": "Weekly awareness post on post-intervention stabilisation."
+        }
+      ],
+      "csi": {
+        "action": "Monthly pattern review",
+        "also": [
+          "Quarterly candidate"
+        ],
+        "rationale": "Decapitation operation and post-intervention stabilisation are a pattern-review case, not a weekly item."
+      },
+      "ignore": {
+        "flag": false,
+        "reasons": [],
+        "note": "Seed entry — validate the transition picture at the next review."
+      },
+      "confidence": "Medium",
+      "learningValue": "Medium",
+      "history": [
+        {
+          "date": "2026-04-27",
+          "state": "Active",
+          "note": "Baseline: post-January 2026 operation; transition under US pressure."
+        }
+      ]
+    },
+    {
+      "id": "SCS",
+      "name": "South China Sea",
+      "short": "SCS",
+      "tier": 2,
+      "state": "Active",
+      "prevState": "Active",
+      "briefTheatre": null,
+      "region": "Maritime Southeast Asia",
+      "geo": {
+        "lat": 12,
+        "lon": 114.5,
+        "countries": [
+          "608"
+        ],
+        "labelDx": 0,
+        "labelDy": 16,
+        "zones": [
+          {
+            "lat": 12.5,
+            "lon": 114.5,
+            "r": 5.5,
+            "label": "Spratlys / Scarborough"
+          }
+        ]
+      },
+      "dims": {
+        "phase": {
+          "now": "Grey-zone contestation",
+          "prev": "Grey-zone contestation"
+        },
+        "escalation": {
+          "now": "Moderate",
+          "prev": "Moderate"
+        },
+        "tempo": {
+          "now": "Medium",
+          "prev": "Medium"
+        },
+        "adaptation": {
+          "now": "Medium",
+          "prev": "Medium"
+        },
+        "sgExposure": {
+          "now": "High",
+          "prev": "High"
+        }
+      },
+      "whyNow": "Steady-state coercion around Philippine-held features; high Singapore exposure through sea lines of communication and ASEAN centrality, with the Code of Conduct on the Philippine chairmanship's agenda.",
+      "changes": [
+        "No material change since the previous review; China Coast Guard and maritime-militia presence around Scarborough and Second Thomas Shoal continues at the established pattern."
+      ],
+      "next": [
+        {
+          "type": "Escalation indicator",
+          "text": "A Philippine resupply or patrol is blocked with injuries, a vessel is boarded, or a collision causes casualties.",
+          "due": null,
+          "ifSeen": "CSI Flash; move to Priority."
+        },
+        {
+          "type": "Diplomatic decision",
+          "text": "Code of Conduct milestones under the Philippine ASEAN chairmanship ahead of the year-end summits.",
+          "due": "2026-11-15",
+          "ifSeen": "Framework text agreed → Weekly awareness post."
+        },
+        {
+          "type": "Force movement",
+          "text": "PLA Navy or CCG surge around Sabina Shoal or Scarborough enforcement of the declared 'nature reserve'.",
+          "due": null,
+          "ifSeen": "Tempo up → re-check state."
+        }
+      ],
+      "csi": {
+        "action": "Dashboard only",
+        "also": [
+          "Monthly pattern review"
+        ],
+        "rationale": "Repetitive pattern; publish only on an incident threshold. Grey-zone coercion sequencing stays in the monthly pattern set."
+      },
+      "ignore": {
+        "flag": false,
+        "reasons": [],
+        "note": ""
+      },
+      "confidence": "Medium",
+      "learningValue": "Medium",
+      "history": [
+        {
+          "date": "2026-04-27",
+          "state": "Active",
+          "note": "Baseline: grey-zone contest, SLOC exposure."
+        }
+      ]
+    },
+    {
+      "id": "TW",
+      "name": "Taiwan Strait",
+      "short": "TWN",
+      "tier": 2,
+      "state": "Active",
+      "prevState": "Active",
+      "briefTheatre": null,
+      "region": "East Asia",
+      "geo": {
+        "lat": 24,
+        "lon": 120,
+        "countries": [
+          "158"
+        ],
+        "labelDx": 12,
+        "labelDy": 6,
+        "zones": [
+          {
+            "lat": 24.2,
+            "lon": 119.3,
+            "r": 2.6,
+            "label": "Strait"
+          }
+        ]
+      },
+      "dims": {
+        "phase": {
+          "now": "Coercive pressure without conflict",
+          "prev": "Coercive pressure without conflict"
+        },
+        "escalation": {
+          "now": "Moderate",
+          "prev": "Moderate"
+        },
+        "tempo": {
+          "now": "Medium",
+          "prev": "Medium"
+        },
+        "adaptation": {
+          "now": "High",
+          "prev": "Medium"
+        },
+        "sgExposure": {
+          "now": "Moderate",
+          "prev": "Moderate"
+        }
+      },
+      "whyNow": "Adaptation behaviour moved up: Taiwan's civilian drone-literacy programme (Kuma Academy) is a scalable whole-of-society mobilisation model with direct Army learning value.",
+      "changes": [
+        "Taiwan's Kuma Academy launched a fully booked civilian drone training programme (~75 citizens a month, GPS-free manual flying to bypass jamming) — civil resilience explicitly modelled on Ukraine.",
+        "PLA air and maritime activity around the island continues at the established pattern; no large named exercise this week."
+      ],
+      "next": [
+        {
+          "type": "Named event",
+          "text": "Han Kuang annual exercise (live-fire and whole-of-society phases).",
+          "due": "2026-07-13",
+          "ifSeen": "Watch civil-defence integration and reserve mobilisation drills for the monthly review."
+        },
+        {
+          "type": "Mobilisation sign",
+          "text": "PLA large-scale joint drill announced around a political trigger (transit, arms sale, legislative vote).",
+          "due": null,
+          "ifSeen": "Escalation risk to High; Weekly awareness post."
+        },
+        {
+          "type": "Threshold",
+          "text": "Sustained PLA presence inside the 24 nm contiguous zone or a blockade-style inspection regime.",
+          "due": null,
+          "ifSeen": "Move to Priority; CSI Flash."
+        }
+      ],
+      "csi": {
+        "action": "Monthly pattern review",
+        "also": [],
+        "rationale": "Civilian drone literacy and whole-of-society mobilisation are Army learning; no publication trigger this week."
+      },
+      "ignore": {
+        "flag": false,
+        "reasons": [],
+        "note": ""
+      },
+      "confidence": "Medium",
+      "learningValue": "High",
+      "history": [
+        {
+          "date": "2026-04-27",
+          "state": "Active",
+          "note": "Baseline: coercive pressure, civil-resilience learning."
+        }
+      ]
+    },
+    {
+      "id": "CN_JP",
+      "name": "China–Japan",
+      "short": "CHN–JPN",
+      "tier": 2,
+      "state": "Watch",
+      "prevState": "Watch",
+      "briefTheatre": null,
+      "region": "East Asia",
+      "geo": {
+        "lat": 26,
+        "lon": 124,
+        "countries": [
+          "392"
+        ],
+        "labelDx": 12,
+        "labelDy": -9,
+        "zones": [
+          {
+            "lat": 25.9,
+            "lon": 124,
+            "r": 2.4,
+            "label": "East China Sea"
+          }
+        ]
+      },
+      "dims": {
+        "phase": {
+          "now": "Diplomatic freeze with military signalling",
+          "prev": "Diplomatic freeze with military signalling"
+        },
+        "escalation": {
+          "now": "Moderate",
+          "prev": "Moderate"
+        },
+        "tempo": {
+          "now": "Low",
+          "prev": "Low"
+        },
+        "adaptation": {
+          "now": "Low",
+          "prev": "Low"
+        },
+        "sgExposure": {
+          "now": "Low",
+          "prev": "Low"
+        }
+      },
+      "whyNow": "Repetitive coast-guard presence around the Senkakus and diplomatic freeze; nothing new for the Army this week.",
+      "changes": [
+        "No material change since the previous review."
+      ],
+      "next": [
+        {
+          "type": "Escalation indicator",
+          "text": "Fire-control radar lock, aircraft intercept at unsafe distance, or a landing on the Senkakus.",
+          "due": null,
+          "ifSeen": "Move to Active; Weekly awareness post."
+        },
+        {
+          "type": "Force movement",
+          "text": "PLA Navy carrier group operating east of the first island chain with Japanese shadowing.",
+          "due": null,
+          "ifSeen": "Note only; tempo check."
+        }
+      ],
+      "csi": {
+        "action": "Dashboard only",
+        "also": [],
+        "rationale": "No publication value while the pattern is repetitive."
+      },
+      "ignore": {
+        "flag": true,
+        "reasons": [
+          "Repetitive",
+          "No current Army learning value"
+        ],
+        "note": "Revisit on any of the listed escalation indicators."
+      },
+      "confidence": "Medium",
+      "learningValue": "Low",
+      "history": [
+        {
+          "date": "2026-04-27",
+          "state": "Watch",
+          "note": "Baseline: diplomatic freeze since late 2025."
+        }
+      ]
+    },
+    {
+      "id": "IN_PK",
+      "name": "India–Pakistan",
+      "short": "IND–PAK",
+      "tier": 3,
+      "state": "Watch",
+      "prevState": "Watch",
+      "briefTheatre": null,
+      "region": "South Asia",
+      "geo": {
+        "lat": 33.5,
+        "lon": 74,
+        "countries": [
+          "356",
+          "586"
+        ],
+        "labelDx": 10,
+        "labelDy": -8
+      },
+      "dims": {
+        "phase": {
+          "now": "Armed peace after the May 2025 exchange",
+          "prev": "Armed peace after the May 2025 exchange"
+        },
+        "escalation": {
+          "now": "Moderate",
+          "prev": "Moderate"
+        },
+        "tempo": {
+          "now": "Low",
+          "prev": "Low"
+        },
+        "adaptation": {
+          "now": "Medium",
+          "prev": "Medium"
+        },
+        "sgExposure": {
+          "now": "Low",
+          "prev": "Low"
+        }
+      },
+      "whyNow": "Stable; the value is retrospective — the May 2025 stand-off strike, drone and air-defence exchange is a bounded case study.",
+      "changes": [
+        "No material change since the previous review; Line of Control quiet, Indus Waters Treaty still in abeyance."
+      ],
+      "next": [
+        {
+          "type": "Escalation indicator",
+          "text": "Mass-casualty attack in Jammu and Kashmir attributed to Pakistan-based groups.",
+          "due": null,
+          "ifSeen": "Move to Active immediately; expect a stand-off strike cycle within days."
+        },
+        {
+          "type": "Threshold",
+          "text": "Monsoon-season Indus flow disputes escalate to formal notices or dam-operation changes.",
+          "due": "2026-09-30",
+          "ifSeen": "Diplomatic escalation only; note for the quarterly."
+        },
+        {
+          "type": "Mobilisation sign",
+          "text": "Forward deployment of strike corps elements or air-defence redeployment along the border.",
+          "due": null,
+          "ifSeen": "Move to Active; Weekly awareness post."
+        }
+      ],
+      "csi": {
+        "action": "Quarterly candidate",
+        "also": [],
+        "rationale": "Four-day stand-off strike, drone and IADS exchange is a clean bounded case for the quarterly cycle."
+      },
+      "ignore": {
+        "flag": true,
+        "reasons": [
+          "Stable"
+        ],
+        "note": "Stable but retained: escalation, if it comes, is fast."
+      },
+      "confidence": "Medium",
+      "learningValue": "Medium",
+      "history": [
+        {
+          "date": "2026-04-27",
+          "state": "Watch",
+          "note": "Baseline: reserve; case-study value."
+        }
+      ]
+    },
+    {
+      "id": "MM",
+      "name": "Myanmar civil war",
+      "short": "MMR",
+      "tier": 3,
+      "state": "Watch",
+      "prevState": "Watch",
+      "briefTheatre": null,
+      "region": "Mainland Southeast Asia",
+      "geo": {
+        "lat": 21,
+        "lon": 96,
+        "countries": [
+          "104"
+        ],
+        "labelDx": -12,
+        "labelDy": -10
+      },
+      "dims": {
+        "phase": {
+          "now": "Protracted multi-front civil war",
+          "prev": "Protracted multi-front civil war"
+        },
+        "escalation": {
+          "now": "Moderate",
+          "prev": "Moderate"
+        },
+        "tempo": {
+          "now": "Medium",
+          "prev": "Medium"
+        },
+        "adaptation": {
+          "now": "Medium",
+          "prev": "Medium"
+        },
+        "sgExposure": {
+          "now": "Moderate",
+          "prev": "Moderate"
+        }
+      },
+      "whyNow": "Attritional and repetitive; reporting confidence is low. Held for the ASEAN dimension and resistance drone-warfare patterns.",
+      "changes": [
+        "No material change since the previous review; junta air strikes and resistance drone use continue at the established pattern."
+      ],
+      "next": [
+        {
+          "type": "Force movement",
+          "text": "Arakan Army moves on Sittwe or Kyaukphyu, or a major town changes hands.",
+          "due": null,
+          "ifSeen": "Move to Active for the ASEAN and refugee-flow dimension."
+        },
+        {
+          "type": "Diplomatic decision",
+          "text": "ASEAN decision on Myanmar's representation or a China-brokered ceasefire with a major ethnic armed organisation.",
+          "due": null,
+          "ifSeen": "Note for the monthly review."
+        }
+      ],
+      "csi": {
+        "action": "Dashboard only",
+        "also": [],
+        "rationale": "Repetitive pattern and low-confidence reporting; no current Army learning priority."
+      },
+      "ignore": {
+        "flag": true,
+        "reasons": [
+          "Repetitive",
+          "Low confidence",
+          "No current Army learning value"
+        ],
+        "note": "Revisit on a named force movement."
+      },
+      "confidence": "Low",
+      "learningValue": "Low",
+      "history": [
+        {
+          "date": "2026-04-27",
+          "state": "Watch",
+          "note": "Baseline: reserve."
+        }
+      ]
+    },
+    {
+      "id": "ME_SPILL",
+      "name": "Other Middle East spillover",
+      "short": "ME spill",
+      "tier": 3,
+      "state": "Watch",
+      "prevState": "Watch",
+      "briefTheatre": null,
+      "region": "Red Sea / Iraq / Syria",
+      "geo": {
+        "lat": 15.5,
+        "lon": 44.5,
+        "countries": [
+          "887",
+          "368",
+          "760"
+        ],
+        "labelDx": -14,
+        "labelDy": 16,
+        "zones": [
+          {
+            "lat": 14,
+            "lon": 42.5,
+            "r": 3.2,
+            "label": "Red Sea / Bab el-Mandeb"
+          }
+        ]
+      },
+      "dims": {
+        "phase": {
+          "now": "Proxy pressure linked to the Iran track",
+          "prev": "Proxy pressure linked to the Iran track"
+        },
+        "escalation": {
+          "now": "High",
+          "prev": "Moderate"
+        },
+        "tempo": {
+          "now": "Medium",
+          "prev": "Low"
+        },
+        "adaptation": {
+          "now": "Medium",
+          "prev": "Medium"
+        },
+        "sgExposure": {
+          "now": "High",
+          "prev": "High"
+        }
+      },
+      "whyNow": "Moved from Archive to Watch on 15 June when the Houthi Red Sea shipping ban was reinstated; this week IRGC-linked strikes on US basing raised escalation risk and tempo while the Iran track is unsettled.",
+      "changes": [
+        "Regional IRGC-linked missile strikes against US bases during the pre-stand-down escalation (22–29 June brief); escalation risk raised to High and tempo to Medium.",
+        "Houthi Red Sea shipping ban (reinstated 8 June) still in force; Singapore exposure remains High on Suez-route shipping risk."
+      ],
+      "next": [
+        {
+          "type": "Escalation indicator",
+          "text": "Houthi strike on a merchant vessel after the reinstated ban, or a Red Sea transit insurer withdrawal.",
+          "due": null,
+          "ifSeen": "CSI Flash on shipping-route exposure."
+        },
+        {
+          "type": "Escalation indicator",
+          "text": "Iraqi militia or IRGC-linked strike on US basing after the 29 June stand-down.",
+          "due": null,
+          "ifSeen": "Stand-down failing → mirror the US–Israel–Iran item."
+        },
+        {
+          "type": "Threshold",
+          "text": "Israel–Syria southern buffer-zone incident with casualties.",
+          "due": null,
+          "ifSeen": "Note only; monthly review."
+        }
+      ],
+      "csi": {
+        "action": "Weekly awareness post",
+        "also": [],
+        "rationale": "Shipping-route exposure changed; one awareness line this week. Otherwise track alongside the Iran item."
+      },
+      "ignore": {
+        "flag": false,
+        "reasons": [],
+        "note": ""
+      },
+      "confidence": "Medium",
+      "learningValue": "Low",
+      "history": [
+        {
+          "date": "2026-04-27",
+          "state": "Archive",
+          "note": "Baseline: dormant after the Red Sea lull."
+        },
+        {
+          "date": "2026-06-15",
+          "state": "Watch",
+          "note": "Houthi Red Sea ban reinstated 8 June."
+        }
+      ]
+    }
+  ]
+}

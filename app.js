@@ -10,6 +10,7 @@
  *   6.  FILTERS        — theatre/phase/trend/domain/search
  *   7.  RENDER         — weekly / monthly / quarterly views, both modes
  *   8.  CHARTS         — Chart.js instances (status, trend, domain, timeline)
+ *   8c. WATCHLIST      — conflict watchlist tracker + self-contained SVG map
  *   9.  EXPORT         — JSON / CSV / print (PDF-friendly)
  *  10.  APP            — init + event wiring
  *
@@ -25,12 +26,16 @@
   const State = {
     mode: "theatre",          // 'theatre' | 'division'
     division: "GEN",          // active division id
-    horizon: "weekly",        // 'weekly' | 'monthly' | 'quarterly' | 'capabilities'
+    horizon: "watchlist",     // 'watchlist' | 'weekly' | 'monthly' | 'quarterly' | 'capabilities'
     periodId: null,           // active week/month/quarter id
     formationGroup: "ALL",    // monthly tab: 'ALL' | formation-group id
     monthlyEchelon: "ALL",    // monthly group panel: 'ALL' | Brigade | Battalion | Company
     capEvidencedOnly: true,   // capabilities: default to brief-evidenced contests/caps only (lean, trustworthy default)
     theme: "light",
+    watchlist: {              // watchlist tab: filters + map focus + open rows
+      tiers: new Set(), states: new Set(), hideIgnored: false,
+      selected: null, region: "world", expanded: new Set()
+    },
     filters: {
       theatres:  new Set(),   // empty => all
       phases:    new Set(),
@@ -608,6 +613,7 @@
     renderActiveView() {
       // Capabilities & Countermeasures is a cross-cutting analytics view,
       // not tied to a weekly/monthly/quarterly period.
+      if (State.horizon === "watchlist") { Watchlist.render(); return; }
       if (State.horizon === "capabilities") { Caps.render(); return; }
       if (State.horizon === "monthly") { Monthly.render(); return; }
       const period = this.currentPeriod();
@@ -821,6 +827,10 @@
       };
     },
     json() {
+      if (State.horizon === "watchlist") {
+        this.download("conflict-watchlist.json", "application/json", JSON.stringify(Watchlist.exportObject(), null, 2));
+        return;
+      }
       if (State.horizon === "capabilities") {
         this.download("capabilities.json", "application/json", JSON.stringify(this.capabilitiesObject(), null, 2));
         return;
@@ -830,6 +840,11 @@
     },
     csv() {
       const q = (s) => `"${String(s == null ? "" : s).replace(/"/g, '""')}"`;
+      if (State.horizon === "watchlist") {
+        const rows = Watchlist.exportRows().map(r => r.map(q).join(","));
+        this.download("conflict-watchlist.csv", "text/csv", [Watchlist.exportCols().join(","), ...rows].join("\n"));
+        return;
+      }
       if (State.horizon === "capabilities") {
         const cols = ["name", "aka", "category", "role", "domain", "theatres", "lifecycle", "computedHeat", "computedTrend", "observations", "vector", "counteredBy", "supersededBy", "timeToCounterDays", "confidence"];
         const rows = Caps.list().map(c => [
@@ -1757,6 +1772,505 @@
     }
   };
 
+  /* ----------------------------------------------------------------------
+   * 8c. CONFLICT WATCHLIST  (attention tracker + map)
+   *     Analyst-maintained register (watchlist.json) rendered as a decision
+   *     page: where to spend attention, what moved, what changed, what to
+   *     watch next, what CSI should do, and what to ignore for now. All
+   *     ranking / movement / change flags are DERIVED here (deterministic and
+   *     explainable) — the register only stores the analyst's assessment.
+   *     Linked theatres are enriched with the latest brief edition (live if
+   *     synced, seed otherwise) so the brief signal is visible next to the
+   *     analyst's call.
+   * -------------------------------------------------------------------- */
+  const Watchlist = {
+    DIMS: ["phase", "escalation", "tempo", "adaptation", "sgExposure"],
+    TIER_R: { 1: 7, 2: 5.5, 3: 4.5 },          // marker radius by tier (map units at world zoom)
+    NEAR_DAYS: 14,
+
+    data() { return DB.watchlist || null; },
+    meta() { return this.data().meta; },
+    defs() { return this.data().definitions; },
+    items() { return this.data() ? this.data().items : []; },
+    byId(id) { return this.items().find(i => i.id === id); },
+    stateDef(s) { return this.defs().states[s] || { order: 9, tone: "neutral", desc: "" }; },
+    actionDef(a) { return this.defs().actions[a] || { order: 9, tone: "neutral", desc: "" }; },
+    stateOrder() { return Object.keys(this.defs().states).sort((a, b) => this.stateDef(a).order - this.stateDef(b).order); },
+    actionOrder() { return Object.keys(this.defs().actions).sort((a, b) => this.actionDef(a).order - this.actionDef(b).order); },
+    tone(t) { return `tone-${t || "neutral"}`; },
+    fmtDate(s) { return s ? new Date(s).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : "—"; },
+    today() { return Time.iso(new Date()); },
+    daysBetween(a, b) { return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86400000); },
+
+    // ---- derived analytics --------------------------------------------
+    changedDims(it) { return this.DIMS.filter(d => it.dims[d] && it.dims[d].prev != null && it.dims[d].now !== it.dims[d].prev); },
+    movement(it) {
+      if (!it.prevState || it.prevState === it.state) return null;
+      const a = this.stateDef(it.prevState).order, b = this.stateDef(it.state).order;
+      return { from: it.prevState, to: it.state, dir: b < a ? "up" : "down", date: this.moveDate(it) };
+    },
+    moveDate(it) {
+      const h = it.history || [];
+      const last = h[h.length - 1];
+      return last && last.state === it.state ? last.date : this.meta().reviewDate;
+    },
+    // History moves inside the recent window (default 28 days before the review date)
+    recentMoves(days) {
+      const cutoff = new Date(this.meta().reviewDate).getTime() - (days || 28) * 86400000;
+      const out = [];
+      this.items().forEach(it => {
+        const h = it.history || [];
+        h.forEach((e, i) => {
+          if (i === 0) return;   // the first entry is the baseline, not a move
+          if (new Date(e.date).getTime() >= cutoff && h[i - 1].state !== e.state)
+            out.push({ item: it, from: h[i - 1].state, to: e.state, date: e.date, note: e.note || "", dir: this.stateDef(e.state).order < this.stateDef(h[i - 1].state).order ? "up" : "down" });
+        });
+      });
+      return out.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+    },
+    score(it) {
+      const parts = [];
+      const st = { Priority: 40, Active: 25, Watch: 10, Archive: 0 }[it.state]; parts.push({ label: `State ${it.state}`, pts: st == null ? 0 : st });
+      const er = { Severe: 20, High: 15, Moderate: 8, Low: 2 }[it.dims.escalation.now]; parts.push({ label: `Escalation ${it.dims.escalation.now}`, pts: er == null ? 0 : er });
+      const ch = this.changedDims(it).length; if (ch) parts.push({ label: `${ch} dimension${ch === 1 ? "" : "s"} changed`, pts: ch * 5 });
+      const mv = this.movement(it); if (mv && mv.dir === "up") parts.push({ label: `Moved up (${mv.from} → ${mv.to})`, pts: 10 });
+      const ac = { "CSI Flash": 20, "Weekly awareness post": 10, "Monthly pattern review": 5, "Quarterly candidate": 3, "Dashboard only": 0 }[it.csi.action]; parts.push({ label: it.csi.action, pts: ac == null ? 0 : ac });
+      const sg = { High: 8, Moderate: 4, Low: 0 }[it.dims.sgExposure.now]; parts.push({ label: `SG exposure ${it.dims.sgExposure.now}`, pts: sg == null ? 0 : sg });
+      const tr = { 1: 6, 2: 3, 3: 0 }[it.tier]; parts.push({ label: `Tier ${it.tier}`, pts: tr == null ? 0 : tr });
+      return { total: parts.reduce((a, p) => a + p.pts, 0), parts };
+    },
+    rank(list) {
+      return list.slice().sort((a, b) =>
+        (a.ignore.flag - b.ignore.flag) || (this.score(b).total - this.score(a).total) || (a.tier - b.tier) || a.name.localeCompare(b.name));
+    },
+    // Latest brief edition for a linked theatre (live if synced, else seed), with the
+    // previous edition for a data-derived "what moved in the brief" signal.
+    briefSignal(it) {
+      if (!it.briefTheatre) return null;
+      const eds = DB.liveEditions || (DB.weeklyReports || []).slice().reverse();
+      const cur = eds[0], prev = eds[1];
+      const t = cur && cur.theatres && cur.theatres[it.briefTheatre]; if (!t) return null;
+      const p = prev && prev.theatres && prev.theatres[it.briefTheatre];
+      return {
+        live: !!DB.liveEditions,
+        label: cur.rangeLabel || Time.fmtRange(cur.weekStart, cur.weekEnd),
+        url: cur.sourceUrl || DB.liveSiteUrl || null,
+        phase: t.phase, trend: t.trend, score: t.conflictStatusScore,
+        prevPhase: p ? p.phase : null, prevTrend: p ? p.trend : null, prevScore: p ? p.conflictStatusScore : null,
+        delta: p ? (t.conflictStatusScore - p.conflictStatusScore) : null,
+        headline: ((t.developments || [])[0] && t.developments[0].headline) || (t.keyDevelopments || [])[0] || "", watch: t.watchAreas || "",
+        phaseChanged: !!(p && p.phase !== t.phase), trendChanged: !!(p && p.trend !== t.trend)
+      };
+    },
+    dueStatus(due) {
+      if (!due) return { cls: "undated", label: "Undated" };
+      const d = this.daysBetween(this.today(), due);
+      if (d < 0) return { cls: "passed", label: `Passed ${-d}d ago — confirm outcome` };
+      if (d <= this.NEAR_DAYS) return { cls: "near", label: d === 0 ? "Today" : `In ${d}d` };
+      return { cls: "later", label: `In ${d}d` };
+    },
+    nextDue(it) {
+      const dated = (it.next || []).filter(n => n.due).sort((a, b) => a.due.localeCompare(b.due));
+      return dated[0] || (it.next || [])[0] || null;
+    },
+    stale() {
+      const m = this.meta();
+      const days = this.daysBetween(m.reviewDate, this.today());
+      const cadence = m.cadenceDays || 7;
+      return { days, cadence, overdue: days > cadence * 1.5, nextDue: Time.iso(new Date(new Date(m.reviewDate).getTime() + cadence * 86400000)) };
+    },
+    quiet(it) { return !it.ignore.flag && !this.changedDims(it).length && !this.movement(it) && it.csi.action === "Dashboard only"; },
+
+    // ---- filters ---------------------------------------------------------
+    filtered() {
+      const f = State.watchlist;
+      return this.items().filter(it =>
+        (!f.tiers.size || f.tiers.has(String(it.tier))) &&
+        (!f.states.size || f.states.has(it.state)) &&
+        (!f.hideIgnored || !it.ignore.flag));
+    },
+
+    // ---- small render helpers -------------------------------------------
+    stateChip(s, extra) { return `<span class="chip wl-state ${this.tone(this.stateDef(s).tone)}" title="${esc(this.stateDef(s).desc)}">${esc(s)}${extra || ""}</span>`; },
+    tierTag(t) { return `<span class="wl-tier wl-tier-${t}" title="${esc((this.defs().tiers[t] || {}).name || "")}">T${t}</span>`; },
+    actionChip(a) { return `<span class="chip wl-action ${this.tone(this.actionDef(a).tone)}" title="${esc(this.actionDef(a).desc)}">${esc(a)}</span>`; },
+    moveGlyph(it) { const m = this.movement(it); return m ? `<span class="wl-move wl-move-${m.dir}" title="${esc(`${m.from} → ${m.to} (${this.fmtDate(m.date)})`)}">${m.dir === "up" ? "▲" : "▼"}</span>` : ""; },
+    confChip(c) { return c ? `<span class="ev-conf conf-${esc(String(c).toLowerCase())}">${esc(c)}</span>` : ""; },
+    nameBtn(it, cls) { return `<button class="wl-name ${cls || ""}" data-wl-open="${esc(it.id)}" title="Open ${esc(it.name)} in the register">${esc(it.name)}</button>`; },
+    scoreChip(it) {
+      const s = this.score(it);
+      return `<span class="wl-score tip" tabindex="0">${s.total}<span class="tip-body"><strong>Attention score</strong><br>${s.parts.map(p => `${esc(p.label)}: +${p.pts}`).join("<br>")}<br><em>Total ${s.total}</em></span></span>`;
+    },
+    dimCell(it, d) {
+      const v = it.dims[d]; if (!v) return `<td>—</td>`;
+      const changed = v.prev != null && v.prev !== v.now;
+      return `<td class="wl-dim ${changed ? "wl-chg" : ""}" title="${esc(changed ? `Previous review: ${v.prev} → now: ${v.now}` : `Unchanged since previous review (${v.now})`)}">` +
+        (changed ? `<span class="wl-prev">${esc(v.prev)}</span> → ` : "") + `<strong>${esc(v.now)}</strong></td>`;
+    },
+
+    // ---- MAP (self-contained SVG, equirectangular, no tiles) -------------
+    Map: {
+      W: 1000, LAT_MAX: 84, LAT_MIN: -58,
+      H() { return Math.round((this.LAT_MAX - this.LAT_MIN) * this.W / 360); },
+      px(lon) { return (lon + 180) * this.W / 360; },
+      py(lat) { return (this.LAT_MAX - lat) * this.W / 360; },
+      deg(d) { return d * this.W / 360; },     // degrees → map units (for zone radii)
+      // Preset focus regions [lonWest, latNorth, lonEast, latSouth]
+      REGIONS: {
+        world:    { label: "World",        box: null },
+        europe:   { label: "Europe",       box: [-12, 72, 62, 36] },
+        mideast:  { label: "Middle East",  box: [24, 42, 66, 10] },
+        sasia:    { label: "South Asia",   box: [58, 38, 100, 4] },
+        indopac:  { label: "Indo-Pacific", box: [88, 46, 152, -12] },
+        americas: { label: "Americas",     box: [-100, 35, -50, -5] }
+      },
+      regionFor(geo) {
+        const order = ["mideast", "europe", "sasia", "indopac", "americas"];
+        return order.find(k => { const b = this.REGIONS[k].box; return geo.lon >= b[0] && geo.lon <= b[2] && geo.lat <= b[1] && geo.lat >= b[3]; }) || "world";
+      },
+      viewBox(region) {
+        const r = this.REGIONS[region] || this.REGIONS.world;
+        if (!r.box) return [0, 0, this.W, this.H()];
+        const [w, n, e, s] = r.box;
+        let x = this.px(w), y = this.py(n), bw = this.px(e) - x, bh = this.py(s) - y;
+        const aspect = this.W / this.H();
+        if (bw / bh > aspect) { const nh = bw / aspect; y -= (nh - bh) / 2; bh = nh; }
+        else { const nw = bh * aspect; x -= (nw - bw) / 2; bw = nw; }
+        return [x, y, bw, bh].map(v => Math.round(v * 10) / 10);
+      },
+      pathFor(country) {
+        return country.rings.map(r => "M" + r.map(([lon, lat]) => `${this.px(lon).toFixed(1)},${this.py(lat).toFixed(1)}`).join("L") + "Z").join("");
+      },
+      render(items, selected, region) {
+        const world = DB.world && DB.world.countries ? DB.world.countries : [];
+        const vb = this.viewBox(region);
+        const k = vb[2] / this.W;                    // zoom factor (1 = world)
+        // Which state colours each involved country (highest-priority state wins)
+        const fill = {};
+        items.forEach(it => (it.geo.countries || []).forEach(c => {
+          const o = Watchlist.stateDef(it.state).order;
+          if (!fill[c] || o < fill[c].order) fill[c] = { order: o, tone: Watchlist.stateDef(it.state).tone, id: it.id };
+        }));
+        const land = world.map(c => {
+          const f = fill[c.id];
+          return `<path class="wl-land ${f ? `wl-fill-${f.tone}` : ""}" d="${this.pathFor(c)}"${f ? ` data-wl-country="${esc(f.id)}"` : ""}><title>${esc(c.name)}</title></path>`;
+        }).join("");
+        const zones = items.flatMap(it => (it.geo.zones || []).map(z =>
+          `<circle class="wl-zone wl-zone-${Watchlist.stateDef(it.state).tone}" cx="${this.px(z.lon).toFixed(1)}" cy="${this.py(z.lat).toFixed(1)}" r="${this.deg(z.r).toFixed(1)}"><title>${esc(z.label || it.name)}</title></circle>`)).join("");
+        const fs = (11 * k).toFixed(2);
+        const markers = Watchlist.rank(items).reverse().map(it => {   // draw high-attention markers last (on top)
+          const x = this.px(it.geo.lon), y = this.py(it.geo.lat);
+          const r = (Watchlist.TIER_R[it.tier] || 4.5) * k;
+          const sel = selected === it.id;
+          const mv = Watchlist.movement(it);
+          const tone = Watchlist.stateDef(it.state).tone;
+          const tip = `${it.name} · Tier ${it.tier} · ${it.state}${mv ? ` (${mv.dir === "up" ? "moved up" : "moved down"} from ${mv.from})` : ""} · Escalation ${it.dims.escalation.now} · ${it.csi.action}`;
+          const lx = x + (it.geo.labelDx || 0) * k, ly = y + (it.geo.labelDy || -12) * k;
+          const anchor = (it.geo.labelDx || 0) > 4 ? "start" : (it.geo.labelDx || 0) < -4 ? "end" : "middle";
+          return `<g class="wl-marker wl-m-${tone} ${sel ? "selected" : ""} ${it.ignore.flag ? "ignored" : ""}" data-wl="${esc(it.id)}" tabindex="0" role="button" aria-label="${esc(tip)}">
+            <title>${esc(tip)}</title>
+            ${sel ? `<circle class="wl-ring" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(r * 2.2).toFixed(1)}"/>` : ""}
+            <circle class="wl-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"/>
+            ${mv ? `<text class="wl-mv wl-mv-${mv.dir}" x="${(x + r * 0.9).toFixed(1)}" y="${(y - r * 0.9).toFixed(1)}" font-size="${(9 * k).toFixed(2)}">${mv.dir === "up" ? "▲" : "▼"}</text>` : ""}
+            <text class="wl-label" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" font-size="${fs}" text-anchor="${anchor}">${esc(it.short || it.name)}</text>
+          </g>`;
+        }).join("");
+        return `<svg class="wl-svg" viewBox="${vb.join(" ")}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Conflict watchlist map">
+          <rect class="wl-sea" x="0" y="0" width="${this.W}" height="${this.H()}"/>
+          <g class="wl-land-g">${land || `<text x="500" y="200" text-anchor="middle" class="wl-nomap">Base map unavailable — markers only</text>`}</g>
+          <g class="wl-zones">${zones}</g>
+          <g class="wl-markers">${markers}</g>
+        </svg>`;
+      }
+    },
+
+    // ---- sections ------------------------------------------------------------
+    header(list) {
+      const m = this.meta(), st = this.stale();
+      const counts = this.stateOrder().map(s => `${this.stateChip(s, ` <b>${this.items().filter(i => i.state === s).length}</b>`)}`).join(" ");
+      const f = State.watchlist;
+      const tierChips = Object.keys(this.defs().tiers).map(t =>
+        `<button class="fchip wl-f-tier" aria-pressed="${f.tiers.has(t)}" data-tier="${t}" title="${esc(this.defs().tiers[t].desc)}">Tier ${t} · ${esc(this.defs().tiers[t].name)}</button>`).join("");
+      const stateChips = this.stateOrder().map(s =>
+        `<button class="fchip wl-f-state" aria-pressed="${f.states.has(s)}" data-state="${s}" title="${esc(this.stateDef(s).desc)}">${esc(s)}</button>`).join("");
+      return `<div class="card card-pad wl-head">
+        <div class="wl-head-row">
+          <div>
+            <div class="wl-title">${esc(m.title || "Conflict Watchlist")} <span class="wl-asof">— review as of ${esc(this.fmtDate(m.reviewDate))}</span></div>
+            <div class="wl-sub">Previous review ${esc(this.fmtDate(m.previousReviewDate))} · ${m.cadenceDays || 7}-day cadence · ${this.items().length} items · showing ${list.length} &nbsp; ${counts}</div>
+          </div>
+          <div class="wl-stale ${st.overdue ? "overdue" : "fresh"}" title="${esc(st.overdue ? `Review due ${this.fmtDate(st.nextDue)}; ${st.days} days since the last review.` : `Next review due ${this.fmtDate(st.nextDue)}.`)}">
+            ${st.overdue ? `⚠ Review overdue — ${st.days} days since last review` : `✓ Reviewed ${st.days} day${st.days === 1 ? "" : "s"} ago`}
+          </div>
+        </div>
+        <div class="wl-filter-row">
+          <span class="wl-filter-lbl">Tier</span><span class="chip-row">${tierChips}</span>
+          <span class="wl-filter-lbl">State</span><span class="chip-row">${stateChips}</span>
+          <button class="fchip wl-f-ignored" aria-pressed="${f.hideIgnored}" title="Hide items flagged ignore-for-now (Q7)">Hide ignorable</button>
+          ${(f.tiers.size || f.states.size || f.hideIgnored) ? `<button class="link-btn" data-wl-reset>Clear filters</button>` : ""}
+        </div>
+      </div>`;
+    },
+
+    attention(list) {
+      const ranked = this.rank(list);
+      const top = ranked.filter(i => !i.ignore.flag).slice(0, 5);
+      const rest = ranked.length - top.length;
+      const dashOnly = list.filter(i => i.csi.action === "Dashboard only" && !i.ignore.flag).length;
+      const ignored = list.filter(i => i.ignore.flag).length;
+      const rows = top.map((it, i) => `<li class="wl-rank-item">
+          <span class="wl-rank-n">${i + 1}</span>
+          <div class="wl-rank-body">
+            <div class="wl-rank-head">${this.nameBtn(it, "wl-name-lg")} ${this.tierTag(it.tier)} ${this.stateChip(it.state, this.moveGlyph(it))} ${this.actionChip(it.csi.action)} ${this.scoreChip(it)}</div>
+            <div class="wl-rank-why">${esc(it.whyNow || "")}</div>
+          </div></li>`).join("");
+      return `<div class="section"><div class="section-head"><h2>Q1 · What deserves attention now?</h2><span class="hint">Ranked by the explainable attention score — hover a score for its breakdown</span></div>
+        <div class="card bluf-card card-pad wl-bluf">
+          <div class="bluf-label">Where to spend limited attention this week</div>
+          ${top.length ? `<ol class="wl-rank">${rows}</ol>` : `<p class="muted-note">No items match the current filters.</p>`}
+          <div class="bluf-sub">${rest > 0 ? `${rest} further item${rest === 1 ? "" : "s"} below the fold in the register. ` : ""}${dashOnly} on <em>Dashboard only</em> with no change · ${ignored} flagged ignore-for-now (see Q7).</div>
+        </div></div>`;
+    },
+
+    mapSection(list) {
+      const f = State.watchlist;
+      const regionBtns = Object.entries(this.Map.REGIONS).map(([k, r]) =>
+        `<button class="fchip wl-region" aria-pressed="${f.region === k}" data-region="${k}">${esc(r.label)}</button>`).join("");
+      const legend = this.stateOrder().map(s => `<span class="wl-lg"><i class="wl-lg-dot wl-m-${this.stateDef(s).tone}"></i>${esc(s)}</span>`).join("") +
+        `<span class="wl-lg"><i class="wl-lg-dot wl-lg-t1"></i>Tier 1 (large) → Tier 3 (small)</span><span class="wl-lg"><i class="wl-lg-zone"></i>Maritime / zone watch</span><span class="wl-lg">▲▼ state moved this review</span>`;
+      const moves = list.filter(it => this.movement(it)).map(it => {
+        const m = this.movement(it);
+        return `<li class="wl-mv-item"><span class="wl-move wl-move-${m.dir}">${m.dir === "up" ? "▲" : "▼"}</span> ${this.nameBtn(it)} <span class="wl-mv-path">${this.stateChip(m.from)} → ${this.stateChip(m.to)}</span><div class="wl-mv-note">${esc(it.whyNow || "")}</div></li>`;
+      });
+      const recent = this.recentMoves(28).filter(r => list.includes(r.item) && !(this.movement(r.item) && this.movement(r.item).to === r.to && this.movement(r.item).from === r.from));
+      const recentRows = recent.map(r => `<li class="wl-mv-item minor"><span class="wl-move wl-move-${r.dir}">${r.dir === "up" ? "▲" : "▼"}</span> ${this.nameBtn(r.item)} <span class="wl-mv-path">${esc(r.from)} → ${esc(r.to)} · ${esc(this.fmtDate(r.date))}</span>${r.note ? `<div class="wl-mv-note">${esc(r.note)}</div>` : ""}</li>`);
+      const briefMoves = list.map(it => ({ it, b: this.briefSignal(it) })).filter(x => x.b && (x.b.phaseChanged || x.b.trendChanged)).map(x =>
+        `<li class="wl-mv-item minor"><span class="wl-move wl-move-brief">◆</span> ${this.nameBtn(x.it)} <span class="wl-mv-path">brief: ${x.b.phaseChanged ? `${esc(x.b.prevPhase)} → <strong>${esc(x.b.phase)}</strong>` : ""}${x.b.phaseChanged && x.b.trendChanged ? " · " : ""}${x.b.trendChanged ? `${esc(x.b.prevTrend)} → <strong>${esc(x.b.trend)}</strong>` : ""}</span></li>`);
+      const board = this.stateOrder().map(s => {
+        const col = this.rank(list.filter(i => i.state === s));
+        return `<div class="wl-col wl-col-${this.stateDef(s).tone}"><div class="wl-col-h">${this.stateChip(s)} <span class="wl-col-n">${col.length}</span><div class="wl-col-desc">${esc(this.stateDef(s).desc)}</div></div>
+          <div class="wl-col-body">${col.map(it => `<button class="wl-card-chip ${this.movement(it) ? "moved" : ""} ${it.ignore.flag ? "ignored" : ""}" data-wl-open="${esc(it.id)}">${this.tierTag(it.tier)} ${esc(it.name)} ${this.moveGlyph(it)}</button>`).join("") || `<div class="muted-note">—</div>`}</div></div>`;
+      }).join("");
+      return `<div class="section"><div class="section-head"><h2>Map &amp; Q2 · Which theatres moved?</h2><span class="hint">Marker colour = monitoring state · size = tier · click a marker to open its register row</span></div>
+        <div class="wl-map-grid">
+          <div class="card card-pad wl-map-card">
+            <div class="wl-map-tools"><span class="wl-filter-lbl">Focus</span><span class="chip-row">${regionBtns}</span></div>
+            <div class="wl-map-wrap">${this.Map.render(list, f.selected, f.region)}</div>
+            <div class="wl-legend">${legend}</div>
+          </div>
+          <div class="card card-pad wl-moves-card">
+            <div class="wl-card-h">Moved since previous review (${esc(this.fmtDate(this.meta().previousReviewDate))})</div>
+            ${moves.length ? `<ul class="wl-mv-list">${moves.join("")}</ul>` : `<p class="muted-note">No state changes at this review.</p>`}
+            ${recentRows.length ? `<div class="wl-card-h sub">Earlier moves (last 4 weeks)</div><ul class="wl-mv-list">${recentRows.join("")}</ul>` : ""}
+            ${briefMoves.length ? `<div class="wl-card-h sub">Brief signal moved (latest vs previous edition)</div><ul class="wl-mv-list">${briefMoves.join("")}</ul>` : ""}
+          </div>
+        </div>
+        <div class="wl-board">${board}</div>
+      </div>`;
+    },
+
+    detail(it) {
+      const b = this.briefSignal(it);
+      const chg = this.changedDims(it);
+      const dimsLine = chg.length
+        ? chg.map(d => `<span class="wl-chg-pill">${esc(this.defs().dimensions[d].short)}: ${esc(it.dims[d].prev)} → <strong>${esc(it.dims[d].now)}</strong></span>`).join(" ")
+        : `<span class="muted-note">No dimension changed since the previous review.</span>`;
+      const next = (it.next || []).map(n => {
+        const ds = this.dueStatus(n.due);
+        return `<li class="wl-ind"><span class="wl-ind-type">${esc(n.type)}</span> <span class="wl-due wl-due-${ds.cls}" title="${esc(n.due || "no date")}">${n.due ? esc(this.fmtDate(n.due)) + " · " : ""}${esc(ds.label)}</span><div class="wl-ind-text">${esc(n.text)}</div>${n.ifSeen ? `<div class="wl-ind-if">If seen → ${esc(n.ifSeen)}</div>` : ""}</li>`;
+      }).join("");
+      const hist = (it.history || []).slice().reverse().map(h => `<li><span class="wl-hist-d">${esc(this.fmtDate(h.date))}</span> ${this.stateChip(h.state)} <span class="muted-note">${esc(h.note || "")}</span></li>`).join("");
+      const briefBlock = b ? `<div class="wl-d-block wl-brief">
+          <div class="wl-d-h">Brief signal ${b.live ? `<span class="briefs-live">● LIVE</span>` : `<span class="t-chip">seed</span>`} · ${b.url ? `<a href="${esc(b.url)}" target="_blank" rel="noopener">${esc(b.label)} ↗</a>` : esc(b.label)}</div>
+          <div class="wl-brief-line">${Render.phaseTag(b.phase)} ${Render.trendChip(b.trend)} <span class="t-chip" title="Conflict status score, latest vs previous edition">score ${b.score}${b.delta != null ? ` (${b.delta > 0 ? "+" : ""}${b.delta})` : ""}</span>${b.phaseChanged ? ` <span class="wl-chg-pill">phase was: ${esc(b.prevPhase)}</span>` : ""}${b.trendChanged ? ` <span class="wl-chg-pill">trend was: ${esc(b.prevTrend)}</span>` : ""}</div>
+          ${b.headline ? `<div class="wl-brief-hl">${esc(b.headline)}</div>` : ""}
+          ${b.watch ? `<div class="wl-brief-watch"><strong>Brief watch:</strong> ${esc(b.watch)}</div>` : ""}
+        </div>` : `<div class="wl-d-block"><div class="wl-d-h">Brief signal</div><p class="muted-note">Not a briefed theatre — assessment rests on the analyst review only.</p></div>`;
+      return `<div class="wl-detail-grid">
+        <div class="wl-d-block"><div class="wl-d-h">Q3 · What materially changed</div>
+          <div class="wl-chg-line">${dimsLine}</div>
+          <ul class="wl-bullets">${(it.changes || []).map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>
+        <div class="wl-d-block"><div class="wl-d-h">Q5 · What might happen next</div>${next ? `<ul class="wl-ind-list">${next}</ul>` : `<p class="muted-note">No indicators recorded.</p>`}</div>
+        <div class="wl-d-block"><div class="wl-d-h">Q6 · What CSI should do</div>
+          <div>${this.actionChip(it.csi.action)} ${(it.csi.also || []).map(a => `<span class="t-chip">also: ${esc(a)}</span>`).join(" ")}</div>
+          <p class="wl-d-p">${esc(it.csi.rationale || "")}</p>
+          <div class="wl-d-h sub">Q7 · Ignore for now?</div>
+          <p class="wl-d-p">${it.ignore.flag ? `<strong>Yes</strong> — ${it.ignore.reasons.map(r => `<span class="tag">${esc(r)}</span>`).join(" ")} ${esc(it.ignore.note || "")}` : `<strong>No</strong> — keep on the active watch.${it.ignore.note ? " " + esc(it.ignore.note) : ""}`}</p>
+          <div class="wl-d-meta">Confidence ${this.confChip(it.confidence)} · Army learning value <strong>${esc(it.learningValue || "—")}</strong> · Region ${esc(it.region || "—")}</div></div>
+        ${briefBlock}
+        <div class="wl-d-block wl-hist"><div class="wl-d-h">State history</div><ul class="wl-hist-list">${hist || "<li class='muted-note'>—</li>"}</ul>
+          <button class="btn wl-show-map" data-wl-map="${esc(it.id)}">📍 Show on map</button></div>
+      </div>`;
+    },
+
+    register(list) {
+      const ranked = this.rank(list);
+      const f = State.watchlist;
+      const dimHead = this.DIMS.map(d => `<th title="${esc(this.defs().dimensions[d].label)}">${esc(this.defs().dimensions[d].short)}</th>`).join("");
+      const rows = ranked.map((it, i) => {
+        const open = f.expanded.has(it.id);
+        const nd = this.nextDue(it);
+        const ds = nd ? this.dueStatus(nd.due) : null;
+        const chg = this.changedDims(it).length;
+        return `<tr class="wl-row ${open ? "open" : ""} ${f.selected === it.id ? "selected" : ""} ${it.ignore.flag ? "ignored" : ""}" data-wl-row="${esc(it.id)}" id="wl-row-${esc(it.id)}">
+          <td class="wl-n">${i + 1}</td>
+          <td>${this.tierTag(it.tier)}</td>
+          <td class="theatre-cell"><button class="wl-expand" data-wl-toggle="${esc(it.id)}" aria-expanded="${open}" title="${open ? "Collapse" : "Expand"}">${open ? "▾" : "▸"}</button> ${esc(it.name)}${it.briefTheatre ? ` <span class="t-chip" title="Linked to the weekly brief theatre">brief</span>` : ""}</td>
+          <td>${this.stateChip(it.state, this.moveGlyph(it))}</td>
+          ${this.DIMS.map(d => this.dimCell(it, d)).join("")}
+          <td class="wl-chgn ${chg ? "wl-chg" : ""}" title="Dimensions changed since the previous review">${chg ? `${chg} changed` : "—"}</td>
+          <td class="wl-next">${nd ? `<span class="wl-due wl-due-${ds.cls}">${nd.due ? esc(this.fmtDate(nd.due)) : "undated"}</span> <span class="wl-next-t">${esc(nd.text)}</span>` : "—"}</td>
+          <td>${this.actionChip(it.csi.action)}</td>
+          <td>${this.confChip(it.confidence)}</td>
+          <td>${this.scoreChip(it)}</td>
+        </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="${11 + this.DIMS.length}">${this.detail(it)}</td></tr>` : ""}`;
+      }).join("");
+      return `<div class="section"><div class="section-head"><h2>Q3 &amp; Q4 · What materially changed?</h2><span class="hint">Register ordered by attention · highlighted cells changed since the previous review (hover for previous value) · expand a row for changes, indicators, CSI call and the brief signal</span>
+          <div class="head-actions"><button class="btn" data-wl-expand-all>Expand all</button><button class="btn" data-wl-collapse-all>Collapse all</button></div></div>
+        <div class="card matrix-wrap"><table class="matrix wl-register" id="wl-register"><thead><tr>
+          <th>#</th><th>Tier</th><th>Conflict</th><th>State</th>${dimHead}<th>Changed</th><th>Next indicator</th><th>CSI action</th><th>Conf.</th><th title="Attention score">Attn</th>
+        </tr></thead><tbody>${rows || `<tr><td colspan="${11 + this.DIMS.length}" class="empty">No items match the current filters.</td></tr>`}</tbody></table></div></div>`;
+    },
+
+    indicators(list) {
+      const ranked = this.rank(list);
+      const all = [];
+      ranked.forEach((it, r) => (it.next || []).forEach(n => all.push({ it, n, r })));
+      const dated = all.filter(x => x.n.due).sort((a, b) => a.n.due.localeCompare(b.n.due) || a.r - b.r);
+      const undated = all.filter(x => !x.n.due);
+      const row = x => {
+        const ds = this.dueStatus(x.n.due);
+        return `<tr class="${x.it.ignore.flag ? "ignored" : ""}"><td class="wl-due-cell"><span class="wl-due wl-due-${ds.cls}">${x.n.due ? esc(this.fmtDate(x.n.due)) : "—"}</span><div class="wl-due-sub">${esc(ds.label)}</div></td>
+          <td>${this.nameBtn(x.it)} ${this.tierTag(x.it.tier)}</td><td><span class="wl-ind-type">${esc(x.n.type)}</span></td><td>${esc(x.n.text)}</td><td class="wl-ifseen">${esc(x.n.ifSeen || "")}</td></tr>`;
+      };
+      return `<div class="section"><div class="section-head"><h2>Q5 · What might happen next?</h2><span class="hint">Named events, thresholds, deadlines, mobilisation signs, force movements, diplomatic decisions and escalation indicators — dated first</span></div>
+        <div class="card matrix-wrap"><table class="matrix wl-indicators" id="wl-indicators"><thead><tr><th>Due</th><th>Conflict</th><th>Type</th><th>Indicator to watch</th><th>If seen →</th></tr></thead>
+        <tbody>${dated.map(row).join("")}${undated.length ? `<tr class="wl-sep"><td colspan="5">Undated indicators (trigger-based)</td></tr>${undated.map(row).join("")}` : ""}${!all.length ? `<tr><td colspan="5" class="empty">No indicators for the current filters.</td></tr>` : ""}</tbody></table></div></div>`;
+    },
+
+    actions(list) {
+      const ranked = this.rank(list);
+      const cols = this.actionOrder().map(a => {
+        const primary = ranked.filter(i => i.csi.action === a);
+        const also = ranked.filter(i => i.csi.action !== a && (i.csi.also || []).includes(a));
+        return `<div class="wl-act-col wl-act-${this.actionDef(a).tone}">
+          <div class="wl-act-h">${this.actionChip(a)} <span class="wl-col-n">${primary.length}</span><div class="wl-col-desc">${esc(this.actionDef(a).desc)}</div></div>
+          ${primary.map(it => `<div class="wl-act-item"><div>${this.nameBtn(it)} ${this.tierTag(it.tier)}</div><div class="wl-act-why">${esc(it.csi.rationale || "")}</div></div>`).join("") || `<div class="muted-note">Nothing this week.</div>`}
+          ${also.length ? `<div class="wl-act-also">Also feeds: ${also.map(it => this.nameBtn(it)).join(", ")}</div>` : ""}
+        </div>`;
+      }).join("");
+      return `<div class="section"><div class="section-head"><h2>Q6 · What should CSI do with it?</h2><span class="hint">Publication decision per item — one primary action, optional secondary feeds</span></div><div class="wl-act-grid">${cols}</div></div>`;
+    },
+
+    ignoreSection(list) {
+      const flagged = this.rank(list).filter(i => i.ignore.flag);
+      const quiet = this.rank(list).filter(i => this.quiet(i));
+      const trig = it => { const e = (it.next || []).find(n => /escalat|threshold|mobilis|force/i.test(n.type)) || (it.next || [])[0]; return e ? e.text : "—"; };
+      const rows = flagged.map(it => `<li class="wl-ig-item"><div>${this.nameBtn(it)} ${this.tierTag(it.tier)} ${this.stateChip(it.state)} ${it.ignore.reasons.map(r => `<span class="tag">${esc(r)}</span>`).join(" ")}</div>
+          <div class="wl-ig-note">${esc(it.ignore.note || "")}</div><div class="wl-ig-trig"><strong>Revisit trigger:</strong> ${esc(trig(it))}</div></li>`).join("");
+      return `<div class="section"><div class="section-head"><h2>Q7 · What can be ignored for now?</h2><span class="hint">Stable, repetitive, low-confidence, or no current Army learning value — with the trigger that would bring each back</span></div>
+        <div class="card card-pad">
+          ${rows ? `<ul class="wl-ig-list">${rows}</ul>` : `<p class="muted-note">Nothing is flagged ignore-for-now in the current filter.</p>`}
+          ${quiet.length ? `<div class="wl-quiet"><strong>Quiet this review (not flagged):</strong> ${quiet.map(it => this.nameBtn(it)).join(", ")} — no dimension changed, no state move, Dashboard only.</div>` : ""}
+        </div></div>`;
+    },
+
+    method() {
+      const m = this.meta(), d = this.defs();
+      return `<details class="wl-method"><summary>How this page derives its answers · how to update the register</summary>
+        <div class="wl-method-body">
+          <p><strong>Attention score.</strong> ${esc((d.attentionScore || {}).desc || "")}</p>
+          <p><strong>Moved / changed.</strong> A state move is <code>prevState ≠ state</code>; a changed dimension is <code>prev ≠ now</code>. The brief signal compares the latest brief edition with the one before it for linked theatres.</p>
+          <p><strong>Staleness.</strong> Flagged when more than 1.5× the cadence has passed since <code>reviewDate</code>.</p>
+          <p><strong>Updating.</strong> ${esc(m.notes || "")} Source file: <code>watchlist.json</code>.</p>
+          <p><strong>Tiers.</strong> ${Object.entries(d.tiers).map(([k, t]) => `T${k} ${esc(t.name)} — ${esc(t.desc)}`).join(" · ")}</p>
+          <p><strong>States.</strong> ${this.stateOrder().map(s => `${esc(s)} — ${esc(this.stateDef(s).desc)}`).join(" · ")}</p>
+        </div></details>`;
+    },
+
+    // ---- top-level render + wiring ------------------------------------------
+    render() {
+      Charts.destroyAll();
+      const container = el("#view-watchlist .view-body");
+      if (!this.data()) {
+        el("#meta-range").textContent = "—";
+        container.innerHTML = `<div class="empty">watchlist.json could not be loaded. Add the register file next to the dashboard (see README) and reload.</div>`;
+        return;
+      }
+      const m = this.meta();
+      el("#meta-range").textContent = `Review ${Time.fmtRange(m.previousReviewDate, m.reviewDate)}`;
+      const list = this.filtered();
+      container.innerHTML =
+        this.header(list) +
+        this.attention(list) +
+        this.mapSection(list) +
+        this.register(list) +
+        this.indicators(list) +
+        this.actions(list) +
+        this.ignoreSection(list) +
+        this.method();
+      this.wire(container);
+    },
+
+    open(id, scroll) {
+      State.watchlist.selected = id;
+      State.watchlist.expanded.add(id);
+      this.render();
+      if (scroll) { const row = document.getElementById(`wl-row-${id}`); if (row && row.scrollIntoView) row.scrollIntoView({ behavior: "smooth", block: "center" }); }
+    },
+
+    wire(root) {
+      const f = State.watchlist;
+      root.querySelectorAll(".wl-f-tier").forEach(b => b.addEventListener("click", () => { const t = b.dataset.tier; f.tiers.has(t) ? f.tiers.delete(t) : f.tiers.add(t); this.render(); }));
+      root.querySelectorAll(".wl-f-state").forEach(b => b.addEventListener("click", () => { const s = b.dataset.state; f.states.has(s) ? f.states.delete(s) : f.states.add(s); this.render(); }));
+      const ig = root.querySelector(".wl-f-ignored"); if (ig) ig.addEventListener("click", () => { f.hideIgnored = !f.hideIgnored; this.render(); });
+      const rs = root.querySelector("[data-wl-reset]"); if (rs) rs.addEventListener("click", () => { f.tiers.clear(); f.states.clear(); f.hideIgnored = false; this.render(); });
+      root.querySelectorAll(".wl-region").forEach(b => b.addEventListener("click", () => { f.region = b.dataset.region; this.render(); }));
+      root.querySelectorAll(".wl-marker").forEach(g => {
+        const act = () => this.open(g.dataset.wl, true);
+        g.addEventListener("click", act);
+        g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act(); } });
+      });
+      root.querySelectorAll("[data-wl-open]").forEach(b => b.addEventListener("click", () => this.open(b.getAttribute("data-wl-open"), true)));
+      root.querySelectorAll("[data-wl-toggle]").forEach(b => b.addEventListener("click", () => {
+        const id = b.getAttribute("data-wl-toggle");
+        f.expanded.has(id) ? f.expanded.delete(id) : f.expanded.add(id);
+        f.selected = id; this.render();
+      }));
+      root.querySelectorAll("[data-wl-map]").forEach(b => b.addEventListener("click", () => {
+        const it = this.byId(b.getAttribute("data-wl-map")); if (!it) return;
+        f.selected = it.id; f.region = this.Map.regionFor(it.geo); this.render();
+        const map = document.querySelector(".wl-map-card"); if (map && map.scrollIntoView) map.scrollIntoView({ behavior: "smooth", block: "center" });
+      }));
+      const ea = root.querySelector("[data-wl-expand-all]"); if (ea) ea.addEventListener("click", () => { this.filtered().forEach(i => f.expanded.add(i.id)); this.render(); });
+      const ca = root.querySelector("[data-wl-collapse-all]"); if (ca) ca.addEventListener("click", () => { f.expanded.clear(); this.render(); });
+    },
+
+    // ---- export ----------------------------------------------------------------
+    exportObject() {
+      const m = this.meta();
+      return {
+        generatedAt: new Date().toISOString(), view: "watchlist",
+        reviewDate: m.reviewDate, previousReviewDate: m.previousReviewDate,
+        note: "attentionScore, changedDims, movement and briefSignal are derived by the dashboard; the rest is the analyst register.",
+        items: this.rank(this.filtered()).map(it => Object.assign({}, it, {
+          attentionScore: this.score(it).total, changedDims: this.changedDims(it), movement: this.movement(it), briefSignal: this.briefSignal(it)
+        }))
+      };
+    },
+    exportRows() {
+      return this.rank(this.filtered()).map(it => {
+        const nd = this.nextDue(it), mv = this.movement(it);
+        return [it.tier, it.name, it.state, mv ? `${mv.from} → ${mv.to}` : "",
+          ...this.DIMS.map(d => it.dims[d].now), this.changedDims(it).map(d => this.defs().dimensions[d].short).join("|"),
+          (it.changes || []).join(" | "), nd ? (nd.due || "") : "", nd ? nd.text : "",
+          it.csi.action, (it.csi.also || []).join("|"), it.csi.rationale, it.ignore.flag ? "yes" : "no", it.ignore.reasons.join("|"),
+          it.confidence, it.learningValue, this.score(it).total];
+      });
+    },
+    exportCols() { return ["tier", "conflict", "state", "stateMove", ...this.DIMS, "changedDims", "materialChanges", "nextDue", "nextIndicator", "csiAction", "csiAlso", "csiRationale", "ignoreForNow", "ignoreReasons", "confidence", "learningValue", "attentionScore"]; }
+  };
+
   const App = {
     setActiveView() {
       document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
@@ -1767,6 +2281,7 @@
       // (Weekly keeps it). Both carry their own inline controls instead.
       document.body.classList.toggle("monthly-view", State.horizon === "monthly");
       document.body.classList.toggle("capabilities-view", State.horizon === "capabilities");
+      document.body.classList.toggle("watchlist-view", State.horizon === "watchlist");
     },
 
     // Build the period selector contents for the active horizon
@@ -1775,6 +2290,12 @@
       // The Capabilities view spans all periods — disable the period picker.
       if (State.horizon === "capabilities") {
         sel.innerHTML = `<option>All periods (cross-cutting)</option>`;
+        sel.disabled = true;
+        return;
+      }
+      if (State.horizon === "watchlist") {
+        const m = DB.watchlist && DB.watchlist.meta;
+        sel.innerHTML = `<option>${m ? "Review as of " + esc(Watchlist.fmtDate(m.reviewDate)) : "Watchlist"}</option>`;
         sel.disabled = true;
         return;
       }
@@ -1964,6 +2485,18 @@
           }
         }
       } catch (e) { /* no live editions available — use seed */ }
+
+      // Conflict watchlist register (analyst-maintained) + compact base map for the
+      // Watchlist tab. Both optional: the tab explains itself if the register is
+      // missing, and the map falls back to markers-only without the base map.
+      try {
+        const r = await fetch("watchlist.json", { cache: "no-store" });
+        if (r.ok) { const wl = await r.json(); if (wl && Array.isArray(wl.items) && wl.meta && wl.definitions) DB.watchlist = wl; }
+      } catch (e) { /* no watchlist — tab shows guidance */ }
+      try {
+        const r = await fetch("assets/world-110m.json", { cache: "no-store" });
+        if (r.ok) { const w = await r.json(); if (w && Array.isArray(w.countries)) DB.world = w; }
+      } catch (e) { /* no base map — markers only */ }
 
       // Compute capability heat/trend AFTER live editions load, so brief evidence
       // can drive it (with the analyst model as fallback).
