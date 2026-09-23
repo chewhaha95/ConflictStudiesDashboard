@@ -1837,6 +1837,7 @@
       const ac = { "CSI Flash": 20, "Weekly awareness post": 10, "Monthly pattern review": 5, "Quarterly candidate": 3, "Dashboard only": 0 }[it.csi.action]; parts.push({ label: it.csi.action, pts: ac == null ? 0 : ac });
       const sg = { High: 8, Moderate: 4, Low: 0 }[it.dims.sgExposure.now]; parts.push({ label: `SG exposure ${it.dims.sgExposure.now}`, pts: sg == null ? 0 : sg });
       const tr = { 1: 6, 2: 3, 3: 0 }[it.tier]; parts.push({ label: `Tier ${it.tier}`, pts: tr == null ? 0 : tr });
+      const f = this.feed(it); if (f && f.surge) parts.push({ label: "Live coverage surge", pts: 8 });
       return { total: parts.reduce((a, p) => a + p.pts, 0), parts };
     },
     rank(list) {
@@ -1880,6 +1881,36 @@
       return { days, cadence, overdue: days > cadence * 1.5, nextDue: Time.iso(new Date(new Date(m.reviewDate).getTime() + cadence * 86400000)) };
     },
     quiet(it) { return !it.ignore.flag && !this.changedDims(it).length && !this.movement(it) && it.csi.action === "Dashboard only"; },
+
+    // ---- live open-source feed (watchlist-live.json, synced from GDELT) ------
+    feed(it) { const lf = DB.watchlistLive; return lf && lf.items && lf.items[it.id] ? lf.items[it.id] : null; },
+    feedMeta() { return DB.watchlistLive || null; },
+    feedAge() { const lf = this.feedMeta(); if (!lf || !lf.syncedAt) return null; return Math.round((Date.now() - new Date(lf.syncedAt).getTime()) / 3600000); },
+    sparkline(tl, w, h, granularity) {
+      const vals = (tl || []).map(p => p.value); if (vals.length < 2) return "";
+      const max = Math.max(1, ...vals);
+      const step = w / (vals.length - 1);
+      const pts = vals.map((v, i) => `${(i * step).toFixed(1)},${(h - 1 - (v / max) * (h - 2)).toFixed(1)}`).join(" ");
+      const n = granularity === "week" ? 1 : 7;                     // points that make up "the last 7 days"
+      const x0 = Math.max(0, vals.length - 1 - n) * step;
+      const dots = granularity === "week" ? vals.map((v, i) => `<circle cx="${(i * step).toFixed(1)}" cy="${(h - 1 - (v / max) * (h - 2)).toFixed(1)}" r="1.8"/>`).join("") : "";
+      return `<svg class="wl-spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><rect class="wl-spark-7d" x="${x0.toFixed(1)}" y="0" width="${(w - x0).toFixed(1)}" height="${h}"/><polyline points="${pts}"/>${dots}</svg>`;
+    },
+    feedCaption(f) { return f.granularity === "week" ? "Four weekly article counts (GDELT, English-language); shaded = last 7 days" : "30-day daily article counts (GDELT, English-language); shaded = last 7 days"; },
+    feedCount(f) { return `${f.count7d}${f.capped ? "+" : ""}`; },
+    feedCell(it) {
+      const f = this.feed(it); if (!f) return `<td class="wl-feed-cell"><span class="muted-note">—</span></td>`;
+      const d = f.prev7d ? Math.round((f.count7d - f.prev7d) / f.prev7d * 100) : null;
+      return `<td class="wl-feed-cell" title="Open-source coverage (GDELT): ${this.feedCount(f)} articles in the last 7 days vs ${f.prev7d}${f.capped ? "+" : ""} the 7 days before${f.capped ? " (counts capped at 250 per window)" : ""}">${this.sparkline(f.timeline, 72, 20, f.granularity)}<div class="wl-feed-n"><b>${this.feedCount(f)}</b>/7d${d != null ? ` <span class="wl-feed-d ${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d}%</span>` : ""}${f.surge ? ` <span class="wl-surge">surge</span>` : ""}</div></td>`;
+    },
+    feedBlock(it) {
+      const f = this.feed(it), lf = this.feedMeta();
+      if (!f) return `<div class="wl-d-block"><div class="wl-d-h">Latest open-source reporting</div><p class="muted-note">No live feed loaded — the feed syncs every 6 hours from GDELT into <code>watchlist-live.json</code>.</p></div>`;
+      const arts = (f.articles || []).slice(0, 8).map(x => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a><span class="wl-art-meta">${esc(x.domain)}${x.date ? " · " + esc(this.fmtDate(x.date)) : ""}</span></li>`).join("");
+      return `<div class="wl-d-block wl-feed-block"><div class="wl-d-h">Latest open-source reporting <span class="briefs-live">● LIVE</span>${lf && lf.syncedAt ? ` · synced ${esc(Time.fmtDateTime(lf.syncedAt))}` : ""}</div>
+        <div class="wl-feed-sum">${this.sparkline(f.timeline, 220, 36, f.granularity)}<div><b>${this.feedCount(f)}</b> articles in the last 7 days · <b>${f.prev7d}${f.capped ? "+" : ""}</b> the 7 days before${f.surge ? ` · <span class="wl-surge">coverage surge</span>` : ""}${f.capped ? ` · <span class="muted-note">counts capped at 250 per window</span>` : ""}<div class="muted-note">${esc(this.feedCaption(f))}</div></div></div>
+        ${arts ? `<ul class="wl-art-list">${arts}</ul>` : `<p class="muted-note">No title-matched articles in the last 7 days.</p>`}</div>`;
+    },
 
     // ---- filters ---------------------------------------------------------
     filtered() {
@@ -1999,6 +2030,7 @@
             <div class="wl-title">${esc(m.title || "Conflict Watchlist")} <span class="wl-asof">— review as of ${esc(this.fmtDate(m.reviewDate))}</span></div>
             <div class="wl-sub">Previous review ${esc(this.fmtDate(m.previousReviewDate))} · ${m.cadenceDays || 7}-day cadence · ${this.items().length} items · showing ${list.length} &nbsp; ${counts}</div>
           </div>
+          ${(() => { const lf = this.feedMeta(); const h = this.feedAge(); return lf ? `<div class="wl-feedstat ${h != null && h > 24 ? "stale" : ""}" title="${esc(lf.source || "")} · ${lf.refreshed || "?"}/${lf.total || "?"} items refreshed">● LIVE feed · synced ${h == null ? "—" : h < 1 ? "under an hour ago" : h + "h ago"}</div>` : `<div class="wl-feedstat off">Live feed not loaded</div>`; })()}
           <div class="wl-stale ${st.overdue ? "overdue" : "fresh"}" title="${esc(st.overdue ? `Review due ${this.fmtDate(st.nextDue)}; ${st.days} days since the last review.` : `Next review due ${this.fmtDate(st.nextDue)}.`)}">
             ${st.overdue ? `⚠ Review overdue — ${st.days} days since last review` : `✓ Reviewed ${st.days} day${st.days === 1 ? "" : "s"} ago`}
           </div>
@@ -2098,6 +2130,7 @@
           <p class="wl-d-p">${it.ignore.flag ? `<strong>Yes</strong> — ${it.ignore.reasons.map(r => `<span class="tag">${esc(r)}</span>`).join(" ")} ${esc(it.ignore.note || "")}` : `<strong>No</strong> — keep on the active watch.${it.ignore.note ? " " + esc(it.ignore.note) : ""}`}</p>
           <div class="wl-d-meta">Confidence ${this.confChip(it.confidence)} · Army learning value <strong>${esc(it.learningValue || "—")}</strong> · Region ${esc(it.region || "—")}</div></div>
         ${briefBlock}
+        ${this.feedBlock(it)}
         <div class="wl-d-block wl-hist"><div class="wl-d-h">State history</div><ul class="wl-hist-list">${hist || "<li class='muted-note'>—</li>"}</ul>
           ${(it.sources || []).length ? `<div class="wl-d-h sub">Sources (${it.sources.length})</div><ul class="wl-src-list">${it.sources.map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label || s.url)} ↗</a></li>`).join("")}</ul>` : ""}
           <button class="btn wl-show-map" data-wl-map="${esc(it.id)}">📍 Show on map</button></div>
@@ -2120,17 +2153,18 @@
           <td>${this.stateChip(it.state, this.moveGlyph(it))}</td>
           ${this.DIMS.map(d => this.dimCell(it, d)).join("")}
           <td class="wl-chgn ${chg ? "wl-chg" : ""}" title="Dimensions changed since the previous review">${chg ? `${chg} changed` : "—"}</td>
+          ${this.feedCell(it)}
           <td class="wl-next">${nd ? `<span class="wl-due wl-due-${ds.cls}">${nd.due ? esc(this.fmtDate(nd.due)) : "undated"}</span> <span class="wl-next-t">${esc(nd.text)}</span>` : "—"}</td>
           <td>${this.actionChip(it.csi.action)}</td>
           <td>${this.confChip(it.confidence)}</td>
           <td>${this.scoreChip(it)}</td>
-        </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="${11 + this.DIMS.length}">${this.detail(it)}</td></tr>` : ""}`;
+        </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="${12 + this.DIMS.length}">${this.detail(it)}</td></tr>` : ""}`;
       }).join("");
       return `<div class="section"><div class="section-head"><h2>What materially changed?</h2><span class="hint">Register ordered by attention · highlighted cells changed since the previous review (hover for previous value) · expand a row for changes, indicators, CSI call and the brief signal</span>
           <div class="head-actions"><button class="btn" data-wl-expand-all>Expand all</button><button class="btn" data-wl-collapse-all>Collapse all</button></div></div>
         <div class="card matrix-wrap"><table class="matrix wl-register" id="wl-register"><thead><tr>
-          <th>#</th><th>Tier</th><th>Conflict</th><th>State</th>${dimHead}<th>Changed</th><th>Next indicator</th><th>CSI action</th><th>Conf.</th><th title="Attention score">Attn</th>
-        </tr></thead><tbody>${rows || `<tr><td colspan="${11 + this.DIMS.length}" class="empty">No items match the current filters.</td></tr>`}</tbody></table></div></div>`;
+          <th>#</th><th>Tier</th><th>Conflict</th><th>State</th>${dimHead}<th>Changed</th><th title="Open-source coverage, last 30 days (GDELT); shaded = last 7 days">Coverage</th><th>Next indicator</th><th>CSI action</th><th>Conf.</th><th title="Attention score">Attn</th>
+        </tr></thead><tbody>${rows || `<tr><td colspan="${12 + this.DIMS.length}" class="empty">No items match the current filters.</td></tr>`}</tbody></table></div></div>`;
     },
 
     indicators(list) {
@@ -2183,6 +2217,8 @@
           <p><strong>Attention score.</strong> ${esc((d.attentionScore || {}).desc || "")}</p>
           <p><strong>Moved / changed.</strong> A state move is <code>prevState ≠ state</code>; a changed dimension is <code>prev ≠ now</code>. The brief signal compares the latest brief edition with the one before it for linked theatres.</p>
           <p><strong>Staleness.</strong> Flagged when more than 1.5× the cadence has passed since <code>reviewDate</code>.</p>
+          <p><strong>Live feed.</strong> ${esc((d.feed || {}).source || "")} ${esc((d.feed || {}).surgeRule || "")} ${esc((d.feed || {}).titleFilter || "")}</p>
+          <p><strong>Automated review.</strong> The register itself is rewritten weekly by a scheduled open-source review (see <code>docs/WATCHLIST-REVIEW.md</code>) and published directly; the brief is displayed as a signal, not used as a source.</p>
           <p><strong>Updating.</strong> ${esc(m.notes || "")} Source file: <code>watchlist.json</code>.</p>
           <p><strong>Tiers.</strong> ${Object.entries(d.tiers).map(([k, t]) => `T${k} ${esc(t.name)} — ${esc(t.desc)}`).join(" · ")}</p>
           <p><strong>States.</strong> ${this.stateOrder().map(s => `${esc(s)} — ${esc(this.stateDef(s).desc)}`).join(" · ")}</p>
@@ -2255,21 +2291,22 @@
         reviewDate: m.reviewDate, previousReviewDate: m.previousReviewDate,
         note: "attentionScore, changedDims, movement and briefSignal are derived by the dashboard; the rest is the analyst register.",
         items: this.rank(this.filtered()).map(it => Object.assign({}, it, {
-          attentionScore: this.score(it).total, changedDims: this.changedDims(it), movement: this.movement(it), briefSignal: this.briefSignal(it)
+          attentionScore: this.score(it).total, changedDims: this.changedDims(it), movement: this.movement(it), briefSignal: this.briefSignal(it), liveFeed: this.feed(it)
         }))
       };
     },
     exportRows() {
       return this.rank(this.filtered()).map(it => {
-        const nd = this.nextDue(it), mv = this.movement(it);
+        const nd = this.nextDue(it), mv = this.movement(it), f7 = this.feed(it);
         return [it.tier, it.name, it.state, mv ? `${mv.from} → ${mv.to}` : "",
           ...this.DIMS.map(d => it.dims[d].now), this.changedDims(it).map(d => this.defs().dimensions[d].short).join("|"),
           (it.changes || []).join(" | "), nd ? (nd.due || "") : "", nd ? nd.text : "",
           it.csi.action, (it.csi.also || []).join("|"), it.csi.rationale, it.ignore.flag ? "yes" : "no", it.ignore.reasons.join("|"),
-          it.confidence, it.learningValue, this.score(it).total, (it.sources || []).map(s => s.url).join("|")];
+          it.confidence, it.learningValue, this.score(it).total, (it.sources || []).map(s => s.url).join("|"),
+          f7 ? f7.count7d : "", f7 ? f7.prev7d : "", f7 ? (f7.surge ? "yes" : "no") : ""];
       });
     },
-    exportCols() { return ["tier", "conflict", "state", "stateMove", ...this.DIMS, "changedDims", "materialChanges", "nextDue", "nextIndicator", "csiAction", "csiAlso", "csiRationale", "ignoreForNow", "ignoreReasons", "confidence", "learningValue", "attentionScore", "sources"]; }
+    exportCols() { return ["tier", "conflict", "state", "stateMove", ...this.DIMS, "changedDims", "materialChanges", "nextDue", "nextIndicator", "csiAction", "csiAlso", "csiRationale", "ignoreForNow", "ignoreReasons", "confidence", "learningValue", "attentionScore", "sources", "coverage7d", "coveragePrev7d", "coverageSurge"]; }
   };
 
   const App = {
@@ -2494,6 +2531,10 @@
         const r = await fetch("watchlist.json", { cache: "no-store" });
         if (r.ok) { const wl = await r.json(); if (wl && Array.isArray(wl.items) && wl.meta && wl.definitions) DB.watchlist = wl; }
       } catch (e) { /* no watchlist — tab shows guidance */ }
+      try {
+        const r = await fetch("watchlist-live.json", { cache: "no-store" });
+        if (r.ok) { const lf = await r.json(); if (lf && lf.__live && lf.items) DB.watchlistLive = lf; }
+      } catch (e) { /* no live feed — register only */ }
       try {
         const r = await fetch("assets/world-110m.json", { cache: "no-store" });
         if (r.ok) { const w = await r.json(); if (w && Array.isArray(w.countries)) DB.world = w; }

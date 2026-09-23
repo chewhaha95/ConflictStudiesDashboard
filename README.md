@@ -33,10 +33,27 @@ print. Marker colour = state, size = tier, dashed circles = maritime zones,
 ▲▼ = state moved this review. Region focus buttons zoom to Europe, the
 Middle East, South Asia, the Indo-Pacific or the Americas.
 
-### Weekly review workflow
+### Live, from open sources
+
+The watchlist is fully automated:
+
+- **Live reporting feed** — `.github/workflows/sync-watchlist-feed.yml` runs
+  `scripts/sync-watchlist-feed.js` every 6 hours against the open GDELT DOC
+  2.0 API and commits `watchlist-live.json`: a 30-day daily coverage
+  timeline and the latest title-matched articles per item. The register shows
+  a coverage sparkline, a 7-day count with change, a **surge** flag (≥2× the
+  previous week and ≥20 articles, +8 attention points) and the headlines in
+  each expanded row. Queries live in each item's `feed` block.
+- **Weekly automated review** — a scheduled Claude Code session follows
+  `docs/WATCHLIST-REVIEW.md`: researches all twelve items from open sources,
+  rewrites `watchlist.json` (states, dimensions with previous values,
+  changes, indicators, CSI actions, ignore verdicts, history, sources), runs
+  `npm test` and pushes to `main`. Pages deploys on push.
+
+### Manual review (same procedure)
 
 Edit `watchlist.json` only — the dashboard derives rank, movements, change
-flags, staleness and the brief signal:
+flags, staleness, surges and the brief signal:
 
 1. Set `meta.reviewDate` and `meta.previousReviewDate`.
 2. For each item, copy each dimension's `now` into `prev`, then set the new `now`
