@@ -79,7 +79,10 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     Object.keys(wl.definitions.tiers).join(",") === "1,2,3" &&
     Object.keys(wl.definitions.states).sort().join(",") === "Active,Archive,Priority,Watch" &&
     Object.keys(wl.definitions.actions).length === 5);
-  check("12 watchlist items across the three tiers", wl.items.length === 12 && [1, 2, 3].every(n => wl.items.some(i => i.tier === n)), "got " + wl.items.length);
+  check("watchlist items span the three tiers", wl.items.length >= 3 && [1, 2, 3].every(n => wl.items.some(i => i.tier === n)), "got " + wl.items.length);
+  check("prevState / dims.prev are the previous review's values (no self-referential history)", wl.items.every(i => i.history[i.history.length - 1].state === i.state));
+  check("dated indicators use ISO dates", wl.items.every(i => i.next.every(n => !n.due || /^\d{4}-\d{2}-\d{2}$/.test(n.due))));
+  check("dimension values sit on the defined scales", wl.items.every(i => ["escalation", "tempo", "adaptation", "sgExposure"].every(d => wl.definitions.dimensions[d].scale.includes(i.dims[d].now) && wl.definitions.dimensions[d].scale.includes(i.dims[d].prev))));
   const DIMS = ["phase", "escalation", "tempo", "adaptation", "sgExposure"];
   const wlOk = wl.items.every(i => i.id && i.name && [1, 2, 3].includes(i.tier) && wl.definitions.states[i.state] && wl.definitions.states[i.prevState] &&
     i.geo && typeof i.geo.lat === "number" && typeof i.geo.lon === "number" && Array.isArray(i.geo.countries) &&
@@ -113,114 +116,165 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   const doc = window.document;
 
   // --- 1b. Watchlist tab (attention tracker + map) is the landing view ----
+  // Expectations are DERIVED from watchlist.json so the checks survive each
+  // weekly review of the register (only the structure is hard-coded).
   console.log("\nWatchlist (attention tracker + map):");
+  const fmtD = s => new Date(s).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  const stOrder = s => wl.definitions.states[s].order;
+  const changed = i => DIMS.filter(d => i.dims[d].prev !== i.dims[d].now);
+  const moved = i => i.prevState !== i.state;
+  const movedUp = i => moved(i) && stOrder(i.state) < stOrder(i.prevState);
+  const scoreOf = i => ({ Priority: 40, Active: 25, Watch: 10, Archive: 0 }[i.state] || 0) +
+    ({ Severe: 20, High: 15, Moderate: 8, Low: 2 }[i.dims.escalation.now] || 0) + changed(i).length * 5 + (movedUp(i) ? 10 : 0) +
+    ({ "CSI Flash": 20, "Weekly awareness post": 10, "Monthly pattern review": 5, "Quarterly candidate": 3, "Dashboard only": 0 }[i.csi.action] || 0) +
+    ({ High: 8, Moderate: 4, Low: 0 }[i.dims.sgExposure.now] || 0) + ({ 1: 6, 2: 3, 3: 0 }[i.tier] || 0);
+  const ranked = wl.items.slice().sort((a, b) => (a.ignore.flag - b.ignore.flag) || (scoreOf(b) - scoreOf(a)) || (a.tier - b.tier) || a.name.localeCompare(b.name));
+  const N = wl.items.length;
+  const ignoredItems = wl.items.filter(i => i.ignore.flag);
+  const quietItems = wl.items.filter(i => !i.ignore.flag && !changed(i).length && !moved(i) && i.csi.action === "Dashboard only");
+  const movedItems = wl.items.filter(moved);
+  const zoneCount = wl.items.reduce((a, i) => a + (i.geo.zones || []).length, 0);
+  const briefLinked = wl.items.filter(i => i.briefTheatre);
+  const allInd = wl.items.flatMap(i => i.next);
+  const datedInd = allInd.filter(n => n.due).sort((a, b) => a.due.localeCompare(b.due));
+  const stateNames = Object.keys(wl.definitions.states).sort((a, b) => stOrder(a) - stOrder(b));
+  const actionNames = Object.keys(wl.definitions.actions).sort((a, b) => wl.definitions.actions[a].order - wl.definitions.actions[b].order);
+
   check("no boot error", doc.querySelector("#boot-error").style.display === "none");
   check("Watchlist is the first tab and the landing view",
     doc.querySelector(".tab-btn").dataset.horizon === "watchlist" && doc.querySelector("#view-watchlist").classList.contains("active") && doc.body.classList.contains("watchlist-view"));
   let wv = doc.querySelector("#view-watchlist .view-body");
   check("period selector disabled (register is review-dated)", doc.querySelector("#period-select").disabled && /Review as of/.test(doc.querySelector("#period-select").textContent));
-  check("header: review date, previous review, cadence and state counts", /review as of 29 Jun 2026/.test(wv.textContent) && /Previous review 22 Jun 2026/.test(wv.textContent) && wv.querySelectorAll(".wl-sub .wl-state").length === 4);
-  check("staleness flag is computed against today", !!wv.querySelector(".wl-stale") && (wv.querySelector(".wl-stale").classList.contains("overdue") || wv.querySelector(".wl-stale").classList.contains("fresh")));
-  check("tier + state filter chips and hide-ignorable toggle", wv.querySelectorAll(".wl-f-tier").length === 3 && wv.querySelectorAll(".wl-f-state").length === 4 && !!wv.querySelector(".wl-f-ignored"));
+  check(`header: review date (${fmtD(wl.meta.reviewDate)}), previous review, cadence and state counts`,
+    wv.textContent.includes(`review as of ${fmtD(wl.meta.reviewDate)}`) && wv.textContent.includes(`Previous review ${fmtD(wl.meta.previousReviewDate)}`) && wv.querySelectorAll(".wl-sub .wl-state").length === stateNames.length);
+  check("staleness flag is computed against today", (() => {
+    const el = wv.querySelector(".wl-stale"); if (!el) return false;
+    const days = Math.round((Date.now() - new Date(wl.meta.reviewDate).getTime()) / 86400000);
+    return el.classList.contains(days > wl.meta.cadenceDays * 1.5 ? "overdue" : "fresh");
+  })());
+  check("tier + state filter chips and hide-ignorable toggle", wv.querySelectorAll(".wl-f-tier").length === 3 && wv.querySelectorAll(".wl-f-state").length === stateNames.length && !!wv.querySelector(".wl-f-ignored"));
   // the seven questions, in order
   const h2s = [...wv.querySelectorAll(".section-head h2")].map(h => h.textContent);
   check("answers the 7 questions as ordered sections (Q1 → Q7)",
     /Q1/.test(h2s[0]) && /Q2/.test(h2s[1]) && /Q3/.test(h2s[2]) && /Q4/.test(h2s[2]) && /Q5/.test(h2s[3]) && /Q6/.test(h2s[4]) && /Q7/.test(h2s[5]), h2s.join(" | "));
   // Q1 attention ranking
   const rank = [...wv.querySelectorAll(".wl-rank .wl-rank-item")];
-  check("Q1: top-5 attention list with explainable score chips", rank.length === 5 && rank.every(r => r.querySelector(".wl-score .tip-body") && /Attention score/.test(r.querySelector(".wl-score .tip-body").textContent)));
-  check("Q1: US-Israel-Iran (CSI Flash, severe, high SG exposure) ranks first", /US–Israel–Iran/.test(rank[0].textContent), rank[0].textContent.slice(0, 60));
-  check("Q1: ignorable items never enter the top list", rank.every(r => !/China–Japan|Myanmar|India–Pakistan/.test(r.textContent)));
+  const expTop = ranked.filter(i => !i.ignore.flag).slice(0, 5);
+  check("Q1: top-5 attention list with explainable score chips", rank.length === Math.min(5, expTop.length) && rank.every(r => r.querySelector(".wl-score .tip-body") && /Attention score/.test(r.querySelector(".wl-score .tip-body").textContent)));
+  check(`Q1: ranking follows the documented score formula (top = ${expTop[0].name})`,
+    rank.map(r => r.querySelector(".wl-name").textContent).join("|") === expTop.map(i => i.name).join("|") && rank[0].querySelector(".wl-score").firstChild.textContent === String(scoreOf(expTop[0])),
+    rank.map(r => r.querySelector(".wl-name").textContent).join(" > "));
+  check("Q1: ignorable items never enter the top list", rank.every(r => !ignoredItems.some(i => r.querySelector(".wl-name").textContent === i.name)));
   // map
   const svg = wv.querySelector("svg.wl-svg");
   check("map: self-contained SVG rendered (no tiles / map library)", !!svg && svg.getAttribute("viewBox") === "0 0 1000 394");
   check("map: base-map country paths drawn (>150)", svg.querySelectorAll("path.wl-land").length > 150);
-  check("map: 12 conflict markers, one per watchlist item", svg.querySelectorAll(".wl-marker").length === 12);
-  check("map: involved countries shaded by state (Ukraine/Russia/Iran/Lebanon…)", svg.querySelectorAll("path.wl-land[data-wl-country]").length >= 12);
-  check("map: maritime zones drawn as dashed circles (Hormuz / SCS / Strait / ECS / Red Sea / Caribbean)", svg.querySelectorAll(".wl-zone").length === 6);
-  check("map: marker size encodes tier (T1 > T3)", (() => {
+  check(`map: ${N} conflict markers, one per watchlist item`, svg.querySelectorAll(".wl-marker").length === N);
+  check("map: involved countries shaded by state", svg.querySelectorAll("path.wl-land[data-wl-country]").length >= new Set(wl.items.flatMap(i => i.geo.countries)).size - 1);
+  check(`map: ${zoneCount} maritime zones drawn as dashed circles`, svg.querySelectorAll(".wl-zone").length === zoneCount);
+  check("map: marker size encodes tier (T1 > T2 > T3)", (() => {
     const r = id => parseFloat(svg.querySelector(`.wl-marker[data-wl="${id}"] .wl-dot`).getAttribute("r"));
-    return r("RU_UA") > r("SCS") && r("SCS") > r("MM");
+    const t1 = wl.items.find(i => i.tier === 1), t2 = wl.items.find(i => i.tier === 2), t3 = wl.items.find(i => i.tier === 3);
+    return r(t1.id) > r(t2.id) && r(t2.id) > r(t3.id);
   })());
-  check("map: state move glyph on the marker that moved (Israel-Lebanon ▲)", !!svg.querySelector('.wl-marker[data-wl="IL_LB"] .wl-mv-up') && !svg.querySelector('.wl-marker[data-wl="RU_UA"] .wl-mv'));
+  check("map: state move glyph only on markers that moved this review",
+    movedItems.every(i => !!svg.querySelector(`.wl-marker[data-wl="${i.id}"] .wl-mv-${movedUp(i) ? "up" : "down"}`)) &&
+    wl.items.filter(i => !moved(i)).every(i => !svg.querySelector(`.wl-marker[data-wl="${i.id}"] .wl-mv`)));
   check("map: legend + region focus buttons", wv.querySelectorAll(".wl-legend .wl-lg").length >= 6 && wv.querySelectorAll(".wl-region").length === 6);
   // Q2 movements + state board
-  check("Q2: Israel-Lebanon listed as moved Active → Priority this review", (() => {
+  check(`Q2: moved-since-previous-review list matches the register (${movedItems.length} move${movedItems.length === 1 ? "" : "s"})`, (() => {
     const mv = [...wv.querySelectorAll(".wl-moves-card .wl-mv-item:not(.minor)")];
-    return mv.length === 1 && /Israel–Lebanon/.test(mv[0].textContent) && /Active/.test(mv[0].textContent) && /Priority/.test(mv[0].textContent);
+    return mv.length === movedItems.length && movedItems.every(i => mv.some(li => li.querySelector(".wl-name").textContent === i.name && li.textContent.includes(i.prevState) && li.textContent.includes(i.state)));
   })());
-  check("Q2: earlier move (Middle East spillover Archive → Watch, 15 Jun) shown from history", [...wv.querySelectorAll(".wl-moves-card .wl-mv-item.minor")].some(li => /spillover/.test(li.textContent) && /Archive → Watch/.test(li.textContent) && /15 Jun 2026/.test(li.textContent)));
+  check("Q2: earlier moves (last 4 weeks) come from history, not from prevState", (() => {
+    const cutoff = new Date(wl.meta.reviewDate).getTime() - 28 * 86400000;
+    const exp = wl.items.flatMap(i => i.history.slice(1).filter((h, k) => new Date(h.date).getTime() >= cutoff && i.history[k].state !== h.state && !(moved(i) && i.history[k].state === i.prevState && h.state === i.state)));
+    const got = [...wv.querySelectorAll(".wl-moves-card .wl-mv-item.minor")].filter(li => !li.querySelector(".wl-move-brief"));
+    return got.length === exp.length;
+  })());
   const cols = [...wv.querySelectorAll(".wl-board .wl-col")];
-  check("Q2: state board has the 4 monitoring states in order", cols.length === 4 && cols.map(c => c.querySelector(".wl-state").textContent.trim()).join(",") === "Priority,Active,Watch,Archive");
-  check("Q2: board counts — 3 Priority / 5 Active / 4 Watch / 0 Archive", cols.map(c => c.querySelectorAll(".wl-card-chip").length).join(",") === "3,5,4,0", cols.map(c => c.querySelectorAll(".wl-card-chip").length).join(","));
+  check("Q2: state board has the monitoring states in order", cols.length === stateNames.length && cols.map(c => c.querySelector(".wl-state").textContent.trim()).join(",") === stateNames.join(","));
+  check("Q2: board counts match the register", cols.map(c => c.querySelectorAll(".wl-card-chip").length).join(",") === stateNames.map(s => wl.items.filter(i => i.state === s).length).join(","));
   // Q3/Q4 register
   const reg = wv.querySelector("#wl-register");
-  check("Q3/Q4: register has 12 rows ordered by attention", reg.querySelectorAll("tbody tr.wl-row").length === 12 && /US–Israel–Iran/.test(reg.querySelector("tbody tr.wl-row").textContent));
-  check("Q4: changed dimensions highlighted with previous → now (Gaza escalation Moderate → High)", (() => {
-    const row = reg.querySelector('tr[data-wl-row="IL_GZ"]');
-    const chg = [...row.querySelectorAll("td.wl-dim.wl-chg")];
-    return chg.length === 1 && /Moderate/.test(chg[0].textContent) && /High/.test(chg[0].textContent) && /1 changed/.test(row.textContent);
-  })());
-  check("Q4: unchanged item shows no change flags (Russia-Ukraine)", reg.querySelector('tr[data-wl-row="RU_UA"]').querySelectorAll("td.wl-chg").length === 0);
-  check("register: 'brief' link tag only on theatres carried in the weekly brief", reg.querySelectorAll("tr.wl-row .t-chip").length === 5);
+  check(`Q3/Q4: register has ${N} rows ordered by attention`, reg.querySelectorAll("tbody tr.wl-row").length === N && reg.querySelector("tbody tr.wl-row").textContent.includes(ranked[0].name));
+  check("Q4: changed dimensions highlighted with previous → now", wl.items.every(i => {
+    const row = reg.querySelector(`tr[data-wl-row="${i.id}"]`);
+    const cells = [...row.querySelectorAll("td.wl-dim.wl-chg")];
+    const exp = changed(i);
+    return cells.length === exp.length && exp.every((d, k) => cells[k] && cells[k].textContent.includes(i.dims[d].prev) && cells[k].textContent.includes(i.dims[d].now)) &&
+      (exp.length ? row.textContent.includes(`${exp.length} changed`) : true);
+  }));
+  check("register: 'brief' link tag only on theatres carried in the weekly brief", reg.querySelectorAll("tr.wl-row .t-chip").length === briefLinked.length);
   check("register: rows collapsed by default", reg.querySelectorAll("tr.wl-detail-row").length === 0);
-  // expand a row → detail with Q3/Q5/Q6/Q7 + brief signal + history
-  reg.querySelector('[data-wl-toggle="IL_US_IR"]').click(); await sleep(40);
+  // expand a brief-linked row → detail with Q3/Q5/Q6/Q7 + brief signal + history
+  const probe = briefLinked.find(i => i.next.some(n => n.due)) || briefLinked[0];
+  reg.querySelector(`[data-wl-toggle="${probe.id}"]`).click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
-  const det = wv.querySelector('tr[data-wl-detail="IL_US_IR"]');
+  const det = wv.querySelector(`tr[data-wl-detail="${probe.id}"]`);
   check("expanded row shows what changed / what next / CSI call / ignore verdict / brief signal / history", !!det &&
     /Q3 · What materially changed/.test(det.textContent) && /Q5 · What might happen next/.test(det.textContent) && /Q6 · What CSI should do/.test(det.textContent) &&
     /Q7 · Ignore for now\?/.test(det.textContent) && /Brief signal/.test(det.textContent) && /State history/.test(det.textContent));
-  check("detail: phase change spelled out (prev → now)", det.querySelectorAll(".wl-chg-line .wl-chg-pill").length === 2 && /Ceasefire under strain/.test(det.textContent));
-  check("detail: typed, dated indicators with 'If seen →' consequences", det.querySelectorAll(".wl-ind").length === 4 && det.querySelectorAll(".wl-ind .wl-ind-type").length === 4 && det.querySelectorAll(".wl-ind-if").length === 4 && /22 Aug 2026/.test(det.textContent));
+  check("detail: every changed dimension spelled out (prev → now)", det.querySelectorAll(".wl-chg-line .wl-chg-pill").length === changed(probe).length && changed(probe).every(d => det.textContent.includes(probe.dims[d].prev)));
+  check("detail: typed indicators with 'If seen →' consequences and rendered dates",
+    det.querySelectorAll(".wl-ind").length === probe.next.length && det.querySelectorAll(".wl-ind .wl-ind-type").length === probe.next.length &&
+    det.querySelectorAll(".wl-ind-if").length === probe.next.filter(n => n.ifSeen).length && probe.next.filter(n => n.due).every(n => det.textContent.includes(fmtD(n.due))));
   check("detail: brief signal from the seed weekly report (phase / trend / score, no LIVE badge)", !!det.querySelector(".wl-brief .phase-tag") && !!det.querySelector(".wl-brief .trend") && /score \d+/.test(det.textContent) && !det.querySelector(".wl-brief .briefs-live"));
-  check("detail: CSI Flash is the primary action with rationale", !!det.querySelector(".wl-action") && /CSI Flash/.test(det.querySelector(".wl-action").textContent) && /Hormuz/.test(det.textContent));
+  check("detail: primary CSI action chip + rationale", !!det.querySelector(".wl-action") && det.querySelector(".wl-action").textContent.trim() === probe.csi.action && det.textContent.includes(probe.csi.rationale.slice(0, 40)));
   // Q5 indicators table
   const ind = wv.querySelector("#wl-indicators");
   const indRows = [...ind.querySelectorAll("tbody tr:not(.wl-sep)")];
-  check("Q5: indicators table lists every item's indicators, dated first", indRows.length === wl.items.reduce((a, i) => a + i.next.length, 0) && !!ind.querySelector("tr.wl-sep"));
+  check(`Q5: indicators table lists every item's indicators (${allInd.length}), dated first`, indRows.length === allInd.length && (!!ind.querySelector("tr.wl-sep") || datedInd.length === allInd.length));
   check("Q5: dated indicators are in date order with a due status", (() => {
-    const dated = indRows.slice(0, indRows.findIndex(r => r.previousElementSibling && r.previousElementSibling.classList.contains("wl-sep")) + 0);
-    const sep = [...ind.querySelectorAll("tbody tr")].findIndex(r => r.classList.contains("wl-sep"));
-    const before = [...ind.querySelectorAll("tbody tr")].slice(0, sep);
+    const all = [...ind.querySelectorAll("tbody tr")];
+    const sep = all.findIndex(r => r.classList.contains("wl-sep"));
+    const before = sep < 0 ? all : all.slice(0, sep);
+    if (!datedInd.length) return before.length === 0;
     const dues = before.map(r => r.querySelector(".wl-due").textContent);
-    return before.length >= 8 && before.every(r => r.querySelector(".wl-due-sub")) && /30 Jun 2026/.test(dues[0]) && /15 Nov 2026/.test(dues[dues.length - 1]);
+    return before.length === datedInd.length && before.every(r => r.querySelector(".wl-due-sub")) && dues[0].includes(fmtD(datedInd[0].due)) && dues[dues.length - 1].includes(fmtD(datedInd[datedInd.length - 1].due));
   })());
   check("Q5: indicator types are the seven named kinds", [...ind.querySelectorAll(".wl-ind-type")].every(s => wl.definitions.indicatorTypes.includes(s.textContent.trim())));
   // Q6 actions
   const acts = [...wv.querySelectorAll(".wl-act-grid .wl-act-col")];
-  check("Q6: 5 action columns in escalation order (Flash → Weekly → Monthly → Quarterly → Dashboard only)", acts.length === 5 && acts.map(a => a.querySelector(".wl-action").textContent.trim()).join("|") === "CSI Flash|Weekly awareness post|Monthly pattern review|Quarterly candidate|Dashboard only");
-  check("Q6: every item placed under exactly one primary action", acts.reduce((n, a) => n + a.querySelectorAll(".wl-act-item").length, 0) === 12);
-  check("Q6: secondary feeds listed ('Also feeds')", acts.some(a => /Also feeds/.test(a.textContent)));
+  check("Q6: 5 action columns in escalation order (Flash → Weekly → Monthly → Quarterly → Dashboard only)", acts.length === 5 && acts.map(a => a.querySelector(".wl-action").textContent.trim()).join("|") === actionNames.join("|"));
+  check("Q6: every item placed under exactly one primary action", acts.reduce((n, a) => n + a.querySelectorAll(".wl-act-item").length, 0) === N &&
+    acts.every((a, k) => a.querySelectorAll(".wl-act-item").length === wl.items.filter(i => i.csi.action === actionNames[k]).length));
+  check("Q6: secondary feeds listed ('Also feeds')", wl.items.some(i => i.csi.also && i.csi.also.length) ? acts.some(a => /Also feeds/.test(a.textContent)) : true);
   // Q7 ignore
   const ig = [...wv.querySelectorAll(".wl-ig-list .wl-ig-item")];
-  check("Q7: ignore-for-now list = China-Japan / India-Pakistan / Myanmar with reason tags + revisit trigger", ig.length === 3 && ig.every(li => li.querySelectorAll(".tag").length >= 1 && /Revisit trigger/.test(li.textContent)) && /China–Japan/.test(wv.querySelector(".wl-ig-list").textContent));
-  check("Q7: quiet-but-not-flagged items called out (South China Sea, Thailand-Cambodia)", /Quiet this review/.test(wv.textContent) && /South China Sea/.test(wv.querySelector(".wl-quiet").textContent) && /Thailand–Cambodia/.test(wv.querySelector(".wl-quiet").textContent));
+  check(`Q7: ignore-for-now list = the ${ignoredItems.length} flagged items with reason tags + revisit trigger`,
+    ig.length === ignoredItems.length && ig.every(li => li.querySelectorAll(".tag").length >= 1 && /Revisit trigger/.test(li.textContent)) && ignoredItems.every(i => ig.some(li => li.querySelector(".wl-name").textContent === i.name)));
+  check("Q7: quiet-but-not-flagged items called out", quietItems.length
+    ? (/Quiet this review/.test(wv.textContent) && quietItems.every(i => wv.querySelector(".wl-quiet").textContent.includes(i.name)))
+    : !wv.querySelector(".wl-quiet"));
   check("method note explains the derivation + how to update watchlist.json", /Attention score/.test(wv.querySelector(".wl-method").textContent) && /watchlist\.json/.test(wv.querySelector(".wl-method").textContent));
   // interactions: marker click opens + selects the row; region focus zooms the map; filters narrow everything
-  wv.querySelector('.wl-marker[data-wl="TH_KH"]').dispatchEvent(new window.Event("click", { bubbles: true })); await sleep(40);
+  const pick = wl.items.find(i => i.id !== probe.id);
+  wv.querySelector(`.wl-marker[data-wl="${pick.id}"]`).dispatchEvent(new window.Event("click", { bubbles: true })); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
-  check("map: clicking a marker selects + expands its register row", wv.querySelector('tr[data-wl-row="TH_KH"]').classList.contains("selected") && !!wv.querySelector('tr[data-wl-detail="TH_KH"]') && !!wv.querySelector('.wl-marker[data-wl="TH_KH"].selected .wl-ring'));
-  wv.querySelector('[data-wl-map="TH_KH"]').click(); await sleep(40);
+  check("map: clicking a marker selects + expands its register row", wv.querySelector(`tr[data-wl-row="${pick.id}"]`).classList.contains("selected") && !!wv.querySelector(`tr[data-wl-detail="${pick.id}"]`) && !!wv.querySelector(`.wl-marker[data-wl="${pick.id}"].selected .wl-ring`));
+  wv.querySelector(`[data-wl-map="${pick.id}"]`).click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
-  check("'Show on map' focuses the Indo-Pacific region (viewBox narrows)", (() => {
+  check("'Show on map' focuses the item's region (viewBox narrows)", (() => {
     const vb = wv.querySelector("svg.wl-svg").getAttribute("viewBox").split(" ").map(Number);
-    return wv.querySelector('.wl-region[data-region="indopac"]').getAttribute("aria-pressed") === "true" && vb[2] < 600 && vb[2] > 100;
+    const pressed = [...wv.querySelectorAll(".wl-region")].find(b => b.getAttribute("aria-pressed") === "true");
+    return pressed && pressed.dataset.region !== "world" && vb[2] < 600 && vb[2] > 100;
   })());
   wv.querySelector('.wl-region[data-region="world"]').click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
   check("focus returns to the world view", wv.querySelector("svg.wl-svg").getAttribute("viewBox") === "0 0 1000 394");
+  const t1n = wl.items.filter(i => i.tier === 1).length;
   wv.querySelector('.wl-f-tier[data-tier="1"]').click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
-  check("tier filter narrows map, register, indicators and board to Tier 1 (5 items)",
-    wv.querySelectorAll(".wl-marker").length === 5 && wv.querySelectorAll("#wl-register tbody tr.wl-row").length === 5 && wv.querySelectorAll(".wl-board .wl-card-chip").length === 5 && /showing 5/.test(wv.textContent));
+  check(`tier filter narrows map, register, indicators and board to Tier 1 (${t1n} items)`,
+    wv.querySelectorAll(".wl-marker").length === t1n && wv.querySelectorAll("#wl-register tbody tr.wl-row").length === t1n && wv.querySelectorAll(".wl-board .wl-card-chip").length === t1n && wv.textContent.includes(`showing ${t1n}`));
   wv.querySelector("[data-wl-reset]").click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
   wv.querySelector(".wl-f-ignored").click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
-  check("'Hide ignorable' removes the 3 flagged items", wv.querySelectorAll("#wl-register tbody tr.wl-row").length === 9 && wv.querySelectorAll(".wl-marker").length === 9);
+  check(`'Hide ignorable' removes the ${ignoredItems.length} flagged items`, wv.querySelectorAll("#wl-register tbody tr.wl-row").length === N - ignoredItems.length && wv.querySelectorAll(".wl-marker").length === N - ignoredItems.length);
   wv.querySelector("[data-wl-reset]").click(); await sleep(40);
-  check("filters reset to all 12", doc.querySelectorAll("#view-watchlist #wl-register tbody tr.wl-row").length === 12);
+  check(`filters reset to all ${N}`, doc.querySelectorAll("#view-watchlist #wl-register tbody tr.wl-row").length === N);
   // exports (JSON/CSV) route to the watchlist register while the tab is active
   const dl = [];
   window.URL.createObjectURL = () => "blob:x"; window.URL.revokeObjectURL = () => {};
@@ -231,8 +285,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   window.Blob = origBlob;
   check("export JSON/CSV carry the watchlist (derived score / movement / brief signal columns)", dl.length === 2 && (() => {
     const j = JSON.parse(dl[0].text); const csvHead = dl[1].text.split("\n")[0];
-    return j.view === "watchlist" && j.items.length === 12 && typeof j.items[0].attentionScore === "number" && "movement" in j.items[0] &&
-      /attentionScore/.test(csvHead) && /stateMove/.test(csvHead) && dl[1].text.split("\n").length === 13;
+    return j.view === "watchlist" && j.items.length === N && typeof j.items[0].attentionScore === "number" && "movement" in j.items[0] &&
+      /attentionScore/.test(csvHead) && /stateMove/.test(csvHead) && dl[1].text.split("\n").length === N + 1;
   })());
   // hand over to the Weekly tab for the brief-structure checks below
   doc.querySelector('.tab-btn[data-horizon="weekly"]').click(); await sleep(60);
@@ -534,8 +588,9 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   await sleep(250);
   const d2 = dom2.window.document;
   // Watchlist enrichment in live mode: linked theatres show the ● LIVE brief signal + edition link
-  d2.querySelector('#view-watchlist [data-wl-toggle="RU_UA"]').click(); await sleep(40);
-  const liveDet = d2.querySelector('#view-watchlist tr[data-wl-detail="RU_UA"]');
+  const liveProbe = wl.items.find(i => i.briefTheatre);
+  d2.querySelector(`#view-watchlist [data-wl-toggle="${liveProbe.id}"]`).click(); await sleep(40);
+  const liveDet = d2.querySelector(`#view-watchlist tr[data-wl-detail="${liveProbe.id}"]`);
   check("watchlist: brief signal is ● LIVE with an edition link when live editions are synced",
     !!liveDet && !!liveDet.querySelector(".wl-brief .briefs-live") && /example\.org\/new/.test((liveDet.querySelector(".wl-brief a") || {}).getAttribute ? liveDet.querySelector(".wl-brief a").getAttribute("href") : "") && /LATEST-HEADLINE/.test(liveDet.textContent));
   d2.querySelector('.tab-btn[data-horizon="weekly"]').click(); await sleep(60);
