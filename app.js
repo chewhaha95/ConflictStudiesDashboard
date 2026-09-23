@@ -1898,17 +1898,19 @@
     },
     feedCaption(f) { return f.granularity === "week" ? "Four weekly article counts (GDELT, English-language); shaded = last 7 days" : "30-day daily article counts (GDELT, English-language); shaded = last 7 days"; },
     feedCount(f) { return `${f.count7d}${f.capped ? "+" : ""}`; },
+    feedItemAge(f) { return f && f.fetchedAt ? Math.round((Date.now() - new Date(f.fetchedAt).getTime()) / 3600000) : null; },
+    feedSourceLabel(f) { return /rss/.test(f.source || "") ? (/gdelt/.test(f.source || "") ? "GDELT + Google News" : "Google News RSS") : "GDELT"; },
     feedCell(it) {
       const f = this.feed(it); if (!f) return `<td class="wl-feed-cell"><span class="muted-note">—</span></td>`;
       const d = f.prev7d ? Math.round((f.count7d - f.prev7d) / f.prev7d * 100) : null;
-      return `<td class="wl-feed-cell" title="Open-source coverage (GDELT): ${this.feedCount(f)} articles in the last 7 days vs ${f.prev7d}${f.capped ? "+" : ""} the 7 days before${f.capped ? " (counts capped at 250 per window)" : ""}">${this.sparkline(f.timeline, 72, 20, f.granularity)}<div class="wl-feed-n"><b>${this.feedCount(f)}</b>/7d${d != null ? ` <span class="wl-feed-d ${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d}%</span>` : ""}${f.surge ? ` <span class="wl-surge">surge</span>` : ""}</div></td>`;
+      return `<td class="wl-feed-cell" title="Open-source coverage (GDELT): ${this.feedCount(f)} articles in the last 7 days vs ${f.prev7d}${f.capped ? "+" : ""} the 7 days before${f.capped ? " (counts capped at 250 per window)" : ""}">${this.sparkline(f.timeline, 72, 20, f.granularity)}<div class="wl-feed-n"><b>${this.feedCount(f)}</b>/7d${d != null ? ` <span class="wl-feed-d ${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d}%</span>` : ""}${f.surge ? ` <span class="wl-surge">surge</span>` : ""}${(() => { const h = this.feedItemAge(f); return h != null && h > 24 ? ` <span class="wl-feed-stale" title="This item last refreshed ${h}h ago">${Math.round(h / 24)}d old</span>` : ""; })()}</div></td>`;
     },
     feedBlock(it) {
       const f = this.feed(it), lf = this.feedMeta();
       if (!f) return `<div class="wl-d-block"><div class="wl-d-h">Latest open-source reporting</div><p class="muted-note">No live feed loaded — the feed syncs every 6 hours from GDELT into <code>watchlist-live.json</code>.</p></div>`;
       const arts = (f.articles || []).slice(0, 8).map(x => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a><span class="wl-art-meta">${esc(x.domain)}${x.date ? " · " + esc(this.fmtDate(x.date)) : ""}</span></li>`).join("");
       return `<div class="wl-d-block wl-feed-block"><div class="wl-d-h">Latest open-source reporting <span class="briefs-live">● LIVE</span>${lf && lf.syncedAt ? ` · synced ${esc(Time.fmtDateTime(lf.syncedAt))}` : ""}</div>
-        <div class="wl-feed-sum">${this.sparkline(f.timeline, 220, 36, f.granularity)}<div><b>${this.feedCount(f)}</b> articles in the last 7 days · <b>${f.prev7d}${f.capped ? "+" : ""}</b> the 7 days before${f.surge ? ` · <span class="wl-surge">coverage surge</span>` : ""}${f.capped ? ` · <span class="muted-note">counts capped at 250 per window</span>` : ""}<div class="muted-note">${esc(this.feedCaption(f))}</div></div></div>
+        <div class="wl-feed-sum">${this.sparkline(f.timeline, 220, 36, f.granularity)}<div><b>${this.feedCount(f)}</b> articles in the last 7 days · <b>${f.prev7d}${f.capped ? "+" : ""}</b> the 7 days before${f.surge ? ` · <span class="wl-surge">coverage surge</span>` : ""}${f.capped ? ` · <span class="muted-note">counts capped at 250 per window</span>` : ""}<div class="muted-note">${esc(this.feedCaption(f))} · source: ${esc(this.feedSourceLabel(f))}${f.fetchedAt ? ` · this item refreshed ${esc(Time.fmtDateTime(f.fetchedAt))}` : ""}</div></div></div>
         ${arts ? `<ul class="wl-art-list">${arts}</ul>` : `<p class="muted-note">No title-matched articles in the last 7 days.</p>`}</div>`;
     },
 

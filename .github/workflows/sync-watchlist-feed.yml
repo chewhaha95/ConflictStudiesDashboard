@@ -6,8 +6,10 @@ name: Sync watchlist open-source feed
 # Watchlist tab's coverage sparklines, surge flags and "latest reporting"
 # lists stay current without anyone touching the repo.
 #
-# Runs every 6 hours and on demand. The sync script is defensive: if GDELT is
-# unreachable for most items it exits non-zero and the previous file is kept.
+# Runs every 6 hours and on demand. GDELT throttles shared runner IPs, so the
+# script retries with backoff, falls back to Google News RSS, refreshes the
+# stalest items first and keeps previous data for the rest — the feed converges
+# across runs. It exits non-zero only when nothing at all could be refreshed.
 
 on:
   schedule:
@@ -26,6 +28,7 @@ concurrency:
 jobs:
   sync-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 55
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
