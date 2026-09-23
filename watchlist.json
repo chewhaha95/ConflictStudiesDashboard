@@ -4,8 +4,8 @@
     "reviewDate": "2026-09-23",
     "previousReviewDate": "2026-06-29",
     "cadenceDays": 7,
-    "reviewer": "CSI analyst review, 23 Sep 2026 — all twelve items assessed from open sources (linked per item); the weekly brief is shown alongside as the brief signal, not used as a source. Items marked unverified need confirmation.",
-    "notes": "Analyst-maintained register. Each review: (1) set reviewDate/previousReviewDate, (2) for every item move `prev` <- `now` on the five dimensions and then set the new `now`, (3) rewrite `changes`, `next` and `csi` for what is true THIS week only, (4) record any state move in `history`. The dashboard derives attention rank, movements, changed-dimension flags, staleness and the brief signal — do not type those in. This is a watchlist, not a news archive: keep `changes` to what materially moved since the previous review, and `next` to named, checkable indicators."
+    "reviewer": "Automated open-source review (weekly, see docs/WATCHLIST-REVIEW.md); first run seeded by the 23 Sep 2026 open-source review. Items marked unverified need confirmation.",
+    "notes": "Fully automated register: a scheduled open-source review rewrites this file weekly (procedure in docs/WATCHLIST-REVIEW.md) and a 6-hourly GitHub Action refreshes the live reporting feed (watchlist-live.json) from GDELT. Each review: (1) set reviewDate/previousReviewDate, (2) for every item move `prev` <- `now` on the five dimensions and then set the new `now`, (3) rewrite `changes`, `next`, `csi`, `ignore` and `sources` for what is true THIS week only, (4) record any state move in `history`. The dashboard derives attention rank, movements, changed-dimension flags, staleness, coverage surges and the brief signal — do not type those in. Not a news archive: `changes` holds only what materially moved since the previous review; `next` holds named, checkable indicators."
   },
   "definitions": {
     "tiers": {
@@ -130,7 +130,12 @@
       "No current Army learning value"
     ],
     "attentionScore": {
-      "desc": "Deterministic, explainable rank. state (Priority 40 / Active 25 / Watch 10 / Archive 0) + escalation risk (Severe 20 / High 15 / Moderate 8 / Low 2) + 5 per dimension that changed since the previous review + 10 if the state moved up + CSI action (Flash 20 / Weekly 10 / Monthly 5 / Quarterly 3 / Dashboard 0) + Singapore exposure (High 8 / Moderate 4 / Low 0) + tier (T1 6 / T2 3 / T3 0). Items flagged ignore-for-now are shown but ranked last."
+      "desc": "Deterministic, explainable rank. state (Priority 40 / Active 25 / Watch 10 / Archive 0) + escalation risk (Severe 20 / High 15 / Moderate 8 / Low 2) + 5 per dimension that changed since the previous review + 10 if the state moved up + CSI action (Flash 20 / Weekly 10 / Monthly 5 / Quarterly 3 / Dashboard 0) + Singapore exposure (High 8 / Moderate 4 / Low 0) + tier (T1 6 / T2 3 / T3 0) + 8 if the live open-source feed shows a coverage surge (see definitions.feed.surgeRule). Items flagged ignore-for-now are shown but ranked last."
+    },
+    "feed": {
+      "source": "GDELT DOC 2.0 API (open, no key). Per item: 30-day daily article counts (TimelineVolRaw) and the most relevant English-language articles of the last 7 days (ArtList, HybridRel). Synced by .github/workflows/sync-watchlist-feed.yml into watchlist-live.json.",
+      "surgeRule": "A coverage surge is flagged when the last 7 days carry at least twice the article volume of the 7 days before and at least 20 articles; a surge adds 8 points to the attention score.",
+      "titleFilter": "Articles are kept only when the title contains one of the item's terms, to cut GDELT's full-text noise."
     }
   },
   "items": [
@@ -300,7 +305,21 @@
           "state": "Priority",
           "note": "Baseline: Tier 1, followed weekly."
         }
-      ]
+      ],
+      "feed": {
+        "query": "(Ukraine OR Ukrainian OR Zelensky OR Kyiv) (Russia OR Russian OR Kremlin OR Putin)",
+        "terms": [
+          "ukrain",
+          "russia",
+          "kyiv",
+          "kremlin",
+          "zelensk",
+          "putin",
+          "donetsk",
+          "donbas",
+          "crimea"
+        ]
+      }
     },
     {
       "id": "IL_GZ",
@@ -446,7 +465,16 @@
           "state": "Active",
           "note": "Baseline: ceasefire holding, stabilisation learning."
         }
-      ]
+      ],
+      "feed": {
+        "query": "(Gaza OR Hamas OR Rafah OR \"Khan Younis\")",
+        "terms": [
+          "gaza",
+          "hamas",
+          "rafah",
+          "khan younis"
+        ]
+      }
     },
     {
       "id": "IL_US_IR",
@@ -623,7 +651,16 @@
           "state": "Priority",
           "note": "Baseline: Hormuz crisis, direct Singapore exposure."
         }
-      ]
+      ],
+      "feed": {
+        "query": "(Iran OR Hormuz OR IRGC OR Tehran) (Israel OR \"United States\" OR Navy OR Strait OR tanker OR missile)",
+        "terms": [
+          "iran",
+          "hormuz",
+          "irgc",
+          "tehran"
+        ]
+      }
     },
     {
       "id": "IL_LB",
@@ -784,7 +821,17 @@
           "state": "Priority",
           "note": "Washington Framework signed; Military Coordination Group may seek regional partners; fighting continues."
         }
-      ]
+      ],
+      "feed": {
+        "query": "(Hezbollah OR Lebanon OR Lebanese OR Litani OR Nabatieh)",
+        "terms": [
+          "hezbollah",
+          "lebanon",
+          "lebanese",
+          "litani",
+          "nabatieh"
+        ]
+      }
     },
     {
       "id": "TH_KH",
@@ -931,7 +978,15 @@
           "state": "Active",
           "note": "Baseline: near-abroad ceasefire, ASEAN observers."
         }
-      ]
+      ],
+      "feed": {
+        "query": "(Thailand OR Thai) (Cambodia OR Cambodian OR \"Preah Vihear\")",
+        "terms": [
+          "cambodia",
+          "thai",
+          "preah vihear"
+        ]
+      }
     },
     {
       "id": "US_VE",
@@ -1066,7 +1121,19 @@
           "state": "Active",
           "note": "Baseline: post-January 2026 operation; transition under US pressure."
         }
-      ]
+      ],
+      "feed": {
+        "query": "(Venezuela OR Venezuelan OR Caracas OR Maduro OR \"Delcy Rodriguez\" OR Machado)",
+        "terms": [
+          "venezuela",
+          "caracas",
+          "maduro",
+          "rodriguez",
+          "rodríguez",
+          "machado",
+          "caribbean"
+        ]
+      }
     },
     {
       "id": "SCS",
@@ -1206,7 +1273,20 @@
           "state": "Priority",
           "note": "Injury, ramming, radar locks and a forward PLAN group at Scarborough; COC deadline at the November summit."
         }
-      ]
+      ],
+      "feed": {
+        "query": "(\"South China Sea\" OR Scarborough OR \"Second Thomas Shoal\" OR Ayungin OR \"Sabina Shoal\" OR Spratly)",
+        "terms": [
+          "south china sea",
+          "scarborough",
+          "second thomas",
+          "ayungin",
+          "sabina",
+          "spratly",
+          "philippine",
+          "coast guard"
+        ]
+      }
     },
     {
       "id": "TW",
@@ -1341,7 +1421,13 @@
           "state": "Active",
           "note": "Baseline: coercive pressure, civil-resilience learning."
         }
-      ]
+      ],
+      "feed": {
+        "query": "(Taiwan OR \"Taiwan Strait\" OR \"Han Kuang\") (China OR Chinese OR PLA OR Beijing OR \"coast guard\")",
+        "terms": [
+          "taiwan"
+        ]
+      }
     },
     {
       "id": "CN_JP",
@@ -1475,7 +1561,16 @@
           "state": "Active",
           "note": "EEZ live fire with Russia, JL-3 test, expanding Nansei transits, record budget request; no thaw path."
         }
-      ]
+      ],
+      "feed": {
+        "query": "(Japan OR Japanese OR Senkaku OR Takaichi) (China OR Chinese OR Beijing OR PLA)",
+        "terms": [
+          "japan",
+          "senkaku",
+          "takaichi",
+          "tokyo"
+        ]
+      }
     },
     {
       "id": "IN_PK",
@@ -1605,7 +1700,17 @@
           "state": "Watch",
           "note": "Baseline: reserve; case-study value."
         }
-      ]
+      ],
+      "feed": {
+        "query": "(India OR Indian OR Kashmir) (Pakistan OR Pakistani OR \"Line of Control\" OR Indus)",
+        "terms": [
+          "pakistan",
+          "kashmir",
+          "indus",
+          "line of control",
+          "india"
+        ]
+      }
     },
     {
       "id": "MM",
@@ -1735,7 +1840,19 @@
           "state": "Active",
           "note": "FPV strike on Tada-U airbase, failed junta Rakhine offensive and AA counter-offensive, ASEAN seat decision pending."
         }
-      ]
+      ],
+      "feed": {
+        "query": "(Myanmar OR Burma OR \"Arakan Army\" OR Rakhine OR \"Min Aung Hlaing\")",
+        "terms": [
+          "myanmar",
+          "burma",
+          "arakan",
+          "rakhine",
+          "junta",
+          "min aung hlaing",
+          "sittwe"
+        ]
+      }
     },
     {
       "id": "ME_SPILL",
@@ -1886,7 +2003,21 @@
           "state": "Priority",
           "note": "Houthis seized the Red Sea coast and cut Bab al-Mandab transits to ~12/day; Saudi pipeline shut by Iraqi militia drones; US leaving Iraq."
         }
-      ]
+      ],
+      "feed": {
+        "query": "(Houthi OR Houthis OR \"Red Sea\" OR \"Bab al-Mandab\" OR \"Bab el-Mandeb\" OR Yemen OR \"Iraqi militia\" OR \"Popular Mobilization\" OR \"Golan\")",
+        "terms": [
+          "houthi",
+          "red sea",
+          "mandab",
+          "mandeb",
+          "yemen",
+          "iraq",
+          "militia",
+          "syria",
+          "golan"
+        ]
+      }
     }
   ]
 }

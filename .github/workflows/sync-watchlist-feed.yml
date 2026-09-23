@@ -1,0 +1,71 @@
+name: Sync watchlist open-source feed
+
+# Refreshes the Watchlist's live reporting feed (watchlist-live.json) from the
+# open GDELT DOC 2.0 API — 30-day coverage timelines and the latest relevant
+# articles per watchlist item — then commits it and deploys to Pages so the
+# Watchlist tab's coverage sparklines, surge flags and "latest reporting"
+# lists stay current without anyone touching the repo.
+#
+# Runs every 6 hours and on demand. The sync script is defensive: if GDELT is
+# unreachable for most items it exits non-zero and the previous file is kept.
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # every 6 hours (UTC), off the hour to avoid GDELT peaks
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  sync-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Sync open-source feed (GDELT)
+        run: node scripts/sync-watchlist-feed.js
+
+      - name: Commit feed (if changed)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add watchlist-live.json
+          if git diff --staged --quiet; then
+            echo "No change to watchlist-live.json."
+          else
+            git commit -m "chore: sync watchlist open-source feed"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
