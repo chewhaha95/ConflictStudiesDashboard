@@ -597,7 +597,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     wl.items.forEach((i, k) => {
       const tl = []; for (let d = 29; d >= 0; d--) { const dt = new Date(Date.now() - d * 86400000).toISOString().slice(0, 10); tl.push({ date: dt, value: k === 0 && d < 7 ? 40 : 5 }); }
       const vals = tl.map(p => p.value), c7 = vals.slice(-7).reduce((a, b) => a + b, 0), p7 = vals.slice(-14, -7).reduce((a, b) => a + b, 0);
-      items[i.id] = { query: i.feed.query, timeline: tl, count7d: c7, prev7d: p7, surge: c7 >= 20 && c7 >= 2 * Math.max(p7, 1),
+      items[i.id] = { query: i.feed.query, granularity: "day", timeline: tl, count7d: c7, prev7d: p7, capped: false, surge: c7 >= 20 && c7 >= 2 * Math.max(p7, 1),
         articles: [{ title: "FEED-HEADLINE " + i.id, url: "https://example.org/feed/" + i.id, domain: "example.org", country: "X", date: tl[tl.length - 1].date }] };
     });
     return { __live: true, syncedAt: new Date().toISOString(), source: "GDELT stub", refreshed: wl.items.length, total: wl.items.length, items };

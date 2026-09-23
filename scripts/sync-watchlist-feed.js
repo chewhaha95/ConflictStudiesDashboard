@@ -4,12 +4,15 @@
  *
  * For every item in watchlist.json it queries the GDELT DOC 2.0 API (open,
  * no key) for:
- *   • a 30-day daily article-count timeline  (mode=TimelineVolRaw)
+ *   • a coverage timeline — daily counts from mode=TimelineVolRaw when GDELT
+ *     serves it, otherwise four weekly article counts from date-windowed
+ *     mode=ArtList queries (GDELT refuses the timeline modes from some
+ *     networks; ArtList is capped at 250 records per window, flagged `capped`)
  *   • the most relevant English-language articles of the last 7 days
  *     (mode=ArtList, sort=HybridRel), title-filtered by the item's terms
  * and writes watchlist-live.json:
- *   { __live, syncedAt, source, items: { <id>: { query, timeline, count7d,
- *     prev7d, surge, articles } } }
+ *   { __live, syncedAt, source, items: { <id>: { query, granularity,
+ *     timeline, count7d, prev7d, capped, surge, articles } } }
  *
  * GDELT asks for at most one request every 5 seconds, so the script paces
  * itself (~2–3 minutes for 12 items). It is defensive: an item whose requests
@@ -69,20 +72,51 @@ function parseArticles(j, terms) {
   return out;
 }
 
-function windows(timeline) {
+function windows(timeline, granularity, capped) {
   const vals = timeline.map(p => p.value);
-  const last7 = vals.slice(-7).reduce((a, b) => a + b, 0);
-  const prev7 = vals.slice(-14, -7).reduce((a, b) => a + b, 0);
-  return { count7d: last7, prev7d: prev7, surge: last7 >= 20 && last7 >= 2 * Math.max(prev7, 1) };
+  const n = granularity === "day" ? 7 : 1;
+  const last = vals.slice(-n).reduce((a, b) => a + b, 0);
+  const prev = vals.slice(-2 * n, -n).reduce((a, b) => a + b, 0);
+  // a surge cannot be asserted when the counts are capped on both sides
+  const surge = !capped && last >= 20 && last >= 2 * Math.max(prev, 1);
+  return { count7d: last, prev7d: prev, capped: !!capped, surge };
+}
+
+const gd = d => `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}${String(d.getUTCDate()).padStart(2, "0")}`;
+
+// Fallback timeline: four 7-day windows counted from date-windowed ArtList queries
+// (each capped at 250 records — the cap is reported so the UI can say "250+").
+async function weeklyWindows(q) {
+  const now = new Date();
+  const out = [];
+  let capped = false;
+  for (let w = 3; w >= 0; w--) {
+    const end = new Date(now.getTime() - w * 7 * 86400000);
+    const start = new Date(end.getTime() - 7 * 86400000);
+    const j = await gdelt({ query: q, mode: "ArtList", format: "json", maxrecords: 250, sort: "DateDesc",
+      startdatetime: gd(start) + "000000", enddatetime: gd(end) + "235959" });
+    const n = ((j && j.articles) || []).length;
+    if (n >= 250) capped = true;
+    out.push({ date: start.toISOString().slice(0, 10), value: n });
+    await sleep(PACE_MS);
+  }
+  return { timeline: out, capped };
 }
 
 async function fetchItem(it) {
   const q = `${it.feed.query} sourcelang:english`;
-  const tl = await gdelt({ query: q, mode: "TimelineVolRaw", format: "json", timespan: "30d" });
+  let timeline = [], granularity = "day", capped = false;
+  try {
+    timeline = parseTimeline(await gdelt({ query: q, mode: "TimelineVolRaw", format: "json", timespan: "30d" }));
+  } catch (e) { /* timeline modes refused from this network — fall back below */ }
   await sleep(PACE_MS);
+  if (timeline.length < 14) {
+    const w = await weeklyWindows(q);
+    timeline = w.timeline; capped = w.capped; granularity = "week";
+  }
   const al = await gdelt({ query: q, mode: "ArtList", format: "json", timespan: "7d", maxrecords: 75, sort: "HybridRel" });
-  const timeline = parseTimeline(tl);
-  return Object.assign({ query: q, timeline, articles: parseArticles(al, it.feed.terms || []), fetchedAt: new Date().toISOString() }, windows(timeline));
+  return Object.assign({ query: q, granularity, timeline, articles: parseArticles(al, it.feed.terms || []), fetchedAt: new Date().toISOString() },
+    windows(timeline, granularity, capped));
 }
 
 (async () => {
@@ -97,7 +131,7 @@ async function fetchItem(it) {
     try {
       out[it.id] = await fetchItem(it);
       ok++;
-      console.log(`✓ ${it.id.padEnd(9)} 7d=${out[it.id].count7d} prev7d=${out[it.id].prev7d}${out[it.id].surge ? " SURGE" : ""} articles=${out[it.id].articles.length}`);
+      console.log(`✓ ${it.id.padEnd(9)} [${out[it.id].granularity}] 7d=${out[it.id].count7d}${out[it.id].capped ? "+" : ""} prev7d=${out[it.id].prev7d}${out[it.id].surge ? " SURGE" : ""} articles=${out[it.id].articles.length}`);
     } catch (e) {
       console.error(`✗ ${it.id}: ${e.message}${prev[it.id] ? " (keeping previous data)" : ""}`);
       if (prev[it.id]) out[it.id] = prev[it.id];

@@ -1025,6 +1025,7 @@ table.wl-indicators tr.ignored td { opacity: .7; }
 .wl-spark { display: block; overflow: visible; }
 .wl-spark polyline { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .wl-spark .wl-spark-7d { fill: var(--accent); opacity: .12; }
+.wl-spark circle { fill: var(--accent); }
 .wl-feed-n { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
 .wl-feed-d { font-weight: 700; }
 .wl-feed-d.up { color: var(--tone-bad-fg); }
