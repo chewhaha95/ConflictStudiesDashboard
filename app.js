@@ -2006,7 +2006,7 @@
         <div class="wl-filter-row">
           <span class="wl-filter-lbl">Tier</span><span class="chip-row">${tierChips}</span>
           <span class="wl-filter-lbl">State</span><span class="chip-row">${stateChips}</span>
-          <button class="fchip wl-f-ignored" aria-pressed="${f.hideIgnored}" title="Hide items flagged ignore-for-now (Q7)">Hide ignorable</button>
+          <button class="fchip wl-f-ignored" aria-pressed="${f.hideIgnored}" title="Hide items flagged ignore-for-now">Hide ignorable</button>
           ${(f.tiers.size || f.states.size || f.hideIgnored) ? `<button class="link-btn" data-wl-reset>Clear filters</button>` : ""}
         </div>
       </div>`;
@@ -2024,11 +2024,11 @@
             <div class="wl-rank-head">${this.nameBtn(it, "wl-name-lg")} ${this.tierTag(it.tier)} ${this.stateChip(it.state, this.moveGlyph(it))} ${this.actionChip(it.csi.action)} ${this.scoreChip(it)}</div>
             <div class="wl-rank-why">${esc(it.whyNow || "")}</div>
           </div></li>`).join("");
-      return `<div class="section"><div class="section-head"><h2>Q1 · What deserves attention now?</h2><span class="hint">Ranked by the explainable attention score — hover a score for its breakdown</span></div>
+      return `<div class="section"><div class="section-head"><h2>What deserves attention now?</h2><span class="hint">Ranked by the explainable attention score — hover a score for its breakdown</span></div>
         <div class="card bluf-card card-pad wl-bluf">
           <div class="bluf-label">Where to spend limited attention this week</div>
           ${top.length ? `<ol class="wl-rank">${rows}</ol>` : `<p class="muted-note">No items match the current filters.</p>`}
-          <div class="bluf-sub">${rest > 0 ? `${rest} further item${rest === 1 ? "" : "s"} below the fold in the register. ` : ""}${dashOnly} on <em>Dashboard only</em> with no change · ${ignored} flagged ignore-for-now (see Q7).</div>
+          <div class="bluf-sub">${rest > 0 ? `${rest} further item${rest === 1 ? "" : "s"} below the fold in the register. ` : ""}${dashOnly} on <em>Dashboard only</em> with no change · ${ignored} flagged ignore-for-now (see the ignore list below).</div>
         </div></div>`;
     },
 
@@ -2051,7 +2051,7 @@
         return `<div class="wl-col wl-col-${this.stateDef(s).tone}"><div class="wl-col-h">${this.stateChip(s)} <span class="wl-col-n">${col.length}</span><div class="wl-col-desc">${esc(this.stateDef(s).desc)}</div></div>
           <div class="wl-col-body">${col.map(it => `<button class="wl-card-chip ${this.movement(it) ? "moved" : ""} ${it.ignore.flag ? "ignored" : ""}" data-wl-open="${esc(it.id)}">${this.tierTag(it.tier)} ${esc(it.name)} ${this.moveGlyph(it)}</button>`).join("") || `<div class="muted-note">—</div>`}</div></div>`;
       }).join("");
-      return `<div class="section"><div class="section-head"><h2>Map &amp; Q2 · Which theatres moved?</h2><span class="hint">Marker colour = monitoring state · size = tier · click a marker to open its register row</span></div>
+      return `<div class="section"><div class="section-head"><h2>Which theatres moved?</h2><span class="hint">Marker colour = monitoring state · size = tier · click a marker to open its register row</span></div>
         <div class="wl-map-grid">
           <div class="card card-pad wl-map-card">
             <div class="wl-map-tools"><span class="wl-filter-lbl">Focus</span><span class="chip-row">${regionBtns}</span></div>
@@ -2087,14 +2087,14 @@
           ${b.watch ? `<div class="wl-brief-watch"><strong>Brief watch:</strong> ${esc(b.watch)}</div>` : ""}
         </div>` : `<div class="wl-d-block"><div class="wl-d-h">Brief signal</div><p class="muted-note">Not a briefed theatre — assessment rests on the analyst review only.</p></div>`;
       return `<div class="wl-detail-grid">
-        <div class="wl-d-block"><div class="wl-d-h">Q3 · What materially changed</div>
+        <div class="wl-d-block"><div class="wl-d-h">What materially changed</div>
           <div class="wl-chg-line">${dimsLine}</div>
           <ul class="wl-bullets">${(it.changes || []).map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>
-        <div class="wl-d-block"><div class="wl-d-h">Q5 · What might happen next</div>${next ? `<ul class="wl-ind-list">${next}</ul>` : `<p class="muted-note">No indicators recorded.</p>`}</div>
-        <div class="wl-d-block"><div class="wl-d-h">Q6 · What CSI should do</div>
+        <div class="wl-d-block"><div class="wl-d-h">What might happen next</div>${next ? `<ul class="wl-ind-list">${next}</ul>` : `<p class="muted-note">No indicators recorded.</p>`}</div>
+        <div class="wl-d-block"><div class="wl-d-h">What CSI should do</div>
           <div>${this.actionChip(it.csi.action)} ${(it.csi.also || []).map(a => `<span class="t-chip">also: ${esc(a)}</span>`).join(" ")}</div>
           <p class="wl-d-p">${esc(it.csi.rationale || "")}</p>
-          <div class="wl-d-h sub">Q7 · Ignore for now?</div>
+          <div class="wl-d-h sub">Ignore for now?</div>
           <p class="wl-d-p">${it.ignore.flag ? `<strong>Yes</strong> — ${it.ignore.reasons.map(r => `<span class="tag">${esc(r)}</span>`).join(" ")} ${esc(it.ignore.note || "")}` : `<strong>No</strong> — keep on the active watch.${it.ignore.note ? " " + esc(it.ignore.note) : ""}`}</p>
           <div class="wl-d-meta">Confidence ${this.confChip(it.confidence)} · Army learning value <strong>${esc(it.learningValue || "—")}</strong> · Region ${esc(it.region || "—")}</div></div>
         ${briefBlock}
@@ -2126,7 +2126,7 @@
           <td>${this.scoreChip(it)}</td>
         </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="${11 + this.DIMS.length}">${this.detail(it)}</td></tr>` : ""}`;
       }).join("");
-      return `<div class="section"><div class="section-head"><h2>Q3 &amp; Q4 · What materially changed?</h2><span class="hint">Register ordered by attention · highlighted cells changed since the previous review (hover for previous value) · expand a row for changes, indicators, CSI call and the brief signal</span>
+      return `<div class="section"><div class="section-head"><h2>What materially changed?</h2><span class="hint">Register ordered by attention · highlighted cells changed since the previous review (hover for previous value) · expand a row for changes, indicators, CSI call and the brief signal</span>
           <div class="head-actions"><button class="btn" data-wl-expand-all>Expand all</button><button class="btn" data-wl-collapse-all>Collapse all</button></div></div>
         <div class="card matrix-wrap"><table class="matrix wl-register" id="wl-register"><thead><tr>
           <th>#</th><th>Tier</th><th>Conflict</th><th>State</th>${dimHead}<th>Changed</th><th>Next indicator</th><th>CSI action</th><th>Conf.</th><th title="Attention score">Attn</th>
@@ -2144,7 +2144,7 @@
         return `<tr class="${x.it.ignore.flag ? "ignored" : ""}"><td class="wl-due-cell"><span class="wl-due wl-due-${ds.cls}">${x.n.due ? esc(this.fmtDate(x.n.due)) : "—"}</span><div class="wl-due-sub">${esc(ds.label)}</div></td>
           <td>${this.nameBtn(x.it)} ${this.tierTag(x.it.tier)}</td><td><span class="wl-ind-type">${esc(x.n.type)}</span></td><td>${esc(x.n.text)}</td><td class="wl-ifseen">${esc(x.n.ifSeen || "")}</td></tr>`;
       };
-      return `<div class="section"><div class="section-head"><h2>Q5 · What might happen next?</h2><span class="hint">Named events, thresholds, deadlines, mobilisation signs, force movements, diplomatic decisions and escalation indicators — dated first</span></div>
+      return `<div class="section"><div class="section-head"><h2>What might happen next?</h2><span class="hint">Named events, thresholds, deadlines, mobilisation signs, force movements, diplomatic decisions and escalation indicators — dated first</span></div>
         <div class="card matrix-wrap"><table class="matrix wl-indicators" id="wl-indicators"><thead><tr><th>Due</th><th>Conflict</th><th>Type</th><th>Indicator to watch</th><th>If seen →</th></tr></thead>
         <tbody>${dated.map(row).join("")}${undated.length ? `<tr class="wl-sep"><td colspan="5">Undated indicators (trigger-based)</td></tr>${undated.map(row).join("")}` : ""}${!all.length ? `<tr><td colspan="5" class="empty">No indicators for the current filters.</td></tr>` : ""}</tbody></table></div></div>`;
     },
@@ -2160,7 +2160,7 @@
           ${also.length ? `<div class="wl-act-also">Also feeds: ${also.map(it => this.nameBtn(it)).join(", ")}</div>` : ""}
         </div>`;
       }).join("");
-      return `<div class="section"><div class="section-head"><h2>Q6 · What should CSI do with it?</h2><span class="hint">Publication decision per item — one primary action, optional secondary feeds</span></div><div class="wl-act-grid">${cols}</div></div>`;
+      return `<div class="section"><div class="section-head"><h2>What should CSI do with it?</h2><span class="hint">Publication decision per item — one primary action, optional secondary feeds</span></div><div class="wl-act-grid">${cols}</div></div>`;
     },
 
     ignoreSection(list) {
@@ -2169,7 +2169,7 @@
       const trig = it => { const e = (it.next || []).find(n => /escalat|threshold|mobilis|force/i.test(n.type)) || (it.next || [])[0]; return e ? e.text : "—"; };
       const rows = flagged.map(it => `<li class="wl-ig-item"><div>${this.nameBtn(it)} ${this.tierTag(it.tier)} ${this.stateChip(it.state)} ${it.ignore.reasons.map(r => `<span class="tag">${esc(r)}</span>`).join(" ")}</div>
           <div class="wl-ig-note">${esc(it.ignore.note || "")}</div><div class="wl-ig-trig"><strong>Revisit trigger:</strong> ${esc(trig(it))}</div></li>`).join("");
-      return `<div class="section"><div class="section-head"><h2>Q7 · What can be ignored for now?</h2><span class="hint">Stable, repetitive, low-confidence, or no current Army learning value — with the trigger that would bring each back</span></div>
+      return `<div class="section"><div class="section-head"><h2>What can be ignored for now?</h2><span class="hint">Stable, repetitive, low-confidence, or no current Army learning value — with the trigger that would bring each back</span></div>
         <div class="card card-pad">
           ${rows ? `<ul class="wl-ig-list">${rows}</ul>` : `<p class="muted-note">Nothing is flagged ignore-for-now in the current filter.</p>`}
           ${quiet.length ? `<div class="wl-quiet"><strong>Quiet this review (not flagged):</strong> ${quiet.map(it => this.nameBtn(it)).join(", ")} — no dimension changed, no state move, Dashboard only.</div>` : ""}

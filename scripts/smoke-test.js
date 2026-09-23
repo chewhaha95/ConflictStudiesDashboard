@@ -155,8 +155,10 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("tier + state filter chips and hide-ignorable toggle", wv.querySelectorAll(".wl-f-tier").length === 3 && wv.querySelectorAll(".wl-f-state").length === stateNames.length && !!wv.querySelector(".wl-f-ignored"));
   // the seven questions, in order
   const h2s = [...wv.querySelectorAll(".section-head h2")].map(h => h.textContent);
-  check("answers the 7 questions as ordered sections (Q1 → Q7)",
-    /Q1/.test(h2s[0]) && /Q2/.test(h2s[1]) && /Q3/.test(h2s[2]) && /Q4/.test(h2s[2]) && /Q5/.test(h2s[3]) && /Q6/.test(h2s[4]) && /Q7/.test(h2s[5]), h2s.join(" | "));
+  check("answers the seven questions as ordered sections (no Q-number prefixes)",
+    /^What deserves attention now\?/.test(h2s[0]) && /^Which theatres moved\?/.test(h2s[1]) && /^What materially changed\?/.test(h2s[2]) &&
+    /^What might happen next\?/.test(h2s[3]) && /^What should CSI do with it\?/.test(h2s[4]) && /^What can be ignored for now\?/.test(h2s[5]) &&
+    h2s.every(h => !/\bQ[1-7]\b/.test(h)), h2s.join(" | "));
   // Q1 attention ranking
   const rank = [...wv.querySelectorAll(".wl-rank .wl-rank-item")];
   const expTop = ranked.filter(i => !i.ignore.flag).slice(0, 5);
@@ -213,8 +215,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   wv = doc.querySelector("#view-watchlist .view-body");
   const det = wv.querySelector(`tr[data-wl-detail="${probe.id}"]`);
   check("expanded row shows what changed / what next / CSI call / ignore verdict / brief signal / history", !!det &&
-    /Q3 · What materially changed/.test(det.textContent) && /Q5 · What might happen next/.test(det.textContent) && /Q6 · What CSI should do/.test(det.textContent) &&
-    /Q7 · Ignore for now\?/.test(det.textContent) && /Brief signal/.test(det.textContent) && /State history/.test(det.textContent));
+    /What materially changed/.test(det.textContent) && /What might happen next/.test(det.textContent) && /What CSI should do/.test(det.textContent) &&
+    /Ignore for now\?/.test(det.textContent) && !/\bQ[1-7]\b/.test(det.textContent) && /Brief signal/.test(det.textContent) && /State history/.test(det.textContent));
   check("detail: every changed dimension spelled out (prev → now)", det.querySelectorAll(".wl-chg-line .wl-chg-pill").length === changed(probe).length && changed(probe).every(d => det.textContent.includes(probe.dims[d].prev)));
   check("detail: typed indicators with 'If seen →' consequences and rendered dates",
     det.querySelectorAll(".wl-ind").length === probe.next.length && det.querySelectorAll(".wl-ind .wl-ind-type").length === probe.next.length &&
