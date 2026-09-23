@@ -1030,6 +1030,7 @@ table.wl-indicators tr.ignored td { opacity: .7; }
 .wl-feed-d { font-weight: 700; }
 .wl-feed-d.up { color: var(--tone-bad-fg); }
 .wl-feed-d.down { color: var(--tone-good-fg); }
+.wl-feed-stale { display: inline-block; font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 4px; color: var(--tone-warn-fg); background: var(--tone-warn-bg); }
 .wl-surge { display: inline-block; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .3px; padding: 1px 6px; border-radius: 4px; color: var(--tone-bad-fg); background: var(--tone-bad-bg); }
 .wl-feed-sum { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; font-size: 12.5px; margin-bottom: 8px; }
 .wl-art-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; }
