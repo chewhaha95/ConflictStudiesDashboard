@@ -984,6 +984,9 @@ table.wl-register thead th { cursor: default; }
 .wl-brief-watch { font-size: 12.5px; color: var(--text-muted); margin-top: 6px; line-height: 1.45; }
 .wl-hist-list { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; }
 .wl-hist-d { font-variant-numeric: tabular-nums; color: var(--text-muted); margin-right: 4px; }
+.wl-src-list { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+.wl-src-list a { color: var(--accent); text-decoration: none; }
+.wl-src-list a:hover { text-decoration: underline; }
 
 /* Indicators table */
 table.wl-indicators td { font-size: 12.5px; vertical-align: top; }

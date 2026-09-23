@@ -1,10 +1,10 @@
 {
   "meta": {
     "title": "Conflict Watchlist",
-    "reviewDate": "2026-06-29",
-    "previousReviewDate": "2026-06-22",
+    "reviewDate": "2026-09-23",
+    "previousReviewDate": "2026-06-29",
     "cadenceDays": 7,
-    "reviewer": "CSI analyst (seed review)",
+    "reviewer": "CSI analyst review, 23 Sep 2026 (briefed theatres from the weekly brief through 21 Sep; other theatres web-researched — items marked unverified need confirmation)",
     "notes": "Analyst-maintained register. Each review: (1) set reviewDate/previousReviewDate, (2) for every item move `prev` <- `now` on the five dimensions and then set the new `now`, (3) rewrite `changes`, `next` and `csi` for what is true THIS week only, (4) record any state move in `history`. The dashboard derives attention rank, movements, changed-dimension flags, staleness and the brief signal — do not type those in. This is a watchlist, not a news archive: keep `changes` to what materially moved since the previous review, and `next` to named, checkable indicators."
   },
   "definitions": {
@@ -155,7 +155,7 @@
       },
       "dims": {
         "phase": {
-          "now": "Attritional war",
+          "now": "Attritional war with reciprocal deep-strike campaigns",
           "prev": "Attritional war"
         },
         "escalation": {
@@ -175,36 +175,50 @@
           "prev": "Low"
         }
       },
-      "whyNow": "Ukraine's declared 40-day pressure campaign and the confirmation of FPV-as-interceptor make this the richest adaptation feed of the week.",
+      "whyNow": "Richest adaptation feed on the list: Russia's shift to jet-powered Geran-4/5 strike packages, Ukraine's 3,000 km strike on Yamal gas plants and Operation Vivaldi at Lyman — while a live talks track (UNGA meetings, an October trilateral) could change the frame.",
       "changes": [
-        "Zelenskyy authorised a 40-day campaign against Russian energy, Crimea supply routes and logistics hubs; Donetsk front static and ISW no longer forecasts a Russian seizure of Donetsk.",
-        "FPV drones confirmed as repeatable Shahed interceptors over Crimea; production-chain strike on the Titan-Barrikady missile plant with an FP-5 Flamingo.",
-        "Crimea under state of emergency (fuel sales halted, rolling power cuts); Russia concentrating air defence on Moscow and the Kerch Bridge."
+        "Russia's strike architecture shifted to jet-powered drones: Geran-4/5 were ~56% of long-range drone strikes in August (total volume down from 6,583 in April to 4,943), exploiting Ukraine's anti-ballistic interceptor deficit; MoD warned on 31 Aug of 'massive strikes' on energy sites before winter.",
+        "Ukraine's deep-strike campaign hit the Syzran, NORSI and Kirishi refineries (23–30 Aug) and on 9 Sep the Novy Urengoy and Purovsky gas-condensate plants 3,000 km inside Russia; Russia suspended gasoline exports to 30 Sep.",
+        "Operation Vivaldi (from mid-Sep) reduced the Lyman salient (85–125 km² claimed, Russians pushed back across the Chornyi Zherebets) under Maj Gen Drapatyi's decentralised, drone-first C2 after the July leadership reshuffle in Kyiv.",
+        "Diplomacy re-opened without a breakthrough: US envoys in Kyiv and Moscow (early Sep), BRICS (India, China) offered mediation, Trump–Zelensky met at UNGA on 22 Sep and Rubio–Lavrov on 23 Sep; Ukraine is pushing an energy-infrastructure and Black Sea truce.",
+        "Russian drone incursions into Polish and Romanian airspace drew a NATO condemnation on 12 Aug; Romania reports spill-over rising 'exponentially'."
       ],
       "next": [
         {
-          "type": "Diplomatic decision",
-          "text": "Pre-summit diplomatic engagements in Moscow ahead of US-led tracking initiatives.",
-          "due": "2026-07-04",
-          "ifSeen": "Confirms a live talks track; watch for a strike pause as a bargaining signal."
+          "type": "Named event",
+          "text": "Next US–Ukraine–Russia trilateral round (Budanov: 'for October'; UAE venue proposed) and the Ukraine–US–Europe follow-up.",
+          "due": null,
+          "ifSeen": "Energy or Black Sea truce terms on the table → Weekly awareness post; watch for a strike pause as a bargaining signal."
         },
         {
           "type": "Escalation indicator",
-          "text": "Large Russian retaliatory strike package on Kyiv energy or C2 in answer to the Moscow drone campaign.",
+          "text": "Opening of Russia's 2026–27 winter energy campaign: mass Geran-4/5 plus ballistic packages against generation and heating.",
           "due": null,
-          "ifSeen": "Weekly awareness post on saturation volume and interceptor stocks."
+          "ifSeen": "Weekly awareness post on saturation volume versus interceptor stocks."
+        },
+        {
+          "type": "Diplomatic decision",
+          "text": "European Council, Brussels: Ukraine's €23bn 2026 financing gap and the reparations loan on frozen assets (Belgian veto risk).",
+          "due": "2026-10-15",
+          "ifSeen": "Financing settled → sustainment picture stable through winter; failure → note for the monthly review."
         },
         {
           "type": "Deadline",
-          "text": "End of the declared 40-day campaign window — did Russian posture or logistics visibly change?",
-          "due": "2026-08-04",
-          "ifSeen": "Monthly pattern review: deep-strike campaign as coercive lever."
+          "text": "EU 21st sanctions package: wind-down for pre-24 July contracts ends; Commission review of refinery designations.",
+          "due": "2026-10-25",
+          "ifSeen": "Tightening confirmed → sustainment pressure on Russian refining compounds Ukrainian strikes."
         },
         {
           "type": "Force movement",
-          "text": "Russian infiltration of Kostiantynivka turns into encirclement or a confirmed withdrawal.",
+          "text": "Vivaldi phase 2 or a Russian counter-concentration south-west of Kramatorsk (Druzhkivka, Dobropillia) and around Orikhiv.",
           "due": null,
-          "ifSeen": "Phase check: attritional war vs operational breakthrough."
+          "ifSeen": "Phase check: attritional gridlock versus an operational-level shift."
+        },
+        {
+          "type": "Named event",
+          "text": "G20 Leaders' Summit, Miami — Zelensky says he is ready to meet Putin there if Putin attends.",
+          "due": "2026-12-14",
+          "ifSeen": "A leaders' meeting would reset the diplomatic phase → CSI Flash."
         }
       ],
       "csi": {
@@ -213,7 +227,7 @@
           "Monthly pattern review",
           "Quarterly candidate"
         ],
-        "rationale": "FPV-as-interceptor and production-chain targeting are directly transferable C-UAS and fires-planning lessons; volume-saturation fires remains the quarterly pattern candidate."
+        "rationale": "Jet-drone transition, production-chain and 3,000 km deep strikes are directly transferable to GBAD and installation-protection planning; volume-saturation fires versus interceptor economics stays the quarterly candidate."
       },
       "ignore": {
         "flag": false,
@@ -222,6 +236,32 @@
       },
       "confidence": "High",
       "learningValue": "High",
+      "sources": [
+        {
+          "label": "ISW 1 Sep assessment via CSI brief 31 Aug–7 Sep",
+          "url": "https://conflictstudiesandinsights.pages.dev"
+        },
+        {
+          "label": "CSI brief 7–14 Sep (Yamal strike, Lyman)",
+          "url": "https://conflictstudiesandinsights.pages.dev/7-14-sep-2026.html"
+        },
+        {
+          "label": "Kyiv Independent — October trilateral (Budanov)",
+          "url": "https://kyivindependent.com/next-ukraine-us-russia-peace-talks-may-take-place-in-october-budanov-says/"
+        },
+        {
+          "label": "CNBC — Russian MoD 'massive strikes' warning",
+          "url": "https://www.cnbc.com/2026/08/31/russia-massive-strikes-ukraine-energy-infrastructure.html"
+        },
+        {
+          "label": "EU Council — 21st sanctions package",
+          "url": "https://www.consilium.europa.eu/en/press/press-releases/2026/07/23/21st-package-of-sanctions-eu-hits-russian-energy-financial-services-and-crypto-hard/"
+        },
+        {
+          "label": "NATO — airspace violations statement 12 Aug",
+          "url": "https://www.nato.int/en/news-and-events/articles/news/2026/08/12/nato-allies-condemn-recent-airspace-violations-and-incidents"
+        }
+      ],
       "history": [
         {
           "date": "2026-04-27",
@@ -250,19 +290,19 @@
       },
       "dims": {
         "phase": {
-          "now": "Phase 1 ceasefire, unresolved disarmament",
+          "now": "Counter-insurgency behind the Yellow Line; Phase 2 stalled",
           "prev": "Phase 1 ceasefire, unresolved disarmament"
         },
         "escalation": {
-          "now": "High",
-          "prev": "Moderate"
+          "now": "Moderate",
+          "prev": "High"
         },
         "tempo": {
-          "now": "Low",
+          "now": "Medium",
           "prev": "Low"
         },
         "adaptation": {
-          "now": "Medium",
+          "now": "High",
           "prev": "Medium"
         },
         "sgExposure": {
@@ -270,36 +310,51 @@
           "prev": "Low"
         }
       },
-      "whyNow": "Escalation risk moved up: Hamas has not accepted the disarmament clauses and the risk of Israel resuming large-scale operations is rising, while organised civilian opposition to Hamas surfaced publicly.",
+      "whyNow": "The feared return to large-scale operations did not happen; the phase settled into low-signature counter-insurgency behind a Yellow Line at ~70% of Gaza. The learning is in targeting of force-regeneration enablers and a SOF capture raid; the October ISF pilot deployment is the next real test.",
       "changes": [
-        "'June 26 Revolution' protests planned at 18 sites were suppressed; Hamas used four hospitals as control and interrogation nodes.",
-        "IDF holds ~64% of Gaza with a stated aim of 70%; no Phase 2 timeline exists and Clauses 8–9 (weapons restrictions, stabilisation force) remain unaccepted.",
-        "Escalation risk raised from Moderate to High on the brief's assessment that a return to large-scale operations is increasingly likely."
+        "IDF holds ~70% of Gaza behind 'Yellow Line' earthworks; Netanyahu: 'We are not withdrawing. We are staying on this line.' Board of Peace 15-point roadmap (30 Jul) accepted by Hamas, rejected by Netanyahu on 9 Aug (full disarmament before withdrawal); no timetable clock has started.",
+        "Israeli cabinet approved a ~200-troop International Stabilisation Force pilot near Rafah (26 Jul); Uganda's parliament approved 1,200 troops for an October deployment, Morocco and Burundi in frame — but October is reported 'in doubt'.",
+        "Operational method shifted to precision attrition of Hamas's force-regeneration network (Khan Younis brigade commander al-Yazouri, engineering and IED specialists) and a special-operations capture raid in Gaza City (internal-security chief al-Arabeed, early Sep).",
+        "Escalation risk lowered from High to Moderate: pressure is applied by strikes on dual-use and utility sites (24 Aug desalination plant), evacuation orders and incendiary or unconventional reconnaissance rather than ground manoeuvre."
       ],
       "next": [
         {
+          "type": "Force movement",
+          "text": "Ugandan (~1,200) and Moroccan ISF contingents enter the Rafah test zone (planned for October; reported in doubt).",
+          "due": "2026-10-15",
+          "ifSeen": "First third-party force in Gaza → Monthly pattern review on stabilisation-force entry; slippage → Board of Peace credibility falls."
+        },
+        {
+          "type": "Diplomatic decision",
+          "text": "Israeli approval of the Board of Peace roadmap, starting the 14-day timetable and the 8-month disarmament clock.",
+          "due": null,
+          "ifSeen": "Phase change to managed transition → Weekly awareness post."
+        },
+        {
           "type": "Named event",
-          "text": "UN Security Council open briefing and closed consultations on International Stabilisation Force deployment bottlenecks.",
-          "due": "2026-07-03",
-          "ifSeen": "Note ISF force-generation and mandate gaps for the stabilisation case study."
+          "text": "Israeli Knesset election — drives Netanyahu's Gaza sequencing stance until results are confirmed on 4 Nov.",
+          "due": "2026-10-27",
+          "ifSeen": "Re-check phase and CSI action after the result."
         },
         {
           "type": "Threshold",
-          "text": "Hamas formally accepts or rejects Clauses 8 and 9 — the last gate before Israel restarts large-scale operations.",
-          "due": null,
-          "ifSeen": "Rejection → move to Priority and CSI Flash on phase change."
-        },
-        {
-          "type": "Force movement",
-          "text": "IDF 'Yellow Line' berms extend beyond the 64% line toward the stated 70%.",
+          "text": "Yellow Line pushed beyond ~70% or the first 'Green Rafah' housing caravans permitted (earliest November).",
           "due": null,
           "ifSeen": "Low-signature territorial consolidation pattern for the monthly review."
+        },
+        {
+          "type": "Escalation indicator",
+          "text": "Return of large-scale ground operations, or a Hamas mass-casualty attack on IDF positions along the line.",
+          "due": null,
+          "ifSeen": "Move to Priority; CSI Flash on phase change."
         }
       ],
       "csi": {
         "action": "Monthly pattern review",
-        "also": [],
-        "rationale": "Governance-transfer-without-disarmament and civilian-opposition dynamics are stabilisation and CIMIC learning, not a weekly item unless the ceasefire breaks."
+        "also": [
+          "Quarterly candidate"
+        ],
+        "rationale": "High-payoff targeting of technical enablers and the Gaza City capture raid are targeting-cell and SOF learning; governance-without-disarmament remains the quarterly stabilisation case. No weekly trigger unless the ISF lands."
       },
       "ignore": {
         "flag": false,
@@ -307,7 +362,33 @@
         "note": ""
       },
       "confidence": "Medium",
-      "learningValue": "Medium",
+      "learningValue": "High",
+      "sources": [
+        {
+          "label": "CSI brief 31 Aug–7 Sep (capture raid)",
+          "url": "https://conflictstudiesandinsights.pages.dev"
+        },
+        {
+          "label": "CSI brief 7–14 Sep (al-Yazouri strike)",
+          "url": "https://conflictstudiesandinsights.pages.dev/7-14-sep-2026.html"
+        },
+        {
+          "label": "Times of Israel — Board of Peace roadmap text",
+          "url": "https://www.timesofisrael.com/text-of-board-of-peace-gaza-plan-calls-for-hamas-to-disarm-over-period-of-eight-months/"
+        },
+        {
+          "label": "The EastAfrican — October ISF deployment in doubt",
+          "url": "https://www.theeastafrican.co.ke/tea/news/east-africa/making-of-gaza-mission-october-deployment-in-doubt-5591504"
+        },
+        {
+          "label": "Israel Policy Forum — cabinet approves ISF framework",
+          "url": "https://israelpolicyforum.org/2026/07/29/israeli-cabinet-approves-framework-for-gaza-stabilization-force-but-what-will-actually-change"
+        },
+        {
+          "label": "JNS — Netanyahu on retaining Yellow Line positions",
+          "url": "https://www.jns.org/news/israel-news/in-gaza-netanyahu-says-idf-will-retain-yellow-line-positions"
+        }
+      ],
       "history": [
         {
           "date": "2026-04-27",
@@ -345,16 +426,16 @@
       },
       "dims": {
         "phase": {
-          "now": "Post-war MOU under a fragile stand-down",
-          "prev": "Ceasefire under strain"
+          "now": "Blockade and tanker war; MOU expired",
+          "prev": "Post-war MOU under a fragile stand-down"
         },
         "escalation": {
           "now": "Severe",
           "prev": "Severe"
         },
         "tempo": {
-          "now": "Medium",
-          "prev": "High"
+          "now": "High",
+          "prev": "Medium"
         },
         "adaptation": {
           "now": "High",
@@ -365,36 +446,44 @@
           "prev": "High"
         }
       },
-      "whyNow": "Hormuz transit is conditional and reversible, the 60-day final-deal clock is running, and the week produced both maritime strikes and a stand-down — the highest Singapore-exposure item on the list.",
+      "whyNow": "Hormuz transits are at roughly 8 a day against a pre-war ~85, the US blockade and 'tanker-for-tanker' strikes are live, the MOU expired without extension, and Iran is widening coercion through IRGC-run Iraqi cells and Houthi chokepoint control. Highest Singapore-exposure item on the list.",
       "changes": [
-        "Tit-for-tat Gulf strikes (Iranian drone strikes on merchant ships; US strikes on Iranian surveillance, air-defence and drone sites) before a fresh 28–29 June stand-down.",
-        "Phase moved from ceasefire-under-strain to a post-war MOU: US lifted Iran oil sanctions for 60 days; nuclear working groups start; southern Omani lane open day and night, central channel still restricted with ~80 mines uncleared.",
-        "Cyber domain expansion: ~4,800 Iranian hostile cyber incidents against Israeli networks in one month, three times last year's volume."
+        "The 60-day MOU expired on 17 Aug with no extension after a July kinetic re-escalation (Iran struck shipping, closed Hormuz and hit US bases in five states) and a two-week exchange; Iran's 'few weeks' ultimatum has lapsed without a new date.",
+        "Kinetic resumption from 30 Aug: CENTCOM strikes on IRGC rocket and mine launchers on Larak Island days after declaring lanes mine-free; IRGC ballistic salvos on US bases in Jordan; after an IRGC missile salvo at a US carrier group, US strikes on IRGC-linked crude carriers (Downy, Stark 1, Kylo — 'tanker for tanker', 5–8 Sep).",
+        "Iran proposed an Oman-based Hormuz toll and management arrangement (IRGC claims revenue-share, 26 Aug) against Gulf pushback; transits ~8 a day on 13 Sep versus ~85 pre-war; the US blockade has redirected 110 ships; mine and debris risk persists (LPG carrier hit 21 Sep).",
+        "Iran shifted to multi-axis coercion as its coastal sensors degraded: lean IRGC-directed Iraqi cells (drones from Maysan shut the Saudi East-West pipeline 11–12 Sep) and Houthi coastal gains around Bab al-Mandab.",
+        "Witkoff held lengthy indirect talks with Araghchi at UNGA on 22 Sep; Trump says a settlement 'is going to be reached' but signalled it would likely follow the November midterms."
       ],
       "next": [
         {
           "type": "Named event",
-          "text": "US–Iran emergency talks in Doha on the Strait of Hormuz impasse.",
-          "due": "2026-06-30",
-          "ifSeen": "Outcome sets whether transit normalises or the 48-hour permit regime hardens; CSI Flash on any change to transit terms."
-        },
-        {
-          "type": "Deadline",
-          "text": "60-day final-deal deadline under the MOU.",
-          "due": "2026-08-22",
-          "ifSeen": "Missed deadline → escalation indicator; expect blockade or re-closure signalling in the preceding fortnight."
+          "text": "Iranian delegation in New York to 27 Sep meeting the mediators (Pakistan, Qatar, Oman, Turkey) after Pezeshkian's UNGA address.",
+          "due": "2026-09-27",
+          "ifSeen": "An agreed channel or interim transit terms → CSI Flash the same day."
         },
         {
           "type": "Threshold",
-          "text": "Central-channel mine clearance completes (≈80 mines) and daily transits return toward the ~70-ship pre-war baseline.",
+          "text": "Daily Hormuz transits recover toward the ~85 baseline, or escorted convoys begin; Iran's reopening conditions (lift blockade, release assets, end operations on all fronts) met or dropped.",
           "due": null,
-          "ifSeen": "Downgrade SG exposure to Moderate; move CSI action to weekly."
+          "ifSeen": "Downgrade Singapore exposure to Moderate; CSI action to weekly."
         },
         {
           "type": "Escalation indicator",
-          "text": "Any strike on merchant shipping or US basing after the 29 June stand-down.",
+          "text": "Another strike on merchant shipping or a US warship, a mine strike, or a strike on Gulf energy infrastructure after the tanker exchanges.",
           "due": null,
-          "ifSeen": "CSI Flash the same day."
+          "ifSeen": "CSI Flash the same day; tempo and escalation stay at the ceiling."
+        },
+        {
+          "type": "Diplomatic decision",
+          "text": "A formal Iran–Oman Hormuz management arrangement with fees, or Gulf states' commitments to bypass routes.",
+          "due": null,
+          "ifSeen": "Structural change to transit terms → CSI Flash; note for the quarterly."
+        },
+        {
+          "type": "Named event",
+          "text": "US midterm elections — Trump's stated window for a settlement.",
+          "due": "2026-11-03",
+          "ifSeen": "Post-election deal push → re-check phase weekly."
         }
       ],
       "csi": {
@@ -402,7 +491,7 @@
         "also": [
           "Monthly pattern review"
         ],
-        "rationale": "Hormuz terms bear directly on Singapore fuel and shipping exposure; Shahed-as-anti-helicopter and cyber volume-saturation feed the monthly pattern review."
+        "rationale": "Hormuz terms bear directly on Singapore fuel and shipping exposure; shadow-fleet tankers as kinetic nodes and the IRGC's lean Iraqi cells feed the monthly pattern review."
       },
       "ignore": {
         "flag": false,
@@ -411,6 +500,32 @@
       },
       "confidence": "High",
       "learningValue": "High",
+      "sources": [
+        {
+          "label": "CSI brief 7–14 Sep (tanker strikes, Houthi axis)",
+          "url": "https://conflictstudiesandinsights.pages.dev/7-14-sep-2026.html"
+        },
+        {
+          "label": "CSI brief 14–21 Sep (multi-axis coercion)",
+          "url": "https://conflictstudiesandinsights.pages.dev"
+        },
+        {
+          "label": "Al Jazeera — MOU expiry, 17 Aug",
+          "url": "https://www.aljazeera.com/news/2026/8/17/us-iran-memorandum-of-understanding-expires-how-and-why-it-fell-apart"
+        },
+        {
+          "label": "Al Jazeera — 'tanker war', 6 Sep",
+          "url": "https://www.aljazeera.com/news/2026/9/6/us-iran-engaged-in-tanker-war-where-is-the-months-long-conflict-headed"
+        },
+        {
+          "label": "Bloomberg — Iran–Oman revenue share claim",
+          "url": "https://www.bloomberg.com/news/articles/2026-08-26/iran-oman-agree-to-share-strait-of-hormuz-revenue-irgc-says"
+        },
+        {
+          "label": "Al Jazeera — Iran delegation at UNGA",
+          "url": "https://www.aljazeera.com/news/2026/9/22/iran-delegation-to-present-narrative-of-resilience-diplomacy-at-unga"
+        }
+      ],
       "history": [
         {
           "date": "2026-04-27",
@@ -425,7 +540,7 @@
       "short": "ISR–LBN",
       "tier": 1,
       "state": "Priority",
-      "prevState": "Active",
+      "prevState": "Priority",
       "briefTheatre": "IL_LB",
       "region": "Levant",
       "geo": {
@@ -439,16 +554,16 @@
       },
       "dims": {
         "phase": {
-          "now": "Active ceasefire with daily fighting",
-          "prev": "Ceasefire violated daily"
+          "now": "Active enforcement: ridge cleared, pilot-zone handover stalled",
+          "prev": "Active ceasefire with daily fighting"
         },
         "escalation": {
           "now": "High",
           "prev": "High"
         },
         "tempo": {
-          "now": "Medium",
-          "prev": "High"
+          "now": "High",
+          "prev": "Medium"
         },
         "adaptation": {
           "now": "High",
@@ -456,33 +571,52 @@
         },
         "sgExposure": {
           "now": "Moderate",
-          "prev": "Low"
+          "prev": "Moderate"
         }
       },
-      "whyNow": "Moved up to Priority: the 26 June Washington Framework creates a Military Coordination Group that regional partners may be asked to join, while the IDF struck Lebanon hours after signing and Hezbollah refused the deal.",
+      "whyNow": "A months-long siege and the industrial demolition of the Ali al-Taher complex (about 1,100 tonnes of explosives, a magnitude 4.1 tremor), then the fight to hold the security zone against re-infiltration; the diplomatic track is frozen until after the 27 Oct Israeli election.",
       "changes": [
-        "14-point trilateral framework signed in Washington on 26 June: two LAF pilot zones tied to phased Hezbollah disarmament, no timeline for full Israeli withdrawal, no enforcement mechanism.",
-        "IDF drone strike in southern Lebanon within hours of signing; security zone maintained; Hezbollah publicly rejected the framework.",
-        "Singapore exposure raised to Moderate because the framework's Military Coordination Group may seek regional-partner contributions."
+        "First pilot-zone handover: LAF deployed into Zawtar al-Gharbiyeh on 21 Jul; Froun and Srifa still pending; mid-Aug ceasefire breakdown and decapitation strikes; the Rome round slipped from 1 Sep to 'October', with ambassadors meeting at the State Department in mid-Sep instead.",
+        "IDF declared operational control of the Ali al-Taher ridge (3 Sep) after weeks of siege, then demolished the tunnel and command complex on 10 Sep (~1,100 t of explosives, USGS magnitude 4.1); Hezbollah answered with one-way attack drones (26 Aug) and IEDs against consolidating engineer units.",
+        "A 'Gray Line' plan was reported (7 Sep): IDF pullback to 2–4 km inside Lebanon with ~20 permanent outposts, conditional on LAF control, disarmament commitments and a monitoring mechanism — not yet approved by Israel's political leadership.",
+        "Hezbollah rejects the disarmament terms and Iran calls the ground moves a major violation of the Islamabad agreement; no Military Coordination Group meeting has been reported since May."
       ],
       "next": [
         {
           "type": "Named event",
-          "text": "First LAF–mediator working-group sessions on pilot-zone boundaries south of the Litani.",
-          "due": "2026-07-06",
-          "ifSeen": "A dated first handover is the framework's first real test."
+          "text": "Rome political round resumes (October, date not published), with the military track reportedly split to a CENTCOM venue in Florida.",
+          "due": null,
+          "ifSeen": "Dated Froun/Srifa handovers → Weekly awareness post."
+        },
+        {
+          "type": "Named event",
+          "text": "Israeli Knesset election; substantive withdrawal and pilot-zone talks expected only after the result (confirmed 4 Nov).",
+          "due": "2026-10-27",
+          "ifSeen": "Re-check the Gray Line decision and CSI action after the result."
+        },
+        {
+          "type": "Threshold",
+          "text": "CENTCOM certifies the Froun and Srifa pilot zones and the IDF exits them.",
+          "due": null,
+          "ifSeen": "Framework working → tempo down; Monthly pattern review on handover mechanics."
         },
         {
           "type": "Diplomatic decision",
-          "text": "Composition and terms of reference of the Military Coordination Group for Lebanon announced.",
+          "text": "Israeli political approval of the Gray Line pullback and outpost plan.",
           "due": null,
-          "ifSeen": "Scope what a contribution would require (ROE alongside IDF and LAF); brief up."
+          "ifSeen": "Phase change to managed buffer → Weekly awareness post."
         },
         {
           "type": "Escalation indicator",
-          "text": "Hezbollah retaliation for post-signing strikes, or an IDF strike inside a designated pilot zone.",
+          "text": "A Hezbollah re-infiltration attack causing IDF casualties inside the security zone, or an IDF strike inside a designated pilot zone.",
           "due": null,
-          "ifSeen": "Framework at risk → Weekly awareness post."
+          "ifSeen": "Framework at risk → Weekly awareness post; CSI Flash if the LAF withdraws."
+        },
+        {
+          "type": "Diplomatic decision",
+          "text": "Composition and first meeting of the Military Coordination Group for Lebanon.",
+          "due": null,
+          "ifSeen": "Scope what a regional-partner contribution would require; brief up."
         }
       ],
       "csi": {
@@ -490,7 +624,7 @@
         "also": [
           "Quarterly candidate"
         ],
-        "rationale": "The MCG question is time-sensitive for planners; the prepared ATGM-plus-drone ambush against armour is the quarterly anti-armour candidate."
+        "rationale": "Subterranean denial as two tracks (tactical clearing, then strategic demolition) and persistent multi-spectrum ISR over a contested buffer are combat-engineer and intelligence learning; the MCG question stays time-sensitive for planners."
       },
       "ignore": {
         "flag": false,
@@ -499,6 +633,32 @@
       },
       "confidence": "High",
       "learningValue": "High",
+      "sources": [
+        {
+          "label": "CSI brief 7–14 Sep (Ali al-Taher demolition)",
+          "url": "https://conflictstudiesandinsights.pages.dev/7-14-sep-2026.html"
+        },
+        {
+          "label": "CSI brief 14–21 Sep (re-infiltration contest)",
+          "url": "https://conflictstudiesandinsights.pages.dev"
+        },
+        {
+          "label": "Arab News — Rome talks delayed to October",
+          "url": "https://www.arabnews.com/world/israel-lebanon-talks-in-rome-delayed-to-october-us-official-3001421"
+        },
+        {
+          "label": "The National — talks likely to stall until October elections",
+          "url": "https://www.thenationalnews.com/news/mena/2026/09/09/lebanon-israel-talks-likely-to-stall-until-october-elections-and-be-split-between-rome-and-florida/"
+        },
+        {
+          "label": "Times of Israel — LAF deploys in first pilot zone",
+          "url": "https://www.timesofisrael.com/in-first-lebanese-army-deploys-in-southern-pilot-zone-after-israeli-withdrawal/"
+        },
+        {
+          "label": "Soufan Center IntelBrief 8 Sep",
+          "url": "https://thesoufancenter.org/intelbrief-2026-september-8/"
+        }
+      ],
       "history": [
         {
           "date": "2026-04-27",
@@ -533,7 +693,7 @@
       },
       "dims": {
         "phase": {
-          "now": "Ceasefire; UNCLOS conciliation",
+          "now": "Physical hardening under a holding ceasefire; conciliation under way",
           "prev": "Ceasefire; UNCLOS conciliation"
         },
         "escalation": {
@@ -541,11 +701,11 @@
           "prev": "Moderate"
         },
         "tempo": {
-          "now": "Low",
+          "now": "Medium",
           "prev": "Low"
         },
         "adaptation": {
-          "now": "Medium",
+          "now": "High",
           "prev": "Medium"
         },
         "sgExposure": {
@@ -553,38 +713,51 @@
           "prev": "Moderate"
         }
       },
-      "whyNow": "Quiet on the ground; the watch is procedural (conciliation chair deadline) and about below-threshold signalling and Chinese capability deliveries.",
+      "whyNow": "Thailand's publicly disclosed Falcon Team drone strikes on Cambodian counter-drone, EW and communications nodes near Preah Vihear are the first admitted cross-border UAS employment since the ceasefire, while the UNCLOS conciliation commission opened in Singapore (14–16 Sep).",
       "changes": [
-        "RTAF issued a formal clarification on F-16 night flights along the border; Cambodia characterised them as military signalling — a calibrated, deniable messaging pattern with miscalculation risk.",
-        "Four UNCLOS conciliators appointed; the five-member commission must elect a chairperson by about 16 July; land border remains economically severed by Cambodian decree.",
-        "No kinetic incidents; Thai National Anti-Drone Centre approved and stood up."
+        "UNCLOS Annex V Conciliation Commission held its first meeting in Singapore, 14–16 Sep: terms of appointment and rules signed, ~12-month non-binding process; scope disputed (Thailand: delimitation only; Cambodia: a treaty including revenue-sharing).",
+        "Thai barrier phase 1 (1.3 km, Chanthaburi) complete and phase 2 (~7–8 km, markers 54–58) under way with access roads and bunkers; Cambodia lodged its strongest protests over PM Anutin's 23 Aug Hill 500 visit and a 3 Sep helicopter incursion; Thailand escorted ASEAN observers and media into O'Smach.",
+        "Thailand disclosed Falcon Team drone strikes on alleged Cambodian counter-drone, EW, communications and field positions around Preah Vihear (week of 14–21 Sep); Cambodia denies military use of the site; claims not independently verified. Tempo raised to Medium, adaptation to High.",
+        "39 Chinese T-59D tanks delivered in July (of 93 ordered); Thai NSC reports none near the border; GBC met 4–7 Aug in Malaysia, the JBC date remains unresolved; the land border stays largely closed."
       ],
       "next": [
         {
-          "type": "Deadline",
-          "text": "Conciliation commission elects a chairperson.",
-          "due": "2026-07-16",
-          "ifSeen": "Missed deadline → legal track stalls; watch for Cambodian escalation at sea or on trade."
+          "type": "Named event",
+          "text": "Next Conciliation Commission meeting (dates not yet published) and any written pleadings schedule.",
+          "due": null,
+          "ifSeen": "Scope agreed → legal track absorbs the dispute; scope fight → note for the monthly."
+        },
+        {
+          "type": "Named event",
+          "text": "General Border Committee follow-up (promised 'in September') or a Joint Boundary Commission date.",
+          "due": null,
+          "ifSeen": "Political track revived → tempo check; if neither convenes by November, escalation risk up."
+        },
+        {
+          "type": "Named event",
+          "text": "49th ASEAN Summit, Manila (published dates conflict: 10–12 or 16–18 Nov) — sideline trilateral as at the May summit.",
+          "due": "2026-11-10",
+          "ifSeen": "Leaders' commitment on the JBC → Dashboard only; absence → Weekly awareness post."
         },
         {
           "type": "Escalation indicator",
-          "text": "Thai economic countermeasure to Cambodia's land-trade blockade.",
+          "text": "Cambodian retaliation for the drone strikes, a landmine casualty, or an exchange of fire along the barrier line.",
           "due": null,
-          "ifSeen": "Trade coercion cycle → move CSI action to weekly."
+          "ifSeen": "Move to Priority; CSI Flash."
         },
         {
           "type": "Force movement",
-          "text": "Second Chinese tank batch (of the 93 ordered) lands at Sihanoukville or tanks leave containers.",
+          "text": "Second Chinese tank batch lands, or tanks move toward the border sectors.",
           "due": null,
-          "ifSeen": "Grey-zone capability-building under a ceasefire; monthly review."
+          "ifSeen": "Grey-zone capability building → Monthly pattern review."
         }
       ],
       "csi": {
-        "action": "Dashboard only",
+        "action": "Weekly awareness post",
         "also": [
           "Monthly pattern review"
         ],
-        "rationale": "Nothing to publish this week; the permanent C-UAS centre and the signalling pattern are already in the monthly cycle via the Capabilities tab."
+        "rationale": "Near-abroad and the first admitted cross-border UAS strikes: one awareness line this week; engineering consolidation and the access-and-verification information contest stay in the monthly pattern set."
       },
       "ignore": {
         "flag": false,
@@ -592,7 +765,33 @@
         "note": ""
       },
       "confidence": "High",
-      "learningValue": "Medium",
+      "learningValue": "High",
+      "sources": [
+        {
+          "label": "CSI brief 14–21 Sep (Falcon Team drone strikes)",
+          "url": "https://conflictstudiesandinsights.pages.dev"
+        },
+        {
+          "label": "CSI brief 7–14 Sep (barrier, observer access)",
+          "url": "https://conflictstudiesandinsights.pages.dev/7-14-sep-2026.html"
+        },
+        {
+          "label": "AP/US News — conciliation opens, 14 Sep",
+          "url": "https://www.usnews.com/news/world/articles/2026-09-14/cambodia-and-thailand-start-compulsory-conciliation-on-maritime-border-dispute"
+        },
+        {
+          "label": "Khaosod — Thailand's opening statement to the commission",
+          "url": "https://www.khaosodenglish.com/politics/2026/09/15/thailands-full-opening-statement-to-first-unclos-conciliation-meeting-with-cambodia/"
+        },
+        {
+          "label": "Thai PBS — fence phase 1 finished, phase 2 starts",
+          "url": "https://www.thaipbsworld.com/thailand-cambodia-standoff/first-phase-of-thai-cambodian-border-fence-finished,-navy-to-start-second"
+        },
+        {
+          "label": "Inquirer — Thailand monitoring Chinese tanks",
+          "url": "https://globalnation.inquirer.net/326868/thailand-monitoring-cambodias-new-chinese-tanks-amid-border-tensions"
+        }
+      ],
       "history": [
         {
           "date": "2026-04-27",
@@ -629,7 +828,7 @@
       },
       "dims": {
         "phase": {
-          "now": "Post-intervention transition under US pressure",
+          "now": "Managed transition on a US economic-first track; counter-cartel maritime campaign",
           "prev": "Post-intervention transition under US pressure"
         },
         "escalation": {
@@ -637,7 +836,7 @@
           "prev": "Moderate"
         },
         "tempo": {
-          "now": "Low",
+          "now": "High",
           "prev": "Low"
         },
         "adaptation": {
@@ -649,28 +848,43 @@
           "prev": "Low"
         }
       },
-      "whyNow": "No material change this week; retained as Active for the case-study value of the January 2026 operation and the post-intervention transition.",
+      "whyNow": "Tempo is up: a rebranded Joint Task Force Western Hemisphere strike campaign (70th boat strike on 19 Sep), the first government–opposition talks, 100-year oil concessions and a Trump–Rodríguez meeting at UNGA — with elections deferred and Machado's return attempts failing.",
       "changes": [
-        "No material change since the previous review; US naval and air presence in the Caribbean remains the pressure lever on the transition arrangements."
+        "4 Aug: SOUTHCOM stood up Joint Task Force Western Hemisphere (18-nation Americas Counter Cartel Coalition), replacing Operation Southern Spear; 70th strike on 19 Sep (~234 killed to date, 14 strikes 23 Aug–19 Sep) with a late-August shift toward boarding before destruction; UN Special Rapporteur (22 Sep) calls the strikes serial extrajudicial killings.",
+        "First in-person government–opposition talks (6–14 Aug; second round 15–17 Sep): frozen assets for earthquake recovery and a Supreme Tribunal overhaul agreed; no election date — Rodríguez: 'when Venezuela is ready'; Rubio: 'not years, but months and weeks'.",
+        "28 Aug NABEP oil deal (100-year concessions on 17 fields, Pentagon 35% stake, $100bn pledged); Trump lifted the narco-state designation in mid-Sep; Chevron doubling output; TotalEnergies MoU 20 Sep.",
+        "22 Sep Trump–Rodríguez pull-aside at UNGA (first since Maduro's capture); the same day Machado made three failed return attempts by sea and air; protests up 181% year on year, 344 political prisoners, colectivos not dismantled (UN fact-finding mission, 16 Sep)."
       ],
       "next": [
         {
-          "type": "Force movement",
-          "text": "Drawdown or reinforcement of the US carrier and amphibious presence in the Caribbean.",
+          "type": "Diplomatic decision",
+          "text": "An election-date announcement, or Machado's return 'in coming weeks'.",
           "due": null,
-          "ifSeen": "Posture change → re-check escalation risk."
+          "ifSeen": "Return without a date → unrest indicator; a date → consider moving to Watch."
+        },
+        {
+          "type": "Named event",
+          "text": "Third round of government–opposition talks (political guarantees, prisoners, judiciary).",
+          "due": null,
+          "ifSeen": "Transition consolidating → Monthly pattern review only."
         },
         {
           "type": "Diplomatic decision",
-          "text": "Announced timeline for national elections and sanctions decisions on the oil sector.",
-          "due": null,
-          "ifSeen": "Transition consolidating → consider moving to Watch."
+          "text": "Inter-American Development Bank board decision on the $2.5bn Venezuela loan (board pushback, date soft).",
+          "due": "2026-10-31",
+          "ifSeen": "Economic-first track funded → transition stability up."
         },
         {
           "type": "Escalation indicator",
-          "text": "Armed-group (colectivo / ELN) violence against the transition authorities or US personnel.",
+          "text": "JTF-WHEM strikes extended to Mexico, Colombia or Cuba, or a Cuba fuel blockade.",
           "due": null,
-          "ifSeen": "Weekly awareness post on post-intervention stabilisation."
+          "ifSeen": "Regional escalation → Weekly awareness post."
+        },
+        {
+          "type": "Force movement",
+          "text": "Carrier or amphibious-group reinforcement or drawdown in the Caribbean (USNI tracker).",
+          "due": null,
+          "ifSeen": "Posture change → re-check escalation risk."
         }
       ],
       "csi": {
@@ -678,15 +892,41 @@
         "also": [
           "Quarterly candidate"
         ],
-        "rationale": "Decapitation operation and post-intervention stabilisation are a pattern-review case, not a weekly item."
+        "rationale": "Coalition counter-cartel maritime interdiction and post-intervention transition are pattern-review cases; no Singapore nexus and no weekly trigger."
       },
       "ignore": {
         "flag": false,
         "reasons": [],
-        "note": "Seed entry — validate the transition picture at the next review."
+        "note": "Web-researched entry; the current ship count and armed-group violence picture are the weakest parts."
       },
       "confidence": "Medium",
       "learningValue": "Medium",
+      "sources": [
+        {
+          "label": "SOUTHCOM — JTF-Western Hemisphere established",
+          "url": "https://www.southcom.mil/News/PressReleases/Article/4563958/us-southern-command-establishes-joint-task-force-western-hemisphere/"
+        },
+        {
+          "label": "Al Jazeera — government–opposition talks, 14 Aug",
+          "url": "https://www.aljazeera.com/news/longform/2026/8/14/talks-between-government-and-opposition-mark-a-new-chapter-for-venezuela"
+        },
+        {
+          "label": "CNBC — NABEP oil deal",
+          "url": "https://www.cnbc.com/2026/09/05/trump-venezuela-oil-north-america-blue-energy-partners-nabep.html"
+        },
+        {
+          "label": "US News — Machado return attempts; Trump–Rodríguez meeting",
+          "url": "https://www.usnews.com/news/world/articles/2026-09-22/venezuelan-opposition-leader-machado-fails-in-return-attempts-as-rodriguez-meets-trump"
+        },
+        {
+          "label": "ABC — UN rapporteur on boat strikes",
+          "url": "https://www.abc.net.au/news/2026-09-22/us-drug-boat-strikes-legality-explained-in-un-report/107180978"
+        },
+        {
+          "label": "UN News — fact-finding mission, 16 Sep",
+          "url": "https://news.un.org/en/story/2026/09/1168351"
+        }
+      ],
       "history": [
         {
           "date": "2026-04-27",
@@ -700,7 +940,7 @@
       "name": "South China Sea",
       "short": "SCS",
       "tier": 2,
-      "state": "Active",
+      "state": "Priority",
       "prevState": "Active",
       "briefTheatre": null,
       "region": "Maritime Southeast Asia",
@@ -723,19 +963,19 @@
       },
       "dims": {
         "phase": {
-          "now": "Grey-zone contestation",
+          "now": "Physical-contact coercion at three features; PLAN layered behind the CCG",
           "prev": "Grey-zone contestation"
         },
         "escalation": {
-          "now": "Moderate",
+          "now": "High",
           "prev": "Moderate"
         },
         "tempo": {
-          "now": "Medium",
+          "now": "High",
           "prev": "Medium"
         },
         "adaptation": {
-          "now": "Medium",
+          "now": "High",
           "prev": "Medium"
         },
         "sgExposure": {
@@ -743,49 +983,95 @@
           "prev": "High"
         }
       },
-      "whyNow": "Steady-state coercion around Philippine-held features; high Singapore exposure through sea lines of communication and ASEAN centrality, with the Code of Conduct on the Philippine chairmanship's agenda.",
+      "whyNow": "Moved up to Priority: a Philippine marine injured at Second Thomas (20 Jul), radar locks and flares on Philippine aircraft (2 and 7 Sep), the 18 Sep ramming off Palawan, and a PLAN surface action group plus H-6K bombers now routinely at Scarborough — with the Code of Conduct's 2026 deadline landing at the Manila summit in November.",
       "changes": [
-        "No material change since the previous review; China Coast Guard and maritime-militia presence around Scarborough and Second Thomas Shoal continues at the established pattern."
+        "20 Jul: CCG small-boat ramming and melee at Second Thomas Shoal injured a Philippine marine; 23–24 Jul water cannon at Scarborough with a CNN crew aboard; the 22–23 Aug resupply ran under a 'provisional understanding' with notification.",
+        "Early Aug: PLA Southern Theatre surged a Type 052D, a Type 071 and frigates plus H-6K bombers with YJ-12 to Scarborough; 2 Sep 'Combat Patrol–Huangyan Dao' with JL-10 armed trainers locking radar on three Philippine aircraft; 7 Sep flares fired at a coast guard aircraft from Subi and Mischief reefs; a PLAN group (DDG, two 054A, 056A) now on station.",
+        "18 Sep: CCG-21585 rammed the fisheries vessel BRP Datu Magat Salamat 54 nm off Palawan during a fuel-subsidy run; the US ambassador condemned a 'deliberate ramming'.",
+        "Code of Conduct: China–ASEAN foreign ministers (22 Jul) reaffirmed the 2026 goal and the 58th joint working group met in Manila on 11 Sep, but Crisis Group assesses the optimism has 'largely evaporated'; a 14-nation statement marked the 2016 award's tenth anniversary; ADMM-Plus maritime exercise launched 20 Sep (USS Canberra, P-8A)."
       ],
       "next": [
         {
-          "type": "Escalation indicator",
-          "text": "A Philippine resupply or patrol is blocked with injuries, a vessel is boarded, or a collision causes casualties.",
-          "due": null,
-          "ifSeen": "CSI Flash; move to Priority."
+          "type": "Named event",
+          "text": "Trump–Xi summit in Washington — South China Sea language and any restraint understanding.",
+          "due": "2026-09-24",
+          "ifSeen": "Explicit restraint → tempo may dip; silence → pattern continues."
         },
         {
-          "type": "Diplomatic decision",
-          "text": "Code of Conduct milestones under the Philippine ASEAN chairmanship ahead of the year-end summits.",
-          "due": "2026-11-15",
-          "ifSeen": "Framework text agreed → Weekly awareness post."
+          "type": "Named event",
+          "text": "Exercise Sama Sama (2025 ran 6–17 Oct; 2026 dates not yet published).",
+          "due": "2026-10-06",
+          "ifSeen": "PLAN shadowing or radio challenges → note for the weekly."
         },
         {
           "type": "Force movement",
-          "text": "PLA Navy or CCG surge around Sabina Shoal or Scarborough enforcement of the declared 'nature reserve'.",
+          "text": "Next Second Thomas Shoal resupply (roughly monthly; last 22–23 Aug).",
           "due": null,
-          "ifSeen": "Tempo up → re-check state."
+          "ifSeen": "Boarding or water cannon with injuries → CSI Flash."
+        },
+        {
+          "type": "Named event",
+          "text": "49th ASEAN Summit and ASEAN–China Summit, Manila (published dates conflict: 10–12 or 16–18 Nov) — the effective deadline for a '2026' Code of Conduct.",
+          "due": "2026-11-10",
+          "ifSeen": "Diluted text or slippage → Weekly awareness post on ASEAN centrality."
+        },
+        {
+          "type": "Threshold",
+          "text": "Chinese boarding or seizure of a Philippine vessel, a Philippine fatality, direct PLAN (not CCG) action, or Manila invoking Mutual Defence Treaty consultations.",
+          "due": null,
+          "ifSeen": "CSI Flash the same day."
         }
       ],
       "csi": {
-        "action": "Dashboard only",
+        "action": "Weekly awareness post",
         "also": [
           "Monthly pattern review"
         ],
-        "rationale": "Repetitive pattern; publish only on an incident threshold. Grey-zone coercion sequencing stays in the monthly pattern set."
+        "rationale": "Incident cadence and the COC deadline make this a weekly item; grey-zone layering (armed trainers, radar locks, forward PLAN presence) goes to the monthly pattern set; a threshold event escalates to a Flash."
       },
       "ignore": {
         "flag": false,
         "reasons": [],
         "note": ""
       },
-      "confidence": "Medium",
+      "confidence": "High",
       "learningValue": "Medium",
+      "sources": [
+        {
+          "label": "USNI — sailor injured at Second Thomas Shoal",
+          "url": "https://news.usni.org/2026/07/20/philippine-sailor-injured-in-violent-clash-with-china-coast-guard-off-second-thomas-shoal"
+        },
+        {
+          "label": "USNI — combat patrol at Scarborough",
+          "url": "https://news.usni.org/2026/09/11/combat-patrol-scarborough-shoal"
+        },
+        {
+          "label": "USNI — CCG rams fisheries vessel, 18 Sep",
+          "url": "https://news.usni.org/2026/09/18/video-china-coast-guard-rams-philippine-fisheries-vessel-in-south-china-sea"
+        },
+        {
+          "label": "Manila Times — radar lock on PH aircraft",
+          "url": "https://www.manilatimes.net/2026/09/06/news/national/chinese-jets-lock-radar-on-ph-aircraft/2419291"
+        },
+        {
+          "label": "China mission to ASEAN — 22 Jul FM meeting",
+          "url": "https://asean.china-mission.gov.cn/eng/zgwj/202607/t20260725_11992108.htm"
+        },
+        {
+          "label": "Singapore MFA — parliamentary reply, 9 Sep",
+          "url": "https://www.mfa.gov.sg/newsroom/press-statements-transcripts-and-photos/-minister-for-foreign-affairs-dr-vivian-balakrishnan-s-written-reply-to-parliamentary-question-no--1851--9-september-2026/"
+        }
+      ],
       "history": [
         {
           "date": "2026-04-27",
           "state": "Active",
           "note": "Baseline: grey-zone contest, SLOC exposure."
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Priority",
+          "note": "Injury, ramming, radar locks and a forward PLAN group at Scarborough; COC deadline at the November summit."
         }
       ]
     },
@@ -817,7 +1103,7 @@
       },
       "dims": {
         "phase": {
-          "now": "Coercive pressure without conflict",
+          "now": "Quiet air, busy sea: CCG quarantine-style patrols east of Taiwan",
           "prev": "Coercive pressure without conflict"
         },
         "escalation": {
@@ -830,42 +1116,58 @@
         },
         "adaptation": {
           "now": "High",
-          "prev": "Medium"
+          "prev": "High"
         },
         "sgExposure": {
-          "now": "Moderate",
+          "now": "High",
           "prev": "Moderate"
         }
       },
-      "whyNow": "Adaptation behaviour moved up: Taiwan's civilian drone-literacy programme (Kuma Academy) is a scalable whole-of-society mobilisation model with direct Army learning value.",
+      "whyNow": "Singapore exposure raised: China Coast Guard 'law-enforcement' patrols east of Taiwan are now routine and a Singapore-flagged merchant ship complied with a CCG radio check. Han Kuang 42 ran unscripted with reservist brigades and drone logistics while US arms sales are frozen around Trump–Xi summitry.",
       "changes": [
-        "Taiwan's Kuma Academy launched a fully booked civilian drone training programme (~75 citizens a month, GPS-free manual flying to bypass jamming) — civil resilience explicitly modelled on Ukraine.",
-        "PLA air and maritime activity around the island continues at the established pattern; no large named exercise this week."
+        "Late Jun–Jul: first and second CCG patrols 74–124 nm east of Taiwan radio-checking transiting merchantmen (a Singapore-flagged ship complied); Taiwan counted a record 110+ PLAN and CCG ships along the first island chain, while PLA air sorties fell ~52% year on year (Aug: 171 sorties, 55 median-line crossings) and no named drill was held.",
+        "Han Kuang 42 (5–14 Aug): ~5,000 reservists in two brigades, first M1A2T employment, a new Littoral Combat Command, a deliberate mobile-internet slowdown and urban-resilience drills with first drone logistics deliveries.",
+        "Budgets: 2027 defence budget NT$1.12 tn (3.01% of GDP, +18%); NT$607.6 bn supplementary (40,000 coastal attack drones, 600 reconnaissance drones, 100 USVs); Unmanned Vehicles Industry act; Kuma Academy civilian drone course selling out; reservist drone module under review.",
+        "US$14 bn arms package paused since May (Iran munitions); reports on 20–21 Sep that Washington is weighing a delay until after APEC and the G20 at Xi's request; New Zealand ships transited the Strait on 18 Sep."
       ],
       "next": [
         {
           "type": "Named event",
-          "text": "Han Kuang annual exercise (live-fire and whole-of-society phases).",
-          "due": "2026-07-13",
-          "ifSeen": "Watch civil-defence integration and reserve mobilisation drills for the monthly review."
+          "text": "Trump–Xi summit — any shift from 'does not support' to 'opposes' Taiwan independence, or an arms-sale freeze.",
+          "due": "2026-09-24",
+          "ifSeen": "Wording shift → Weekly awareness post; arms freeze → note for the monthly."
         },
         {
-          "type": "Mobilisation sign",
-          "text": "PLA large-scale joint drill announced around a political trigger (transit, arms sale, legislative vote).",
-          "due": null,
-          "ifSeen": "Escalation risk to High; Weekly awareness post."
+          "type": "Named event",
+          "text": "Taiwan National Day address — a past trigger for PLA reactions.",
+          "due": "2026-10-10",
+          "ifSeen": "Named PLA drill → escalation risk to High."
+        },
+        {
+          "type": "Named event",
+          "text": "APEC Shenzhen — timing of US arms-sale decisions.",
+          "due": "2026-11-18",
+          "ifSeen": "Package released or shelved → re-check state."
+        },
+        {
+          "type": "Named event",
+          "text": "Taiwan local elections (KMT–TPP weighing referendums alongside).",
+          "due": "2026-11-28",
+          "ifSeen": "Political trigger window for PLA activity."
         },
         {
           "type": "Threshold",
-          "text": "Sustained PLA presence inside the 24 nm contiguous zone or a blockade-style inspection regime.",
+          "text": "CCG physically stopping or boarding a merchant ship east of Taiwan, or PLA sorties returning above 300 a month.",
           "due": null,
-          "ifSeen": "Move to Priority; CSI Flash."
+          "ifSeen": "Move to Priority; CSI Flash on any Singapore-flagged vessel."
         }
       ],
       "csi": {
         "action": "Monthly pattern review",
-        "also": [],
-        "rationale": "Civilian drone literacy and whole-of-society mobilisation are Army learning; no publication trigger this week."
+        "also": [
+          "Quarterly candidate"
+        ],
+        "rationale": "Whole-of-society mobilisation (unscripted Han Kuang, comms-degradation drills, mass drone procurement, civilian drone literacy) is Army learning; the quarantine-rehearsal pattern is the quarterly candidate."
       },
       "ignore": {
         "flag": false,
@@ -874,6 +1176,32 @@
       },
       "confidence": "Medium",
       "learningValue": "High",
+      "sources": [
+        {
+          "label": "HKFP — CCG patrols east of Taiwan",
+          "url": "https://hongkongfp.com/2026/07/08/china-signals-new-normal-with-coast-guard-patrols-off-eastern-taiwan/"
+        },
+        {
+          "label": "ASPI Strategist — coast guard patrols east of Taiwan",
+          "url": "https://www.aspistrategist.org.au/more-salami-slicing-now-china-mounts-coast-guard-patrols-east-of-taiwan/"
+        },
+        {
+          "label": "Focus Taiwan — Han Kuang 42",
+          "url": "https://focustaiwan.tw/politics/202608020004"
+        },
+        {
+          "label": "Focus Taiwan — 2027 defence budget",
+          "url": "https://focustaiwan.tw/politics/202608200011"
+        },
+        {
+          "label": "CNA via GlobalSecurity — supplementary drone budget",
+          "url": "https://www.globalsecurity.org/wmd/library/news/taiwan/2026/taiwan-260903-cna01.htm"
+        },
+        {
+          "label": "Taipei Times — arms-sale delay reports",
+          "url": "https://www.taipeitimes.com/News/taiwan/archives/2026/09/21/2003864623"
+        }
+      ],
       "history": [
         {
           "date": "2026-04-27",
@@ -887,7 +1215,7 @@
       "name": "China–Japan",
       "short": "CHN–JPN",
       "tier": 2,
-      "state": "Watch",
+      "state": "Active",
       "prevState": "Watch",
       "briefTheatre": null,
       "region": "East Asia",
@@ -910,7 +1238,7 @@
       },
       "dims": {
         "phase": {
-          "now": "Diplomatic freeze with military signalling",
+          "now": "Frozen diplomacy with EEZ live fire and expanding Nansei transits",
           "prev": "Diplomatic freeze with military signalling"
         },
         "escalation": {
@@ -918,56 +1246,101 @@
           "prev": "Moderate"
         },
         "tempo": {
-          "now": "Low",
+          "now": "Medium",
           "prev": "Low"
         },
         "adaptation": {
-          "now": "Low",
+          "now": "Medium",
           "prev": "Low"
         },
         "sgExposure": {
-          "now": "Low",
+          "now": "Moderate",
           "prev": "Low"
         }
       },
-      "whyNow": "Repetitive coast-guard presence around the Senkakus and diplomatic freeze; nothing new for the Army this week.",
+      "whyNow": "Moved up to Active: China–Russia live fire inside Japan's claimed EEZ (19 Jul), a JL-3 SLBM test into the Pacific, expanding PLAN transits of the Nansei passages and a record ¥8.9 tn budget request — while Beijing's precondition (revise the Taiwan position) leaves no de-escalation path.",
       "changes": [
-        "No material change since the previous review."
+        "26 Jun–2 Jul: eight PLAN ships used three of five Nansei passages alongside five Russian ships (MOD: 'expanding and intensifying'); 6 Jul JL-3 SLBM test ~7,000 km into the South Pacific (Pacific leaders' rebuke 4 Sep); 7 Jul JCG–CCG face-off in Senkaku territorial waters.",
+        "19 Jul: PLAN destroyer Kaifeng live-fired ~100 nm off Okinotori inside Japan's claimed EEZ beside a Russian corvette; Japan protested; Beijing: Okinotori 'is a rock'. No radar lock-on or unsafe intercept found since December 2025.",
+        "Diplomacy stays frozen ten months after PM Takaichi's Taiwan remark: seafood ban, travel advisory and rare-earth curbs in force (Chinese arrivals −57% in June); a cross-party Diet delegation (24–27 Aug) was told there is no policy change without a revised Taiwan position; Motegi–Wang 'exchange' in Manila disputed.",
+        "Japan: 2026 Defense White Paper names China the greatest strategic challenge; record FY2027 request ¥8.9 tn (AI, unmanned, stand-off, IAMD) with the three security documents to be revised by year-end; US–Japan–ROK trilateral and a Takaichi–Trump meeting (22 Sep) to pre-empt a US–China bargain. Singapore exposure raised to Moderate on rare-earth and supply-chain spillover."
       ],
       "next": [
         {
-          "type": "Escalation indicator",
-          "text": "Fire-control radar lock, aircraft intercept at unsafe distance, or a landing on the Senkakus.",
-          "due": null,
-          "ifSeen": "Move to Active; Weekly awareness post."
+          "type": "Named event",
+          "text": "Trump–Xi summit outcomes on Taiwan — Tokyo's core concern.",
+          "due": "2026-09-24",
+          "ifSeen": "A 'grand bargain' formulation → Weekly awareness post on alliance implications."
         },
         {
-          "type": "Force movement",
-          "text": "PLA Navy carrier group operating east of the first island chain with Japanese shadowing.",
+          "type": "Named event",
+          "text": "First anniversary of Takaichi's Taiwan remark — watch Chinese messaging and measures.",
+          "due": "2026-11-07",
+          "ifSeen": "New economic measures → Singapore exposure check."
+        },
+        {
+          "type": "Named event",
+          "text": "APEC Shenzhen — whether Takaichi attends and whether Xi grants a meeting; possible Takaichi–Li Qiang encounter at the ASEAN/EAS summits the week before.",
+          "due": "2026-11-18",
+          "ifSeen": "A meeting would be the first thaw signal → move back to Watch."
+        },
+        {
+          "type": "Diplomatic decision",
+          "text": "Cabinet approval of the FY2027 budget and the revised NSS/NDS/DBP (December).",
+          "due": "2026-12-20",
+          "ifSeen": "Target path above 2% of GDP → note for the quarterly."
+        },
+        {
+          "type": "Escalation indicator",
+          "text": "A new fire-control radar lock or unsafe intercept, JCG–CCG physical contact at the Senkakus, a CCG territorial-water stay beyond the 92-hour record, or a carrier group operating east of the Nansei chain during Japanese drills.",
           "due": null,
-          "ifSeen": "Note only; tempo check."
+          "ifSeen": "Weekly awareness post; move to Priority on physical contact."
         }
       ],
       "csi": {
         "action": "Dashboard only",
         "also": [],
-        "rationale": "No publication value while the pattern is repetitive."
+        "rationale": "Track; publish only on an intercept-type incident or a thaw. Little direct Army learning value at present."
       },
       "ignore": {
-        "flag": true,
-        "reasons": [
-          "Repetitive",
-          "No current Army learning value"
-        ],
-        "note": "Revisit on any of the listed escalation indicators."
+        "flag": false,
+        "reasons": [],
+        "note": "Senkaku Aug–Sep incident data could not be retrieved (Japanese outlets blocked to the researcher); absence of reports is not proof of absence."
       },
       "confidence": "Medium",
       "learningValue": "Low",
+      "sources": [
+        {
+          "label": "Stars and Stripes — PLAN Nansei transits",
+          "url": "https://www.stripes.com/theaters/asia_pacific/2026-07-02/china-navy-nansei-first-island-chain-japan-22146819.html"
+        },
+        {
+          "label": "USNI — Japan protests live-fire drill near Okinotori",
+          "url": "https://news.usni.org/2026/07/22/japan-protests-chinese-destroyers-live-fire-drill-near-disputed-reef"
+        },
+        {
+          "label": "Japan Times — Diet delegation to Beijing",
+          "url": "https://www.japantimes.co.jp/news/2026/08/27/japan/politics/japanese-lawmakers-visit-china/"
+        },
+        {
+          "label": "The Diplomat — FY2027 defence budget request",
+          "url": "https://thediplomat.com/2026/08/japans-record-2027-defense-budget-request-is-only-the-opening-bid/"
+        },
+        {
+          "label": "Asia Times — Takaichi and Trump before Xi visit",
+          "url": "https://asiatimes.com/2026/09/takaichi-scrambles-to-reach-trump-before-he-sees-xi/"
+        }
+      ],
       "history": [
         {
           "date": "2026-04-27",
           "state": "Watch",
           "note": "Baseline: diplomatic freeze since late 2025."
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Active",
+          "note": "EEZ live fire with Russia, JL-3 test, expanding Nansei transits, record budget request; no thaw path."
         }
       ]
     },
@@ -992,7 +1365,7 @@
       },
       "dims": {
         "phase": {
-          "now": "Armed peace after the May 2025 exchange",
+          "now": "Frozen ceasefire; lawfare over the Indus Waters Treaty",
           "prev": "Armed peace after the May 2025 exchange"
         },
         "escalation": {
@@ -1000,7 +1373,7 @@
           "prev": "Moderate"
         },
         "tempo": {
-          "now": "Low",
+          "now": "Medium",
           "prev": "Low"
         },
         "adaptation": {
@@ -1012,26 +1385,47 @@
           "prev": "Low"
         }
       },
-      "whyNow": "Stable; the value is retrospective — the May 2025 stand-off strike, drone and air-defence exchange is a bounded case study.",
+      "whyNow": "The Line of Control is quiet but the trigger set is live: Jaish-e-Mohammed infiltrators killed in Udhampur (16–17 Sep), Pakistan's 'act of war' line on water, India's rejection of the arbitration award on the Indus Waters Treaty, and both leaders at UNGA on 25 Sep.",
       "changes": [
-        "No material change since the previous review; Line of Control quiet, Indus Waters Treaty still in abeyance."
+        "Indus Waters Treaty: the PCA Court of Arbitration ruled (31 Aug–1 Sep) that the treaty remains in force and 'abeyance' is impermissible, with interim restrictions on Ratle; India 'categorically rejects' the award as illegally constituted; Pakistan's corps commanders (8 Jul) called any diversion of its water share an act of war.",
+        "Targeting of non-locals returned to Kashmir (31 Jul Kulgam shooting, first since Pahalgam) with no Indian stand-off response; two JeM militants killed at Udhampur on 16–17 Sep with a high alert across Kathua–Kishtwar; 486 drones recovered on the Punjab border year to date; a Pakistani UAV tracked over Rajouri on 28 Aug.",
+        "Modi and Sharif co-attended the SCO summit (31 Aug–1 Sep) without a bilateral; Kartarpur remains closed; India's fourth S-400 regiment delivered in May, the fifth due in November.",
+        "Unverified (single source, CFR tracker): a reported 15 Sep collision between an Indian destroyer and a Pakistani patrol vessel in the Arabian Sea, and a 7 Aug Turkey–Saudi–Pakistan defence pact — confirm before use."
       ],
       "next": [
         {
+          "type": "Named event",
+          "text": "Sharif and Modi both address UNGA; watch Kashmir, water and terrorism rhetoric and rights of reply.",
+          "due": "2026-09-25",
+          "ifSeen": "Rhetoric only → Dashboard only."
+        },
+        {
+          "type": "Named event",
+          "text": "IAF Exercise Tarang Shakti, Jodhpur (51 nations) — large air activity near the Pakistan border.",
+          "due": "2026-09-26",
+          "ifSeen": "Pakistani air-defence redeployment in response → tempo check."
+        },
+        {
+          "type": "Deadline",
+          "text": "India's seasonal 24×7 flood-data cell to Pakistan closes — tests whether any Indus data channel survives.",
+          "due": "2026-10-10",
+          "ifSeen": "No successor channel → water track hardens."
+        },
+        {
           "type": "Escalation indicator",
-          "text": "Mass-casualty attack in Jammu and Kashmir attributed to Pakistan-based groups.",
+          "text": "A mass-casualty attack in Jammu and Kashmir attributed to Pakistan-based groups during the Oct–Nov infiltration window.",
           "due": null,
           "ifSeen": "Move to Active immediately; expect a stand-off strike cycle within days."
         },
         {
-          "type": "Threshold",
-          "text": "Monsoon-season Indus flow disputes escalate to formal notices or dam-operation changes.",
-          "due": "2026-09-30",
-          "ifSeen": "Diplomatic escalation only; note for the quarterly."
+          "type": "Named event",
+          "text": "Mumbai attack anniversary; fifth S-400 regiment delivery due the same month.",
+          "due": "2026-11-26",
+          "ifSeen": "Note only."
         },
         {
           "type": "Mobilisation sign",
-          "text": "Forward deployment of strike corps elements or air-defence redeployment along the border.",
+          "text": "Forward deployment of strike-corps elements or air-defence redeployment along the border.",
           "due": null,
           "ifSeen": "Move to Active; Weekly awareness post."
         }
@@ -1039,17 +1433,39 @@
       "csi": {
         "action": "Quarterly candidate",
         "also": [],
-        "rationale": "Four-day stand-off strike, drone and IADS exchange is a clean bounded case for the quarterly cycle."
+        "rationale": "The May 2025 four-day stand-off strike, drone and IADS exchange is a bounded case for the quarterly cycle; nothing this quarter changes that."
       },
       "ignore": {
         "flag": true,
         "reasons": [
           "Stable"
         ],
-        "note": "Stable but retained: escalation, if it comes, is fast."
+        "note": "Stable at the Line of Control; retained because escalation, if it comes, is fast. Naval-collision report is uncorroborated."
       },
       "confidence": "Medium",
       "learningValue": "Medium",
+      "sources": [
+        {
+          "label": "CNBC — India rejects Hague ruling on IWT",
+          "url": "https://www.cnbc.com/2026/09/01/india-hague-ruling-pakistan-water-treaty.html"
+        },
+        {
+          "label": "The Diplomat — non-locals targeted again in Kashmir",
+          "url": "https://thediplomat.com/2026/08/15-months-after-massacre-at-pahalgam-terrorists-target-non-local-civilians-again-in-kashmir/"
+        },
+        {
+          "label": "Business Standard — JeM militants killed in Udhampur",
+          "url": "https://www.business-standard.com/amp/external-affairs-defence-security/news/two-jem-terrorists-killed-in-ongoing-operation-in-j-k-s-udhampur-officials-126091700209_1.html"
+        },
+        {
+          "label": "Tribune — drone drops on the Punjab border",
+          "url": "https://www.tribuneindia.com/news/amritsar/bsf-seizes-drone-dropped-18-kg-heroin-along-indo-pak-border/"
+        },
+        {
+          "label": "CFR Global Conflict Tracker (unverified items)",
+          "url": "https://www.cfr.org/global-conflict-tracker/conflict/conflict-between-india-and-pakistan"
+        }
+      ],
       "history": [
         {
           "date": "2026-04-27",
@@ -1063,7 +1479,7 @@
       "name": "Myanmar civil war",
       "short": "MMR",
       "tier": 3,
-      "state": "Watch",
+      "state": "Active",
       "prevState": "Watch",
       "briefTheatre": null,
       "region": "Mainland Southeast Asia",
@@ -1078,19 +1494,19 @@
       },
       "dims": {
         "phase": {
-          "now": "Protracted multi-front civil war",
+          "now": "Dry-season offensives; resistance drone war on airpower",
           "prev": "Protracted multi-front civil war"
         },
         "escalation": {
-          "now": "Moderate",
+          "now": "High",
           "prev": "Moderate"
         },
         "tempo": {
-          "now": "Medium",
+          "now": "High",
           "prev": "Medium"
         },
         "adaptation": {
-          "now": "Medium",
+          "now": "High",
           "prev": "Medium"
         },
         "sgExposure": {
@@ -1098,45 +1514,93 @@
           "prev": "Moderate"
         }
       },
-      "whyNow": "Attritional and repetitive; reporting confidence is low. Held for the ASEAN dimension and resistance drone-warfare patterns.",
+      "whyNow": "Moved up to Active: a fibre-optic FPV strike on the Tada-U fighter base (10 Sep), the failed junta Operation 4926 in Rakhine and the Arakan Army's counter-offensive around Sittwe, 500+ air attacks a month, and an ASEAN seat decision at the November summit that Singapore is co-shaping.",
       "changes": [
-        "No material change since the previous review; junta air strikes and resistance drone use continue at the established pattern."
+        "Air war intensifying: ACLED counts >450 civilian deaths in H1 2026 with a new 2–5-jet sustained-strike tactic; the NUG reports 530 aerial attacks and 139 civilians killed in August (Myaung monastery 21 Aug, Mindat 30 Aug, Shadaw 5 Sep).",
+        "Rakhine: junta 'Operation 4926' launched from the Sittwe, Kyaukphyu and Thandwe enclaves on 4 Sep (about 1,000 troops each, MLRS, drones, naval gunfire) and was repulsed by 5 Sep; the Arakan Army then took six or more outposts around Sittwe (15–19 Sep) and holds ~93% of the state; 5,000+ displaced.",
+        "Resistance drone warfare crossed a threshold: six fibre-optic FPV drones struck Tada-U airbase (Mandalay) on 10 Sep, the first strike on a fighter base; the KIA destroyed ~25 Irrawaddy supply vessels since late August and wiped out a 130-man Bhamo breakout column (12–14 Sep). Adaptation raised to High.",
+        "Politics: President Min Aung Hlaing's 100-day peace-talks deadline (31 Jul) passed with KNU, CNF and ABSDF rejection; state visits to China, Thailand and Vietnam; ASEAN (59th AMM, Manila) kept non-political representation and demanded 'demonstrable progress' — Singapore's foreign minister: 'not enough progress'; UN credentials contest ahead."
       ],
       "next": [
         {
           "type": "Force movement",
-          "text": "Arakan Army moves on Sittwe or Kyaukphyu, or a major town changes hands.",
+          "text": "Post-monsoon offensives: junta pushes on Kanpetlet and Mindat (Chin), renewed Sittwe and Kyaukphyu breakouts, the KIA's Bhamo endgame (180-truck convoy into Saw on 19 Sep).",
           "due": null,
-          "ifSeen": "Move to Active for the ASEAN and refugee-flow dimension."
+          "ifSeen": "A major town changing hands → Weekly awareness post."
+        },
+        {
+          "type": "Escalation indicator",
+          "text": "Further FPV strikes on airbases (Tada-U, Magway, Toungoo) and the junta's counter-UAS response (netting, dispersal).",
+          "due": null,
+          "ifSeen": "Monthly pattern review on C-UAS for fixed bases."
         },
         {
           "type": "Diplomatic decision",
-          "text": "ASEAN decision on Myanmar's representation or a China-brokered ceasefire with a major ethnic armed organisation.",
+          "text": "49th ASEAN Summit, Manila (published dates conflict: 10–12 or 16–18 Nov) — whether Min Aung Hlaing is seated (Thailand pushing; Manila, Jakarta, Kuala Lumpur and Singapore resisting).",
+          "due": "2026-11-10",
+          "ifSeen": "Seat granted → ASEAN line breaks; Singapore exposure up."
+        },
+        {
+          "type": "Diplomatic decision",
+          "text": "UN Credentials Committee decision on Myanmar's representation (normally around November).",
+          "due": "2026-11-30",
+          "ifSeen": "Regime seated → note for the monthly."
+        },
+        {
+          "type": "Threshold",
+          "text": "Arakan Army moves on Sittwe proper or Kyaukphyu port (Chinese CMEC interest), or Bangladesh–AA repatriation talks produce a channel.",
           "due": null,
-          "ifSeen": "Note for the monthly review."
+          "ifSeen": "Regional and refugee-flow dimension → Weekly awareness post."
         }
       ],
       "csi": {
-        "action": "Dashboard only",
+        "action": "Monthly pattern review",
         "also": [],
-        "rationale": "Repetitive pattern and low-confidence reporting; no current Army learning priority."
+        "rationale": "Anti-jamming FPV strikes on a fighter base and riverine interdiction are pattern-review material for airbase protection and C-UAS; no weekly trigger unless a major town falls."
       },
       "ignore": {
-        "flag": true,
-        "reasons": [
-          "Repetitive",
-          "Low confidence",
-          "No current Army learning value"
-        ],
-        "note": "Revisit on a named force movement."
+        "flag": false,
+        "reasons": [],
+        "note": "Battlefield picture multi-sourced; Chinese mediation and refugee numbers in the window are thinly evidenced."
       },
-      "confidence": "Low",
-      "learningValue": "Low",
+      "confidence": "Medium",
+      "learningValue": "Medium",
+      "sources": [
+        {
+          "label": "Asia Times — resistance airbase strike",
+          "url": "https://asiatimes.com/2026/09/resistance-airbase-hit-heralds-a-wider-drone-war-in-myanmar/"
+        },
+        {
+          "label": "DVB — Operation 4926 in Rakhine",
+          "url": "https://english.dvb.no/myanmar-military-launches-operation-4926-against-arakan-army-in-rakhine-state/"
+        },
+        {
+          "label": "DVB — NUG August air-attack figures",
+          "url": "https://english.dvb.no/nug-reports-139-civilians-killed-in-530-august-aerial-attacks-amid-restructuring-of-human-rights-ministry/"
+        },
+        {
+          "label": "ACLED — repression under new leadership",
+          "url": "https://acleddata.com/report/state-repression-increases-under-myanmar-militarys-new-leadership"
+        },
+        {
+          "label": "Singapore MFA — 59th AMM wrap-up, 23 Jul",
+          "url": "https://www.mfa.gov.sg/newsroom/press-statements-transcripts-and-photos/transcript-of-minister-for-foreign-affairs-dr-vivian-balakrishnan-s-media-wrap-up-interview-at-the-59th-asean-foreign-ministers--meeting-and-related-meetings--manila--the-philippines--23-july-2026/"
+        },
+        {
+          "label": "Bangkok Post — Myanmar eyes ASEAN summit seat",
+          "url": "https://www.bangkokpost.com/opinion/opinion/3271441/myanmar-eyes-asean-summit-spot"
+        }
+      ],
       "history": [
         {
           "date": "2026-04-27",
           "state": "Watch",
           "note": "Baseline: reserve."
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Active",
+          "note": "FPV strike on Tada-U airbase, failed junta Rakhine offensive and AA counter-offensive, ASEAN seat decision pending."
         }
       ]
     },
@@ -1145,7 +1609,7 @@
       "name": "Other Middle East spillover",
       "short": "ME spill",
       "tier": 3,
-      "state": "Watch",
+      "state": "Priority",
       "prevState": "Watch",
       "briefTheatre": null,
       "region": "Red Sea / Iraq / Syria",
@@ -1170,19 +1634,19 @@
       },
       "dims": {
         "phase": {
-          "now": "Proxy pressure linked to the Iran track",
+          "now": "Renewed Houthi–Saudi war; Houthi control of Bab al-Mandab; US exit from Iraq",
           "prev": "Proxy pressure linked to the Iran track"
         },
         "escalation": {
-          "now": "High",
-          "prev": "Moderate"
+          "now": "Severe",
+          "prev": "High"
         },
         "tempo": {
-          "now": "Medium",
-          "prev": "Low"
+          "now": "High",
+          "prev": "Medium"
         },
         "adaptation": {
-          "now": "Medium",
+          "now": "High",
           "prev": "Medium"
         },
         "sgExposure": {
@@ -1190,35 +1654,51 @@
           "prev": "High"
         }
       },
-      "whyNow": "Moved from Archive to Watch on 15 June when the Houthi Red Sea shipping ban was reinstated; this week IRGC-linked strikes on US basing raised escalation risk and tempo while the Iran track is unsettled.",
+      "whyNow": "Moved up to Priority: the Houthis ended the 2022 truce, seized the full Red Sea coast including Perim and the Hanish islands (3–11 Sep), and cut Bab al-Mandab transits to ~12 a day; a Singapore-flagged VLCC has already diverted; Iraqi militia drones shut Saudi Arabia's East-West pipeline while the US leaves Iraq by 30 Sep.",
       "changes": [
-        "Regional IRGC-linked missile strikes against US bases during the pre-stand-down escalation (22–29 June brief); escalation risk raised to High and tempo to Medium.",
-        "Houthi Red Sea shipping ban (reinstated 8 June) still in force; Singapore exposure remains High on Suez-route shipping risk."
+        "Houthis declared the 2022 truce over and a 'naval blockade' of Saudi Arabia (20 Jul); ballistic missiles killed six on the Egyptian cargo ship Tihamah in Bab al-Mandab (11 Aug, first fatal ship attack since February) and hit a Bahri tanker off Yanbu (24 Aug); 12 attacks or attempts since July.",
+        "3–11 Sep offensive took Mocha, Hays, Khawkhah, the Hanish islands and Perim — the whole Red Sea coast; Lloyd's List transits fell from ~30 to ~12 a day, Brent above $100, Asia–Europe rates up 25–40%; Trump reportedly declined a Saudi request for air support; Saudi two-week ceasefire offer via Oman and US–Houthi talks in Muscat (18 Sep), no Houthi reply yet.",
+        "Iraq: PMF drones on Saudi oil (27–29 Jul) drew US–Saudi strikes on the PMF in seven provinces (29 Jul, 20+ killed); drones from Maysan shut the East-West pipeline (5m b/d) on 11–12 Sep; Patriots withdrawn from Erbil (5 Aug) and remaining US troops leave by 30 Sep, mostly to Jordan; Baghdad recast the 30 Sep militia disarmament deadline as the 'start of a process'.",
+        "Israel–Syria: 26 Jul incursion and checkpoint at Al-Ardah, eight strikes on Abu al-Duhur airbase (17–18 Aug, Turkish deployment cited), 267 violations in August; Jordan-hosted security talks (24 Aug) proposed a US-supervised operations room and Sharaa calls a deal 'progressing'; Katz: Israel will not leave Hermon or the buffer zone."
       ],
       "next": [
         {
-          "type": "Escalation indicator",
-          "text": "Houthi strike on a merchant vessel after the reinstated ban, or a Red Sea transit insurer withdrawal.",
+          "type": "Diplomatic decision",
+          "text": "Houthi answer to the Saudi two-week ceasefire offer and the Muscat channel; whether non-Saudi hulls stay off the target list.",
           "due": null,
-          "ifSeen": "CSI Flash on shipping-route exposure."
+          "ifSeen": "Acceptance → tempo down; a hit on a non-Saudi hull → CSI Flash on shipping-route exposure."
         },
         {
-          "type": "Escalation indicator",
-          "text": "Iraqi militia or IRGC-linked strike on US basing after the 29 June stand-down.",
-          "due": null,
-          "ifSeen": "Stand-down failing → mirror the US–Israel–Iran item."
+          "type": "Deadline",
+          "text": "US-led coalition mission in Iraq ends; 1 Oct Iraq 'free of foreign military presence'; militia disarmament committee outputs.",
+          "due": "2026-09-30",
+          "ifSeen": "Drone strikes on Erbil after Patriot removal → escalation indicator; KH/Nujaba refusal → note for the monthly."
         },
         {
           "type": "Threshold",
-          "text": "Israel–Syria southern buffer-zone incident with casualties.",
+          "text": "Saudi East-West pipeline restart, or a second militia strike on Gulf energy infrastructure.",
           "due": null,
-          "ifSeen": "Note only; monthly review."
+          "ifSeen": "Energy-route exposure → CSI Flash."
+        },
+        {
+          "type": "Named event",
+          "text": "Israeli Knesset election — bears on the Israel–Syria agreement and the Lebanon track.",
+          "due": "2026-10-27",
+          "ifSeen": "Re-check after the result."
+        },
+        {
+          "type": "Diplomatic decision",
+          "text": "Israel–Syria security agreement signing (three-zone model, US-supervised operations room).",
+          "due": null,
+          "ifSeen": "Buffer-zone incidents should fall → Dashboard only for the Syria strand."
         }
       ],
       "csi": {
-        "action": "Weekly awareness post",
-        "also": [],
-        "rationale": "Shipping-route exposure changed; one awareness line this week. Otherwise track alongside the Iran item."
+        "action": "CSI Flash",
+        "also": [
+          "Weekly awareness post"
+        ],
+        "rationale": "Red Sea transits at a third of the 2023 baseline and a Singapore-flagged VLCC already diverted make this a same-day Flash item; coastal terrain seizure as maritime leverage is the pattern note."
       },
       "ignore": {
         "flag": false,
@@ -1226,7 +1706,37 @@
         "note": ""
       },
       "confidence": "Medium",
-      "learningValue": "Low",
+      "learningValue": "Medium",
+      "sources": [
+        {
+          "label": "Euronews — Houthis take Perim, control the strait",
+          "url": "https://www.euronews.com/2026/09/12/houthis-seize-yemeni-island-in-bab-el-mandeb-taking-control-of-the-strait"
+        },
+        {
+          "label": "Al Jazeera — six killed in Bab al-Mandeb ship attack",
+          "url": "https://www.aljazeera.com/news/2026/8/12/six-killed-in-houthi-attack-on-bab-al-mandeb-ship-yemens-government-says"
+        },
+        {
+          "label": "Jerusalem Post — Saudi ceasefire offer, Muscat talks",
+          "url": "https://www.jpost.com/middle-east/article-909031"
+        },
+        {
+          "label": "Al Jazeera — Saudi pipeline shut after drone attack",
+          "url": "https://www.aljazeera.com/news/2026/9/12/saudi-arabia-shuts-critical-oil-pipeline-after-drone-attack-what-happened"
+        },
+        {
+          "label": "Amwaj — US packs up last Iraqi air defences",
+          "url": "https://amwaj.media/en/article/us-packs-up-last-iraqi-air-defenses-as-withdrawal-deadline-looms"
+        },
+        {
+          "label": "Maritime Executive — Houthi blockade of Saudi shipping bites",
+          "url": "https://maritime-executive.com/article/houthi-blockade-of-saudi-shipping-begins-to-bite"
+        },
+        {
+          "label": "Enab Baladi — 267 Israeli violations in Syria in August",
+          "url": "https://english.enabbaladi.net/archives/2026/09/report-documents-267-israeli-violations-in-syria-in-august/"
+        }
+      ],
       "history": [
         {
           "date": "2026-04-27",
@@ -1237,6 +1747,11 @@
           "date": "2026-06-15",
           "state": "Watch",
           "note": "Houthi Red Sea ban reinstated 8 June."
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Priority",
+          "note": "Houthis seized the Red Sea coast and cut Bab al-Mandab transits to ~12/day; Saudi pipeline shut by Iraqi militia drones; US leaving Iraq."
         }
       ]
     }

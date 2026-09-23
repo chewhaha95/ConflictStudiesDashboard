@@ -2099,6 +2099,7 @@
           <div class="wl-d-meta">Confidence ${this.confChip(it.confidence)} · Army learning value <strong>${esc(it.learningValue || "—")}</strong> · Region ${esc(it.region || "—")}</div></div>
         ${briefBlock}
         <div class="wl-d-block wl-hist"><div class="wl-d-h">State history</div><ul class="wl-hist-list">${hist || "<li class='muted-note'>—</li>"}</ul>
+          ${(it.sources || []).length ? `<div class="wl-d-h sub">Sources (${it.sources.length})</div><ul class="wl-src-list">${it.sources.map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label || s.url)} ↗</a></li>`).join("")}</ul>` : ""}
           <button class="btn wl-show-map" data-wl-map="${esc(it.id)}">📍 Show on map</button></div>
       </div>`;
     },
@@ -2265,10 +2266,10 @@
           ...this.DIMS.map(d => it.dims[d].now), this.changedDims(it).map(d => this.defs().dimensions[d].short).join("|"),
           (it.changes || []).join(" | "), nd ? (nd.due || "") : "", nd ? nd.text : "",
           it.csi.action, (it.csi.also || []).join("|"), it.csi.rationale, it.ignore.flag ? "yes" : "no", it.ignore.reasons.join("|"),
-          it.confidence, it.learningValue, this.score(it).total];
+          it.confidence, it.learningValue, this.score(it).total, (it.sources || []).map(s => s.url).join("|")];
       });
     },
-    exportCols() { return ["tier", "conflict", "state", "stateMove", ...this.DIMS, "changedDims", "materialChanges", "nextDue", "nextIndicator", "csiAction", "csiAlso", "csiRationale", "ignoreForNow", "ignoreReasons", "confidence", "learningValue", "attentionScore"]; }
+    exportCols() { return ["tier", "conflict", "state", "stateMove", ...this.DIMS, "changedDims", "materialChanges", "nextDue", "nextIndicator", "csiAction", "csiAlso", "csiRationale", "ignoreForNow", "ignoreReasons", "confidence", "learningValue", "attentionScore", "sources"]; }
   };
 
   const App = {

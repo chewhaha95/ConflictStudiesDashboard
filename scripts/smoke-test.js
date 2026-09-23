@@ -220,6 +220,9 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     det.querySelectorAll(".wl-ind").length === probe.next.length && det.querySelectorAll(".wl-ind .wl-ind-type").length === probe.next.length &&
     det.querySelectorAll(".wl-ind-if").length === probe.next.filter(n => n.ifSeen).length && probe.next.filter(n => n.due).every(n => det.textContent.includes(fmtD(n.due))));
   check("detail: brief signal from the seed weekly report (phase / trend / score, no LIVE badge)", !!det.querySelector(".wl-brief .phase-tag") && !!det.querySelector(".wl-brief .trend") && /score \d+/.test(det.textContent) && !det.querySelector(".wl-brief .briefs-live"));
+  check("detail: source links rendered when the item carries sources", (probe.sources || []).length
+    ? det.querySelectorAll(".wl-src-list a[href^='http']").length === probe.sources.length
+    : !det.querySelector(".wl-src-list"));
   check("detail: primary CSI action chip + rationale", !!det.querySelector(".wl-action") && det.querySelector(".wl-action").textContent.trim() === probe.csi.action && det.textContent.includes(probe.csi.rationale.slice(0, 40)));
   // Q5 indicators table
   const ind = wv.querySelector("#wl-indicators");
