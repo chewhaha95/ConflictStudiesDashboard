@@ -4,7 +4,7 @@
     "reviewDate": "2026-09-23",
     "previousReviewDate": "2026-06-29",
     "cadenceDays": 7,
-    "reviewer": "CSI analyst review, 23 Sep 2026 (briefed theatres from the weekly brief through 21 Sep; other theatres web-researched — items marked unverified need confirmation)",
+    "reviewer": "CSI analyst review, 23 Sep 2026 — all twelve items assessed from open sources (linked per item); the weekly brief is shown alongside as the brief signal, not used as a source. Items marked unverified need confirmation.",
     "notes": "Analyst-maintained register. Each review: (1) set reviewDate/previousReviewDate, (2) for every item move `prev` <- `now` on the five dimensions and then set the new `now`, (3) rewrite `changes`, `next` and `csi` for what is true THIS week only, (4) record any state move in `history`. The dashboard derives attention rank, movements, changed-dimension flags, staleness and the brief signal — do not type those in. This is a watchlist, not a news archive: keep `changes` to what materially moved since the previous review, and `next` to named, checkable indicators."
   },
   "definitions": {
@@ -155,7 +155,7 @@
       },
       "dims": {
         "phase": {
-          "now": "Attritional war with reciprocal deep-strike campaigns",
+          "now": "Attritional stalemate; reciprocal deep-strike war; Ukraine regaining local initiative",
           "prev": "Attritional war"
         },
         "escalation": {
@@ -175,48 +175,60 @@
           "prev": "Low"
         }
       },
-      "whyNow": "Richest adaptation feed on the list: Russia's shift to jet-powered Geran-4/5 strike packages, Ukraine's 3,000 km strike on Yamal gas plants and Operation Vivaldi at Lyman — while a live talks track (UNGA meetings, an October trilateral) could change the frame.",
+      "whyNow": "Richest adaptation feed on the list: Russia industrialised jet-powered Geran-4/5 strikes (~3,000 in August, interception rate down to ~87%), Ukraine ran record-range refinery strikes and a 1,110-drone raid on Moscow, and Operation Vivaldi restored local manoeuvre at Lyman — while an energy-strike truce claimed by Trump at UNGA is unconfirmed by Kyiv.",
       "changes": [
-        "Russia's strike architecture shifted to jet-powered drones: Geran-4/5 were ~56% of long-range drone strikes in August (total volume down from 6,583 in April to 4,943), exploiting Ukraine's anti-ballistic interceptor deficit; MoD warned on 31 Aug of 'massive strikes' on energy sites before winter.",
-        "Ukraine's deep-strike campaign hit the Syzran, NORSI and Kirishi refineries (23–30 Aug) and on 9 Sep the Novy Urengoy and Purovsky gas-condensate plants 3,000 km inside Russia; Russia suspended gasoline exports to 30 Sep.",
-        "Operation Vivaldi (from mid-Sep) reduced the Lyman salient (85–125 km² claimed, Russians pushed back across the Chornyi Zherebets) under Maj Gen Drapatyi's decentralised, drone-first C2 after the July leadership reshuffle in Kyiv.",
-        "Diplomacy re-opened without a breakthrough: US envoys in Kyiv and Moscow (early Sep), BRICS (India, China) offered mediation, Trump–Zelensky met at UNGA on 22 Sep and Rubio–Lavrov on 23 Sep; Ukraine is pushing an energy-infrastructure and Black Sea truce.",
-        "Russian drone incursions into Polish and Romanian airspace drew a NATO condemnation on 12 Aug; Romania reports spill-over rising 'exponentially'."
+        "Russia's strike architecture shifted to jet-powered drones: ~1,500 jet Gerans used in July and ~3,000 in August (56% of August packages), Ukrainian interception rates fell from ~92% to ~87%; Ukraine is field-testing four turbojet interceptors (ISW/Critical Threats 1 Sep).",
+        "Ukraine's deep-strike campaign reached record range (Tyumen refinery ~2,000 km, 25 Jul; more than 12 refinery strikes 2–24 Aug; Astrakhan gas plant 24 Aug), Operation MoLoChKa hit 100+ shadow-fleet vessels in the Sea of Azov and Black Sea (July), and a 1,110-drone raid struck Moscow's refinery on 20 Sep; Russia answered with a 212-drone and missile barrage as UNGA opened.",
+        "Ground: Russia seized only ~90 km² in August (505 km² a year earlier) for ~42,000 casualties; it holds ~72% of Kostiantynivka and is 12–13 km from Sloviansk–Kramatorsk while repositioning armour to Dobropillia; Ukraine's 3rd Army Corps confirmed Operation Vivaldi (15 Sep), clearing ~85 km² north-west of Lyman.",
+        "Leadership and mobilisation: Defence Minister Fedorov replaced by Khmara and Syrskyi by Maj Gen Drapatyi as C-in-C (15–22 Jul) amid protests; Russia recruits ~27,000 a month against 30,000+ losses with street round-ups from 10 Aug and Ukrainian intelligence reporting preparations for a 600,000-strong mobilisation.",
+        "Diplomacy: Witkoff and Kushner saw Putin (5 Sep) and Zelensky (6 Sep) without a deal; Budanov says a trilateral round is being prepared for October; at UNGA (22 Sep) Trump claimed an energy-strike halt that Kyiv says it was not informed of; EU adopted the 21st sanctions package (23 Jul) and rolled over ~3,000 listings (22 Sep). Romania's airspace was violated 23 times in 2026; NATO condemned incursions on 12 Aug."
       ],
       "next": [
         {
+          "type": "Threshold",
+          "text": "An energy-infrastructure strike moratorium is formalised (or collapses) after Trump's UNGA claim.",
+          "due": "2026-09-30",
+          "ifSeen": "Formalised → phase check and Weekly awareness post; collapse → expect the winter energy campaign to open early."
+        },
+        {
           "type": "Named event",
-          "text": "Next US–Ukraine–Russia trilateral round (Budanov: 'for October'; UAE venue proposed) and the Ukraine–US–Europe follow-up.",
+          "text": "US–Ukraine–Russia trilateral round (Budanov: 'preparing for October'; venue unconfirmed, Geneva used in February).",
           "due": null,
-          "ifSeen": "Energy or Black Sea truce terms on the table → Weekly awareness post; watch for a strike pause as a bargaining signal."
-        },
-        {
-          "type": "Escalation indicator",
-          "text": "Opening of Russia's 2026–27 winter energy campaign: mass Geran-4/5 plus ballistic packages against generation and heating.",
-          "due": null,
-          "ifSeen": "Weekly awareness post on saturation volume versus interceptor stocks."
-        },
-        {
-          "type": "Diplomatic decision",
-          "text": "European Council, Brussels: Ukraine's €23bn 2026 financing gap and the reparations loan on frozen assets (Belgian veto risk).",
-          "due": "2026-10-15",
-          "ifSeen": "Financing settled → sustainment picture stable through winter; failure → note for the monthly review."
+          "ifSeen": "Terms on the table → Weekly awareness post; watch for a strike pause as a bargaining signal."
         },
         {
           "type": "Deadline",
-          "text": "EU 21st sanctions package: wind-down for pre-24 July contracts ends; Commission review of refinery designations.",
+          "text": "EU Commission review of the deferred refinery transaction ban under the 21st package (application deferred to 25 Jan 2027).",
           "due": "2026-10-25",
           "ifSeen": "Tightening confirmed → sustainment pressure on Russian refining compounds Ukrainian strikes."
         },
         {
           "type": "Force movement",
-          "text": "Vivaldi phase 2 or a Russian counter-concentration south-west of Kramatorsk (Druzhkivka, Dobropillia) and around Orikhiv.",
+          "text": "Russian mechanised push from Dobropillia/Druzhkivka toward Kramatorsk, infiltration of Sloviansk–Kramatorsk, or encirclement attempts at Orikhiv; Vivaldi phases 2–4 north of Lyman.",
           "due": null,
-          "ifSeen": "Phase check: attritional gridlock versus an operational-level shift."
+          "ifSeen": "Phase check: attritional stalemate versus an operational-level shift."
+        },
+        {
+          "type": "Mobilisation sign",
+          "text": "A Russian mobilisation decree (600,000 reported in preparation; Kursk and Penza security reshuffle 31 Aug) or Ukraine's 'radical' mobilisation changes enacted.",
+          "due": null,
+          "ifSeen": "Monthly pattern review on force generation under attrition."
+        },
+        {
+          "type": "Threshold",
+          "text": "Ukrainian interception rate below ~85%, or the first mass Geran-5 (600 km/h) salvo.",
+          "due": null,
+          "ifSeen": "Weekly awareness post on saturation volume versus interceptor stocks."
+        },
+        {
+          "type": "Escalation indicator",
+          "text": "Further NATO shoot-downs over Romania or Poland (23 Romanian violations year to date; Spanish F-18 shoot-down in August).",
+          "due": null,
+          "ifSeen": "Alliance-response dimension → note for the monthly."
         },
         {
           "type": "Named event",
-          "text": "G20 Leaders' Summit, Miami — Zelensky says he is ready to meet Putin there if Putin attends.",
+          "text": "G20 Leaders' Summit, Miami — floated as a possible trilateral venue; Zelensky ready to meet Putin if he attends.",
           "due": "2026-12-14",
           "ifSeen": "A leaders' meeting would reset the diplomatic phase → CSI Flash."
         }
@@ -227,7 +239,7 @@
           "Monthly pattern review",
           "Quarterly candidate"
         ],
-        "rationale": "Jet-drone transition, production-chain and 3,000 km deep strikes are directly transferable to GBAD and installation-protection planning; volume-saturation fires versus interceptor economics stays the quarterly candidate."
+        "rationale": "Jet-drone industrialisation versus cheap interceptors, record-range deep strikes and restored manoeuvre through OPSEC and counter-EW are directly transferable to GBAD and installation-protection planning; volume-saturation fires versus interceptor economics stays the quarterly candidate."
       },
       "ignore": {
         "flag": false,
@@ -238,28 +250,48 @@
       "learningValue": "High",
       "sources": [
         {
-          "label": "ISW 1 Sep assessment via CSI brief 31 Aug–7 Sep",
-          "url": "https://conflictstudiesandinsights.pages.dev"
+          "label": "ISW / Critical Threats — campaign assessment, 1 Sep",
+          "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-september-1-2026"
         },
         {
-          "label": "CSI brief 7–14 Sep (Yamal strike, Lyman)",
-          "url": "https://conflictstudiesandinsights.pages.dev/7-14-sep-2026.html"
+          "label": "Kyiv Independent — Operation Vivaldi analysis",
+          "url": "https://kyivindependent.com/analysis-through-the-fog-of-war-ukraine-goes-on-operation-vivaldi-counterattack-near-lyman/"
+        },
+        {
+          "label": "Meduza — Vivaldi and the next battles farther south",
+          "url": "https://meduza.io/en/feature/2026/09/18/ukraine-s-operation-vivaldi-pushed-russian-forces-back-around-lyman-in-the-donbas-now-both-armies-are-massing-troops-for-the-next-battles-farther-south"
+        },
+        {
+          "label": "Meduza — Drapatyi appointed C-in-C",
+          "url": "https://meduza.io/en/feature/2026/07/22/zelensky-appoints-mykhailo-drapatyi-as-ukraine-s-new-commander-in-chief-dismissing-oleksandr-syrskyi"
+        },
+        {
+          "label": "Militarnyi — record-range Tyumen refinery strike",
+          "url": "https://militarnyi.com/en/news/record-range-ukrainian-drones-damaged-the-cooling-tower-at-the-tyumen-oil-refinery/"
+        },
+        {
+          "label": "Kyiv Post — Operation MoLoChKa against the shadow fleet",
+          "url": "https://www.kyivpost.com/post/79909"
+        },
+        {
+          "label": "Kyiv Independent — Zelensky–Trump at UN, energy truce",
+          "url": "https://kyivindependent.com/zelensky-meets-trump-at-un-amid-push-for-russia-ukraine-energy-truce/"
         },
         {
           "label": "Kyiv Independent — October trilateral (Budanov)",
           "url": "https://kyivindependent.com/next-ukraine-us-russia-peace-talks-may-take-place-in-october-budanov-says/"
         },
         {
-          "label": "CNBC — Russian MoD 'massive strikes' warning",
-          "url": "https://www.cnbc.com/2026/08/31/russia-massive-strikes-ukraine-energy-infrastructure.html"
+          "label": "Euronews — Russian forced recruitment",
+          "url": "https://www.euronews.com/2026/08/25/mobilisation-fears-grip-russians-as-kremlins-forced-recruitment-spikes"
         },
         {
           "label": "EU Council — 21st sanctions package",
           "url": "https://www.consilium.europa.eu/en/press/press-releases/2026/07/23/21st-package-of-sanctions-eu-hits-russian-energy-financial-services-and-crypto-hard/"
         },
         {
-          "label": "NATO — airspace violations statement 12 Aug",
-          "url": "https://www.nato.int/en/news-and-events/articles/news/2026/08/12/nato-allies-condemn-recent-airspace-violations-and-incidents"
+          "label": "ABC — NATO airspace incursions rising",
+          "url": "https://abcnews.com/International/russia-drone-incursions-nato-airspace-jump-exponentially-2026/story?id=135771388"
         }
       ],
       "history": [
@@ -290,11 +322,11 @@
       },
       "dims": {
         "phase": {
-          "now": "Counter-insurgency behind the Yellow Line; Phase 2 stalled",
+          "now": "Ceasefire without implementation; Yellow Line creep and targeted raids",
           "prev": "Phase 1 ceasefire, unresolved disarmament"
         },
         "escalation": {
-          "now": "Moderate",
+          "now": "High",
           "prev": "High"
         },
         "tempo": {
@@ -302,7 +334,7 @@
           "prev": "Low"
         },
         "adaptation": {
-          "now": "High",
+          "now": "Medium",
           "prev": "Medium"
         },
         "sgExposure": {
@@ -310,43 +342,50 @@
           "prev": "Low"
         }
       },
-      "whyNow": "The feared return to large-scale operations did not happen; the phase settled into low-signature counter-insurgency behind a Yellow Line at ~70% of Gaza. The learning is in targeting of force-regeneration enablers and a SOF capture raid; the October ISF pilot deployment is the next real test.",
+      "whyNow": "The October 2025 truce formally holds but nothing in it is being implemented: Hamas accepted the Board of Peace roadmap and dissolved its governing committee, Israel rejected the roadmap and holds 65–70% of Gaza behind a lethally enforced Yellow Line while running decapitation raids. The October ISF pilot and the 27 Oct Israeli election decide the next phase.",
       "changes": [
-        "IDF holds ~70% of Gaza behind 'Yellow Line' earthworks; Netanyahu: 'We are not withdrawing. We are staying on this line.' Board of Peace 15-point roadmap (30 Jul) accepted by Hamas, rejected by Netanyahu on 9 Aug (full disarmament before withdrawal); no timetable clock has started.",
-        "Israeli cabinet approved a ~200-troop International Stabilisation Force pilot near Rafah (26 Jul); Uganda's parliament approved 1,200 troops for an October deployment, Morocco and Burundi in frame — but October is reported 'in doubt'.",
-        "Operational method shifted to precision attrition of Hamas's force-regeneration network (Khan Younis brigade commander al-Yazouri, engineering and IED specialists) and a special-operations capture raid in Gaza City (internal-security chief al-Arabeed, early Sep).",
-        "Escalation risk lowered from High to Moderate: pressure is applied by strikes on dual-use and utility sites (24 Aug desalination plant), evacuation orders and incendiary or unconventional reconnaissance rather than ground manoeuvre."
+        "Hamas dissolved its Government Emergency Committee (6 Jul), ceding civil administration to the National Committee for the Administration of Gaza, which Israel has blocked from entering; the Board of Peace issued a 15-point roadmap (30–31 Jul: phased decommissioning, verification committee, phased IDF withdrawal) that Hamas accepted and Netanyahu rejected on 9 Aug ('no withdrawal until real, not fictitious, disarmament').",
+        "The security cabinet approved a ~200-troop International Stabilisation Force pilot at Rafah (26–27 Jul) on condition the IDF keeps the Yellow Line; Uganda's parliament approved ~1,200 troops (7 Aug) for an October deployment now 'in doubt', Morocco (up to 500) is first to deploy with a 150-person outpost under construction, Kosovo and Albania signed on, Indonesia's ~8,000 are suspended.",
+        "IDF control rose to 65–70% of Gaza (Crisis Group, Aug) from 53% at the ceasefire; Yellow Line pushed toward the sea and lethally enforced; a US official noted tighter strike-approval rules (6 Aug) but 24 Aug strikes hit a desalination plant, a mosque and an aid warehouse.",
+        "Targeted operations replaced manoeuvre: special forces captured Hamas internal-security chief Muein al-Arabeed in Gaza City (1 Sep; Hamas warned the truce could 'break down completely'); an airstrike killed Khan Younis Brigade commander Muhammad al-Yazouri and a company commander (10–11 Sep).",
+        "Humanitarian baseline worsened: Kerem Shalom is the sole cargo crossing since Zikim closed (24 May), WFP halved rations to 200,000, the population is confined to about a third of the Strip; ~1,390 killed since the ceasefire (73,910 since October 2023) and four IDF soldiers; Cairo talks stalled on weapons."
       ],
       "next": [
         {
+          "type": "Named event",
+          "text": "First anniversary of the ceasefire — Board of Peace progress assessment.",
+          "due": "2026-10-10",
+          "ifSeen": "Assessment names Israeli non-implementation → phase stays 'without implementation'; Weekly awareness post if the Board suspends the roadmap."
+        },
+        {
           "type": "Force movement",
-          "text": "Ugandan (~1,200) and Moroccan ISF contingents enter the Rafah test zone (planned for October; reported in doubt).",
+          "text": "Ugandan and Moroccan ISF advance elements enter the Rafah pilot zone (October target, in doubt; needs Netanyahu, Katz and Sa'ar sign-off).",
           "due": "2026-10-15",
           "ifSeen": "First third-party force in Gaza → Monthly pattern review on stabilisation-force entry; slippage → Board of Peace credibility falls."
         },
         {
-          "type": "Diplomatic decision",
-          "text": "Israeli approval of the Board of Peace roadmap, starting the 14-day timetable and the 8-month disarmament clock.",
-          "due": null,
-          "ifSeen": "Phase change to managed transition → Weekly awareness post."
-        },
-        {
           "type": "Named event",
-          "text": "Israeli Knesset election — drives Netanyahu's Gaza sequencing stance until results are confirmed on 4 Nov.",
+          "text": "Israeli Knesset election (results confirmed 4 Nov); the Board flagged it as the variable for continuity.",
           "due": "2026-10-27",
           "ifSeen": "Re-check phase and CSI action after the result."
         },
         {
-          "type": "Threshold",
-          "text": "Yellow Line pushed beyond ~70% or the first 'Green Rafah' housing caravans permitted (earliest November).",
+          "type": "Diplomatic decision",
+          "text": "Israeli approval of NCAG entry or an IDF pullback to the Yellow Line — the roadmap's phase-1 trigger.",
           "due": null,
-          "ifSeen": "Low-signature territorial consolidation pattern for the monthly review."
+          "ifSeen": "Phase change to managed transition → Weekly awareness post."
         },
         {
           "type": "Escalation indicator",
-          "text": "Return of large-scale ground operations, or a Hamas mass-casualty attack on IDF positions along the line.",
+          "text": "Hamas suspends the roadmap or resumes rocket fire; further senior-leader raids; the Yellow Line advances beyond 70%.",
           "due": null,
-          "ifSeen": "Move to Priority; CSI Flash on phase change."
+          "ifSeen": "Move to Priority; CSI Flash on a phase change."
+        },
+        {
+          "type": "Threshold",
+          "text": "Deaths since the ceasefire exceed 1,500, or rainy-season flooding and disease in displacement sites.",
+          "due": null,
+          "ifSeen": "Humanitarian collapse indicator → note for the monthly."
         }
       ],
       "csi": {
@@ -354,39 +393,51 @@
         "also": [
           "Quarterly candidate"
         ],
-        "rationale": "High-payoff targeting of technical enablers and the Gaza City capture raid are targeting-cell and SOF learning; governance-without-disarmament remains the quarterly stabilisation case. No weekly trigger unless the ISF lands."
+        "rationale": "Intelligence-led decapitation raids inside a ceasefire and Yellow Line creep as low-signature consolidation are targeting and stabilisation learning; governance-transfer-without-disarmament remains the quarterly case. No weekly trigger unless the ISF lands or the truce breaks."
       },
       "ignore": {
         "flag": false,
         "reasons": [],
         "note": ""
       },
-      "confidence": "Medium",
+      "confidence": "High",
       "learningValue": "High",
       "sources": [
         {
-          "label": "CSI brief 31 Aug–7 Sep (capture raid)",
-          "url": "https://conflictstudiesandinsights.pages.dev"
+          "label": "Board of Peace — Gaza roadmap",
+          "url": "https://boardofpeace.org/gaza-roadmap"
         },
         {
-          "label": "CSI brief 7–14 Sep (al-Yazouri strike)",
-          "url": "https://conflictstudiesandinsights.pages.dev/7-14-sep-2026.html"
+          "label": "Al Jazeera — Israel rejects the 15-point plan",
+          "url": "https://www.aljazeera.com/news/2026/8/9/israel-rejects-trumps-15-point-plan-for-gaza"
         },
         {
-          "label": "Times of Israel — Board of Peace roadmap text",
-          "url": "https://www.timesofisrael.com/text-of-board-of-peace-gaza-plan-calls-for-hamas-to-disarm-over-period-of-eight-months/"
+          "label": "Times of Israel — cabinet approves ~200-troop ISF pilot",
+          "url": "https://www.timesofisrael.com/cabinet-gives-initial-approval-for-international-force-in-gaza-with-some-200-troops/"
+        },
+        {
+          "label": "Times of Israel — capture of Hamas internal-security chief",
+          "url": "https://www.timesofisrael.com/israel-confirms-capturing-hamas-internal-security-chief-in-gaza-city-raid/"
+        },
+        {
+          "label": "Times of Israel — Khan Younis Brigade commander killed",
+          "url": "https://www.timesofisrael.com/idf-kills-commander-of-hamass-khan-younis-brigade-in-southern-gaza-airstrike/"
+        },
+        {
+          "label": "Crisis Group — Hollow promises: resetting Gaza's ceasefire",
+          "url": "https://www.crisisgroup.org/rpt/middle-east-north-africa/israelpalestine-united-states/257-hollow-promises-resetting-gazas-ceasefire"
         },
         {
           "label": "The EastAfrican — October ISF deployment in doubt",
           "url": "https://www.theeastafrican.co.ke/tea/news/east-africa/making-of-gaza-mission-october-deployment-in-doubt-5591504"
         },
         {
-          "label": "Israel Policy Forum — cabinet approves ISF framework",
-          "url": "https://israelpolicyforum.org/2026/07/29/israeli-cabinet-approves-framework-for-gaza-stabilization-force-but-what-will-actually-change"
+          "label": "OCHA — humanitarian situation report, 4 Sep",
+          "url": "https://www.unocha.org/publications/report/occupied-palestinian-territory/opt-humanitarian-situation-report-4-september-2026"
         },
         {
-          "label": "JNS — Netanyahu on retaining Yellow Line positions",
-          "url": "https://www.jns.org/news/israel-news/in-gaza-netanyahu-says-idf-will-retain-yellow-line-positions"
+          "label": "Al Jazeera — casualties since the ceasefire, 19 Sep",
+          "url": "https://www.aljazeera.com/news/2026/9/19/three-palestinians-killed-in-israeli-strikes-across-gaza"
         }
       ],
       "history": [
@@ -426,7 +477,7 @@
       },
       "dims": {
         "phase": {
-          "now": "Blockade and tanker war; MOU expired",
+          "now": "Blockade-and-attrition stalemate; Hormuz effectively closed; UNGA opening",
           "prev": "Post-war MOU under a fragile stand-down"
         },
         "escalation": {
@@ -446,44 +497,56 @@
           "prev": "High"
         }
       },
-      "whyNow": "Hormuz transits are at roughly 8 a day against a pre-war ~85, the US blockade and 'tanker-for-tanker' strikes are live, the MOU expired without extension, and Iran is widening coercion through IRGC-run Iraqi cells and Houthi chokepoint control. Highest Singapore-exposure item on the list.",
+      "whyNow": "An active war over sea-lane access: the MOU lapsed, the US port blockade is back, Hormuz transits are in single digits on most counts, an IRGC salvo targeted a US carrier group and the US answered 'tanker for tanker' — while the first mediated face-to-face session (22 Sep) opened a diplomatic window that Trump ties to the November midterms. Highest Singapore-exposure item: more than half of Singapore's crude imports come through the Gulf and a Singapore-flagged ship was hit in June.",
       "changes": [
-        "The 60-day MOU expired on 17 Aug with no extension after a July kinetic re-escalation (Iran struck shipping, closed Hormuz and hit US bases in five states) and a two-week exchange; Iran's 'few weeks' ultimatum has lapsed without a new date.",
-        "Kinetic resumption from 30 Aug: CENTCOM strikes on IRGC rocket and mine launchers on Larak Island days after declaring lanes mine-free; IRGC ballistic salvos on US bases in Jordan; after an IRGC missile salvo at a US carrier group, US strikes on IRGC-linked crude carriers (Downy, Stark 1, Kylo — 'tanker for tanker', 5–8 Sep).",
-        "Iran proposed an Oman-based Hormuz toll and management arrangement (IRGC claims revenue-share, 26 Aug) against Gulf pushback; transits ~8 a day on 13 Sep versus ~85 pre-war; the US blockade has redirected 110 ships; mine and debris risk persists (LPG carrier hit 21 Sep).",
-        "Iran shifted to multi-axis coercion as its coastal sensors degraded: lean IRGC-directed Iraqi cells (drones from Maysan shut the Saudi East-West pipeline 11–12 Sep) and Houthi coastal gains around Bab al-Mandab.",
-        "Witkoff held lengthy indirect talks with Araghchi at UNGA on 22 Sep; Trump says a settlement 'is going to be reached' but signalled it would likely follow the November midterms."
+        "The stand-down collapsed on 7–9 Jul (Iran struck three ships; the US revoked Iran's oil-sale licence and hit 90 targets), the naval blockade was reinstated on 14 Jul, Iranian missiles killed two US soldiers at Muwaffaq Salti (18–19 Jul) and IRGC strikes hit Kuwait, Bahrain, Jordan and Erbil (24 Jul) before a mutual pause on 25–26 Jul; the 60-day Islamabad MOU lapsed on 17 Aug with no deal (transits 3 a day, ~520 ships stranded, Iranian exports down to 156 kb/d).",
+        "Kinetic resumption: US strikes on IRGC mine-rocket launchers on Larak Island (30 Aug) and rebuilt coastal radars (1–2 Sep); IRGC fire at bases in Jordan, Bahrain and Iraq; on 5 Sep an IRGC ballistic salvo targeted the USS George Washington group (evaded) and ~32 missiles damaged eight F-15s and an A-10 at Muwaffaq Salti; the US disabled the tankers Downy and Stark 1 and sank Kylo ('tanker for tanker').",
+        "Hormuz and Bab al-Mandab: CENTCOM cleared 100+ suspected mines (25 Aug) but two tankers were hit by unknown projectiles on 21 Sep; Lloyd's List counted 97 non-Iranian transits in the week of 7–13 Sep (a three-week high) against a pre-war ~85–138 a day, PortWatch shows 1–3 a day; war-risk cover ~40× pre-crisis; Houthis with IRGC officers seized Mokha, Perim and Hanish (10 Sep), 70 km from the Bab al-Mandab lanes.",
+        "Iran and Oman exchanged Hormuz management proposals (28 Jul: Oman a Malacca-style voluntary fee, Iran a ~$1m per-vessel charge with Iranian mine clearance); Washington: 'we don't want tolls'; the IAEA Board referred Iran to the Security Council on 9 Sep, the first referral in 20 years.",
+        "Diplomacy: Iran sent terms via Qatar (19 Sep: end the war on all fronts, unfreeze assets, lift the blockade; reopening 'within 7 days' if the blockade eases); a three-hour mediated Araghchi–Witkoff–Kushner session on 22 Sep was called 'promising, constructive'; Trump told UNGA a deal comes 'right after the election' or he will 'annihilate'; Pezeshkian addressed UNGA on 23 Sep. Singapore: MHA cites more than half of crude imports from the Middle East; the Singapore-flagged Ever Lovely was struck on 25 Jun (MPA)."
       ],
       "next": [
         {
-          "type": "Named event",
-          "text": "Iranian delegation in New York to 27 Sep meeting the mediators (Pakistan, Qatar, Oman, Turkey) after Pezeshkian's UNGA address.",
-          "due": "2026-09-27",
-          "ifSeen": "An agreed channel or interim transit terms → CSI Flash the same day."
+          "type": "Diplomatic decision",
+          "text": "Outcome of the UNGA shuttle (Qatar, Pakistan, Oman): a venue and date for a formal round, or a lapse back to strikes.",
+          "due": "2026-09-29",
+          "ifSeen": "Announced round or blockade easing → CSI Flash the same day."
         },
         {
           "type": "Threshold",
-          "text": "Daily Hormuz transits recover toward the ~85 baseline, or escorted convoys begin; Iran's reopening conditions (lift blockade, release assets, end operations on all fronts) met or dropped.",
+          "text": "Iran's '7-day reopening' offer taken up: US eases the blockade and daily transits sustain above ~30, or Iranian crude loadings exceed 300 kb/d.",
           "due": null,
-          "ifSeen": "Downgrade Singapore exposure to Moderate; CSI action to weekly."
+          "ifSeen": "Deal in motion → downgrade Singapore exposure to Moderate; CSI action to weekly."
+        },
+        {
+          "type": "Deadline",
+          "text": "US troop withdrawal from Iraq completes; militia disarmament committee outputs disputed (Kataib Hezbollah and Nujaba refuse).",
+          "due": "2026-09-30",
+          "ifSeen": "Strikes on Erbil or Gulf infrastructure after withdrawal → escalation indicator; mirror the spillover item."
         },
         {
           "type": "Escalation indicator",
-          "text": "Another strike on merchant shipping or a US warship, a mine strike, or a strike on Gulf energy infrastructure after the tanker exchanges.",
+          "text": "Renewed IRGC ballistic launches at Gulf hosts or carriers, new mine-laying, or Houthi strikes from Perim and Mokha on Bab al-Mandab traffic.",
           "due": null,
-          "ifSeen": "CSI Flash the same day; tempo and escalation stay at the ceiling."
-        },
-        {
-          "type": "Diplomatic decision",
-          "text": "A formal Iran–Oman Hormuz management arrangement with fees, or Gulf states' commitments to bypass routes.",
-          "due": null,
-          "ifSeen": "Structural change to transit terms → CSI Flash; note for the quarterly."
+          "ifSeen": "CSI Flash the same day."
         },
         {
           "type": "Named event",
-          "text": "US midterm elections — Trump's stated window for a settlement.",
+          "text": "Security Council handling of the IAEA referral (Russian and Chinese vetoes expected).",
+          "due": null,
+          "ifSeen": "Snapback-type measures → escalation risk stays Severe; note for the monthly."
+        },
+        {
+          "type": "Named event",
+          "text": "US midterm elections — Trump's stated window for a settlement; Israeli election on 27 Oct also shapes the Iran track.",
           "due": "2026-11-03",
           "ifSeen": "Post-election deal push → re-check phase weekly."
+        },
+        {
+          "type": "Mobilisation sign",
+          "text": "IRGC internal-security exercise of 313,000 personnel (18 Sep) — regime unrest concern.",
+          "due": null,
+          "ifSeen": "Internal-security posture rising → Iran's external escalation calculus may change; note for the monthly."
         }
       ],
       "csi": {
@@ -491,39 +554,67 @@
         "also": [
           "Monthly pattern review"
         ],
-        "rationale": "Hormuz terms bear directly on Singapore fuel and shipping exposure; shadow-fleet tankers as kinetic nodes and the IRGC's lean Iraqi cells feed the monthly pattern review."
+        "rationale": "Hormuz terms bear directly on Singapore fuel and shipping exposure; rocket-launched mines, tanker-for-tanker economic targeting, drone mine-clearing and escorted convoys feed the monthly pattern review."
       },
       "ignore": {
         "flag": false,
         "reasons": [],
-        "note": ""
+        "note": "Transit counts differ widely by method (PortWatch versus Lloyd's List); quote the source with the number."
       },
       "confidence": "High",
       "learningValue": "High",
       "sources": [
         {
-          "label": "CSI brief 7–14 Sep (tanker strikes, Houthi axis)",
-          "url": "https://conflictstudiesandinsights.pages.dev/7-14-sep-2026.html"
+          "label": "ABC — how the US–Iran ceasefire MOU broke down",
+          "url": "https://abcnews.com/Politics/us-iran-ceasefire-mou-broke-timeline/story?id=134622392"
         },
         {
-          "label": "CSI brief 14–21 Sep (multi-axis coercion)",
-          "url": "https://conflictstudiesandinsights.pages.dev"
+          "label": "The National — Hormuz traffic falls as the MOU expires",
+          "url": "https://www.thenationalnews.com/business/energy/2026/08/17/hormuz-traffic-falls-to-single-digits-as-60-day-deadline-for-us-iran-mou-expires/"
         },
         {
-          "label": "Al Jazeera — MOU expiry, 17 Aug",
-          "url": "https://www.aljazeera.com/news/2026/8/17/us-iran-memorandum-of-understanding-expires-how-and-why-it-fell-apart"
+          "label": "Al Jazeera — US strikes Larak Island",
+          "url": "https://www.aljazeera.com/news/2026/8/30/us-strikes-irans-lark-island-in-first-attack-in-weeks"
         },
         {
-          "label": "Al Jazeera — 'tanker war', 6 Sep",
-          "url": "https://www.aljazeera.com/news/2026/9/6/us-iran-engaged-in-tanker-war-where-is-the-months-long-conflict-headed"
+          "label": "CNN — IRGC salvo at carrier group; tanker strikes",
+          "url": "https://www.cnn.com/2026/09/05/middleeast/iran-us-tanker-kharg-intl"
         },
         {
-          "label": "Bloomberg — Iran–Oman revenue share claim",
-          "url": "https://www.bloomberg.com/news/articles/2026-08-26/iran-oman-agree-to-share-strait-of-hormuz-revenue-irgc-says"
+          "label": "Military Times — Jordan base attack damaged US aircraft",
+          "url": "https://www.militarytimes.com/flashpoints/middle-east/2026/09/10/iran-attack-on-base-in-jordan-damaged-american-military-aircraft-us-official-says/"
         },
         {
-          "label": "Al Jazeera — Iran delegation at UNGA",
-          "url": "https://www.aljazeera.com/news/2026/9/22/iran-delegation-to-present-narrative-of-resilience-diplomacy-at-unga"
+          "label": "USNI — Hormuz transits hit three-week high",
+          "url": "https://news.usni.org/2026/09/18/hormuz-transits-hit-three-week-high-vlcc-rates-explode"
+        },
+        {
+          "label": "Al Jazeera — Iran–Oman Hormuz proposals",
+          "url": "https://www.aljazeera.com/news/2026/7/28/iran-and-oman-exchange-proposals-to-manage-strait-of-hormuz"
+        },
+        {
+          "label": "Al Jazeera — IAEA Board refers Iran to the Security Council",
+          "url": "https://www.aljazeera.com/news/2026/9/9/iaea-board-resolves-to-report-iran-to-security-council-over-nuclear-program"
+        },
+        {
+          "label": "Critical Threats — Iran update, 10 Sep (Houthi seizure)",
+          "url": "https://www.criticalthreats.org/analysis/iran-update-september-10-2026"
+        },
+        {
+          "label": "Al Jazeera — mediated UNGA talks, 23 Sep",
+          "url": "https://www.aljazeera.com/news/2026/9/23/us-iran-hold-mediated-unga-talks-on-ending-war-opening-strait-of-hormuz"
+        },
+        {
+          "label": "Times of Israel — Trump at the UN: deal after midterms or 'annihilate'",
+          "url": "https://www.timesofisrael.com/trump-tells-un-he-may-sign-deal-with-iran-after-midterms-or-annihilate-it-instead"
+        },
+        {
+          "label": "Singapore MHA — ministerial statement on Middle East impact",
+          "url": "https://www.mha.gov.sg/media-room/newsroom/ministerial-statement-on-the-impact-of-the-middle-east-situation-on-singapore/"
+        },
+        {
+          "label": "Singapore MOT — Singapore-flagged ship struck at Hormuz",
+          "url": "https://www.mot.gov.sg/news-resources/newsroom/recourse-for-damage-caused-to-singapore-flagged-cargo-ship-struck-by-projectile-at-strait-of-hormuz/"
         }
       ],
       "history": [
@@ -554,7 +645,7 @@
       },
       "dims": {
         "phase": {
-          "now": "Active enforcement: ridge cleared, pilot-zone handover stalled",
+          "now": "Framework in name; attritional occupation of a self-declared security zone",
           "prev": "Active ceasefire with daily fighting"
         },
         "escalation": {
@@ -562,7 +653,7 @@
           "prev": "High"
         },
         "tempo": {
-          "now": "High",
+          "now": "Medium",
           "prev": "Medium"
         },
         "adaptation": {
@@ -570,53 +661,60 @@
           "prev": "High"
         },
         "sgExposure": {
-          "now": "Moderate",
+          "now": "Low",
           "prev": "Moderate"
         }
       },
-      "whyNow": "A months-long siege and the industrial demolition of the Ali al-Taher complex (about 1,100 tonnes of explosives, a magnitude 4.1 tremor), then the fight to hold the security zone against re-infiltration; the diplomatic track is frozen until after the 27 Oct Israeli election.",
+      "whyNow": "The Trilateral Framework is nominally alive but the ceasefire is in name only: Israel besieged and then demolished the Ali al-Taher tunnel complex (about 1,100 tonnes of explosives, a magnitude 4.1 tremor) and declared its security zone 'complete', Hezbollah is waging drone, IED and ATGM attrition, and the Rome round slipped to October behind the 27 Oct Israeli election.",
       "changes": [
-        "First pilot-zone handover: LAF deployed into Zawtar al-Gharbiyeh on 21 Jul; Froun and Srifa still pending; mid-Aug ceasefire breakdown and decapitation strikes; the Rome round slipped from 1 Sep to 'October', with ambassadors meeting at the State Department in mid-Sep instead.",
-        "IDF declared operational control of the Ali al-Taher ridge (3 Sep) after weeks of siege, then demolished the tunnel and command complex on 10 Sep (~1,100 t of explosives, USGS magnitude 4.1); Hezbollah answered with one-way attack drones (26 Aug) and IEDs against consolidating engineer units.",
-        "A 'Gray Line' plan was reported (7 Sep): IDF pullback to 2–4 km inside Lebanon with ~20 permanent outposts, conditional on LAF control, disarmament commitments and a monitoring mechanism — not yet approved by Israel's political leadership.",
-        "Hezbollah rejects the disarmament terms and Iran calls the ground moves a major violation of the Islamabad agreement; no Military Coordination Group meeting has been reported since May."
+        "Pilot zones launched 20–22 Jul (Froun and Srifa outside the IDF buffer, Zawtar al-Gharbiyeh inside it; LAF deployed to Zawtar on 21 Jul after an IDF withdrawal); the LAF said Israeli shelling and bulldozing hindered completion (26 Jul) and on 9 Sep claimed control of all three zones with ~1,818 weapons seized (~86% light ammunition), with near-daily LAF–Hezbollah coordination and no depot dismantlement (FDD).",
+        "The ceasefire effectively broke down on 15–16 Aug (Hezbollah drone wounded three Yahalom engineers on Ali al-Taher; IDF strikes on Ansar, Deir al-Zahrani and the ridge killed 11+); repeated LAF-handover formulas failed (Hezbollah's 20 Aug offer refused; Aoun approached Washington 24 Aug); the IDF 36th Division declared operational control on 3 Sep and demolished the 2 km-plus tunnel complex on 10 Sep, after which Katz and Netanyahu declared the security zone 'complete'.",
+        "Hezbollah's method shifted from rockets to FPV and one-way drones, IEDs and ATGMs inside the zone (2–4 Sep drones intercepted; a roadside IED wounded two troops); IDF retaliation expanded north of the zone to Nabatieh al-Fawqa and Arab Salim for the first time since June.",
+        "A 'Gray Line' plan was reported on 7 Sep — an IDF pullback to 2–4 km inside Lebanon, vacating Beaufort and Ali al-Taher — but it is not politically approved; the Rome round was postponed to October (UNGA, holidays, the Paris LAF meeting), ambassadors met at the State Department on 15–16 Sep on pilot-zone expansion, and a Paris preparatory meeting (Macron, Aoun, King Abdullah) was held on 17 Sep; Israel released five Lebanese detainees via US mediation on 3 Sep.",
+        "Costs: Lebanese Health Ministry counts 4,386 killed and 12,407 wounded since 2 Mar (8,953 since October 2023) with 360,000 still displaced (UNHCR, Aug); Israel lost 37 soldiers and 4 civilians in the 2026 round by late July. Singapore exposure lowered to Low: no shipping or energy channel and no evidence of a regional-partner ask through the Military Coordination Group."
       ],
       "next": [
         {
-          "type": "Named event",
-          "text": "Rome political round resumes (October, date not published), with the military track reportedly split to a CENTCOM venue in Florida.",
-          "due": null,
-          "ifSeen": "Dated Froun/Srifa handovers → Weekly awareness post."
+          "type": "Deadline",
+          "text": "Lebanon's LAF state-monopoly-on-arms plan milestones and US pressure ahead of Rome; watch for LAF orders north of the Litani.",
+          "due": "2026-09-30",
+          "ifSeen": "Orders north of the Litani → framework gaining substance; nothing → Rome round starts empty."
         },
         {
           "type": "Named event",
-          "text": "Israeli Knesset election; substantive withdrawal and pilot-zone talks expected only after the result (confirmed 4 Nov).",
+          "text": "Rome round 8 (October, date not published) — tests pilot-zone expansion and the verification mechanism.",
+          "due": null,
+          "ifSeen": "Dated new handovers → Weekly awareness post."
+        },
+        {
+          "type": "Diplomatic decision",
+          "text": "Israeli cabinet approval or rejection of the Gray Line redeployment.",
+          "due": null,
+          "ifSeen": "Approval → phase change to a managed buffer; rejection → attritional occupation continues through winter."
+        },
+        {
+          "type": "Named event",
+          "text": "Israeli Knesset election (Likud trailing Eisenkot's Yashar in polls); substantive withdrawal talks only after the result.",
           "due": "2026-10-27",
           "ifSeen": "Re-check the Gray Line decision and CSI action after the result."
         },
         {
-          "type": "Threshold",
-          "text": "CENTCOM certifies the Froun and Srifa pilot zones and the IDF exits them.",
+          "type": "Named event",
+          "text": "Paris international conference for the LAF (preparatory meeting held 17 Sep; date to be set); UNIFIL's mandate ends late 2026.",
           "due": null,
-          "ifSeen": "Framework working → tempo down; Monthly pattern review on handover mechanics."
-        },
-        {
-          "type": "Diplomatic decision",
-          "text": "Israeli political approval of the Gray Line pullback and outpost plan.",
-          "due": null,
-          "ifSeen": "Phase change to managed buffer → Weekly awareness post."
+          "ifSeen": "Funding and mandate decisions → note for the monthly."
         },
         {
           "type": "Escalation indicator",
-          "text": "A Hezbollah re-infiltration attack causing IDF casualties inside the security zone, or an IDF strike inside a designated pilot zone.",
+          "text": "Hezbollah rocket fire into Israel (rather than drones inside the zone) or IDF strikes on Dahiyeh — a breakdown of the 1 June understandings.",
           "due": null,
-          "ifSeen": "Framework at risk → Weekly awareness post; CSI Flash if the LAF withdraws."
+          "ifSeen": "Move tempo to High; CSI Flash."
         },
         {
-          "type": "Diplomatic decision",
-          "text": "Composition and first meeting of the Military Coordination Group for Lebanon.",
+          "type": "Threshold",
+          "text": "Lebanese Health Ministry toll passing 4,500 since 2 Mar.",
           "due": null,
-          "ifSeen": "Scope what a regional-partner contribution would require; brief up."
+          "ifSeen": "Note only; humanitarian indicator."
         }
       ],
       "csi": {
@@ -624,7 +722,7 @@
         "also": [
           "Quarterly candidate"
         ],
-        "rationale": "Subterranean denial as two tracks (tactical clearing, then strategic demolition) and persistent multi-spectrum ISR over a contested buffer are combat-engineer and intelligence learning; the MCG question stays time-sensitive for planners."
+        "rationale": "Subterranean denial as two tracks (tactical clearing, then strategic demolition), Hezbollah's shift to FPV drones, IEDs and ATGMs against a consolidating force, and the LAF's quiet coordination with the group it is meant to disarm are combat-engineer, force-protection and stabilisation learning."
       },
       "ignore": {
         "flag": false,
@@ -635,28 +733,44 @@
       "learningValue": "High",
       "sources": [
         {
-          "label": "CSI brief 7–14 Sep (Ali al-Taher demolition)",
-          "url": "https://conflictstudiesandinsights.pages.dev/7-14-sep-2026.html"
-        },
-        {
-          "label": "CSI brief 14–21 Sep (re-infiltration contest)",
-          "url": "https://conflictstudiesandinsights.pages.dev"
-        },
-        {
-          "label": "Arab News — Rome talks delayed to October",
-          "url": "https://www.arabnews.com/world/israel-lebanon-talks-in-rome-delayed-to-october-us-official-3001421"
-        },
-        {
-          "label": "The National — talks likely to stall until October elections",
-          "url": "https://www.thenationalnews.com/news/mena/2026/09/09/lebanon-israel-talks-likely-to-stall-until-october-elections-and-be-split-between-rome-and-florida/"
+          "label": "US State Department — Trilateral Framework signed",
+          "url": "https://www.state.gov/releases/office-of-the-spokesperson/2026/06/the-united-states-israel-and-lebanon-sign-the-trilateral-framework/"
         },
         {
           "label": "Times of Israel — LAF deploys in first pilot zone",
           "url": "https://www.timesofisrael.com/in-first-lebanese-army-deploys-in-southern-pilot-zone-after-israeli-withdrawal/"
         },
         {
-          "label": "Soufan Center IntelBrief 8 Sep",
-          "url": "https://thesoufancenter.org/intelbrief-2026-september-8/"
+          "label": "Al Jazeera — why Israel escalated despite the ceasefire, 16 Aug",
+          "url": "https://www.aljazeera.com/news/2026/8/16/why-has-israel-escalated-attacks-in-southern-lebanon-despite-ceasefire"
+        },
+        {
+          "label": "Long War Journal — Israel claims control of Ali al-Taher",
+          "url": "https://www.longwarjournal.org/archives/2026/09/israel-claims-control-of-ali-al-taher-after-weeks-of-hezbollah-attacks-and-failed-handover-efforts.php"
+        },
+        {
+          "label": "The National — security zone 'complete' after tunnel demolition",
+          "url": "https://www.thenationalnews.com/news/mena/2026/09/10/israel-says-south-lebanon-security-zone-complete-after-blowing-up-hezbollah-tunnels-at-ali-al-taher-ridge/"
+        },
+        {
+          "label": "Asharq Al-Awsat — Israeli 'Gray Line' plan",
+          "url": "https://english.aawsat.com/arab-world/5315513-israeli-%E2%80%98gray-line%E2%80%99-plan-would-see-withdrawal-most-occupied-lebanese-territory"
+        },
+        {
+          "label": "Haaretz — Hezbollah explosive drones at troops, 2 Sep",
+          "url": "https://www.haaretz.com/israel-news/israel-security/2026-09-02/ty-article/idf-hezbollah-launches-explosive-drones-at-troops-in-southern-lebanon/000001a0-60e2-ddc5-adbd-e3fb3e5d0000"
+        },
+        {
+          "label": "Arab News — Rome round in October",
+          "url": "https://www.arabnews.com/middle-east/israel-and-lebanon-to-meet-in-rome-in-october-us-state-department-official-says-3001594"
+        },
+        {
+          "label": "Long War Journal — LAF–Hezbollah coordination and disarmament limits",
+          "url": "https://www.longwarjournal.org/archives/2026/09/laf-hezbollah-coordination-and-the-limits-of-lebanons-disarmament-effort.php"
+        },
+        {
+          "label": "Al Jazeera — nearly 9,000 killed in Lebanon since 2023",
+          "url": "https://www.aljazeera.com/news/2026/9/6/nearly-9000-killed-in-israeli-attacks-on-lebanon-since-2023"
         }
       ],
       "history": [
@@ -693,7 +807,7 @@
       },
       "dims": {
         "phase": {
-          "now": "Physical hardening under a holding ceasefire; conciliation under way",
+          "now": "Militarised no-war-no-peace; legal and diplomatic contest",
           "prev": "Ceasefire; UNCLOS conciliation"
         },
         "escalation": {
@@ -705,7 +819,7 @@
           "prev": "Low"
         },
         "adaptation": {
-          "now": "High",
+          "now": "Medium",
           "prev": "Medium"
         },
         "sgExposure": {
@@ -713,83 +827,102 @@
           "prev": "Moderate"
         }
       },
-      "whyNow": "Thailand's publicly disclosed Falcon Team drone strikes on Cambodian counter-drone, EW and communications nodes near Preah Vihear are the first admitted cross-border UAS employment since the ceasefire, while the UNCLOS conciliation commission opened in Singapore (14–16 Sep).",
+      "whyNow": "No exchange of fire since the December truce, but the contest has hardened: Thailand is walling the border and holding occupied hills, Cambodia is internationalising through UNCLOS, UNESCO and ASEAN, and Singapore hosted the first conciliation session (14–16 Sep) and contributes observers.",
       "changes": [
-        "UNCLOS Annex V Conciliation Commission held its first meeting in Singapore, 14–16 Sep: terms of appointment and rules signed, ~12-month non-binding process; scope disputed (Thailand: delimitation only; Cambodia: a treaty including revenue-sharing).",
-        "Thai barrier phase 1 (1.3 km, Chanthaburi) complete and phase 2 (~7–8 km, markers 54–58) under way with access roads and bunkers; Cambodia lodged its strongest protests over PM Anutin's 23 Aug Hill 500 visit and a 3 Sep helicopter incursion; Thailand escorted ASEAN observers and media into O'Smach.",
-        "Thailand disclosed Falcon Team drone strikes on alleged Cambodian counter-drone, EW, communications and field positions around Preah Vihear (week of 14–21 Sep); Cambodia denies military use of the site; claims not independently verified. Tempo raised to Medium, adaptation to High.",
-        "39 Chinese T-59D tanks delivered in July (of 93 ordered); Thai NSC reports none near the border; GBC met 4–7 Aug in Malaysia, the JBC date remains unresolved; the land border stays largely closed."
+        "UNCLOS Annex V conciliation opened in Singapore (14–16 Sep, chair Katrina Cooper): Thailand insists the process is maritime-only, excludes Koh Kut and puts delimitation before resource-sharing; Cambodia seeks a treaty or joint-development regime; ~12-month non-binding process, next round in The Hague (date not published).",
+        "Thai barrier building confirmed: an 8.4 km, 3.6 m Navy-built wall at Pong Nam Ron, Chanthaburi (first ~1 km done) and an Army programme at Sa Kaeo (5.1 km temporary, 10 km and 23.6 km permanent stages planned, electronic fence and CCTV); Cambodian forces inspect at every stage. The land border remains closed with land-trade losses near THB180bn.",
+        "Incidents without fire: PM Anutin visited troops on Hill 500 (23 Aug; Cambodia protested 'illegal occupation'); a Thai helicopter crossed ~400 m into Battambang airspace (3–4 Sep, Cambodian protest under the Chicago Convention and the December GBC statement); Thailand took the ASEAN Observer Team into O'Smach (7 Sep), which Cambodia called an unlawful assertion of authority.",
+        "Correction to the brief-based draft: the Royal Thai Army's 15 Sep 'Truth from Preah Vihear' video shows Falcon Team drone strikes on counter-drone, jamming and communications positions from the 2025 fighting, not new September strikes; Cambodia rejects the 'military base' claim and cites 562 impact sites and a UNESCO/ICOMOS damage report.",
+        "No General Border Committee or Joint Boundary Commission session found in 2026 (Thailand deferred Cambodia's January and April proposals); 39 of 93 Chinese T-59D tanks delivered in June with no second batch found through September; Hun Manet's Peace Day message (21 Sep) urged Thailand to honour the agreements."
       ],
       "next": [
         {
           "type": "Named event",
-          "text": "Next Conciliation Commission meeting (dates not yet published) and any written pleadings schedule.",
+          "text": "Second conciliation round, The Hague (date not published) — whether the commission rules on scope (Koh Kut and land exclusion).",
           "due": null,
-          "ifSeen": "Scope agreed → legal track absorbs the dispute; scope fight → note for the monthly."
+          "ifSeen": "Scope narrowed to maritime delimitation → legal track absorbs the dispute; scope fight → Cambodian escalation at UNESCO or the UN."
+        },
+        {
+          "type": "Diplomatic decision",
+          "text": "First 2026 GBC (defence ministers) or JBC/joint survey team meeting; Thailand has repeatedly deferred.",
+          "due": null,
+          "ifSeen": "Political track revived → tempo check; nothing by November → escalation risk up."
         },
         {
           "type": "Named event",
-          "text": "General Border Committee follow-up (promised 'in September') or a Joint Boundary Commission date.",
-          "due": null,
-          "ifSeen": "Political track revived → tempo check; if neither convenes by November, escalation risk up."
-        },
-        {
-          "type": "Named event",
-          "text": "49th ASEAN Summit, Manila (published dates conflict: 10–12 or 16–18 Nov) — sideline trilateral as at the May summit.",
+          "text": "49th ASEAN Summit, Manila (published dates conflict: 10–12 or 16–18 Nov) — possible Anutin–Hun Manet encounter and ASEAN Observer Team mandate review.",
           "due": "2026-11-10",
           "ifSeen": "Leaders' commitment on the JBC → Dashboard only; absence → Weekly awareness post."
         },
         {
-          "type": "Escalation indicator",
-          "text": "Cambodian retaliation for the drone strikes, a landmine casualty, or an exchange of fire along the barrier line.",
+          "type": "Threshold",
+          "text": "Completion of the 8.4 km Chanthaburi wall, or fencing starting in contested Surin, Sisaket or Ubon sectors.",
           "due": null,
-          "ifSeen": "Move to Priority; CSI Flash."
+          "ifSeen": "Fencing inside disputed zones → Cambodian protest cycle; Monthly pattern review on engineering consolidation."
         },
         {
           "type": "Force movement",
-          "text": "Second Chinese tank batch lands, or tanks move toward the border sectors.",
+          "text": "Delivery of the remaining 54 T-59D tanks, or tanks moving toward the border sectors.",
           "due": null,
-          "ifSeen": "Grey-zone capability building → Monthly pattern review."
+          "ifSeen": "Grey-zone capability building under a ceasefire → Monthly pattern review."
+        },
+        {
+          "type": "Escalation indicator",
+          "text": "A repeat airspace incursion, a drone crossing the line, an exchange of fire along the wall, or a landmine casualty.",
+          "due": null,
+          "ifSeen": "Move to Priority; CSI Flash."
         }
       ],
       "csi": {
-        "action": "Weekly awareness post",
+        "action": "Dashboard only",
         "also": [
           "Monthly pattern review"
         ],
-        "rationale": "Near-abroad and the first admitted cross-border UAS strikes: one awareness line this week; engineering consolidation and the access-and-verification information contest stay in the monthly pattern set."
+        "rationale": "Nothing kinetic to publish; the engineering-consolidation and lawfare pattern (walls, evidence videos, UNCLOS scope limits versus internationalisation) is monthly material, and Singapore's observer and host roles keep it on the near-abroad watch."
       },
       "ignore": {
         "flag": false,
         "reasons": [],
         "note": ""
       },
-      "confidence": "High",
-      "learningValue": "High",
+      "confidence": "Medium",
+      "learningValue": "Medium",
       "sources": [
         {
-          "label": "CSI brief 14–21 Sep (Falcon Team drone strikes)",
-          "url": "https://conflictstudiesandinsights.pages.dev"
-        },
-        {
-          "label": "CSI brief 7–14 Sep (barrier, observer access)",
-          "url": "https://conflictstudiesandinsights.pages.dev/7-14-sep-2026.html"
-        },
-        {
-          "label": "AP/US News — conciliation opens, 14 Sep",
-          "url": "https://www.usnews.com/news/world/articles/2026-09-14/cambodia-and-thailand-start-compulsory-conciliation-on-maritime-border-dispute"
-        },
-        {
-          "label": "Khaosod — Thailand's opening statement to the commission",
+          "label": "Khaosod — Thailand's opening statement to the conciliation commission",
           "url": "https://www.khaosodenglish.com/politics/2026/09/15/thailands-full-opening-statement-to-first-unclos-conciliation-meeting-with-cambodia/"
         },
         {
-          "label": "Thai PBS — fence phase 1 finished, phase 2 starts",
-          "url": "https://www.thaipbsworld.com/thailand-cambodia-standoff/first-phase-of-thai-cambodian-border-fence-finished,-navy-to-start-second"
+          "label": "Khaosod — Cambodia's opening statement",
+          "url": "https://www.khaosodenglish.com/politics/2026/09/15/cambodias-full-opening-statement-to-first-unclos-conciliation-meeting-with-thailand/"
         },
         {
-          "label": "Inquirer — Thailand monitoring Chinese tanks",
-          "url": "https://globalnation.inquirer.net/326868/thailand-monitoring-cambodias-new-chinese-tanks-amid-border-tensions"
+          "label": "Arab News — Thailand builds border wall",
+          "url": "https://www.arabnews.com/world/fenced-off-thailand-builds-border-wall-after-cambodia-clashes-3001366"
+        },
+        {
+          "label": "Thai PBS — Cambodia calls Anutin's visit a violation",
+          "url": "https://www.thaipbsworld.com/thailand-cambodia-standoff/cambodia-calls-pm-anutin%E2%80%99s-border-visit-violation-of-sovereignty"
+        },
+        {
+          "label": "Khmer Times — helicopter airspace protest",
+          "url": "https://www.khmertimeskh.com/502018245/cambodia-strongly-protests-thai-military-helicopter-airspace-violation"
+        },
+        {
+          "label": "Nation Thailand — RTA 'Truth from Preah Vihear' video",
+          "url": "https://www.nationthailand.com/news/general/40071075"
+        },
+        {
+          "label": "Khmer Times — Culture Ministry rejects military-base claim",
+          "url": "https://www.khmertimeskh.com/502023570/culture-ministry-official-rejects-thai-claim-preah-vihear-was-used-as-military-base"
+        },
+        {
+          "label": "Janes — Cambodia receives initial T-59D batch",
+          "url": "https://www.janes.com/defence-intelligence-insights/defence-news/defence/cambodia-receives-initial-batch-of-chinese-t-59d-tanks"
+        },
+        {
+          "label": "Nation Thailand — Thai briefing to the ASEAN Observer Team",
+          "url": "https://www.nationthailand.com/news/asean/40070758"
         }
       ],
       "history": [
