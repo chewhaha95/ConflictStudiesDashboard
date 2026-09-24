@@ -1962,7 +1962,7 @@
     // when present, else the state-history notes (minus the "Baseline:" prefix).
     timelineOf(it) {
       const src = Array.isArray(it.timeline) && it.timeline.length
-        ? it.timeline.map(t => ({ date: t.date, text: t.text || "" }))
+        ? it.timeline.map(t => ({ date: t.date, text: t.text || "", url: t.url || "", unverified: !!t.unverified }))
         : (it.history || []).map(h => ({ date: h.date, text: String(h.note || "").replace(/^Baseline:\s*/i, "") }));
       return src.filter(t => t.date && t.text).sort((a, b) => String(a.date).localeCompare(String(b.date)));
     },
@@ -2166,7 +2166,7 @@
       // `timeline` [{date, text}]; until the review writes one, the state-history
       // notes stand in). No state chips: the intent is a quick recap, not audit.
       const tl = this.timelineOf(it);
-      const hist = tl.map((h, i) => `<li class="${i === tl.length - 1 ? "wl-tl-latest" : ""}"><span class="wl-hist-d">${esc(this.fmtDate(h.date))}</span> <span class="wl-tl-text">${esc(h.text)}</span></li>`).join("");
+      const hist = tl.map((h, i) => `<li class="${i === tl.length - 1 ? "wl-tl-latest" : ""}"><span class="wl-hist-d">${esc(this.fmtDate(h.date))}</span> <span class="wl-tl-text">${esc(h.text)}</span>${h.unverified ? ` <span class="wl-tl-unv" title="Single source; not yet corroborated">unverified</span>` : ""}${h.url ? ` <a class="wl-tl-src" href="${esc(h.url)}" target="_blank" rel="noopener" title="Source">↗</a>` : ""}</li>`).join("");
       return `<div class="wl-detail-grid">
         <div class="wl-d-block"><div class="wl-d-h">What materially changed</div>
           <div class="wl-chg-line">${dimsLine}</div>

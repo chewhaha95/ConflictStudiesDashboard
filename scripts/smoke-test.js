@@ -76,6 +76,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   try { wl = JSON.parse(wlRaw); check("watchlist.json parses", true); }
   catch (e) { check("watchlist.json parses", false, e.message); process.exit(1); }
   check("register defines criteria and level descriptions for every scaled dimension", ["escalation", "tempo", "adaptation", "sgExposure"].every(d => wl.definitions.dimensions[d].desc && wl.definitions.dimensions[d].scale.every(l => wl.definitions.dimensions[d].levels[l])));
+  check("every item carries a researched timeline (4–8 chronological entries, ISO dates, source URLs)", wl.items.every(i => Array.isArray(i.timeline) && i.timeline.length >= 4 && i.timeline.length <= 8 && i.timeline.every(t => /^\d{4}-\d{2}-\d{2}$/.test(t.date) && t.text && t.text.length > 20 && /^https?:/.test(t.url || "")) && i.timeline.every((t, k) => k === 0 || t.date >= i.timeline[k - 1].date)));
   check("every item carries a current-status summary with 2+ article links", wl.items.every(i => i.status && i.status.summary.length > 80 && i.status.sources.length >= 2 && i.status.sources.every(s => /^https?:/.test(s.url))));
   check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
   check("register is reviewed daily (cadenceDays = 1)", wl.meta.cadenceDays === 1);
@@ -281,7 +282,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("detail: timeline is a chronological dated recap with no state chips (history notes stand in until the register carries `timeline`)", (() => {
     const exp = (probe.timeline && probe.timeline.length ? probe.timeline : probe.history.map(h => ({ date: h.date, text: h.note.replace(/^Baseline:\s*/i, "") }))).slice().sort((a, b) => a.date.localeCompare(b.date));
     const lis = [...det.querySelectorAll(".wl-hist .wl-tl-list li")];
-    return lis.length === exp.length && !det.querySelector(".wl-hist .wl-state") && exp.every((e, k) => lis[k].textContent.includes(fmtD(e.date)) && lis[k].textContent.includes(e.text)) && lis[lis.length - 1].classList.contains("wl-tl-latest");
+    return lis.length === exp.length && !det.querySelector(".wl-hist .wl-state") && exp.every((e, k) => lis[k].textContent.includes(fmtD(e.date)) && lis[k].textContent.includes(e.text) && (!e.url || lis[k].querySelector(`a.wl-tl-src[href="${e.url}"]`))) && lis[lis.length - 1].classList.contains("wl-tl-latest");
   })());
   check("detail: every changed dimension spelled out (7 days ago → now)", det.querySelectorAll(".wl-chg-line .wl-chg-pill").length === changed(probe).length && changed(probe).every(d => det.textContent.includes(baseline(probe)[d])));
   check("detail: typed indicators with 'If seen →' consequences and rendered dates",

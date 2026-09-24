@@ -985,6 +985,8 @@ table.wl-register thead th { cursor: default; }
 .wl-tl-list li::before { content: ""; position: absolute; left: -19px; top: 6px; width: 8px; height: 8px; border-radius: 50%; background: var(--border-strong); }
 .wl-tl-list li.wl-tl-latest::before { background: var(--accent); }
 .wl-tl-list li.wl-tl-latest .wl-tl-text { font-weight: 600; }
+.wl-tl-src { color: var(--accent); text-decoration: none; font-weight: 700; margin-left: 2px; }
+.wl-tl-unv { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--tone-warn-fg); background: var(--tone-warn-bg); padding: 1px 5px; border-radius: 999px; margin-left: 4px; }
 .wl-src-list { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
 .wl-src-list a { color: var(--accent); text-decoration: none; }
 .wl-src-list a:hover { text-decoration: underline; }
