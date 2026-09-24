@@ -78,6 +78,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("register defines criteria and level descriptions for every scaled dimension", ["escalation", "tempo", "adaptation", "sgExposure"].every(d => wl.definitions.dimensions[d].desc && wl.definitions.dimensions[d].scale.every(l => wl.definitions.dimensions[d].levels[l])));
   check("every item carries a current-status summary with 2+ article links", wl.items.every(i => i.status && i.status.summary.length > 80 && i.status.sources.length >= 2 && i.status.sources.every(s => /^https?:/.test(s.url))));
   check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
+  check("register is reviewed daily (cadenceDays = 1)", wl.meta.cadenceDays === 1);
   check("watchlist defines 3 tiers / 4 states and no publication actions",
     Object.keys(wl.definitions.tiers).join(",") === "1,2,3" &&
     Object.keys(wl.definitions.states).sort().join(",") === "Active,Archive,Priority,Watch" &&
@@ -85,17 +86,21 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("no publication prompts (CSI Flash / awareness post / …) anywhere in the register",
     !/CSI Flash|Weekly awareness post|Monthly pattern review|Quarterly candidate|Dashboard only|\bCSI\b/.test(wlRaw));
   check("watchlist items span the three tiers", wl.items.length >= 3 && [1, 2, 3].every(n => wl.items.some(i => i.tier === n)), "got " + wl.items.length);
-  check("prevState / dims.prev are the previous review's values (no self-referential history)", wl.items.every(i => i.history[i.history.length - 1].state === i.state));
+  check("history ends on the current state (no self-referential history)", wl.items.every(i => i.history[i.history.length - 1].state === i.state));
+  check("register carries a 7-day comparison window (meta.compareDays = 7)", wl.meta.compareDays === 7);
+  check("every item carries per-review snapshots (date, state, 5 dims), newest = today's review values", wl.items.every(i => Array.isArray(i.snapshots) && i.snapshots.length >= 1 && i.snapshots.every(s => /^\d{4}-\d{2}-\d{2}$/.test(s.date) && wl.definitions.states[s.state] && ["phase", "escalation", "tempo", "adaptation", "sgExposure"].every(d => s[d] != null)) &&
+    (() => { const s = i.snapshots.slice().sort((a, b) => a.date.localeCompare(b.date)); const last = s[s.length - 1]; return last.date === wl.meta.reviewDate && last.state === i.state && ["phase", "escalation", "tempo", "adaptation", "sgExposure"].every(d => last[d] === i.dims[d].now); })()));
+  check("no legacy prev / prevState fields (comparisons come from snapshots)", wl.items.every(i => i.prevState === undefined && Object.values(i.dims).every(v => v.prev === undefined)));
   check("every item carries an open-source feed query + title terms", wl.items.every(i => i.feed && i.feed.query && Array.isArray(i.feed.terms) && i.feed.terms.length));
   check("dated indicators use ISO dates", wl.items.every(i => i.next.every(n => !n.due || /^\d{4}-\d{2}-\d{2}$/.test(n.due))));
-  check("dimension values sit on the defined scales", wl.items.every(i => ["escalation", "tempo", "adaptation", "sgExposure"].every(d => wl.definitions.dimensions[d].scale.includes(i.dims[d].now) && wl.definitions.dimensions[d].scale.includes(i.dims[d].prev))));
+  check("dimension values sit on the defined scales", wl.items.every(i => ["escalation", "tempo", "adaptation", "sgExposure"].every(d => wl.definitions.dimensions[d].scale.includes(i.dims[d].now) && i.snapshots.every(s => wl.definitions.dimensions[d].scale.includes(s[d])))));
   const DIMS = ["phase", "escalation", "tempo", "adaptation", "sgExposure"];
-  const wlOk = wl.items.every(i => i.id && i.name && [1, 2, 3].includes(i.tier) && wl.definitions.states[i.state] && wl.definitions.states[i.prevState] &&
+  const wlOk = wl.items.every(i => i.id && i.name && [1, 2, 3].includes(i.tier) && wl.definitions.states[i.state] &&
     i.geo && typeof i.geo.lat === "number" && typeof i.geo.lon === "number" && Array.isArray(i.geo.countries) &&
-    DIMS.every(d => i.dims[d] && i.dims[d].now != null && i.dims[d].prev != null) &&
+    DIMS.every(d => i.dims[d] && i.dims[d].now != null) &&
     Array.isArray(i.changes) && Array.isArray(i.next) && i.next.every(n => wl.definitions.indicatorTypes.includes(n.type) && n.text) &&
     i.ignore && typeof i.ignore.flag === "boolean" && Array.isArray(i.history) && i.history.length >= 1);
-  check("every watchlist item has state, geo, 5 dims (now+prev), changes, typed indicators, ignore verdict, history", wlOk);
+  check("every watchlist item has state, geo, 5 dims, snapshots, changes, typed indicators, ignore verdict, history", wlOk);
   check("Tier 1 = Russia-Ukraine / Israel-Palestine / US-Israel-Iran / Israel-Lebanon / Thailand-Cambodia",
     wl.items.filter(i => i.tier === 1).map(i => i.id).sort().join(",") === "IL_GZ,IL_LB,IL_US_IR,RU_UA,TH_KH");
   check("Tier 2 = US-Venezuela / South China Sea / Taiwan Strait / China-Japan",
@@ -123,13 +128,18 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
   // --- 1b. Watchlist tab (attention tracker + map) is the landing view ----
   // Expectations are DERIVED from watchlist.json so the checks survive each
-  // weekly review of the register (only the structure is hard-coded).
+  // daily review of the register (only the structure is hard-coded).
   console.log("\nWatchlist (attention tracker + map):");
   const fmtD = s => new Date(s).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
   const stOrder = s => wl.definitions.states[s].order;
-  const changed = i => DIMS.filter(d => i.dims[d].prev !== i.dims[d].now);
-  const moved = i => i.prevState !== i.state;
-  const movedUp = i => moved(i) && stOrder(i.state) < stOrder(i.prevState);
+  // Comparison baseline, derived exactly as the app does: the newest snapshot at
+  // least compareDays before the review date, else the oldest snapshot on file.
+  const cmpCutoff = new Date(new Date(wl.meta.reviewDate).getTime() - wl.meta.compareDays * 86400000).toISOString().slice(0, 10);
+  const baseline = i => { const s = i.snapshots.slice().sort((a, b) => a.date.localeCompare(b.date)); const old = s.filter(x => x.date <= cmpCutoff); return old.length ? old[old.length - 1] : s[0]; };
+  const changed = i => DIMS.filter(d => baseline(i)[d] !== i.dims[d].now);
+  const moved = i => baseline(i).state !== i.state;
+  const movedUp = i => moved(i) && stOrder(i.state) < stOrder(baseline(i).state);
+  const cmpDate = wl.items.map(i => baseline(i).date).sort()[0];
   const scoreOf = i => ({ Priority: 40, Active: 25, Watch: 10, Archive: 0 }[i.state] || 0) +
     ({ Severe: 20, High: 15, Moderate: 8, Low: 2 }[i.dims.escalation.now] || 0) + changed(i).length * 5 + (movedUp(i) ? 10 : 0) +
     ({ High: 8, Moderate: 4, Low: 0 }[i.dims.sgExposure.now] || 0) + ({ 1: 6, 2: 3, 3: 0 }[i.tier] || 0);
@@ -148,8 +158,13 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     doc.querySelector(".tab-btn").dataset.horizon === "watchlist" && doc.querySelector("#view-watchlist").classList.contains("active") && doc.body.classList.contains("watchlist-view"));
   let wv = doc.querySelector("#view-watchlist .view-body");
   check("period selector disabled (register is review-dated)", doc.querySelector("#period-select").disabled && /Review as of/.test(doc.querySelector("#period-select").textContent));
-  check(`header: review date (${fmtD(wl.meta.reviewDate)}), previous review, cadence and state counts`,
-    wv.textContent.includes(`review as of ${fmtD(wl.meta.reviewDate)}`) && wv.textContent.includes(`Previous review ${fmtD(wl.meta.previousReviewDate)}`) && wv.querySelectorAll(".wl-sub .wl-state").length === stateNames.length);
+  check(`header: title carries the daily review date (${fmtD(wl.meta.reviewDate)}) and no subtitle (previous review / cadence / state counts removed)`,
+    wv.querySelector(".wl-title").textContent.includes(`daily review as of ${fmtD(wl.meta.reviewDate)}`) && !wv.querySelector(".wl-sub") && !/Previous review|-day cadence|showing \d+/.test(wv.querySelector(".wl-head").textContent));
+  check(`moves card names the 7-day comparison date (${fmtD(cmpDate)})`, wv.querySelector(".wl-moves-card .wl-card-h-note").textContent.includes(`compared with ${fmtD(cmpDate)}`));
+  check("header 'Reporting range' block is hidden on the Watchlist tab", (() => {
+    const css = fs.readFileSync(path.join(root, "styles.css"), "utf8");
+    return /body\.watchlist-view \.header-meta \.meta-block\.optional \{ display: none; \}/.test(css) && doc.querySelector("#meta-range").closest(".meta-block").classList.contains("optional") && doc.querySelector("#meta-range").textContent === "—";
+  })());
   check("staleness flag is computed against today", (() => {
     const el = wv.querySelector(".wl-stale"); if (!el) return false;
     const days = Math.round((Date.now() - new Date(wl.meta.reviewDate).getTime()) / 86400000);
@@ -189,16 +204,51 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     wl.items.filter(i => !moved(i)).every(i => !svg.querySelector(`.wl-marker[data-wl="${i.id}"] .wl-mv`)));
   check("map: legend + region focus buttons", wv.querySelectorAll(".wl-legend .wl-lg").length >= 6 && wv.querySelectorAll(".wl-region").length === 6);
   // Q2 movements + state board
-  check(`Q2: moved-since-previous-review list matches the register (${movedItems.length} move${movedItems.length === 1 ? "" : "s"})`, (() => {
+  check(`Q2: moves over the 7-day window match the snapshot baseline (${movedItems.length} move${movedItems.length === 1 ? "" : "s"})`, (() => {
     const mv = [...wv.querySelectorAll(".wl-moves-card .wl-mv-item:not(.minor)")];
-    return mv.length === movedItems.length && movedItems.every(i => mv.some(li => li.querySelector(".wl-name").textContent === i.name && li.textContent.includes(i.prevState) && li.textContent.includes(i.state)));
+    return /State moves in the last 7 days/.test(wv.querySelector(".wl-moves-card").textContent) && mv.length === movedItems.length && movedItems.every(i => mv.some(li => li.querySelector(".wl-name").textContent === i.name && li.textContent.includes(baseline(i).state) && li.textContent.includes(i.state)));
   })());
-  check("Q2: earlier moves (last 4 weeks) come from history, not from prevState", (() => {
-    const cutoff = new Date(wl.meta.reviewDate).getTime() - 28 * 86400000;
-    const exp = wl.items.flatMap(i => i.history.slice(1).filter((h, k) => new Date(h.date).getTime() >= cutoff && i.history[k].state !== h.state && !(moved(i) && i.history[k].state === i.prevState && h.state === i.state)));
+  check("Q2: earlier-moves section is always present (history moves in the last 90 days before the baseline)", (() => {
+    const cutoff = new Date(wl.meta.reviewDate).getTime() - 90 * 86400000;
+    const exp = wl.items.flatMap(i => i.history.slice(1).filter((h, k) => new Date(h.date).getTime() >= cutoff && i.history[k].state !== h.state && h.date <= baseline(i).date));
     const got = [...wv.querySelectorAll(".wl-moves-card .wl-mv-item.minor")].filter(li => !li.querySelector(".wl-move-brief"));
-    return got.length === exp.length;
+    const card = wv.querySelector(".wl-moves-card").textContent;
+    return /Earlier moves/.test(card) && got.length === exp.length && (got.length > 0 || /No earlier state moves/.test(card));
   })());
+  // Rolling window: once a snapshot at least compareDays old exists it becomes
+  // the baseline, so a daily register compares against 7 days ago, not yesterday.
+  await (async () => {
+    const wl3 = JSON.parse(wlRaw);
+    const probe = wl3.items[0];
+    const last = probe.snapshots[probe.snapshots.length - 1];
+    const dayBefore = new Date(new Date(cmpCutoff).getTime() - 86400000).toISOString().slice(0, 10);
+    const yesterday = new Date(new Date(wl3.meta.reviewDate).getTime() - 86400000).toISOString().slice(0, 10);
+    probe.snapshots.push({ ...last, date: cmpCutoff, state: "Watch", escalation: "Low" });   // exactly 7 days old → baseline
+    probe.snapshots.push({ ...last, date: yesterday });                                        // yesterday's review (same as today) → must be ignored
+    probe.history.push({ date: dayBefore, state: "Watch", note: "test: earlier move" }, { date: wl3.meta.reviewDate, state: probe.state, note: "test: move inside the window" });
+    wl3.meta.previousReviewDate = yesterday;
+    const dom3 = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true });
+    dom3.window.fetch = async (u) => { const s = String(u);
+      if (s.includes("weekly-live") || s.includes("watchlist-live")) return { ok: false, status: 404, json: async () => ({}) };
+      if (s.includes("watchlist.json")) return { ok: true, status: 200, json: async () => wl3 };
+      if (s.includes("world-110m")) return { ok: true, status: 200, json: async () => JSON.parse(worldRaw) };
+      return { ok: true, status: 200, json: async () => JSON.parse(data) }; };
+    dom3.window.Chart = function () { return { destroy() {} }; }; dom3.window.Chart.prototype = {};
+    dom3.window.HTMLCanvasElement.prototype.getContext = () => ({});
+    dom3.window.eval(appjs);
+    await sleep(250);
+    const v3 = dom3.window.document.querySelector("#view-watchlist .view-body");
+    const card = v3.querySelector(".wl-moves-card");
+    const major = [...card.querySelectorAll(".wl-mv-item:not(.minor)")].find(li => li.querySelector(".wl-name").textContent === probe.name);
+    const minor = [...card.querySelectorAll(".wl-mv-item.minor")].find(li => li.querySelector(".wl-name").textContent === probe.name);
+    const row = v3.querySelector(`tr[data-wl-row="${probe.id}"]`);
+    check("rolling window: the snapshot 7 days old is the baseline, yesterday's review is not (move glyph tooltip + row tooltip name the 7-day-old values)",
+      !!row && row.querySelector("td.wl-dim.wl-chg").title.startsWith(`${wl3.meta.compareDays} days ago: Low`) && !v3.querySelector(".wl-moves-card .wl-card-h-note").textContent.includes(`compared with ${fmtD(yesterday)}`));
+    check("rolling window: a state move over the last 7 days is listed as Watch → current state", !!major && major.textContent.includes("Watch") && major.textContent.includes(probe.state));
+    check("rolling window: a dimension changed over the last 7 days is highlighted with the 7-day-old value", !!row && !!row.querySelector("td.wl-dim.wl-chg .wl-prev") && row.querySelector("td.wl-dim.wl-chg .wl-prev").textContent === "Low");
+    check("rolling window: a history move before the window shows under 'Earlier moves', one inside it does not", !!minor && minor.textContent.includes(fmtD(dayBefore)) && !card.textContent.includes("move inside the window"));
+    check("rolling window: the moves card note names the earliest baseline as the comparison date", card.querySelector(".wl-card-h-note").textContent.includes(`compared with ${fmtD(cmpDate)}`));
+  })();
   const cols = [...wv.querySelectorAll(".wl-board .wl-col")];
   check("Q2: state board has the monitoring states in order", cols.length === stateNames.length && cols.map(c => c.querySelector(".wl-state").textContent.trim()).join(",") === stateNames.join(","));
   check("Q2: board counts match the register", cols.map(c => c.querySelectorAll(".wl-card-chip").length).join(",") === stateNames.map(s => wl.items.filter(i => i.state === s).length).join(","));
@@ -208,8 +258,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("Q4: changed level columns highlighted with previous → now (esc. risk / tempo / adaptation)", wl.items.every(i => {
     const row = reg.querySelector(`tr[data-wl-row="${i.id}"]`);
     const cells = [...row.querySelectorAll("td.wl-dim.wl-chg")];
-    const exp = ["escalation", "tempo", "adaptation"].filter(d => i.dims[d].prev !== i.dims[d].now);
-    return cells.length === exp.length && exp.every((d, k) => cells[k] && cells[k].textContent.includes(i.dims[d].prev) && cells[k].textContent.includes(i.dims[d].now));
+    const exp = ["escalation", "tempo", "adaptation"].filter(d => baseline(i)[d] !== i.dims[d].now);
+    return cells.length === exp.length && exp.every((d, k) => cells[k] && cells[k].textContent.includes(baseline(i)[d]) && cells[k].textContent.includes(i.dims[d].now));
   }));
   check("register: SG exposure and Changed columns removed", ![...reg.querySelectorAll("thead th")].some(th => /SG exposure|Changed/i.test(th.textContent)));
   check("register: every row carries a plain-language current status with article links and the phase label", wl.items.every(i => {
@@ -232,7 +282,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("expanded row shows what changed / what next / ignore verdict / reporting / history (no brief signal)", !!det &&
     /What materially changed/.test(det.textContent) && /What might happen next/.test(det.textContent) && !/What CSI should do/.test(det.textContent) &&
     /Ignore for now\?/.test(det.textContent) && !/\bQ[1-7]\b/.test(det.textContent) && !/Brief signal/.test(det.textContent) && !det.querySelector(".wl-brief") && /State history/.test(det.textContent));
-  check("detail: every changed dimension spelled out (prev → now)", det.querySelectorAll(".wl-chg-line .wl-chg-pill").length === changed(probe).length && changed(probe).every(d => det.textContent.includes(probe.dims[d].prev)));
+  check("detail: every changed dimension spelled out (7 days ago → now)", det.querySelectorAll(".wl-chg-line .wl-chg-pill").length === changed(probe).length && changed(probe).every(d => det.textContent.includes(baseline(probe)[d])));
   check("detail: typed indicators with 'If seen →' consequences and rendered dates",
     det.querySelectorAll(".wl-ind").length === probe.next.length && det.querySelectorAll(".wl-ind .wl-ind-type").length === probe.next.length &&
     det.querySelectorAll(".wl-ind-if").length === probe.next.filter(n => n.ifSeen).length && probe.next.filter(n => n.due).every(n => det.textContent.includes(fmtD(n.due))));
@@ -304,7 +354,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   wv.querySelector('.wl-f-tier[data-tier="1"]').click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
   check(`tier filter narrows map, register, indicators and board to Tier 1 (${t1n} items)`,
-    wv.querySelectorAll(".wl-marker").length === t1n && wv.querySelectorAll("#wl-register tbody tr.wl-row").length === t1n && wv.querySelectorAll(".wl-board .wl-card-chip").length === t1n && wv.textContent.includes(`showing ${t1n}`));
+    wv.querySelectorAll(".wl-marker").length === t1n && wv.querySelectorAll("#wl-register tbody tr.wl-row").length === t1n && wv.querySelectorAll(".wl-board .wl-card-chip").length === t1n);
   wv.querySelector("[data-wl-reset]").click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
   wv.querySelector(".wl-f-ignored").click(); await sleep(40);

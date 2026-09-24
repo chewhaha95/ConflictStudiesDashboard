@@ -694,6 +694,7 @@ details.ev > summary::-webkit-details-marker { display: none; }
 body.monthly-view .sidebar,
 body.capabilities-view .sidebar,
 body.watchlist-view .sidebar { display: none; }
+body.watchlist-view .header-meta .meta-block.optional { display: none; }   /* no "Reporting range" on the Watchlist tab */
 body.monthly-view .app-shell,
 body.capabilities-view .app-shell,
 body.watchlist-view .app-shell { grid-template-columns: 1fr; }

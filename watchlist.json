@@ -3,9 +3,10 @@
     "title": "Conflict Watchlist",
     "reviewDate": "2026-09-23",
     "previousReviewDate": "2026-06-29",
-    "cadenceDays": 7,
-    "reviewer": "Automated open-source review (weekly, see docs/WATCHLIST-REVIEW.md); first run seeded by the 23 Sep 2026 open-source review. Items marked unverified need confirmation.",
-    "notes": "Fully automated register: a scheduled open-source review rewrites this file weekly (procedure in docs/WATCHLIST-REVIEW.md) and a 6-hourly GitHub Action refreshes the live reporting feed (watchlist-live.json) from GDELT. Each review: (1) set reviewDate/previousReviewDate, (2) for every item move `prev` <- `now` on the five dimensions and then set the new `now`, (3) rewrite `status` (plain-language current status with 2–3 article links), `changes`, `next`, `ignore` and `sources` for what is true THIS week only, (4) record any state move in `history`. The dashboard derives attention rank, movements, changed-dimension flags, staleness, coverage surges — do not type those in. Not a news archive: `changes` holds only what materially moved since the previous review; `next` holds named, checkable indicators."
+    "cadenceDays": 1,
+    "compareDays": 7,
+    "reviewer": "Automated open-source review (daily, see docs/WATCHLIST-REVIEW.md); first run seeded by the 23 Sep 2026 open-source review. Items marked unverified need confirmation.",
+    "notes": "Fully automated register: a scheduled open-source review rewrites this file daily (procedure in docs/WATCHLIST-REVIEW.md) and a 6-hourly GitHub Action refreshes the live reporting feed (watchlist-live.json) from GDELT. Every comparison the dashboard shows (state moves, changed dimensions, the attention-score bonuses) is made against the register as it stood compareDays (7) days ago, taken from each item's `snapshots` (one entry per review: date, state and the five dimensions). Each review: (1) set reviewDate/previousReviewDate, (2) for every item set the new `now` on the five dimensions and the new `state`, then append today's snapshot (keep the last 60), (3) rewrite `status` (plain-language current status with 2–3 article links), `whyNow`, `changes` (dated bullets covering the last 7 days: keep those still inside the window, add today's, drop older ones), `next`, `ignore` and `sources`, (4) record any state move in `history`. The dashboard derives attention rank, movements, changed-dimension flags, staleness, coverage surges — do not type those in. `next` holds named, checkable indicators."
   },
   "definitions": {
     "tiers": {
@@ -48,7 +49,7 @@
       "phase": {
         "label": "Conflict phase",
         "short": "Phase",
-        "desc": "A short label for the stage the conflict is in (for example attritional war, ceasefire without implementation, grey-zone contest). It sits under the current-status summary and shows the previous review's label when it changed."
+        "desc": "A short label for the stage the conflict is in (for example attritional war, ceasefire without implementation, grey-zone contest). It sits under the current-status summary and shows the label from 7 days ago when it changed."
       },
       "escalation": {
         "label": "Escalation risk",
@@ -129,7 +130,7 @@
       "No current Army learning value"
     ],
     "attentionScore": {
-      "desc": "Deterministic, explainable rank. state (Priority 40 / Active 25 / Watch 10 / Archive 0) + escalation risk (Severe 20 / High 15 / Moderate 8 / Low 2) + 5 per dimension that changed since the previous review + 10 if the state moved up + Singapore exposure (High 8 / Moderate 4 / Low 0) + tier (T1 6 / T2 3 / T3 0) + 8 if the live open-source feed shows a coverage surge (see definitions.feed.surgeRule). Items flagged ignore-for-now are shown but ranked last."
+      "desc": "Deterministic, explainable rank. state (Priority 40 / Active 25 / Watch 10 / Archive 0) + escalation risk (Severe 20 / High 15 / Moderate 8 / Low 2) + 5 per dimension that changed over the last 7 days (compareDays) + 10 if the state moved up over the same window + Singapore exposure (High 8 / Moderate 4 / Low 0) + tier (T1 6 / T2 3 / T3 0) + 8 if the live open-source feed shows a coverage surge (see definitions.feed.surgeRule). Items flagged ignore-for-now are shown but ranked last."
     },
     "feed": {
       "source": "GDELT DOC 2.0 API (open, no key). Per item: 30-day daily article counts (TimelineVolRaw) and the most relevant English-language articles of the last 7 days (ArtList, HybridRel). Synced by .github/workflows/sync-watchlist-feed.yml into watchlist-live.json.",
@@ -138,8 +139,8 @@
     },
     "columns": {
       "tier": "Standing relevance to the Army: T1 Priority Conflicts, T2 Active Regional & Escalation Watches, T3 Baseline Regional Research Reserve. Tiers do not change week to week.",
-      "state": "This week's monitoring state: Priority (direct strategic relevance or high Army learning value), Active (material trend, escalation or regional relevance), Watch (baseline monitoring), Archive (reserve; revisit on a named trigger). ▲▼ marks a move since the previous review.",
-      "status": "Plain-language summary of what is happening now, written at the weekly open-source review, with links to the reporting it rests on. The phase label sits beneath it; a struck-through label is the previous review's phase.",
+      "state": "Today's monitoring state: Priority (direct strategic relevance or high Army learning value), Active (material trend, escalation or regional relevance), Watch (baseline monitoring), Archive (reserve; revisit on a named trigger). ▲▼ marks a move over the last 7 days.",
+      "status": "Plain-language summary of what is happening now, written at the daily open-source review, with links to the reporting it rests on. The phase label sits beneath it; a struck-through label is the phase 7 days ago.",
       "coverage": "Open-source coverage from the live feed (GDELT with Google News fallback): the sparkline is the last 30 days (or four weekly counts), the number is articles in the last 7 days with the change against the 7 before. 'Surge' = at least twice the prior week and at least 20 articles. Refreshes every 6 hours.",
       "nextIndicator": "The soonest dated indicator to watch (named event, threshold, deadline, mobilisation sign, force movement, diplomatic decision or escalation indicator). Expand the row for the full list and what each would mean.",
       "confidence": "How well-sourced the assessment is: High (multiple independent, dated sources), Medium (some single-source or snippet-only items), Low (thin or contested reporting).",
@@ -153,7 +154,6 @@
       "short": "RUS–UKR",
       "tier": 1,
       "state": "Priority",
-      "prevState": "Priority",
       "region": "Eastern Europe",
       "geo": {
         "lat": 48.5,
@@ -167,26 +167,41 @@
       },
       "dims": {
         "phase": {
-          "now": "Attritional stalemate; reciprocal deep-strike war; Ukraine regaining local initiative",
-          "prev": "Attritional war"
+          "now": "Attritional stalemate; reciprocal deep-strike war; Ukraine regaining local initiative"
         },
         "escalation": {
-          "now": "High",
-          "prev": "High"
+          "now": "High"
         },
         "tempo": {
-          "now": "High",
-          "prev": "High"
+          "now": "High"
         },
         "adaptation": {
-          "now": "High",
-          "prev": "High"
+          "now": "High"
         },
         "sgExposure": {
-          "now": "Low",
-          "prev": "Low"
+          "now": "Low"
         }
       },
+      "snapshots": [
+        {
+          "date": "2026-06-29",
+          "state": "Priority",
+          "phase": "Attritional war",
+          "escalation": "High",
+          "tempo": "High",
+          "adaptation": "High",
+          "sgExposure": "Low"
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Priority",
+          "phase": "Attritional stalemate; reciprocal deep-strike war; Ukraine regaining local initiative",
+          "escalation": "High",
+          "tempo": "High",
+          "adaptation": "High",
+          "sgExposure": "Low"
+        }
+      ],
       "whyNow": "Richest adaptation feed on the list: Russia industrialised jet-powered Geran-4/5 strikes (~3,000 in August, interception rate down to ~87%), Ukraine ran record-range refinery strikes and a 1,110-drone raid on Moscow, and Operation Vivaldi restored local manoeuvre at Lyman — while an energy-strike truce claimed by Trump at UNGA is unconfirmed by Kyiv.",
       "changes": [
         "Russia's strike architecture shifted to jet-powered drones: ~1,500 jet Gerans used in July and ~3,000 in August (56% of August packages), Ukrainian interception rates fell from ~92% to ~87%; Ukraine is field-testing four turbojet interceptors (ISW/Critical Threats 1 Sep).",
@@ -343,7 +358,6 @@
       "short": "ISR–GAZ",
       "tier": 1,
       "state": "Active",
-      "prevState": "Active",
       "region": "Levant",
       "geo": {
         "lat": 31.4,
@@ -356,26 +370,41 @@
       },
       "dims": {
         "phase": {
-          "now": "Ceasefire without implementation; Yellow Line creep and targeted raids",
-          "prev": "Phase 1 ceasefire, unresolved disarmament"
+          "now": "Ceasefire without implementation; Yellow Line creep and targeted raids"
         },
         "escalation": {
-          "now": "High",
-          "prev": "High"
+          "now": "High"
         },
         "tempo": {
-          "now": "Medium",
-          "prev": "Low"
+          "now": "Medium"
         },
         "adaptation": {
-          "now": "Medium",
-          "prev": "Medium"
+          "now": "Medium"
         },
         "sgExposure": {
-          "now": "Low",
-          "prev": "Low"
+          "now": "Low"
         }
       },
+      "snapshots": [
+        {
+          "date": "2026-06-29",
+          "state": "Active",
+          "phase": "Phase 1 ceasefire, unresolved disarmament",
+          "escalation": "High",
+          "tempo": "Low",
+          "adaptation": "Medium",
+          "sgExposure": "Low"
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Active",
+          "phase": "Ceasefire without implementation; Yellow Line creep and targeted raids",
+          "escalation": "High",
+          "tempo": "Medium",
+          "adaptation": "Medium",
+          "sgExposure": "Low"
+        }
+      ],
       "whyNow": "The October 2025 truce formally holds but nothing in it is being implemented: Hamas accepted the Board of Peace roadmap and dissolved its governing committee, Israel rejected the roadmap and holds 65–70% of Gaza behind a lethally enforced Yellow Line while running decapitation raids. The October ISF pilot and the 27 Oct Israeli election decide the next phase.",
       "changes": [
         "Hamas dissolved its Government Emergency Committee (6 Jul), ceding civil administration to the National Committee for the Administration of Gaza, which Israel has blocked from entering; the Board of Peace issued a 15-point roadmap (30–31 Jul: phased decommissioning, verification committee, phased IDF withdrawal) that Hamas accepted and Netanyahu rejected on 9 Aug ('no withdrawal until real, not fictitious, disarmament').",
@@ -507,7 +536,6 @@
       "short": "US–ISR–IRN",
       "tier": 1,
       "state": "Priority",
-      "prevState": "Priority",
       "region": "Gulf",
       "geo": {
         "lat": 27,
@@ -529,26 +557,41 @@
       },
       "dims": {
         "phase": {
-          "now": "Blockade-and-attrition stalemate; Hormuz effectively closed; UNGA opening",
-          "prev": "Post-war MOU under a fragile stand-down"
+          "now": "Blockade-and-attrition stalemate; Hormuz effectively closed; UNGA opening"
         },
         "escalation": {
-          "now": "Severe",
-          "prev": "Severe"
+          "now": "Severe"
         },
         "tempo": {
-          "now": "High",
-          "prev": "Medium"
+          "now": "High"
         },
         "adaptation": {
-          "now": "High",
-          "prev": "High"
+          "now": "High"
         },
         "sgExposure": {
-          "now": "High",
-          "prev": "High"
+          "now": "High"
         }
       },
+      "snapshots": [
+        {
+          "date": "2026-06-29",
+          "state": "Priority",
+          "phase": "Post-war MOU under a fragile stand-down",
+          "escalation": "Severe",
+          "tempo": "Medium",
+          "adaptation": "High",
+          "sgExposure": "High"
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Priority",
+          "phase": "Blockade-and-attrition stalemate; Hormuz effectively closed; UNGA opening",
+          "escalation": "Severe",
+          "tempo": "High",
+          "adaptation": "High",
+          "sgExposure": "High"
+        }
+      ],
       "whyNow": "An active war over sea-lane access: the MOU lapsed, the US port blockade is back, Hormuz transits are in single digits on most counts, an IRGC salvo targeted a US carrier group and the US answered 'tanker for tanker' — while the first mediated face-to-face session (22 Sep) opened a diplomatic window that Trump ties to the November midterms. Highest Singapore-exposure item: more than half of Singapore's crude imports come through the Gulf and a Singapore-flagged ship was hit in June.",
       "changes": [
         "The stand-down collapsed on 7–9 Jul (Iran struck three ships; the US revoked Iran's oil-sale licence and hit 90 targets), the naval blockade was reinstated on 14 Jul, Iranian missiles killed two US soldiers at Muwaffaq Salti (18–19 Jul) and IRGC strikes hit Kuwait, Bahrain, Jordan and Erbil (24 Jul) before a mutual pause on 25–26 Jul; the 60-day Islamabad MOU lapsed on 17 Aug with no deal (transits 3 a day, ~520 ships stranded, Iranian exports down to 156 kb/d).",
@@ -702,7 +745,6 @@
       "short": "ISR–LBN",
       "tier": 1,
       "state": "Priority",
-      "prevState": "Priority",
       "region": "Levant",
       "geo": {
         "lat": 33.4,
@@ -715,26 +757,41 @@
       },
       "dims": {
         "phase": {
-          "now": "Framework in name; attritional occupation of a self-declared security zone",
-          "prev": "Active ceasefire with daily fighting"
+          "now": "Framework in name; attritional occupation of a self-declared security zone"
         },
         "escalation": {
-          "now": "High",
-          "prev": "High"
+          "now": "High"
         },
         "tempo": {
-          "now": "Medium",
-          "prev": "Medium"
+          "now": "Medium"
         },
         "adaptation": {
-          "now": "High",
-          "prev": "High"
+          "now": "High"
         },
         "sgExposure": {
-          "now": "Low",
-          "prev": "Moderate"
+          "now": "Low"
         }
       },
+      "snapshots": [
+        {
+          "date": "2026-06-29",
+          "state": "Priority",
+          "phase": "Active ceasefire with daily fighting",
+          "escalation": "High",
+          "tempo": "Medium",
+          "adaptation": "High",
+          "sgExposure": "Moderate"
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Priority",
+          "phase": "Framework in name; attritional occupation of a self-declared security zone",
+          "escalation": "High",
+          "tempo": "Medium",
+          "adaptation": "High",
+          "sgExposure": "Low"
+        }
+      ],
       "whyNow": "The Trilateral Framework is nominally alive but the ceasefire is in name only: Israel besieged and then demolished the Ali al-Taher tunnel complex (about 1,100 tonnes of explosives, a magnitude 4.1 tremor) and declared its security zone 'complete', Hezbollah is waging drone, IED and ATGM attrition, and the Rome round slipped to October behind the 27 Oct Israeli election.",
       "changes": [
         "Pilot zones launched 20–22 Jul (Froun and Srifa outside the IDF buffer, Zawtar al-Gharbiyeh inside it; LAF deployed to Zawtar on 21 Jul after an IDF withdrawal); the LAF said Israeli shelling and bulldozing hindered completion (26 Jul) and on 9 Sep claimed control of all three zones with ~1,818 weapons seized (~86% light ammunition), with near-daily LAF–Hezbollah coordination and no depot dismantlement (FDD).",
@@ -882,7 +939,6 @@
       "short": "THA–KHM",
       "tier": 1,
       "state": "Active",
-      "prevState": "Active",
       "region": "Mainland Southeast Asia",
       "geo": {
         "lat": 14.4,
@@ -896,26 +952,41 @@
       },
       "dims": {
         "phase": {
-          "now": "Militarised no-war-no-peace; legal and diplomatic contest",
-          "prev": "Ceasefire; UNCLOS conciliation"
+          "now": "Militarised no-war-no-peace; legal and diplomatic contest"
         },
         "escalation": {
-          "now": "Moderate",
-          "prev": "Moderate"
+          "now": "Moderate"
         },
         "tempo": {
-          "now": "Medium",
-          "prev": "Low"
+          "now": "Medium"
         },
         "adaptation": {
-          "now": "Medium",
-          "prev": "Medium"
+          "now": "Medium"
         },
         "sgExposure": {
-          "now": "Moderate",
-          "prev": "Moderate"
+          "now": "Moderate"
         }
       },
+      "snapshots": [
+        {
+          "date": "2026-06-29",
+          "state": "Active",
+          "phase": "Ceasefire; UNCLOS conciliation",
+          "escalation": "Moderate",
+          "tempo": "Low",
+          "adaptation": "Medium",
+          "sgExposure": "Moderate"
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Active",
+          "phase": "Militarised no-war-no-peace; legal and diplomatic contest",
+          "escalation": "Moderate",
+          "tempo": "Medium",
+          "adaptation": "Medium",
+          "sgExposure": "Moderate"
+        }
+      ],
       "whyNow": "No exchange of fire since the December truce, but the contest has hardened: Thailand is walling the border and holding occupied hills, Cambodia is internationalising through UNCLOS, UNESCO and ASEAN, and Singapore hosted the first conciliation session (14–16 Sep) and contributes observers.",
       "changes": [
         "UNCLOS Annex V conciliation opened in Singapore (14–16 Sep, chair Katrina Cooper): Thailand insists the process is maritime-only, excludes Koh Kut and puts delimitation before resource-sharing; Cambodia seeks a treaty or joint-development regime; ~12-month non-binding process, next round in The Hague (date not published).",
@@ -1046,7 +1117,6 @@
       "short": "US–VEN",
       "tier": 2,
       "state": "Active",
-      "prevState": "Active",
       "region": "Caribbean",
       "geo": {
         "lat": 8,
@@ -1067,26 +1137,41 @@
       },
       "dims": {
         "phase": {
-          "now": "Managed transition on a US economic-first track; counter-cartel maritime campaign",
-          "prev": "Post-intervention transition under US pressure"
+          "now": "Managed transition on a US economic-first track; counter-cartel maritime campaign"
         },
         "escalation": {
-          "now": "Moderate",
-          "prev": "Moderate"
+          "now": "Moderate"
         },
         "tempo": {
-          "now": "High",
-          "prev": "Low"
+          "now": "High"
         },
         "adaptation": {
-          "now": "Medium",
-          "prev": "Medium"
+          "now": "Medium"
         },
         "sgExposure": {
-          "now": "Low",
-          "prev": "Low"
+          "now": "Low"
         }
       },
+      "snapshots": [
+        {
+          "date": "2026-06-29",
+          "state": "Active",
+          "phase": "Post-intervention transition under US pressure",
+          "escalation": "Moderate",
+          "tempo": "Low",
+          "adaptation": "Medium",
+          "sgExposure": "Low"
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Active",
+          "phase": "Managed transition on a US economic-first track; counter-cartel maritime campaign",
+          "escalation": "Moderate",
+          "tempo": "High",
+          "adaptation": "Medium",
+          "sgExposure": "Low"
+        }
+      ],
       "whyNow": "Tempo is up: a rebranded Joint Task Force Western Hemisphere strike campaign (70th boat strike on 19 Sep), the first government–opposition talks, 100-year oil concessions and a Trump–Rodríguez meeting at UNGA — with elections deferred and Machado's return attempts failing.",
       "changes": [
         "4 Aug: SOUTHCOM stood up Joint Task Force Western Hemisphere (18-nation Americas Counter Cartel Coalition), replacing Operation Southern Spear; 70th strike on 19 Sep (~234 killed to date, 14 strikes 23 Aug–19 Sep) with a late-August shift toward boarding before destruction; UN Special Rapporteur (22 Sep) calls the strikes serial extrajudicial killings.",
@@ -1202,7 +1287,6 @@
       "short": "SCS",
       "tier": 2,
       "state": "Priority",
-      "prevState": "Active",
       "region": "Maritime Southeast Asia",
       "geo": {
         "lat": 12,
@@ -1223,26 +1307,41 @@
       },
       "dims": {
         "phase": {
-          "now": "Physical-contact coercion at three features; PLAN layered behind the CCG",
-          "prev": "Grey-zone contestation"
+          "now": "Physical-contact coercion at three features; PLAN layered behind the CCG"
         },
         "escalation": {
-          "now": "High",
-          "prev": "Moderate"
+          "now": "High"
         },
         "tempo": {
-          "now": "High",
-          "prev": "Medium"
+          "now": "High"
         },
         "adaptation": {
-          "now": "High",
-          "prev": "Medium"
+          "now": "High"
         },
         "sgExposure": {
-          "now": "High",
-          "prev": "High"
+          "now": "High"
         }
       },
+      "snapshots": [
+        {
+          "date": "2026-06-29",
+          "state": "Active",
+          "phase": "Grey-zone contestation",
+          "escalation": "Moderate",
+          "tempo": "Medium",
+          "adaptation": "Medium",
+          "sgExposure": "High"
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Priority",
+          "phase": "Physical-contact coercion at three features; PLAN layered behind the CCG",
+          "escalation": "High",
+          "tempo": "High",
+          "adaptation": "High",
+          "sgExposure": "High"
+        }
+      ],
       "whyNow": "Moved up to Priority: a Philippine marine injured at Second Thomas (20 Jul), radar locks and flares on Philippine aircraft (2 and 7 Sep), the 18 Sep ramming off Palawan, and a PLAN surface action group plus H-6K bombers now routinely at Scarborough — with the Code of Conduct's 2026 deadline landing at the Manila summit in November.",
       "changes": [
         "20 Jul: CCG small-boat ramming and melee at Second Thomas Shoal injured a Philippine marine; 23–24 Jul water cannon at Scarborough with a CNN crew aboard; the 22–23 Aug resupply ran under a 'provisional understanding' with notification.",
@@ -1360,7 +1459,6 @@
       "short": "TWN",
       "tier": 2,
       "state": "Active",
-      "prevState": "Active",
       "region": "East Asia",
       "geo": {
         "lat": 24,
@@ -1381,26 +1479,41 @@
       },
       "dims": {
         "phase": {
-          "now": "Quiet air, busy sea: CCG quarantine-style patrols east of Taiwan",
-          "prev": "Coercive pressure without conflict"
+          "now": "Quiet air, busy sea: CCG quarantine-style patrols east of Taiwan"
         },
         "escalation": {
-          "now": "Moderate",
-          "prev": "Moderate"
+          "now": "Moderate"
         },
         "tempo": {
-          "now": "Medium",
-          "prev": "Medium"
+          "now": "Medium"
         },
         "adaptation": {
-          "now": "High",
-          "prev": "High"
+          "now": "High"
         },
         "sgExposure": {
-          "now": "High",
-          "prev": "Moderate"
+          "now": "High"
         }
       },
+      "snapshots": [
+        {
+          "date": "2026-06-29",
+          "state": "Active",
+          "phase": "Coercive pressure without conflict",
+          "escalation": "Moderate",
+          "tempo": "Medium",
+          "adaptation": "High",
+          "sgExposure": "Moderate"
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Active",
+          "phase": "Quiet air, busy sea: CCG quarantine-style patrols east of Taiwan",
+          "escalation": "Moderate",
+          "tempo": "Medium",
+          "adaptation": "High",
+          "sgExposure": "High"
+        }
+      ],
       "whyNow": "Singapore exposure raised: China Coast Guard 'law-enforcement' patrols east of Taiwan are now routine and a Singapore-flagged merchant ship complied with a CCG radio check. Han Kuang 42 ran unscripted with reservist brigades and drone logistics while US arms sales are frozen around Trump–Xi summitry.",
       "changes": [
         "Late Jun–Jul: first and second CCG patrols 74–124 nm east of Taiwan radio-checking transiting merchantmen (a Singapore-flagged ship complied); Taiwan counted a record 110+ PLAN and CCG ships along the first island chain, while PLA air sorties fell ~52% year on year (Aug: 171 sorties, 55 median-line crossings) and no named drill was held.",
@@ -1510,7 +1623,6 @@
       "short": "CHN–JPN",
       "tier": 2,
       "state": "Active",
-      "prevState": "Watch",
       "region": "East Asia",
       "geo": {
         "lat": 26,
@@ -1531,26 +1643,41 @@
       },
       "dims": {
         "phase": {
-          "now": "Frozen diplomacy with EEZ live fire and expanding Nansei transits",
-          "prev": "Diplomatic freeze with military signalling"
+          "now": "Frozen diplomacy with EEZ live fire and expanding Nansei transits"
         },
         "escalation": {
-          "now": "Moderate",
-          "prev": "Moderate"
+          "now": "Moderate"
         },
         "tempo": {
-          "now": "Medium",
-          "prev": "Low"
+          "now": "Medium"
         },
         "adaptation": {
-          "now": "Medium",
-          "prev": "Low"
+          "now": "Medium"
         },
         "sgExposure": {
-          "now": "Moderate",
-          "prev": "Low"
+          "now": "Moderate"
         }
       },
+      "snapshots": [
+        {
+          "date": "2026-06-29",
+          "state": "Watch",
+          "phase": "Diplomatic freeze with military signalling",
+          "escalation": "Moderate",
+          "tempo": "Low",
+          "adaptation": "Low",
+          "sgExposure": "Low"
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Active",
+          "phase": "Frozen diplomacy with EEZ live fire and expanding Nansei transits",
+          "escalation": "Moderate",
+          "tempo": "Medium",
+          "adaptation": "Medium",
+          "sgExposure": "Moderate"
+        }
+      ],
       "whyNow": "Moved up to Active: China–Russia live fire inside Japan's claimed EEZ (19 Jul), a JL-3 SLBM test into the Pacific, expanding PLAN transits of the Nansei passages and a record ¥8.9 tn budget request — while Beijing's precondition (revise the Taiwan position) leaves no de-escalation path.",
       "changes": [
         "26 Jun–2 Jul: eight PLAN ships used three of five Nansei passages alongside five Russian ships (MOD: 'expanding and intensifying'); 6 Jul JL-3 SLBM test ~7,000 km into the South Pacific (Pacific leaders' rebuke 4 Sep); 7 Jul JCG–CCG face-off in Senkaku territorial waters.",
@@ -1664,7 +1791,6 @@
       "short": "IND–PAK",
       "tier": 3,
       "state": "Watch",
-      "prevState": "Watch",
       "region": "South Asia",
       "geo": {
         "lat": 33.5,
@@ -1678,26 +1804,41 @@
       },
       "dims": {
         "phase": {
-          "now": "Frozen ceasefire; lawfare over the Indus Waters Treaty",
-          "prev": "Armed peace after the May 2025 exchange"
+          "now": "Frozen ceasefire; lawfare over the Indus Waters Treaty"
         },
         "escalation": {
-          "now": "Moderate",
-          "prev": "Moderate"
+          "now": "Moderate"
         },
         "tempo": {
-          "now": "Medium",
-          "prev": "Low"
+          "now": "Medium"
         },
         "adaptation": {
-          "now": "Medium",
-          "prev": "Medium"
+          "now": "Medium"
         },
         "sgExposure": {
-          "now": "Low",
-          "prev": "Low"
+          "now": "Low"
         }
       },
+      "snapshots": [
+        {
+          "date": "2026-06-29",
+          "state": "Watch",
+          "phase": "Armed peace after the May 2025 exchange",
+          "escalation": "Moderate",
+          "tempo": "Low",
+          "adaptation": "Medium",
+          "sgExposure": "Low"
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Watch",
+          "phase": "Frozen ceasefire; lawfare over the Indus Waters Treaty",
+          "escalation": "Moderate",
+          "tempo": "Medium",
+          "adaptation": "Medium",
+          "sgExposure": "Low"
+        }
+      ],
       "whyNow": "The Line of Control is quiet but the trigger set is live: Jaish-e-Mohammed infiltrators killed in Udhampur (16–17 Sep), Pakistan's 'act of war' line on water, India's rejection of the arbitration award on the Indus Waters Treaty, and both leaders at UNGA on 25 Sep.",
       "changes": [
         "Indus Waters Treaty: the PCA Court of Arbitration ruled (31 Aug–1 Sep) that the treaty remains in force and 'abeyance' is impermissible, with interim restrictions on Ratle; India 'categorically rejects' the award as illegally constituted; Pakistan's corps commanders (8 Jul) called any diversion of its water share an act of war.",
@@ -1815,7 +1956,6 @@
       "short": "MMR",
       "tier": 3,
       "state": "Active",
-      "prevState": "Watch",
       "region": "Mainland Southeast Asia",
       "geo": {
         "lat": 21,
@@ -1828,26 +1968,41 @@
       },
       "dims": {
         "phase": {
-          "now": "Dry-season offensives; resistance drone war on airpower",
-          "prev": "Protracted multi-front civil war"
+          "now": "Dry-season offensives; resistance drone war on airpower"
         },
         "escalation": {
-          "now": "High",
-          "prev": "Moderate"
+          "now": "High"
         },
         "tempo": {
-          "now": "High",
-          "prev": "Medium"
+          "now": "High"
         },
         "adaptation": {
-          "now": "High",
-          "prev": "Medium"
+          "now": "High"
         },
         "sgExposure": {
-          "now": "Moderate",
-          "prev": "Moderate"
+          "now": "Moderate"
         }
       },
+      "snapshots": [
+        {
+          "date": "2026-06-29",
+          "state": "Watch",
+          "phase": "Protracted multi-front civil war",
+          "escalation": "Moderate",
+          "tempo": "Medium",
+          "adaptation": "Medium",
+          "sgExposure": "Moderate"
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Active",
+          "phase": "Dry-season offensives; resistance drone war on airpower",
+          "escalation": "High",
+          "tempo": "High",
+          "adaptation": "High",
+          "sgExposure": "Moderate"
+        }
+      ],
       "whyNow": "Moved up to Active: a fibre-optic FPV strike on the Tada-U fighter base (10 Sep), the failed junta Operation 4926 in Rakhine and the Arakan Army's counter-offensive around Sittwe, 500+ air attacks a month, and an ASEAN seat decision at the November summit that Singapore is co-shaping.",
       "changes": [
         "Air war intensifying: ACLED counts >450 civilian deaths in H1 2026 with a new 2–5-jet sustained-strike tactic; the NUG reports 530 aerial attacks and 139 civilians killed in August (Myaung monastery 21 Aug, Mindat 30 Aug, Shadaw 5 Sep).",
@@ -1968,7 +2123,6 @@
       "short": "ME spill",
       "tier": 3,
       "state": "Priority",
-      "prevState": "Watch",
       "region": "Red Sea / Iraq / Syria",
       "geo": {
         "lat": 15.5,
@@ -1991,26 +2145,41 @@
       },
       "dims": {
         "phase": {
-          "now": "Renewed Houthi–Saudi war; Houthi control of Bab al-Mandab; US exit from Iraq",
-          "prev": "Proxy pressure linked to the Iran track"
+          "now": "Renewed Houthi–Saudi war; Houthi control of Bab al-Mandab; US exit from Iraq"
         },
         "escalation": {
-          "now": "Severe",
-          "prev": "High"
+          "now": "Severe"
         },
         "tempo": {
-          "now": "High",
-          "prev": "Medium"
+          "now": "High"
         },
         "adaptation": {
-          "now": "High",
-          "prev": "Medium"
+          "now": "High"
         },
         "sgExposure": {
-          "now": "High",
-          "prev": "High"
+          "now": "High"
         }
       },
+      "snapshots": [
+        {
+          "date": "2026-06-29",
+          "state": "Watch",
+          "phase": "Proxy pressure linked to the Iran track",
+          "escalation": "High",
+          "tempo": "Medium",
+          "adaptation": "Medium",
+          "sgExposure": "High"
+        },
+        {
+          "date": "2026-09-23",
+          "state": "Priority",
+          "phase": "Renewed Houthi–Saudi war; Houthi control of Bab al-Mandab; US exit from Iraq",
+          "escalation": "Severe",
+          "tempo": "High",
+          "adaptation": "High",
+          "sgExposure": "High"
+        }
+      ],
       "whyNow": "Moved up to Priority: the Houthis ended the 2022 truce, seized the full Red Sea coast including Perim and the Hanish islands (3–11 Sep), and cut Bab al-Mandab transits to ~12 a day; a Singapore-flagged VLCC has already diverted; Iraqi militia drones shut Saudi Arabia's East-West pipeline while the US leaves Iraq by 30 Sep.",
       "changes": [
         "Houthis declared the 2022 truce over and a 'naval blockade' of Saudi Arabia (20 Jul); ballistic missiles killed six on the Egyptian cargo ship Tihamah in Bab al-Mandab (11 Aug, first fatal ship attack since February) and hit a Bahri tanker off Yanbu (24 Aug); 12 attacks or attempts since July.",
