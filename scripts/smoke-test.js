@@ -102,7 +102,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     wl.items.filter(i => i.tier === 2).map(i => i.id).sort().join(",") === "CN_JP,SCS,TW,US_VE");
   check("Tier 3 = India-Pakistan / Myanmar / other Middle East spillover",
     wl.items.filter(i => i.tier === 3).map(i => i.id).sort().join(",") === "IN_PK,ME_SPILL,MM");
-  check("linked theatres resolve to seed theatre ids", wl.items.every(i => !i.briefTheatre || db.theatres.some(th => th.id === i.briefTheatre)));
+  check("no item is linked to a weekly-brief theatre", wl.items.every(i => !i.briefTheatre));
   const world = JSON.parse(worldRaw);
   check("base map asset: >150 countries with rings; watchlist country ids resolve",
     world.countries.length > 150 && wl.items.every(i => i.geo.countries.every(c => world.countries.some(w => w.id === c))));
@@ -139,7 +139,6 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   const quietItems = wl.items.filter(i => !i.ignore.flag && !changed(i).length && !moved(i));
   const movedItems = wl.items.filter(moved);
   const zoneCount = wl.items.reduce((a, i) => a + (i.geo.zones || []).length, 0);
-  const briefLinked = wl.items.filter(i => i.briefTheatre);
   const allInd = wl.items.flatMap(i => i.next);
   const datedInd = allInd.filter(n => n.due).sort((a, b) => a.due.localeCompare(b.due));
   const stateNames = Object.keys(wl.definitions.states).sort((a, b) => stOrder(a) - stOrder(b));
@@ -223,21 +222,20 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     return ths.length >= 8 && ths.every(th => (th.getAttribute("title") || "").length > 30) && /Severe:/.test(esc.getAttribute("title")) &&
       [...reg.querySelectorAll("td.wl-dim")].every(td => /:/.test(td.getAttribute("title") || ""));
   })());
-  check("register: 'brief' link tag only on theatres carried in the weekly brief", reg.querySelectorAll("tr.wl-row .t-chip").length === briefLinked.length);
+  check("register: no brief link tag on any row", reg.querySelectorAll("tr.wl-row .t-chip").length === 0);
   check("register: rows collapsed by default", reg.querySelectorAll("tr.wl-detail-row").length === 0);
-  // expand a brief-linked row → detail with Q3/Q5/Q6/Q7 + brief signal + history
-  const probe = briefLinked.find(i => i.next.some(n => n.due)) || briefLinked[0];
+  // expand a row → detail with changes / next / ignore verdict / reporting / history
+  const probe = wl.items.find(i => i.next.some(n => n.due)) || wl.items[0];
   reg.querySelector(`[data-wl-toggle="${probe.id}"]`).click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
   const det = wv.querySelector(`tr[data-wl-detail="${probe.id}"]`);
-  check("expanded row shows what changed / what next / ignore verdict / brief signal / history", !!det &&
+  check("expanded row shows what changed / what next / ignore verdict / reporting / history (no brief signal)", !!det &&
     /What materially changed/.test(det.textContent) && /What might happen next/.test(det.textContent) && !/What CSI should do/.test(det.textContent) &&
-    /Ignore for now\?/.test(det.textContent) && !/\bQ[1-7]\b/.test(det.textContent) && /Brief signal/.test(det.textContent) && /State history/.test(det.textContent));
+    /Ignore for now\?/.test(det.textContent) && !/\bQ[1-7]\b/.test(det.textContent) && !/Brief signal/.test(det.textContent) && !det.querySelector(".wl-brief") && /State history/.test(det.textContent));
   check("detail: every changed dimension spelled out (prev → now)", det.querySelectorAll(".wl-chg-line .wl-chg-pill").length === changed(probe).length && changed(probe).every(d => det.textContent.includes(probe.dims[d].prev)));
   check("detail: typed indicators with 'If seen →' consequences and rendered dates",
     det.querySelectorAll(".wl-ind").length === probe.next.length && det.querySelectorAll(".wl-ind .wl-ind-type").length === probe.next.length &&
     det.querySelectorAll(".wl-ind-if").length === probe.next.filter(n => n.ifSeen).length && probe.next.filter(n => n.due).every(n => det.textContent.includes(fmtD(n.due))));
-  check("detail: brief signal from the seed weekly report (phase / trend / score, no LIVE badge)", !!det.querySelector(".wl-brief .phase-tag") && !!det.querySelector(".wl-brief .trend") && /score \d+/.test(det.textContent) && !det.querySelector(".wl-brief .briefs-live"));
   check("detail: without a live feed the reporting block explains the 6-hourly sync", /Latest open-source reporting/.test(det.textContent) && /No live feed loaded/.test(det.textContent));
   check("register: Coverage column present, empty without a feed", [...reg.querySelectorAll("thead th")].some(th => /Coverage/.test(th.textContent)) && reg.querySelectorAll("td.wl-feed-cell .wl-spark").length === 0);
   check("header: live-feed status shows 'not loaded' without a feed", /Live feed not loaded/.test(wv.querySelector(".wl-feedstat").textContent));
@@ -322,7 +320,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   window.Blob = function (parts, opts) { dl.push({ text: parts.join(""), type: opts && opts.type }); return { size: 1, type: opts && opts.type }; };
   doc.querySelector("#export-json").click(); doc.querySelector("#export-csv").click(); await sleep(20);
   window.Blob = origBlob;
-  check("export JSON/CSV carry the watchlist (derived score / movement / brief signal columns)", dl.length === 2 && (() => {
+  check("export JSON/CSV carry the watchlist (derived score / movement / feed columns)", dl.length === 2 && (() => {
     const j = JSON.parse(dl[0].text); const csvHead = dl[1].text.split("\n")[0];
     return j.view === "watchlist" && j.items.length === N && typeof j.items[0].attentionScore === "number" && "movement" in j.items[0] &&
       /attentionScore/.test(csvHead) && /stateMove/.test(csvHead) && !/csi/i.test(csvHead) && dl[1].text.split("\n").length === N + 1;
@@ -637,18 +635,21 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   dom2.window.eval(appjs);
   await sleep(250);
   const d2 = dom2.window.document;
-  // Watchlist enrichment in live mode: linked theatres show the ● LIVE brief signal + edition link
-  const liveProbe = wl.items.find(i => i.briefTheatre);
+  // Watchlist in live mode: no brief signal anywhere, even with live brief editions loaded
+  const liveProbe = wl.items[0];
   d2.querySelector(`#view-watchlist [data-wl-toggle="${liveProbe.id}"]`).click(); await sleep(40);
   const liveDet = d2.querySelector(`#view-watchlist tr[data-wl-detail="${liveProbe.id}"]`);
-  check("watchlist: brief signal is ● LIVE with an edition link when live editions are synced",
-    !!liveDet && !!liveDet.querySelector(".wl-brief .briefs-live") && /example\.org\/new/.test((liveDet.querySelector(".wl-brief a") || {}).getAttribute ? liveDet.querySelector(".wl-brief a").getAttribute("href") : "") && /LATEST-HEADLINE/.test(liveDet.textContent));
+  check("watchlist: no brief signal, brief tag or brief-moves list even when live brief editions are synced",
+    !!liveDet && !liveDet.querySelector(".wl-brief") && !/Brief signal/.test(d2.querySelector("#view-watchlist .view-body").textContent) && !d2.querySelector("#view-watchlist .wl-move-brief") && !d2.querySelector("#view-watchlist .wl-register .t-chip"));
+  check("watchlist header 'Last updated' ignores the brief sync on the Watchlist tab", (() => {
+    const l = d2.querySelector("#meta-updated").previousElementSibling; return /open-source feed sync/.test(l.textContent) && !/brief sync/.test(d2.querySelector("#meta-updated").title);
+  })());
   // live open-source feed wired through: header status, sparklines, surge flag + score bonus, headlines in the detail
   const wv2 = d2.querySelector("#view-watchlist .view-body");
   check("feed: header shows the live feed as synced", /● LIVE feed · synced/.test(wv2.querySelector(".wl-feedstat").textContent) && !wv2.querySelector(".wl-feedstat.off"));
   check("header 'Last updated' reports the newest live sync, not the seed timestamp", (() => {
     const v = d2.querySelector("#meta-updated"), l = v.previousElementSibling;
-    return !/30 May 2026/.test(v.textContent) && /open-source feed sync|brief sync/.test(l.textContent) && /seed data/.test(v.title);
+    return !/30 May 2026/.test(v.textContent) && /open-source feed sync|watchlist review/.test(l.textContent) && /seed data/.test(v.title);
   })());
   check("feed: every register row carries a 30-day coverage sparkline + 7-day count", wv2.querySelectorAll("#wl-register tbody tr.wl-row td.wl-feed-cell .wl-spark").length === wl.items.length && wv2.querySelectorAll("#wl-register .wl-feed-n b").length === wl.items.length);
   check("feed: surge flagged on the surging item only and adds +8 to its attention score", (() => {

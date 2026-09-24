@@ -1779,9 +1779,6 @@
    *     watch next, and what to ignore for now. All
    *     ranking / movement / change flags are DERIVED here (deterministic and
    *     explainable) — the register only stores the analyst's assessment.
-   *     Linked theatres are enriched with the latest brief edition (live if
-   *     synced, seed otherwise) so the brief signal is visible next to the
-   *     analyst's call.
    * -------------------------------------------------------------------- */
   const Watchlist = {
     DIMS: ["phase", "escalation", "tempo", "adaptation", "sgExposure"],
@@ -1843,25 +1840,6 @@
     rank(list) {
       return list.slice().sort((a, b) =>
         (a.ignore.flag - b.ignore.flag) || (this.score(b).total - this.score(a).total) || (a.tier - b.tier) || a.name.localeCompare(b.name));
-    },
-    // Latest brief edition for a linked theatre (live if synced, else seed), with the
-    // previous edition for a data-derived "what moved in the brief" signal.
-    briefSignal(it) {
-      if (!it.briefTheatre) return null;
-      const eds = DB.liveEditions || (DB.weeklyReports || []).slice().reverse();
-      const cur = eds[0], prev = eds[1];
-      const t = cur && cur.theatres && cur.theatres[it.briefTheatre]; if (!t) return null;
-      const p = prev && prev.theatres && prev.theatres[it.briefTheatre];
-      return {
-        live: !!DB.liveEditions,
-        label: cur.rangeLabel || Time.fmtRange(cur.weekStart, cur.weekEnd),
-        url: cur.sourceUrl || DB.liveSiteUrl || null,
-        phase: t.phase, trend: t.trend, score: t.conflictStatusScore,
-        prevPhase: p ? p.phase : null, prevTrend: p ? p.trend : null, prevScore: p ? p.conflictStatusScore : null,
-        delta: p ? (t.conflictStatusScore - p.conflictStatusScore) : null,
-        headline: ((t.developments || [])[0] && t.developments[0].headline) || (t.keyDevelopments || [])[0] || "", watch: t.watchAreas || "",
-        phaseChanged: !!(p && p.phase !== t.phase), trendChanged: !!(p && p.trend !== t.trend)
-      };
     },
     dueStatus(due) {
       if (!due) return { cls: "undated", label: "Undated" };
@@ -2120,8 +2098,6 @@
       });
       const recent = this.recentMoves(28).filter(r => list.includes(r.item) && !(this.movement(r.item) && this.movement(r.item).to === r.to && this.movement(r.item).from === r.from));
       const recentRows = recent.map(r => `<li class="wl-mv-item minor"><span class="wl-move wl-move-${r.dir}">${r.dir === "up" ? "▲" : "▼"}</span> ${this.nameBtn(r.item)} <span class="wl-mv-path">${esc(r.from)} → ${esc(r.to)} · ${esc(this.fmtDate(r.date))}</span>${r.note ? `<div class="wl-mv-note">${esc(r.note)}</div>` : ""}</li>`);
-      const briefMoves = list.map(it => ({ it, b: this.briefSignal(it) })).filter(x => x.b && (x.b.phaseChanged || x.b.trendChanged)).map(x =>
-        `<li class="wl-mv-item minor"><span class="wl-move wl-move-brief">◆</span> ${this.nameBtn(x.it)} <span class="wl-mv-path">brief: ${x.b.phaseChanged ? `${esc(x.b.prevPhase)} → <strong>${esc(x.b.phase)}</strong>` : ""}${x.b.phaseChanged && x.b.trendChanged ? " · " : ""}${x.b.trendChanged ? `${esc(x.b.prevTrend)} → <strong>${esc(x.b.trend)}</strong>` : ""}</span></li>`);
       const board = this.stateOrder().map(s => {
         const col = this.rank(list.filter(i => i.state === s));
         return `<div class="wl-col wl-col-${this.stateDef(s).tone}"><div class="wl-col-h">${this.stateChip(s)} <span class="wl-col-n">${col.length}</span><div class="wl-col-desc">${esc(this.stateDef(s).desc)}</div></div>
@@ -2139,7 +2115,6 @@
             <div class="wl-card-h">State moves since previous review (${esc(this.fmtDate(this.meta().previousReviewDate))}) <span class="wl-card-h-note">assessed at the weekly review · latest ${esc(this.fmtDate(this.meta().reviewDate))}</span></div>
             ${moves.length ? `<ul class="wl-mv-list">${moves.join("")}</ul>` : `<p class="muted-note">No state changes at this review.</p>`}
             ${recentRows.length ? `<div class="wl-card-h sub">Earlier moves (last 4 weeks)</div><ul class="wl-mv-list">${recentRows.join("")}</ul>` : ""}
-            ${briefMoves.length ? `<div class="wl-card-h sub">Brief signal moved (latest vs previous edition)</div><ul class="wl-mv-list">${briefMoves.join("")}</ul>` : ""}
             ${this.coverageMovesBlock(list)}
           </div>
         </div>
@@ -2148,7 +2123,6 @@
     },
 
     detail(it) {
-      const b = this.briefSignal(it);
       const chg = this.changedDims(it);
       const dimsLine = chg.length
         ? chg.map(d => `<span class="wl-chg-pill">${esc(this.defs().dimensions[d].short)}: ${esc(it.dims[d].prev)} → <strong>${esc(it.dims[d].now)}</strong></span>`).join(" ")
@@ -2158,12 +2132,6 @@
         return `<li class="wl-ind"><span class="wl-ind-type">${esc(n.type)}</span> <span class="wl-due wl-due-${ds.cls}" title="${esc(n.due || "no date")}">${n.due ? esc(this.fmtDate(n.due)) + " · " : ""}${esc(ds.label)}</span><div class="wl-ind-text">${esc(n.text)}</div>${n.ifSeen ? `<div class="wl-ind-if">If seen → ${esc(n.ifSeen)}</div>` : ""}</li>`;
       }).join("");
       const hist = (it.history || []).slice().reverse().map(h => `<li><span class="wl-hist-d">${esc(this.fmtDate(h.date))}</span> ${this.stateChip(h.state)} <span class="muted-note">${esc(h.note || "")}</span></li>`).join("");
-      const briefBlock = b ? `<div class="wl-d-block wl-brief">
-          <div class="wl-d-h">Brief signal ${b.live ? `<span class="briefs-live">● LIVE</span>` : `<span class="t-chip">seed</span>`} · ${b.url ? `<a href="${esc(b.url)}" target="_blank" rel="noopener">${esc(b.label)} ↗</a>` : esc(b.label)}</div>
-          <div class="wl-brief-line">${Render.phaseTag(b.phase)} ${Render.trendChip(b.trend)} <span class="t-chip" title="Conflict status score, latest vs previous edition">score ${b.score}${b.delta != null ? ` (${b.delta > 0 ? "+" : ""}${b.delta})` : ""}</span>${b.phaseChanged ? ` <span class="wl-chg-pill">phase was: ${esc(b.prevPhase)}</span>` : ""}${b.trendChanged ? ` <span class="wl-chg-pill">trend was: ${esc(b.prevTrend)}</span>` : ""}</div>
-          ${b.headline ? `<div class="wl-brief-hl">${esc(b.headline)}</div>` : ""}
-          ${b.watch ? `<div class="wl-brief-watch"><strong>Brief watch:</strong> ${esc(b.watch)}</div>` : ""}
-        </div>` : `<div class="wl-d-block"><div class="wl-d-h">Brief signal</div><p class="muted-note">Not a briefed theatre — assessment rests on the analyst review only.</p></div>`;
       return `<div class="wl-detail-grid">
         <div class="wl-d-block"><div class="wl-d-h">What materially changed</div>
           <div class="wl-chg-line">${dimsLine}</div>
@@ -2172,7 +2140,6 @@
         <div class="wl-d-block"><div class="wl-d-h">Ignore for now?</div>
           <p class="wl-d-p">${it.ignore.flag ? `<strong>Yes</strong> — ${it.ignore.reasons.map(r => `<span class="tag">${esc(r)}</span>`).join(" ")} ${esc(it.ignore.note || "")}` : `<strong>No</strong> — keep on the active watch.${it.ignore.note ? " " + esc(it.ignore.note) : ""}`}</p>
           <div class="wl-d-meta">Confidence ${this.confChip(it.confidence)} · Army learning value <strong>${esc(it.learningValue || "—")}</strong> · Region ${esc(it.region || "—")}</div></div>
-        ${briefBlock}
         ${this.feedBlock(it)}
         <div class="wl-d-block wl-hist"><div class="wl-d-h">State history</div><ul class="wl-hist-list">${hist || "<li class='muted-note'>—</li>"}</ul>
           ${(it.sources || []).length ? `<div class="wl-d-h sub">Sources (${it.sources.length})</div><ul class="wl-src-list">${it.sources.map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label || s.url)} ↗</a></li>`).join("")}</ul>` : ""}
@@ -2194,7 +2161,7 @@
         return `<tr class="wl-row ${open ? "open" : ""} ${f.selected === it.id ? "selected" : ""} ${it.ignore.flag ? "ignored" : ""}" data-wl-row="${esc(it.id)}" id="wl-row-${esc(it.id)}">
           <td class="wl-n">${i + 1}</td>
           <td>${this.tierTag(it.tier)}</td>
-          <td class="theatre-cell"><button class="wl-expand" data-wl-toggle="${esc(it.id)}" aria-expanded="${open}" title="${open ? "Collapse" : "Expand"}">${open ? "▾" : "▸"}</button> ${esc(it.name)}${it.briefTheatre ? ` <span class="t-chip" title="Linked to the weekly brief theatre">brief</span>` : ""}</td>
+          <td class="theatre-cell"><button class="wl-expand" data-wl-toggle="${esc(it.id)}" aria-expanded="${open}" title="${open ? "Collapse" : "Expand"}">${open ? "▾" : "▸"}</button> ${esc(it.name)}</td>
           <td>${this.stateChip(it.state, this.moveGlyph(it))}</td>
           ${this.statusCell(it)}
           ${this.TABLE_DIMS.map(d => this.dimCell(it, d)).join("")}
@@ -2204,7 +2171,7 @@
           <td>${this.scoreChip(it)}</td>
         </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="${9 + this.TABLE_DIMS.length}">${this.detail(it)}</td></tr>` : ""}`;
       }).join("");
-      return `<div class="section"><div class="section-head"><h2>What materially changed?</h2><span class="hint">Register ordered by attention · highlighted cells changed since the previous review · hover a column header or a value for how it is defined · expand a row for changes, indicators, the ignore verdict and the brief signal</span>
+      return `<div class="section"><div class="section-head"><h2>What materially changed?</h2><span class="hint">Register ordered by attention · highlighted cells changed since the previous review · hover a column header or a value for how it is defined · expand a row for changes, indicators, the ignore verdict, the latest reporting and the history</span>
           <div class="head-actions"><button class="btn" data-wl-expand-all>Expand all</button><button class="btn" data-wl-collapse-all>Collapse all</button></div></div>
         <div class="card matrix-wrap"><table class="matrix wl-register" id="wl-register"><thead><tr>
           <th>#</th>${th("tier", "Tier")}<th>Conflict</th>${th("state", "State")}${th("status", "Current status")}${dimHead}${th("coverage", "Coverage")}${th("nextIndicator", "Next indicator")}${th("confidence", "Conf.")}${th("attention", "Attn")}
@@ -2245,11 +2212,11 @@
       return `<details class="wl-method"><summary>How this page derives its answers · how to update the register</summary>
         <div class="wl-method-body">
           <p><strong>Attention score.</strong> ${esc((d.attentionScore || {}).desc || "")}</p>
-          <p><strong>Moved / changed.</strong> A state move is <code>prevState ≠ state</code>; a changed dimension is <code>prev ≠ now</code>. The brief signal compares the latest brief edition with the one before it for linked theatres.</p>
+          <p><strong>Moved / changed.</strong> A state move is <code>prevState ≠ state</code>; a changed dimension is <code>prev ≠ now</code>.</p>
           <p><strong>Staleness.</strong> Flagged when more than 1.5× the cadence has passed since <code>reviewDate</code>.</p>
           <p><strong>Criteria.</strong> ${this.DIMS.filter(d => d !== "phase").map(d => { const def = this.defs().dimensions[d]; return `<em>${esc(def.label)}</em> — ${esc(def.desc || "")} ${def.levels ? Object.entries(def.levels).map(([k, v]) => `<b>${esc(k)}</b>: ${esc(v)}`).join(" ") : ""}`; }).join("<br>")}</p>
           <p><strong>Live feed.</strong> ${esc((d.feed || {}).source || "")} ${esc((d.feed || {}).surgeRule || "")} ${esc((d.feed || {}).titleFilter || "")}</p>
-          <p><strong>Automated review.</strong> The register itself is rewritten weekly by a scheduled open-source review (see <code>docs/WATCHLIST-REVIEW.md</code>) and published directly; the brief is displayed as a signal, not used as a source.</p>
+          <p><strong>Automated review.</strong> The register itself is rewritten weekly by a scheduled open-source review (see <code>docs/WATCHLIST-REVIEW.md</code>) and published directly from open sources; the weekly brief on the Weekly tab is neither shown here nor used as a source.</p>
           <p><strong>Updating.</strong> ${esc(m.notes || "")} Source file: <code>watchlist.json</code>.</p>
           <p><strong>Tiers.</strong> ${Object.entries(d.tiers).map(([k, t]) => `T${k} ${esc(t.name)} — ${esc(t.desc)}`).join(" · ")}</p>
           <p><strong>States.</strong> ${this.stateOrder().map(s => `${esc(s)} — ${esc(this.stateDef(s).desc)}`).join(" · ")}</p>
@@ -2381,9 +2348,9 @@
       return {
         generatedAt: new Date().toISOString(), view: "watchlist",
         reviewDate: m.reviewDate, previousReviewDate: m.previousReviewDate,
-        note: "attentionScore, changedDims, movement and briefSignal are derived by the dashboard; the rest is the analyst register.",
+        note: "attentionScore, changedDims, movement and liveFeed are derived by the dashboard; the rest is the register.",
         items: this.rank(this.filtered()).map(it => Object.assign({}, it, {
-          attentionScore: this.score(it).total, changedDims: this.changedDims(it), movement: this.movement(it), briefSignal: this.briefSignal(it), liveFeed: this.feed(it)
+          attentionScore: this.score(it).total, changedDims: this.changedDims(it), movement: this.movement(it), liveFeed: this.feed(it)
         }))
       };
     },
@@ -2452,6 +2419,7 @@
 
     rerender() {
       this.setActiveView();
+      this.updateLastUpdated();
       this.refreshPeriodSelect();
       Render.renderActiveView();
     },
@@ -2637,25 +2605,30 @@
       Caps.computeDynamics();
 
       // header meta
-      // "Last updated" = the newest real sync across the live sources (brief editions,
-      // watchlist feed, watchlist review), falling back to the seed timestamp.
-      (() => {
-        const cands = [
-          { t: DB.liveSyncedAt, what: "brief sync" },
-          { t: DB.watchlistLive && DB.watchlistLive.syncedAt, what: "open-source feed sync" },
-          { t: DB.watchlist && DB.watchlist.meta && DB.watchlist.meta.reviewDate ? DB.watchlist.meta.reviewDate + "T00:00:00Z" : null, what: "watchlist review" },
-          { t: DB.meta.lastUpdated, what: "seed data" }
-        ].filter(c => c.t && !isNaN(new Date(c.t))).sort((p, q) => new Date(q.t) - new Date(p.t));
-        const top = cands[0];
-        el("#meta-updated").textContent = Time.fmtDateTime(top.t);
-        el("#meta-updated").title = cands.map(c => `${c.what}: ${Time.fmtDateTime(c.t)}`).join("\n");
-        const lbl = el("#meta-updated").previousElementSibling; if (lbl) lbl.textContent = `Last updated · ${top.what}`;
-      })();
+      this.updateLastUpdated();
 
       this.buildFilterControls();
       this.buildBriefsMenu();
       this.wire();
       this.rerender();
+    },
+
+    // "Last updated" = the newest real sync among the sources the active tab draws on:
+    // the Watchlist tab uses only its open-source feed and review; the other tabs use
+    // the brief sync and the seed data.
+    updateLastUpdated() {
+      (() => {
+        const onWatchlist = State.horizon === "watchlist";
+        const cands = (onWatchlist ? [] : [{ t: DB.liveSyncedAt, what: "brief sync" }]).concat([
+          { t: DB.watchlistLive && DB.watchlistLive.syncedAt, what: "open-source feed sync" },
+          { t: DB.watchlist && DB.watchlist.meta && DB.watchlist.meta.reviewDate ? DB.watchlist.meta.reviewDate + "T00:00:00Z" : null, what: "watchlist review" },
+          { t: DB.meta.lastUpdated, what: "seed data" }
+        ]).filter(c => c.t && !isNaN(new Date(c.t))).sort((p, q) => new Date(q.t) - new Date(p.t));
+        const top = cands[0]; if (!top) return;
+        el("#meta-updated").textContent = Time.fmtDateTime(top.t);
+        el("#meta-updated").title = cands.map(c => `${c.what}: ${Time.fmtDateTime(c.t)}`).join("\n");
+        const lbl = el("#meta-updated").previousElementSibling; if (lbl) lbl.textContent = `Last updated · ${top.what}`;
+      })();
     }
   };
 
