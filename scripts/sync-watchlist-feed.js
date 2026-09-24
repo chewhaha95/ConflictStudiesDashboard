@@ -135,7 +135,9 @@ function parseArticles(j, feed) {
 // and "India v Pakistan cricket" do not pass). `feed.exclude` (optional) and
 // the global EXCLUDE list drop sport, entertainment and other title noise.
 const EXCLUDE = ["cricket", "asian games", "olympic", "world cup", "football", "soccer", "tennis", "badminton", "hockey", "basketball",
-  "pageant", "miss universe", "got talent", "box office", "k-pop", "concert", "celebrity", "recipe", "horoscope", "premier league"];
+  "friendlies", "friendly match", "medal", "medals", "afc", "fifa", "esports", "marathon",
+  "pageant", "miss universe", "got talent", "box office", "k-pop", "concert", "celebrity", "recipe", "horoscope", "premier league",
+  "documentary", "film festival", "mooncake", "cultural harmony", "habitat for humanity", "tourism", "travel guide"];
 const wordRe = t => new RegExp(`(^|[^a-z0-9])${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^a-z0-9]|$)`);
 const titleMatch = (a, feed) => {
   const lower = String(a.title || "").toLowerCase();
