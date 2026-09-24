@@ -2193,7 +2193,8 @@
     },
 
     register(list) {
-      const ranked = this.rank(list);
+      // Register order: tier first (T1 at the top), attention score within a tier.
+      const ranked = this.rank(list).sort((a, b) => a.tier - b.tier);
       const f = State.watchlist;
       const th = (k, label) => `<th class="wl-th-help" title="${esc(this.colDesc(k))}">${label}</th>`;
       const rows = ranked.map((it, i) => {
@@ -2216,7 +2217,7 @@
           <td>${this.scoreChip(it)}</td>
         </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="12">${this.detail(it)}</td></tr>` : ""}`;
       }).join("");
-      return `<div class="section"><div class="section-head"><h2>What materially changed?</h2><span class="hint">Register ordered by attention · hover a column header for how it is defined · expand a row for the latest open-source reporting and the timeline so far</span>
+      return `<div class="section"><div class="section-head"><h2>What materially changed?</h2><span class="hint">Register ordered by tier (T1 first), then attention · hover a column header for how it is defined · expand a row for the latest open-source reporting and the timeline so far</span>
           <div class="head-actions"><button class="btn" data-wl-expand-all>Expand all</button><button class="btn" data-wl-collapse-all>Collapse all</button></div></div>
         <div class="card matrix-wrap"><table class="matrix wl-register" id="wl-register"><thead><tr>
           <th>#</th>${th("tier", "Tier")}<th>Conflict</th>${th("state", "State")}${th("status", "Current status")}${th("topic", "Topics of interest")}${th("whyMatters", "Why it matters")}${th("watchAreas", "Watch areas")}${th("coverage", "Coverage")}${th("nextIndicator", "Next indicator")}${th("confidence", "Conf.")}${th("attention", "Attn")}
