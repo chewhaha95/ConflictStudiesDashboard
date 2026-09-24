@@ -63,9 +63,16 @@ same way.
      `{date: <today>, state, phase, escalation, tempo, adaptation, sgExposure}`
      with the values just set (one snapshot per review date; replace the
      entry if today's already exists; keep the newest 60);
-   - rewrite `status` — `summary`: two plain-language sentences on what is
-     happening now, readable without context, and `sources`: two or three
-     `{label, url}` article links the summary rests on;
+   - rewrite `status` — `latest`: `{date, text, url}`, the single newest
+     material development found in this run (ISO date of the reporting, one
+     or two plain sentences, the article it rests on; normally within the
+     last 24–48 hours, older only when nothing newer is material); `summary`:
+     two plain-language sentences on what is happening now, readable without
+     context, whose first sentence states the newest development with its
+     date; and `sources`: two or three `{label, url}` links to the newest
+     reporting the summary rests on (at least one from the last 48 hours
+     whenever such reporting exists; never older than 7 days unless nothing
+     newer exists);
    - rewrite `whyNow` (one or two sentences), `changes` (7-day window, see
      ground rules), `next` (each with
      `type` from `definitions.indicatorTypes`, `due` as ISO date or null,

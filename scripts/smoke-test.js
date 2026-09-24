@@ -76,6 +76,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   try { wl = JSON.parse(wlRaw); check("watchlist.json parses", true); }
   catch (e) { check("watchlist.json parses", false, e.message); process.exit(1); }
   check("register defines criteria and level descriptions for every scaled dimension", ["escalation", "tempo", "adaptation", "sgExposure"].every(d => wl.definitions.dimensions[d].desc && wl.definitions.dimensions[d].scale.every(l => wl.definitions.dimensions[d].levels[l])));
+  check("every item carries a dated 'latest development' line with a source (status.latest)", wl.items.every(i => i.status && i.status.latest && /^\d{4}-\d{2}-\d{2}$/.test(i.status.latest.date) && i.status.latest.text && i.status.latest.text.length > 40 && /^https?:/.test(i.status.latest.url)));
   check("every item carries a current-status summary with 2+ article links", wl.items.every(i => i.status && i.status.summary.length > 80 && i.status.sources.length >= 2 && i.status.sources.every(s => /^https?:/.test(s.url))));
   check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
   check("register is reviewed daily (cadenceDays = 1)", wl.meta.cadenceDays === 1);
@@ -264,7 +265,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("register: SG exposure and Changed columns removed", ![...reg.querySelectorAll("thead th")].some(th => /SG exposure|Changed/i.test(th.textContent)));
   check("register: every row carries a plain-language current status with article links and the phase label", wl.items.every(i => {
     const row = reg.querySelector(`tr[data-wl-row="${i.id}"]`);
-    return row.querySelector(".wl-status-sum").textContent.trim() === i.status.summary && row.querySelectorAll(".wl-status-links a[href^='http']").length === i.status.sources.length && row.querySelector(".wl-phase-line").textContent.includes(i.dims.phase.now);
+    return row.querySelector(".wl-status-latest").textContent.includes(fmtD(i.status.latest.date)) && row.querySelector(".wl-status-latest").textContent.includes(i.status.latest.text) && !!row.querySelector(`.wl-status-latest a[href="${i.status.latest.url}"]`) && !row.querySelector(".wl-status-news") && row.querySelector(".wl-status-sum").textContent.trim() === i.status.summary && row.querySelectorAll(".wl-status-links a[href^='http']").length === i.status.sources.length && row.querySelector(".wl-phase-line").textContent.includes(i.dims.phase.now);
   }));
   check("register: column headers and level values carry hover definitions", (() => {
     const ths = [...reg.querySelectorAll("thead th.wl-th-help")];
@@ -675,7 +676,9 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       const tl = []; for (let d = 29; d >= 0; d--) { const dt = new Date(Date.now() - d * 86400000).toISOString().slice(0, 10); tl.push({ date: dt, value: k === 0 && d < 7 ? 40 : 5 }); }
       const vals = tl.map(p => p.value), c7 = vals.slice(-7).reduce((a, b) => a + b, 0), p7 = vals.slice(-14, -7).reduce((a, b) => a + b, 0);
       items[i.id] = { query: i.feed.query, granularity: "day", timeline: tl, count7d: c7, prev7d: p7, capped: false, surge: c7 >= 20 && c7 >= 2 * Math.max(p7, 1),
-        articles: [{ title: "FEED-HEADLINE " + i.id, url: "https://example.org/feed/" + i.id, domain: "example.org", country: "X", date: tl[tl.length - 1].date }] };
+        // relevance order from the sync: an older article first, the newest second
+        articles: [{ title: "OLDER-HEADLINE " + i.id, url: "https://example.org/old/" + i.id, domain: "example.org", country: "X", date: tl[tl.length - 4].date },
+                   { title: "FEED-HEADLINE " + i.id, url: "https://example.org/feed/" + i.id, domain: "example.org", country: "X", date: tl[tl.length - 1].date }] };
     });
     return { __live: true, syncedAt: new Date().toISOString(), source: "GDELT stub", refreshed: wl.items.length, total: wl.items.length, items };
   })();
@@ -715,7 +718,10 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("feed: the seed DOM (no feed) shows no coverage-moves block", !/Live coverage moves/.test(doc.querySelector("#view-watchlist .view-body").textContent) || doc.querySelector("#view-watchlist .wl-cov-item") === null);
   check("feed: expanded row lists the latest open-source headlines with links", (() => {
     const det2 = d2.querySelector(`#view-watchlist tr[data-wl-detail="${liveProbe.id}"]`);
-    return !!det2 && /Latest open-source reporting/.test(det2.textContent) && !!det2.querySelector(".wl-art-list a[href='https://example.org/feed/" + liveProbe.id + "']") && /FEED-HEADLINE/.test(det2.textContent);
+    return !!det2 && /Latest open-source reporting/.test(det2.textContent) && !!det2.querySelector(".wl-art-list a[href='https://example.org/feed/" + liveProbe.id + "']") && /FEED-HEADLINE/.test(det2.textContent) && det2.querySelector(".wl-art-list li a").textContent === "FEED-HEADLINE " + liveProbe.id;
+  })());
+  check("feed: every status cell shows the newest feed headline (newest first, not relevance order)", (() => {
+    return wl.items.every(i => { const n = wv2.querySelector(`tr[data-wl-row="${i.id}"] .wl-status-news`); return !!n && n.querySelector("a").textContent === "FEED-HEADLINE " + i.id && n.querySelector("a").href === "https://example.org/feed/" + i.id; });
   })());
   d2.querySelector('.tab-btn[data-horizon="weekly"]').click(); await sleep(60);
   const opts2 = [...d2.querySelectorAll("#period-select option")];
