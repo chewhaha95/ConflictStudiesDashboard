@@ -1800,12 +1800,34 @@
     today() { return Time.iso(new Date()); },
     daysBetween(a, b) { return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86400000); },
 
+    // ---- comparison baseline (rolling window over per-review snapshots) ----
+    // The register is reviewed daily, but every "changed since" comparison on
+    // the page (state moves, changed dimensions, score bonuses) is made against
+    // the register as it stood compareDays (default 7) days before the review
+    // date. Each item carries `snapshots` (one per review); the baseline is the
+    // newest snapshot at least compareDays old, or the oldest on file while the
+    // register has not yet accrued a full window. Falls back to legacy prev /
+    // prevState fields for a register without snapshots.
+    compareDays() { return this.meta().compareDays || 7; },
+    compareCutoff() { return Time.iso(new Date(new Date(this.meta().reviewDate).getTime() - this.compareDays() * 86400000)); },
+    baseline(it) {
+      const snaps = (it.snapshots || []).slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
+      const old = snaps.filter(s => s.date <= this.compareCutoff());
+      const s = old.length ? old[old.length - 1] : snaps[0];
+      if (!s) return { date: this.meta().previousReviewDate, state: it.prevState || it.state, dims: Object.fromEntries(this.DIMS.map(d => [d, it.dims[d] ? it.dims[d].prev : null])) };
+      return { date: s.date, state: s.state, dims: Object.fromEntries(this.DIMS.map(d => [d, s[d] != null ? s[d] : null])) };
+    },
+    prevOf(it, d) { return this.baseline(it).dims[d]; },
+    // Date the visible register is compared against (earliest baseline across items)
+    compareDate(list) { const ds = (list || this.items()).map(it => this.baseline(it).date).filter(Boolean).sort(); return ds[0] || this.meta().previousReviewDate; },
+
     // ---- derived analytics --------------------------------------------
-    changedDims(it) { return this.DIMS.filter(d => it.dims[d] && it.dims[d].prev != null && it.dims[d].now !== it.dims[d].prev); },
+    changedDims(it) { return this.DIMS.filter(d => { const p = this.prevOf(it, d); return it.dims[d] && p != null && it.dims[d].now !== p; }); },
     movement(it) {
-      if (!it.prevState || it.prevState === it.state) return null;
-      const a = this.stateDef(it.prevState).order, b = this.stateDef(it.state).order;
-      return { from: it.prevState, to: it.state, dir: b < a ? "up" : "down", date: this.moveDate(it) };
+      const b = this.baseline(it);
+      if (!b.state || b.state === it.state) return null;
+      const a = this.stateDef(b.state).order, o = this.stateDef(it.state).order;
+      return { from: b.state, to: it.state, dir: o < a ? "up" : "down", date: this.moveDate(it), since: b.date };
     },
     moveDate(it) {
       const h = it.history || [];
@@ -1930,18 +1952,18 @@
     },
     dimCell(it, d) {
       const v = it.dims[d]; if (!v) return `<td>—</td>`;
-      const changed = v.prev != null && v.prev !== v.now;
+      const prev = this.prevOf(it, d), changed = prev != null && prev !== v.now;
       const lvl = this.levelDesc(d, v.now);
-      const tip = (changed ? `Previous review: ${v.prev} → now: ${v.now}.` : `Unchanged since the previous review (${v.now}).`) + (lvl ? ` ${v.now}: ${lvl}` : "");
+      const tip = (changed ? `${this.compareDays()} days ago: ${prev} → now: ${v.now}.` : `Unchanged over the last ${this.compareDays()} days (${v.now}).`) + (lvl ? ` ${v.now}: ${lvl}` : "");
       return `<td class="wl-dim ${changed ? "wl-chg" : ""}" title="${esc(tip)}">` +
-        (changed ? `<span class="wl-prev">${esc(v.prev)}</span> → ` : "") + `<strong>${esc(v.now)}</strong></td>`;
+        (changed ? `<span class="wl-prev">${esc(prev)}</span> → ` : "") + `<strong>${esc(v.now)}</strong></td>`;
     },
     statusCell(it) {
       const st = it.status || {}; const ph = it.dims.phase || {};
-      const changed = ph.prev != null && ph.prev !== ph.now;
+      const phPrev = this.prevOf(it, "phase"), changed = phPrev != null && phPrev !== ph.now;
       const links = (st.sources || []).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener" title="${esc(s.label)}">${esc(s.label)} ↗</a>`).join("");
       return `<td class="wl-status"><div class="wl-status-sum">${esc(st.summary || ph.now || "")}</div>${links ? `<div class="wl-status-links">${links}</div>` : ""}
-        <div class="wl-phase-line" title="${esc(this.defs().dimensions.phase.desc || "")}">Phase: <b>${esc(ph.now || "—")}</b>${changed ? ` <span class="wl-prev">was: ${esc(ph.prev)}</span>` : ""}</div></td>`;
+        <div class="wl-phase-line" title="${esc(this.defs().dimensions.phase.desc || "")}">Phase: <b>${esc(ph.now || "—")}</b>${changed ? ` <span class="wl-prev">was: ${esc(phPrev)}</span>` : ""}</div></td>`;
     },
 
     // ---- MAP (self-contained SVG, equirectangular, no tiles) -------------
@@ -2050,7 +2072,7 @@
         <div class="wl-head-row">
           <div>
             <div class="wl-title">${esc(m.title || "Conflict Watchlist")} <span class="wl-asof">— review as of ${esc(this.fmtDate(m.reviewDate))}</span></div>
-            <div class="wl-sub">Previous review ${esc(this.fmtDate(m.previousReviewDate))} · ${(m.cadenceDays || 7) === 1 ? "daily review" : (m.cadenceDays || 7) + "-day cadence"} · ${this.items().length} items · showing ${list.length} &nbsp; ${counts}</div>
+            <div class="wl-sub"><span class="wl-cmp" title="Every state move, changed dimension and score bonus on this page is measured against the register as it stood ${this.compareDays()} days before the review date (the newest snapshot at least that old; the oldest on file until the register has accrued a full window).">Compared with ${esc(this.fmtDate(this.compareDate(list)))} (${this.compareDays()}-day window)</span> · previous review ${esc(this.fmtDate(m.previousReviewDate))} · ${(m.cadenceDays || 7) === 1 ? "daily review" : (m.cadenceDays || 7) + "-day cadence"} · ${this.items().length} items · showing ${list.length} &nbsp; ${counts}</div>
           </div>
           ${(() => { const lf = this.feedMeta(); const h = this.feedAge(); return lf ? `<div class="wl-feedstat ${h != null && h > 24 ? "stale" : ""}" title="${esc(lf.source || "")} · ${lf.refreshed || "?"}/${lf.total || "?"} items refreshed">● LIVE feed · synced ${h == null ? "—" : h < 1 ? "under an hour ago" : h + "h ago"}</div>` : `<div class="wl-feedstat off">Live feed not loaded</div>`; })()}
           <div class="wl-stale ${st.overdue ? "overdue" : "fresh"}" title="${esc(st.overdue ? `Review due ${this.fmtDate(st.nextDue)}; ${st.days} days since the last review.` : `Next review due ${this.fmtDate(st.nextDue)}.`)}">
@@ -2091,12 +2113,13 @@
       const regionBtns = Object.entries(this.Map.REGIONS).map(([k, r]) =>
         `<button class="fchip wl-region" aria-pressed="${!f.view && f.region === k}" data-region="${k}">${esc(r.label)}</button>`).join("");
       const legend = this.stateOrder().map(s => `<span class="wl-lg"><i class="wl-lg-dot wl-m-${this.stateDef(s).tone}"></i>${esc(s)}</span>`).join("") +
-        `<span class="wl-lg"><i class="wl-lg-dot wl-lg-t1"></i>Tier 1 (large) → Tier 3 (small)</span><span class="wl-lg"><i class="wl-lg-zone"></i>Maritime / zone watch</span><span class="wl-lg">▲▼ state moved this review</span>`;
+        `<span class="wl-lg"><i class="wl-lg-dot wl-lg-t1"></i>Tier 1 (large) → Tier 3 (small)</span><span class="wl-lg"><i class="wl-lg-zone"></i>Maritime / zone watch</span><span class="wl-lg">▲▼ state moved in the last ${this.compareDays()} days</span>`;
       const moves = list.filter(it => this.movement(it)).map(it => {
         const m = this.movement(it);
         return `<li class="wl-mv-item"><span class="wl-move wl-move-${m.dir}">${m.dir === "up" ? "▲" : "▼"}</span> ${this.nameBtn(it)} <span class="wl-mv-path">${this.stateChip(m.from)} → ${this.stateChip(m.to)}</span><div class="wl-mv-note">${esc(it.whyNow || "")}</div></li>`;
       });
-      const recent = this.recentMoves(28).filter(r => list.includes(r.item) && !(this.movement(r.item) && this.movement(r.item).to === r.to && this.movement(r.item).from === r.from));
+      // Earlier moves: history moves in the last 90 days that sit before each item's comparison baseline
+      const recent = this.recentMoves(90).filter(r => list.includes(r.item) && String(r.date) <= String(this.baseline(r.item).date));
       const recentRows = recent.map(r => `<li class="wl-mv-item minor"><span class="wl-move wl-move-${r.dir}">${r.dir === "up" ? "▲" : "▼"}</span> ${this.nameBtn(r.item)} <span class="wl-mv-path">${esc(r.from)} → ${esc(r.to)} · ${esc(this.fmtDate(r.date))}</span>${r.note ? `<div class="wl-mv-note">${esc(r.note)}</div>` : ""}</li>`);
       const board = this.stateOrder().map(s => {
         const col = this.rank(list.filter(i => i.state === s));
@@ -2112,9 +2135,10 @@
             <div class="wl-legend">${legend}</div>
           </div>
           <div class="card card-pad wl-moves-card">
-            <div class="wl-card-h">State moves since previous review (${esc(this.fmtDate(this.meta().previousReviewDate))}) <span class="wl-card-h-note">assessed at the daily review · latest ${esc(this.fmtDate(this.meta().reviewDate))}</span></div>
-            ${moves.length ? `<ul class="wl-mv-list">${moves.join("")}</ul>` : `<p class="muted-note">No state changes at this review.</p>`}
-            ${recentRows.length ? `<div class="wl-card-h sub">Earlier moves (last 4 weeks)</div><ul class="wl-mv-list">${recentRows.join("")}</ul>` : ""}
+            <div class="wl-card-h">State moves in the last ${this.compareDays()} days <span class="wl-card-h-note">compared with ${esc(this.fmtDate(this.compareDate(list)))} · latest daily review ${esc(this.fmtDate(this.meta().reviewDate))}</span></div>
+            ${moves.length ? `<ul class="wl-mv-list">${moves.join("")}</ul>` : `<p class="muted-note">No state moves in the last ${this.compareDays()} days.</p>`}
+            <div class="wl-card-h sub">Earlier moves <span class="wl-card-h-note">last 90 days, before the comparison window · full history in each expanded row</span></div>
+            ${recentRows.length ? `<ul class="wl-mv-list">${recentRows.join("")}</ul>` : `<p class="muted-note wl-mv-none">No earlier state moves in the last 90 days.</p>`}
             ${this.coverageMovesBlock(list)}
           </div>
         </div>
@@ -2125,8 +2149,8 @@
     detail(it) {
       const chg = this.changedDims(it);
       const dimsLine = chg.length
-        ? chg.map(d => `<span class="wl-chg-pill">${esc(this.defs().dimensions[d].short)}: ${esc(it.dims[d].prev)} → <strong>${esc(it.dims[d].now)}</strong></span>`).join(" ")
-        : `<span class="muted-note">No dimension changed since the previous review.</span>`;
+        ? chg.map(d => `<span class="wl-chg-pill">${esc(this.defs().dimensions[d].short)}: ${esc(this.prevOf(it, d))} → <strong>${esc(it.dims[d].now)}</strong></span>`).join(" ")
+        : `<span class="muted-note">No dimension changed in the last ${this.compareDays()} days.</span>`;
       const next = (it.next || []).map(n => {
         const ds = this.dueStatus(n.due);
         return `<li class="wl-ind"><span class="wl-ind-type">${esc(n.type)}</span> <span class="wl-due wl-due-${ds.cls}" title="${esc(n.due || "no date")}">${n.due ? esc(this.fmtDate(n.due)) + " · " : ""}${esc(ds.label)}</span><div class="wl-ind-text">${esc(n.text)}</div>${n.ifSeen ? `<div class="wl-ind-if">If seen → ${esc(n.ifSeen)}</div>` : ""}</li>`;
@@ -2203,7 +2227,7 @@
       return `<div class="section"><div class="section-head"><h2>What can be ignored for now?</h2><span class="hint">Stable, repetitive, low-confidence, or no current Army learning value — with the trigger that would bring each back</span></div>
         <div class="card card-pad">
           ${rows ? `<ul class="wl-ig-list">${rows}</ul>` : `<p class="muted-note">Nothing is flagged ignore-for-now in the current filter.</p>`}
-          ${quiet.length ? `<div class="wl-quiet"><strong>Quiet this review (not flagged):</strong> ${quiet.map(it => this.nameBtn(it)).join(", ")} — no dimension changed, no state move, Dashboard only.</div>` : ""}
+          ${quiet.length ? `<div class="wl-quiet"><strong>Quiet over the last ${this.compareDays()} days (not flagged):</strong> ${quiet.map(it => this.nameBtn(it)).join(", ")} — no dimension changed, no state move, Dashboard only.</div>` : ""}
         </div></div>`;
     },
 
@@ -2212,11 +2236,11 @@
       return `<details class="wl-method"><summary>How this page derives its answers · how to update the register</summary>
         <div class="wl-method-body">
           <p><strong>Attention score.</strong> ${esc((d.attentionScore || {}).desc || "")}</p>
-          <p><strong>Moved / changed.</strong> A state move is <code>prevState ≠ state</code>; a changed dimension is <code>prev ≠ now</code>.</p>
+          <p><strong>Moved / changed.</strong> Every comparison is made against the register as it stood <code>compareDays</code> (${this.compareDays()}) days before the review date, taken from each item's per-review <code>snapshots</code> (the newest snapshot at least that old; the oldest on file until a full window has accrued). A state move is baseline state ≠ <code>state</code>; a changed dimension is baseline value ≠ <code>now</code>.</p>
           <p><strong>Staleness.</strong> Flagged when more than 1.5× the cadence has passed since <code>reviewDate</code>.</p>
           <p><strong>Criteria.</strong> ${this.DIMS.filter(d => d !== "phase").map(d => { const def = this.defs().dimensions[d]; return `<em>${esc(def.label)}</em> — ${esc(def.desc || "")} ${def.levels ? Object.entries(def.levels).map(([k, v]) => `<b>${esc(k)}</b>: ${esc(v)}`).join(" ") : ""}`; }).join("<br>")}</p>
           <p><strong>Live feed.</strong> ${esc((d.feed || {}).source || "")} ${esc((d.feed || {}).surgeRule || "")} ${esc((d.feed || {}).titleFilter || "")}</p>
-          <p><strong>Automated review.</strong> The register itself is rewritten weekly by a scheduled open-source review (see <code>docs/WATCHLIST-REVIEW.md</code>) and published directly from open sources; the weekly brief on the Weekly tab is neither shown here nor used as a source.</p>
+          <p><strong>Automated review.</strong> The register itself is rewritten daily by a scheduled open-source review (see <code>docs/WATCHLIST-REVIEW.md</code>) and published directly from open sources; the weekly brief on the Weekly tab is neither shown here nor used as a source.</p>
           <p><strong>Updating.</strong> ${esc(m.notes || "")} Source file: <code>watchlist.json</code>.</p>
           <p><strong>Tiers.</strong> ${Object.entries(d.tiers).map(([k, t]) => `T${k} ${esc(t.name)} — ${esc(t.desc)}`).join(" · ")}</p>
           <p><strong>States.</strong> ${this.stateOrder().map(s => `${esc(s)} — ${esc(this.stateDef(s).desc)}`).join(" · ")}</p>
@@ -2233,7 +2257,7 @@
         return;
       }
       const m = this.meta();
-      el("#meta-range").textContent = `Review ${Time.fmtRange(m.previousReviewDate, m.reviewDate)}`;
+      el("#meta-range").textContent = `Changes ${Time.fmtRange(this.compareDate(), m.reviewDate)}`;
       const list = this.filtered();
       container.innerHTML =
         this.header(list) +
@@ -2347,10 +2371,10 @@
       const m = this.meta();
       return {
         generatedAt: new Date().toISOString(), view: "watchlist",
-        reviewDate: m.reviewDate, previousReviewDate: m.previousReviewDate,
+        reviewDate: m.reviewDate, previousReviewDate: m.previousReviewDate, compareDays: this.compareDays(), comparedWith: this.compareDate(),
         note: "attentionScore, changedDims, movement and liveFeed are derived by the dashboard; the rest is the register.",
         items: this.rank(this.filtered()).map(it => Object.assign({}, it, {
-          attentionScore: this.score(it).total, changedDims: this.changedDims(it), movement: this.movement(it), liveFeed: this.feed(it)
+          attentionScore: this.score(it).total, baseline: this.baseline(it), changedDims: this.changedDims(it), movement: this.movement(it), liveFeed: this.feed(it)
         }))
       };
     },
