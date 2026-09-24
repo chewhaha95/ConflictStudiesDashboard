@@ -24,7 +24,7 @@ The Watchlist answers six questions, in order, from `watchlist.json`:
 Escalation Watches · T3 Baseline Regional Research Reserve.
 **Monitoring states** (current attention): Priority · Active · Watch · Archive.
 A Tier 1 conflict can sit in any state; the tier says how much it matters to
-the Army, the state says how much attention it needs this week.
+the Army, the state says how much attention it needs today.
 
 The map is a self-contained SVG (Natural Earth 1:110m outlines in
 `assets/world-110m.json`): no tiles, no map library, works offline and in
@@ -43,9 +43,9 @@ The watchlist is fully automated:
   a coverage sparkline, a 7-day count with change, a **surge** flag (≥2× the
   previous week and ≥20 articles, +8 attention points) and the headlines in
   each expanded row. Queries live in each item's `feed` block.
-- **Weekly automated review** — a scheduled Claude Code session follows
-  `docs/WATCHLIST-REVIEW.md`: researches all twelve items from open sources,
-  rewrites `watchlist.json` (states, dimensions with previous values,
+- **Daily automated review** — a scheduled Claude Code session (06:00 SGT)
+  follows `docs/WATCHLIST-REVIEW.md`: researches all twelve items from open
+  sources, rewrites `watchlist.json` (states, dimensions with previous values,
   changes, indicators, ignore verdicts, history, sources), runs
   `npm test` and pushes to `main`. Pages deploys on push.
 
@@ -59,7 +59,7 @@ flags, staleness and surges:
    (`phase`, `escalation`, `tempo`, `adaptation`, `sgExposure`).
 3. Set `prevState` to the state at the previous review and `state` to the new
    one; append any move to `history`.
-4. Rewrite `whyNow`, `changes` (this week only), `next` (named, checkable
+4. Rewrite `whyNow`, `changes` (since the previous review only), `next` (named, checkable
    indicators with `due` dates where they exist) and `ignore`. Publication decisions (what to publish, escalate or leave) are made by the team outside the dashboard and are not recorded here.
 5. Run `npm test` — the smoke test validates the register schema.
 

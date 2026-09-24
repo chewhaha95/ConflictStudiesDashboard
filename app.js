@@ -1898,7 +1898,7 @@
       const h = this.feedAge();
       return `<div class="wl-card-h sub">Live coverage moves <span class="briefs-live">● LIVE</span> <span class="wl-card-h-note">open-source feed, last 7 days vs the 7 before${h != null ? ` · synced ${h < 1 ? "under an hour" : h + "h"} ago` : ""}</span></div>
         ${rows.length ? `<ul class="wl-mv-list">${rows.join("")}</ul>` : `<p class="muted-note">No item is surging or moving by 50% or more this week.</p>`}
-        <div class="muted-note wl-cov-note">A coverage move is a signal to look, not a state change: states move only at the weekly review.</div>`;
+        <div class="muted-note wl-cov-note">A coverage move is a signal to look, not a state change: states move only at the daily review.</div>`;
     },
     feedBlock(it) {
       const f = this.feed(it), lf = this.feedMeta();
@@ -2050,7 +2050,7 @@
         <div class="wl-head-row">
           <div>
             <div class="wl-title">${esc(m.title || "Conflict Watchlist")} <span class="wl-asof">— review as of ${esc(this.fmtDate(m.reviewDate))}</span></div>
-            <div class="wl-sub">Previous review ${esc(this.fmtDate(m.previousReviewDate))} · ${m.cadenceDays || 7}-day cadence · ${this.items().length} items · showing ${list.length} &nbsp; ${counts}</div>
+            <div class="wl-sub">Previous review ${esc(this.fmtDate(m.previousReviewDate))} · ${(m.cadenceDays || 7) === 1 ? "daily review" : (m.cadenceDays || 7) + "-day cadence"} · ${this.items().length} items · showing ${list.length} &nbsp; ${counts}</div>
           </div>
           ${(() => { const lf = this.feedMeta(); const h = this.feedAge(); return lf ? `<div class="wl-feedstat ${h != null && h > 24 ? "stale" : ""}" title="${esc(lf.source || "")} · ${lf.refreshed || "?"}/${lf.total || "?"} items refreshed">● LIVE feed · synced ${h == null ? "—" : h < 1 ? "under an hour ago" : h + "h ago"}</div>` : `<div class="wl-feedstat off">Live feed not loaded</div>`; })()}
           <div class="wl-stale ${st.overdue ? "overdue" : "fresh"}" title="${esc(st.overdue ? `Review due ${this.fmtDate(st.nextDue)}; ${st.days} days since the last review.` : `Next review due ${this.fmtDate(st.nextDue)}.`)}">
@@ -2112,7 +2112,7 @@
             <div class="wl-legend">${legend}</div>
           </div>
           <div class="card card-pad wl-moves-card">
-            <div class="wl-card-h">State moves since previous review (${esc(this.fmtDate(this.meta().previousReviewDate))}) <span class="wl-card-h-note">assessed at the weekly review · latest ${esc(this.fmtDate(this.meta().reviewDate))}</span></div>
+            <div class="wl-card-h">State moves since previous review (${esc(this.fmtDate(this.meta().previousReviewDate))}) <span class="wl-card-h-note">assessed at the daily review · latest ${esc(this.fmtDate(this.meta().reviewDate))}</span></div>
             ${moves.length ? `<ul class="wl-mv-list">${moves.join("")}</ul>` : `<p class="muted-note">No state changes at this review.</p>`}
             ${recentRows.length ? `<div class="wl-card-h sub">Earlier moves (last 4 weeks)</div><ul class="wl-mv-list">${recentRows.join("")}</ul>` : ""}
             ${this.coverageMovesBlock(list)}

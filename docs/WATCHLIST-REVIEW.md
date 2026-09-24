@@ -1,7 +1,7 @@
 # Watchlist review runbook (automated, open sources)
 
-This is the procedure the scheduled review session follows every week to
-rewrite `watchlist.json`. It is written so that a fresh session with no
+This is the procedure the scheduled review session follows every day to
+rewrite `watchlist.json`. Every item is re-checked at every run. It is written so that a fresh session with no
 memory of previous runs can execute it end to end. A human may run it the
 same way.
 
@@ -17,7 +17,7 @@ same way.
 - **The weekly brief is not a source and is not shown.** Do not copy its
   assessments or reference it.
 - **Not a news archive.** `changes` holds only what materially moved since the
-  previous review (3–6 bullets). `next` holds named, checkable indicators, dated
+  previous review (up to 6 bullets; on a quiet day this may be a single line). `next` holds named, checkable indicators, dated
   where a date exists. If nothing changed, say "No material change since the
   previous review" and keep levels unchanged.
 - **Flag, don't guess.** Single-source or unverifiable items are labelled
@@ -25,7 +25,7 @@ same way.
 - **No publication prompts.** Do not write a `csi` field or recommend what to
   publish, escalate or leave (no "CSI Flash", "weekly awareness post" and the
   like, in `ifSeen` or anywhere else). Phrase consequences analytically:
-  "escalate", "flag this week", "note for the monthly pattern set", "track
+  "escalate", "flag today", "note for the monthly pattern set", "track
   only". The team makes publication decisions outside the dashboard.
 - **Scope is fixed.** The twelve items, their ids, tiers and `geo` blocks do
   not change. Only states, dimensions, text, indicators, ignore
@@ -35,7 +35,8 @@ same way.
 
 1. Read `watchlist.json`. Note `meta.reviewDate` — that becomes
    `meta.previousReviewDate`. The new `meta.reviewDate` is today (UTC date).
-2. Research each item for the window `previousReviewDate` → today. Use
+2. Research every item for the window `previousReviewDate` → today (normally
+   the last 24 hours; longer if a run was missed). Use
    parallel research agents (one per two or three items) with the structure:
    phase · material changes (dated, sourced) · levels with one-line
    justification · upcoming indicators to the end of the next quarter with

@@ -78,6 +78,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("register defines criteria and level descriptions for every scaled dimension", ["escalation", "tempo", "adaptation", "sgExposure"].every(d => wl.definitions.dimensions[d].desc && wl.definitions.dimensions[d].scale.every(l => wl.definitions.dimensions[d].levels[l])));
   check("every item carries a current-status summary with 2+ article links", wl.items.every(i => i.status && i.status.summary.length > 80 && i.status.sources.length >= 2 && i.status.sources.every(s => /^https?:/.test(s.url))));
   check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
+  check("register is reviewed daily (cadenceDays = 1)", wl.meta.cadenceDays === 1);
   check("watchlist defines 3 tiers / 4 states and no publication actions",
     Object.keys(wl.definitions.tiers).join(",") === "1,2,3" &&
     Object.keys(wl.definitions.states).sort().join(",") === "Active,Archive,Priority,Watch" &&
@@ -123,7 +124,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
   // --- 1b. Watchlist tab (attention tracker + map) is the landing view ----
   // Expectations are DERIVED from watchlist.json so the checks survive each
-  // weekly review of the register (only the structure is hard-coded).
+  // daily review of the register (only the structure is hard-coded).
   console.log("\nWatchlist (attention tracker + map):");
   const fmtD = s => new Date(s).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
   const stOrder = s => wl.definitions.states[s].order;

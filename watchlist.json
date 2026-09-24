@@ -3,9 +3,9 @@
     "title": "Conflict Watchlist",
     "reviewDate": "2026-09-23",
     "previousReviewDate": "2026-06-29",
-    "cadenceDays": 7,
-    "reviewer": "Automated open-source review (weekly, see docs/WATCHLIST-REVIEW.md); first run seeded by the 23 Sep 2026 open-source review. Items marked unverified need confirmation.",
-    "notes": "Fully automated register: a scheduled open-source review rewrites this file weekly (procedure in docs/WATCHLIST-REVIEW.md) and a 6-hourly GitHub Action refreshes the live reporting feed (watchlist-live.json) from GDELT. Each review: (1) set reviewDate/previousReviewDate, (2) for every item move `prev` <- `now` on the five dimensions and then set the new `now`, (3) rewrite `status` (plain-language current status with 2–3 article links), `changes`, `next`, `ignore` and `sources` for what is true THIS week only, (4) record any state move in `history`. The dashboard derives attention rank, movements, changed-dimension flags, staleness, coverage surges — do not type those in. Not a news archive: `changes` holds only what materially moved since the previous review; `next` holds named, checkable indicators."
+    "cadenceDays": 1,
+    "reviewer": "Automated open-source review (daily, see docs/WATCHLIST-REVIEW.md); first run seeded by the 23 Sep 2026 open-source review. Items marked unverified need confirmation.",
+    "notes": "Fully automated register: a scheduled open-source review rewrites this file daily (procedure in docs/WATCHLIST-REVIEW.md) and a 6-hourly GitHub Action refreshes the live reporting feed (watchlist-live.json) from GDELT. Each review: (1) set reviewDate/previousReviewDate, (2) for every item move `prev` <- `now` on the five dimensions and then set the new `now`, (3) rewrite `status` (plain-language current status with 2–3 article links), `changes`, `next`, `ignore` and `sources` for what is true TODAY only, (4) record any state move in `history`. The dashboard derives attention rank, movements, changed-dimension flags, staleness, coverage surges — do not type those in. Not a news archive: `changes` holds only what materially moved since the previous review; `next` holds named, checkable indicators."
   },
   "definitions": {
     "tiers": {
