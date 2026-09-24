@@ -954,6 +954,15 @@ ul.wf-list li { margin-bottom: 8px; font-size: 13px; line-height: 1.5; }
 .wl-card-chip.ignored { opacity: .7; }
 
 /* Register */
+.wl-status { min-width: 300px; max-width: 420px; }
+.wl-status-sum { font-size: 12.5px; line-height: 1.45; }
+.wl-status-links { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 4px; font-size: 11px; }
+.wl-status-links a { color: var(--accent); text-decoration: none; white-space: nowrap; max-width: 260px; overflow: hidden; text-overflow: ellipsis; }
+.wl-status-links a:hover { text-decoration: underline; }
+.wl-phase-line { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.wl-phase-line b { font-weight: 650; color: var(--text); }
+table.wl-register th.wl-th-help { cursor: help; text-decoration: underline dotted; text-underline-offset: 3px; }
+table.wl-register td.wl-dim { cursor: help; }
 table.wl-register th, table.wl-register td { padding: 8px 9px; font-size: 12.5px; }
 table.wl-register thead th { cursor: default; }
 .wl-row.selected > td { background: var(--accent-soft); }

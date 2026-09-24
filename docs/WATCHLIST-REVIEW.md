@@ -50,6 +50,9 @@ same way.
      Active = material trend, escalation or regional relevance; Watch =
      baseline monitoring; Archive = reserve, revisit on a named trigger);
      if it changed, append `{date, state, note}` to `history`;
+   - rewrite `status` — `summary`: two plain-language sentences on what is
+     happening now, readable without context, and `sources`: two or three
+     `{label, url}` article links the summary rests on;
    - rewrite `whyNow` (one or two sentences), `changes`, `next` (each with
      `type` from `definitions.indicatorTypes`, `due` as ISO date or null,
      `ifSeen`), `ignore` (`flag`, `reasons` from
@@ -64,6 +67,13 @@ same way.
    `chore: automated watchlist review <date>` and push to `main`. The Pages
    workflow deploys it; the feed workflow keeps `watchlist-live.json` current
    separately.
+
+## Criteria for the levels
+
+Use `definitions.dimensions` in `watchlist.json` verbatim: each scaled
+dimension (escalation risk, tempo, adaptation, Singapore exposure) carries a
+`desc` and a `levels` map that defines every value. Set a level only when its
+definition is met by dated reporting in the window.
 
 ## Attention score (derived, do not type in)
 

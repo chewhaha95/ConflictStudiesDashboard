@@ -75,6 +75,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   let wl;
   try { wl = JSON.parse(wlRaw); check("watchlist.json parses", true); }
   catch (e) { check("watchlist.json parses", false, e.message); process.exit(1); }
+  check("register defines criteria and level descriptions for every scaled dimension", ["escalation", "tempo", "adaptation", "sgExposure"].every(d => wl.definitions.dimensions[d].desc && wl.definitions.dimensions[d].scale.every(l => wl.definitions.dimensions[d].levels[l])));
+  check("every item carries a current-status summary with 2+ article links", wl.items.every(i => i.status && i.status.summary.length > 80 && i.status.sources.length >= 2 && i.status.sources.every(s => /^https?:/.test(s.url))));
   check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
   check("watchlist defines 3 tiers / 4 states and no publication actions",
     Object.keys(wl.definitions.tiers).join(",") === "1,2,3" &&
@@ -204,13 +206,23 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   // Q3/Q4 register
   const reg = wv.querySelector("#wl-register");
   check(`Q3/Q4: register has ${N} rows ordered by attention`, reg.querySelectorAll("tbody tr.wl-row").length === N && reg.querySelector("tbody tr.wl-row").textContent.includes(ranked[0].name));
-  check("Q4: changed dimensions highlighted with previous → now", wl.items.every(i => {
+  check("Q4: changed level columns highlighted with previous → now (esc. risk / tempo / adaptation)", wl.items.every(i => {
     const row = reg.querySelector(`tr[data-wl-row="${i.id}"]`);
     const cells = [...row.querySelectorAll("td.wl-dim.wl-chg")];
-    const exp = changed(i);
-    return cells.length === exp.length && exp.every((d, k) => cells[k] && cells[k].textContent.includes(i.dims[d].prev) && cells[k].textContent.includes(i.dims[d].now)) &&
-      (exp.length ? row.textContent.includes(`${exp.length} changed`) : true);
+    const exp = ["escalation", "tempo", "adaptation"].filter(d => i.dims[d].prev !== i.dims[d].now);
+    return cells.length === exp.length && exp.every((d, k) => cells[k] && cells[k].textContent.includes(i.dims[d].prev) && cells[k].textContent.includes(i.dims[d].now));
   }));
+  check("register: SG exposure and Changed columns removed", ![...reg.querySelectorAll("thead th")].some(th => /SG exposure|Changed/i.test(th.textContent)));
+  check("register: every row carries a plain-language current status with article links and the phase label", wl.items.every(i => {
+    const row = reg.querySelector(`tr[data-wl-row="${i.id}"]`);
+    return row.querySelector(".wl-status-sum").textContent.trim() === i.status.summary && row.querySelectorAll(".wl-status-links a[href^='http']").length === i.status.sources.length && row.querySelector(".wl-phase-line").textContent.includes(i.dims.phase.now);
+  }));
+  check("register: column headers and level values carry hover definitions", (() => {
+    const ths = [...reg.querySelectorAll("thead th.wl-th-help")];
+    const esc = ths.find(th => /Esc\. risk/.test(th.textContent));
+    return ths.length >= 8 && ths.every(th => (th.getAttribute("title") || "").length > 30) && /Severe:/.test(esc.getAttribute("title")) &&
+      [...reg.querySelectorAll("td.wl-dim")].every(td => /:/.test(td.getAttribute("title") || ""));
+  })());
   check("register: 'brief' link tag only on theatres carried in the weekly brief", reg.querySelectorAll("tr.wl-row .t-chip").length === briefLinked.length);
   check("register: rows collapsed by default", reg.querySelectorAll("tr.wl-detail-row").length === 0);
   // expand a brief-linked row → detail with Q3/Q5/Q6/Q7 + brief signal + history
