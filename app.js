@@ -34,7 +34,7 @@
     theme: "light",
     watchlist: {              // watchlist tab: filters + map focus + open rows
       tiers: new Set(), states: new Set(), hideIgnored: false,
-      selected: null, region: "world", expanded: new Set()
+      selected: null, region: "world", view: null, expanded: new Set()
     },
     filters: {
       theatres:  new Set(),   // empty => all
@@ -1974,9 +1974,25 @@
       pathFor(country) {
         return country.rings.map(r => "M" + r.map(([lon, lat]) => `${this.px(lon).toFixed(1)},${this.py(lat).toFixed(1)}`).join("L") + "Z").join("");
       },
-      render(items, selected, region) {
+      MIN_W: 30, MAX_W: 1000,
+      // Clamp a free viewBox to sensible zoom and keep the map in frame
+      clamp(vb) {
+        const aspect = this.W / this.H();
+        let w = Math.min(this.MAX_W, Math.max(this.MIN_W, vb[2]));
+        let h = w / aspect;
+        let x = Math.min(Math.max(vb[0], -w * 0.5), this.W - w * 0.5);
+        let y = Math.min(Math.max(vb[1], -h * 0.5), this.H() - h * 0.5);
+        return [x, y, w, h].map(v => Math.round(v * 100) / 100);
+      },
+      // Apply a viewBox to a rendered SVG without re-rendering: markers are counter-scaled
+      applyView(svg, vb) {
+        svg.setAttribute("viewBox", vb.join(" "));
+        const k = vb[2] / this.W;
+        svg.querySelectorAll(".wl-mk").forEach(g => g.setAttribute("transform", `scale(${k.toFixed(4)})`));
+      },
+      render(items, selected, region, view) {
         const world = DB.world && DB.world.countries ? DB.world.countries : [];
-        const vb = this.viewBox(region);
+        const vb = view ? this.clamp(view) : this.viewBox(region);
         const k = vb[2] / this.W;                    // zoom factor (1 = world)
         // Which state colours each involved country (highest-priority state wins)
         const fill = {};
@@ -1990,25 +2006,26 @@
         }).join("");
         const zones = items.flatMap(it => (it.geo.zones || []).map(z =>
           `<circle class="wl-zone wl-zone-${Watchlist.stateDef(it.state).tone}" cx="${this.px(z.lon).toFixed(1)}" cy="${this.py(z.lat).toFixed(1)}" r="${this.deg(z.r).toFixed(1)}"><title>${esc(z.label || it.name)}</title></circle>`)).join("");
-        const fs = (11 * k).toFixed(2);
         const markers = Watchlist.rank(items).reverse().map(it => {   // draw high-attention markers last (on top)
           const x = this.px(it.geo.lon), y = this.py(it.geo.lat);
-          const r = (Watchlist.TIER_R[it.tier] || 4.5) * k;
+          const r = Watchlist.TIER_R[it.tier] || 4.5;      // screen-constant: the .wl-mk group is counter-scaled by k
           const sel = selected === it.id;
           const mv = Watchlist.movement(it);
           const tone = Watchlist.stateDef(it.state).tone;
           const tip = `${it.name} · Tier ${it.tier} · ${it.state}${mv ? ` (${mv.dir === "up" ? "moved up" : "moved down"} from ${mv.from})` : ""} · Escalation ${it.dims.escalation.now} · ${it.csi.action}`;
-          const lx = x + (it.geo.labelDx || 0) * k, ly = y + (it.geo.labelDy || -12) * k;
-          const anchor = (it.geo.labelDx || 0) > 4 ? "start" : (it.geo.labelDx || 0) < -4 ? "end" : "middle";
-          return `<g class="wl-marker wl-m-${tone} ${sel ? "selected" : ""} ${it.ignore.flag ? "ignored" : ""}" data-wl="${esc(it.id)}" tabindex="0" role="button" aria-label="${esc(tip)}">
+          const lx = (it.geo.labelDx || 0), ly = (it.geo.labelDy || -12);
+          const anchor = lx > 4 ? "start" : lx < -4 ? "end" : "middle";
+          return `<g class="wl-marker wl-m-${tone} ${sel ? "selected" : ""} ${it.ignore.flag ? "ignored" : ""}" data-wl="${esc(it.id)}" tabindex="0" role="button" aria-label="${esc(tip)}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})">
             <title>${esc(tip)}</title>
-            ${sel ? `<circle class="wl-ring" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(r * 2.2).toFixed(1)}"/>` : ""}
-            <circle class="wl-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"/>
-            ${mv ? `<text class="wl-mv wl-mv-${mv.dir}" x="${(x + r * 0.9).toFixed(1)}" y="${(y - r * 0.9).toFixed(1)}" font-size="${(9 * k).toFixed(2)}">${mv.dir === "up" ? "▲" : "▼"}</text>` : ""}
-            <text class="wl-label" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" font-size="${fs}" text-anchor="${anchor}">${esc(it.short || it.name)}</text>
+            <g class="wl-mk" transform="scale(${k.toFixed(4)})">
+              ${sel ? `<circle class="wl-ring" cx="0" cy="0" r="${(r * 2.2).toFixed(1)}"/>` : ""}
+              <circle class="wl-dot" cx="0" cy="0" r="${r.toFixed(1)}"/>
+              ${mv ? `<text class="wl-mv wl-mv-${mv.dir}" x="${(r * 0.9).toFixed(1)}" y="${(-r * 0.9).toFixed(1)}" font-size="9">${mv.dir === "up" ? "▲" : "▼"}</text>` : ""}
+              <text class="wl-label" x="${lx}" y="${ly}" font-size="11" text-anchor="${anchor}">${esc(it.short || it.name)}</text>
+            </g>
           </g>`;
         }).join("");
-        return `<svg class="wl-svg" viewBox="${vb.join(" ")}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Conflict watchlist map">
+        return `<svg class="wl-svg" viewBox="${vb.join(" ")}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Conflict watchlist map — scroll to zoom, drag to pan">
           <rect class="wl-sea" x="0" y="0" width="${this.W}" height="${this.H()}"/>
           <g class="wl-land-g">${land || `<text x="500" y="200" text-anchor="middle" class="wl-nomap">Base map unavailable — markers only</text>`}</g>
           <g class="wl-zones">${zones}</g>
@@ -2069,7 +2086,7 @@
     mapSection(list) {
       const f = State.watchlist;
       const regionBtns = Object.entries(this.Map.REGIONS).map(([k, r]) =>
-        `<button class="fchip wl-region" aria-pressed="${f.region === k}" data-region="${k}">${esc(r.label)}</button>`).join("");
+        `<button class="fchip wl-region" aria-pressed="${!f.view && f.region === k}" data-region="${k}">${esc(r.label)}</button>`).join("");
       const legend = this.stateOrder().map(s => `<span class="wl-lg"><i class="wl-lg-dot wl-m-${this.stateDef(s).tone}"></i>${esc(s)}</span>`).join("") +
         `<span class="wl-lg"><i class="wl-lg-dot wl-lg-t1"></i>Tier 1 (large) → Tier 3 (small)</span><span class="wl-lg"><i class="wl-lg-zone"></i>Maritime / zone watch</span><span class="wl-lg">▲▼ state moved this review</span>`;
       const moves = list.filter(it => this.movement(it)).map(it => {
@@ -2088,8 +2105,9 @@
       return `<div class="section"><div class="section-head"><h2>Which theatres moved?</h2><span class="hint">Marker colour = monitoring state · size = tier · click a marker to open its register row</span></div>
         <div class="wl-map-grid">
           <div class="card card-pad wl-map-card">
-            <div class="wl-map-tools"><span class="wl-filter-lbl">Focus</span><span class="chip-row">${regionBtns}</span></div>
-            <div class="wl-map-wrap">${this.Map.render(list, f.selected, f.region)}</div>
+            <div class="wl-map-tools"><span class="wl-filter-lbl">Focus</span><span class="chip-row">${regionBtns}</span>
+              <span class="wl-zoom-tools"><button class="btn wl-zoom" data-zoom="in" title="Zoom in" aria-label="Zoom in">+</button><button class="btn wl-zoom" data-zoom="out" title="Zoom out" aria-label="Zoom out">−</button><button class="btn wl-zoom" data-zoom="reset" title="Reset to the selected focus" aria-label="Reset zoom">⟲</button><span class="wl-zoom-hint">scroll to zoom · drag to pan</span></span></div>
+            <div class="wl-map-wrap ${f.view ? "custom" : ""}">${this.Map.render(list, f.selected, f.region, f.view)}</div>
             <div class="wl-legend">${legend}</div>
           </div>
           <div class="card card-pad wl-moves-card">
@@ -2264,9 +2282,10 @@
       root.querySelectorAll(".wl-f-state").forEach(b => b.addEventListener("click", () => { const s = b.dataset.state; f.states.has(s) ? f.states.delete(s) : f.states.add(s); this.render(); }));
       const ig = root.querySelector(".wl-f-ignored"); if (ig) ig.addEventListener("click", () => { f.hideIgnored = !f.hideIgnored; this.render(); });
       const rs = root.querySelector("[data-wl-reset]"); if (rs) rs.addEventListener("click", () => { f.tiers.clear(); f.states.clear(); f.hideIgnored = false; this.render(); });
-      root.querySelectorAll(".wl-region").forEach(b => b.addEventListener("click", () => { f.region = b.dataset.region; this.render(); }));
+      root.querySelectorAll(".wl-region").forEach(b => b.addEventListener("click", () => { f.region = b.dataset.region; f.view = null; this.render(); }));
+      this.wireMap(root);
       root.querySelectorAll(".wl-marker").forEach(g => {
-        const act = () => this.open(g.dataset.wl, true);
+        const act = () => { if (this._mapDragged) return; this.open(g.dataset.wl, true); };
         g.addEventListener("click", act);
         g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act(); } });
       });
@@ -2278,11 +2297,72 @@
       }));
       root.querySelectorAll("[data-wl-map]").forEach(b => b.addEventListener("click", () => {
         const it = this.byId(b.getAttribute("data-wl-map")); if (!it) return;
-        f.selected = it.id; f.region = this.Map.regionFor(it.geo); this.render();
+        f.selected = it.id; f.region = this.Map.regionFor(it.geo); f.view = null; this.render();
         const map = document.querySelector(".wl-map-card"); if (map && map.scrollIntoView) map.scrollIntoView({ behavior: "smooth", block: "center" });
       }));
       const ea = root.querySelector("[data-wl-expand-all]"); if (ea) ea.addEventListener("click", () => { this.filtered().forEach(i => f.expanded.add(i.id)); this.render(); });
       const ca = root.querySelector("[data-wl-collapse-all]"); if (ca) ca.addEventListener("click", () => { f.expanded.clear(); this.render(); });
+    },
+
+    // ---- map pan / zoom (mouse wheel, drag, pinch, buttons) --------------------
+    _mapDragged: false,
+    wireMap(root) {
+      const svg = root.querySelector("svg.wl-svg"); if (!svg) return;
+      const f = State.watchlist, M = this.Map;
+      const current = () => (svg.getAttribute("viewBox") || "").split(/\s+/).map(Number);
+      const toSvg = (clientX, clientY) => {           // client px → map units
+        const r = svg.getBoundingClientRect(), vb = current();
+        const s = Math.max(vb[2] / (r.width || 1), vb[3] / (r.height || 1));      // meet: the larger scale applies
+        const ox = (r.width - vb[2] / s) / 2, oy = (r.height - vb[3] / s) / 2;     // letterbox offsets
+        return [vb[0] + (clientX - r.left - ox) * s, vb[1] + (clientY - r.top - oy) * s];
+      };
+      const set = vb => { f.view = M.clamp(vb); M.applyView(svg, f.view); root.querySelectorAll(".wl-region").forEach(b => b.setAttribute("aria-pressed", "false")); svg.closest(".wl-map-wrap").classList.add("custom"); };
+      const zoomAt = (factor, cx, cy) => {            // keep the map point under (cx,cy) fixed
+        const vb = current(); const [mx, my] = [cx, cy];
+        const w = vb[2] * factor, h = vb[3] * factor;
+        set([mx - (mx - vb[0]) * factor, my - (my - vb[1]) * factor, w, h]);
+      };
+      const zoomCentre = factor => { const vb = current(); zoomAt(factor, vb[0] + vb[2] / 2, vb[1] + vb[3] / 2); };
+      svg.addEventListener("wheel", e => {
+        e.preventDefault();
+        const factor = Math.exp((e.deltaMode === 1 ? e.deltaY * 20 : e.deltaY) * 0.0018);   // >1 zooms out
+        const [mx, my] = toSvg(e.clientX, e.clientY); zoomAt(factor, mx, my);
+      }, { passive: false });
+      svg.addEventListener("dblclick", e => { e.preventDefault(); const [mx, my] = toSvg(e.clientX, e.clientY); zoomAt(0.5, mx, my); });
+      // drag to pan (one pointer) / pinch to zoom (two pointers)
+      const ptrs = new Map(); let start = null, pinch = null;
+      svg.addEventListener("pointerdown", e => {
+        if (e.button != null && e.button !== 0) return;
+        ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+        try { svg.setPointerCapture(e.pointerId); } catch (x) { /* jsdom */ }
+        if (ptrs.size === 1) { start = { x: e.clientX, y: e.clientY, vb: current(), moved: false }; this._mapDragged = false; }
+        if (ptrs.size === 2) { const p = [...ptrs.values()]; pinch = { d: Math.hypot(p[0][0] - p[1][0], p[0][1] - p[1][1]), vb: current() }; start = null; }
+      });
+      svg.addEventListener("pointermove", e => {
+        if (!ptrs.has(e.pointerId)) return;
+        ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+        if (pinch && ptrs.size === 2) {
+          const p = [...ptrs.values()]; const d = Math.hypot(p[0][0] - p[1][0], p[0][1] - p[1][1]);
+          const factor = pinch.d / Math.max(d, 1);
+          const [mx, my] = toSvg((p[0][0] + p[1][0]) / 2, (p[0][1] + p[1][1]) / 2);
+          const vb = pinch.vb; set([mx - (mx - vb[0]) * factor, my - (my - vb[1]) * factor, vb[2] * factor, vb[3] * factor]);
+          return;
+        }
+        if (!start) return;
+        const dx = e.clientX - start.x, dy = e.clientY - start.y;
+        if (!start.moved && Math.hypot(dx, dy) < 4) return;
+        start.moved = true; this._mapDragged = true; svg.classList.add("dragging");
+        const r = svg.getBoundingClientRect(), vb = start.vb;
+        const s = Math.max(vb[2] / (r.width || 1), vb[3] / (r.height || 1));
+        set([vb[0] - dx * s, vb[1] - dy * s, vb[2], vb[3]]);
+      });
+      const end = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; if (!ptrs.size) { start = null; svg.classList.remove("dragging"); setTimeout(() => { this._mapDragged = false; }, 0); } };
+      svg.addEventListener("pointerup", end); svg.addEventListener("pointercancel", end); svg.addEventListener("pointerleave", e => { if (!ptrs.size) svg.classList.remove("dragging"); });
+      root.querySelectorAll(".wl-zoom").forEach(b => b.addEventListener("click", () => {
+        const z = b.dataset.zoom;
+        if (z === "reset") { f.view = null; this.render(); return; }
+        zoomCentre(z === "in" ? 1 / 1.5 : 1.5);
+      }));
     },
 
     // ---- export ----------------------------------------------------------------

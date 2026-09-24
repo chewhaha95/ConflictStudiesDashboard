@@ -884,7 +884,12 @@ ul.wf-list li { margin-bottom: 8px; font-size: 13px; line-height: 1.5; }
 .wl-map-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 14px; align-items: start; }
 .wl-map-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
 .wl-map-wrap { border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--bg-sunken); }
-.wl-svg { display: block; width: 100%; height: auto; }
+.wl-svg { display: block; width: 100%; height: auto; cursor: grab; touch-action: none; user-select: none; }
+.wl-svg.dragging { cursor: grabbing; }
+.wl-zoom-tools { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; }
+.wl-zoom-tools .btn.wl-zoom { padding: 3px 9px; font-size: 13px; font-weight: 700; line-height: 1.2; min-width: 30px; justify-content: center; }
+.wl-zoom-hint { font-size: 11px; color: var(--text-faint); margin-left: 6px; }
+.wl-map-wrap.custom { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent); }
 .wl-sea { fill: var(--bg-sunken); }
 .wl-land { fill: var(--bg-elev-2); stroke: var(--border-strong); stroke-width: .5; vector-effect: non-scaling-stroke; }
 .wl-land.wl-fill-bad { fill: color-mix(in srgb, var(--tone-bad-fg) 28%, var(--bg-elev-2)); }
@@ -910,6 +915,7 @@ ul.wf-list li { margin-bottom: 8px; font-size: 13px; line-height: 1.5; }
 .wl-marker.ignored .wl-dot { opacity: .55; }
 .wl-marker:hover .wl-dot, .wl-marker:focus-visible .wl-dot { stroke: var(--focus-ring); stroke-width: 2.5; }
 .wl-marker .wl-label { fill: var(--text); font-family: var(--font-sans); font-weight: 700; paint-order: stroke; stroke: var(--bg-sunken); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
+.wl-marker .wl-mk { transform-box: view-box; }
 .wl-marker .wl-mv { font-weight: 800; paint-order: stroke; stroke: var(--bg-sunken); stroke-width: 2px; pointer-events: none; }
 .wl-marker .wl-mv-up { fill: var(--tone-bad-fg); }
 .wl-marker .wl-mv-down { fill: var(--tone-good-fg); }
@@ -1051,6 +1057,7 @@ table.wl-indicators tr.ignored td { opacity: .7; }
   .wl-detail-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 640px) {
+  .wl-zoom-hint { display: none; }
   .wl-board, .wl-act-grid, .wl-detail-grid { grid-template-columns: 1fr; }
   .wl-head-row { flex-direction: column; }
   .wl-stale { white-space: normal; }
