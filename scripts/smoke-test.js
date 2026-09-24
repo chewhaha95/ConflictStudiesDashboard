@@ -79,6 +79,11 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("every item carries a researched timeline (4–8 chronological entries, ISO dates, source URLs)", wl.items.every(i => Array.isArray(i.timeline) && i.timeline.length >= 4 && i.timeline.length <= 8 && i.timeline.every(t => /^\d{4}-\d{2}-\d{2}$/.test(t.date) && t.text && t.text.length > 20 && /^https?:/.test(t.url || "")) && i.timeline.every((t, k) => k === 0 || t.date >= i.timeline[k - 1].date)));
   check("every item carries three team-set topics (topic, why, adaptability, watch status + text)", wl.items.every(i => Array.isArray(i.topics) && i.topics.length === 3 && i.topics.every(x => x.topic && x.why && ["High", "Medium", "Low"].includes(x.adaptability) && x.watch && x.watch.text)));
   check("every indicator references a topic index (0–2) or null for cross-cutting", wl.items.every(i => i.next.every(n => n.topic === null || (Number.isInteger(n.topic) && n.topic >= 0 && n.topic < i.topics.length))));
+  check("every item carries a topic assessment (dated, 1–2 paragraphs of 120–260 words, 3–5 sourced links, no publication prompts)", wl.items.every(i => {
+    const a = i.assessment; if (!a || !/^\d{4}-\d{2}-\d{2}$/.test(a.date) || !Array.isArray(a.text) || a.text.length < 1 || a.text.length > 2) return false;
+    const words = a.text.join(" ").split(/\s+/).filter(Boolean).length;
+    return words >= 120 && words <= 260 && Array.isArray(a.sources) && a.sources.length >= 3 && a.sources.length <= 5 && a.sources.every(x => x.label && /^https?:/.test(x.url)) && !/CSI Flash|weekly awareness|should publish/i.test(a.text.join(" "));
+  }));
   check("every item carries a current-status summary with 2+ article links", wl.items.every(i => i.status && i.status.summary.length > 80 && i.status.sources.length >= 2 && i.status.sources.every(s => /^https?:/.test(s.url))));
   check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
   check("register is reviewed daily (cadenceDays = 1)", wl.meta.cadenceDays === 1);
@@ -286,8 +291,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   reg.querySelector(`[data-wl-toggle="${probe.id}"]`).click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
   const det = wv.querySelector(`tr[data-wl-detail="${probe.id}"]`);
-  check("expanded row shows only the latest open-source reporting and the timeline (no changed / next / ignore cards)", !!det &&
-    /Latest open-source reporting/.test(det.textContent) && /Timeline so far/.test(det.textContent) && det.querySelectorAll(".wl-detail-grid > .wl-d-block").length === 2 &&
+  check("expanded row shows the latest open-source reporting, the timeline and the topic assessment (no changed / next / ignore cards)", !!det &&
+    /Latest open-source reporting/.test(det.textContent) && /Timeline so far/.test(det.textContent) && /Topic assessment/.test(det.textContent) && det.querySelectorAll(".wl-detail-grid > .wl-d-block").length === 3 &&
     !/What materially changed/.test(det.textContent) && !/What might happen next/.test(det.textContent) && !/Ignore for now\?/.test(det.textContent) && !/What CSI should do/.test(det.textContent) &&
     !/\bQ[1-7]\b/.test(det.textContent) && !/Brief signal/.test(det.textContent) && !det.querySelector(".wl-brief") && !/State history/.test(det.textContent));
   check("detail: timeline is a chronological dated recap with no state chips (history notes stand in until the register carries `timeline`)", (() => {
@@ -295,12 +300,19 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const lis = [...det.querySelectorAll(".wl-hist .wl-tl-list li")];
     return lis.length === exp.length && !det.querySelector(".wl-hist .wl-state") && exp.every((e, k) => lis[k].textContent.includes(fmtD(e.date)) && lis[k].textContent.includes(e.text) && (!e.url || lis[k].querySelector(`a.wl-tl-src[href="${e.url}"]`))) && lis[lis.length - 1].classList.contains("wl-tl-latest");
   })());
+  check("detail: topic assessment card beside the timeline lists the three topics with watch tags, the paragraphs, the date and read-more links", (() => {
+    const card = det.querySelector(".wl-hist + .wl-assess"); if (!card) return false;
+    const a = probe.assessment;
+    return card.querySelectorAll(".wl-as-topics li").length === 3 && card.querySelectorAll(".wl-as-topics .wl-tref").length === 3 && card.querySelectorAll(".wl-as-topics .wl-wstat").length >= 3 &&
+      [...card.querySelectorAll(".wl-as-p")].map(p => p.textContent) .join("\n") === a.text.join("\n") && card.querySelector(".wl-as-date").textContent.includes(fmtD(a.date)) &&
+      card.querySelectorAll(".wl-src-list a[href^='http']").length === a.sources.length && !/CSI Flash|should publish|Priority|Archive/.test(card.textContent);
+  })());
   check("detail: without a live feed the reporting block explains the daily sync", /Latest open-source reporting/.test(det.textContent) && /No live feed loaded/.test(det.textContent));
   check("register: Coverage column present, empty without a feed", [...reg.querySelectorAll("thead th")].some(th => /Coverage/.test(th.textContent)) && reg.querySelectorAll("td.wl-feed-cell .wl-spark").length === 0);
   check("header: no live-feed status badge without a feed", !wv.querySelector(".wl-feedstat"));
   check("detail: source links rendered when the item carries sources", (probe.sources || []).length
-    ? det.querySelectorAll(".wl-src-list a[href^='http']").length === probe.sources.length
-    : !det.querySelector(".wl-src-list"));
+    ? det.querySelectorAll(".wl-hist .wl-src-list a[href^='http']").length === probe.sources.length
+    : !det.querySelector(".wl-hist .wl-src-list"));
   // Q5 indicators table
   const ind = wv.querySelector("#wl-indicators");
   const indRows = [...ind.querySelectorAll("tbody tr:not(.wl-sep)")];

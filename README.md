@@ -66,6 +66,12 @@ columns, and each indicator in `next` references the topic it informs
 (`topic` index, or null for cross-cutting), which the Next indicator column
 and the indicators table show. The automated review does not edit topics.
 
+Beside the timeline in the expanded row, a **Topic assessment** card
+(`assessment`: date, one or two paragraphs, 3–5 sources) reads the last two
+weeks of open-source evidence through those three topics: what each watch
+area is showing and what it implies for the "why it matters" question. The
+daily review rewrites it from open sources.
+
 ### Manual review (same procedure)
 
 Edit `watchlist.json` only — the dashboard derives rank, movements, change
