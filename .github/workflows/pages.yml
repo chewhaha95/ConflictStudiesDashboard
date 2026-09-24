@@ -14,10 +14,12 @@ permissions:
   pages: write
   id-token: write
 
-# Allow one concurrent deployment; newer pushes supersede in-progress ones.
+# One deployment at a time. Not cancel-in-progress: the feed and weekly sync
+# workflows deploy in this group too, and cancelling their deploy would leave
+# the site behind the data they just committed. Deploys are short; queue them.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
