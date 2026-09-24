@@ -1,0 +1,5 @@
+# Cloudflare Pages response headers (GitHub Pages ignores this file).
+# Every asset revalidates on each load, so a deploy is never hidden behind a
+# cached app.js / styles.css; the live JSON files are fetched with no-store anyway.
+/*
+  Cache-Control: no-cache

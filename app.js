@@ -65,6 +65,31 @@
     return res.json();
   }
 
+  /* Live data files (register, feed, weekly editions) are committed to main
+   * by the sync workflows and served from the GitHub Pages origin, which the
+   * page names in <meta name="data-origin">. A mirror of the app on another
+   * host (Cloudflare Pages, a custom domain) reads them from that origin, so
+   * it stays current without redeploying on every data commit; GitHub Pages
+   * sends Access-Control-Allow-Origin: * for them. The same origin, localhost
+   * and file:// read the files next to the page; a failed cross-origin read
+   * falls back to the local copy. */
+  function dataOrigin() {
+    const m = document.querySelector('meta[name="data-origin"]');
+    const origin = m && (m.getAttribute("content") || "").trim();
+    if (!origin) return null;
+    let host; try { host = new URL(origin).hostname; } catch (e) { return null; }
+    const here = (location && location.hostname) || "";
+    if (!here || here === host || here === "localhost" || here === "127.0.0.1" || location.protocol === "file:") return null;
+    return origin.replace(/\/?$/, "/");
+  }
+  async function fetchData(name) {
+    const base = dataOrigin();
+    if (base) {
+      try { const r = await fetch(base + name, { cache: "no-store" }); if (r.ok) return r; } catch (e) { /* fall back to the local copy */ }
+    }
+    return fetch(name, { cache: "no-store" });
+  }
+
   /* ----------------------------------------------------------------------
    * 3. TIME UTILITIES  (Monday-to-Monday bucketing & grouping)
    * -------------------------------------------------------------------- */
@@ -2574,7 +2599,7 @@
       // Optional — fall back to seed data. Supports the multi-edition shape
       // ({ editions: [...] }) and the legacy single-edition shape.
       try {
-        const r = await fetch("weekly-live.json", { cache: "no-store" });
+        const r = await fetchData("weekly-live.json");
         if (r.ok) {
           const lw = await r.json();
           let eds = Array.isArray(lw && lw.editions) ? lw.editions : (lw && lw.__live && lw.theatres ? [lw] : []);
@@ -2594,11 +2619,11 @@
       // Watchlist tab. Both optional: the tab explains itself if the register is
       // missing, and the map falls back to markers-only without the base map.
       try {
-        const r = await fetch("watchlist.json", { cache: "no-store" });
+        const r = await fetchData("watchlist.json");
         if (r.ok) { const wl = await r.json(); if (wl && Array.isArray(wl.items) && wl.meta && wl.definitions) DB.watchlist = wl; }
       } catch (e) { /* no watchlist — tab shows guidance */ }
       try {
-        const r = await fetch("watchlist-live.json", { cache: "no-store" });
+        const r = await fetchData("watchlist-live.json");
         if (r.ok) { const lf = await r.json(); if (lf && lf.__live && lf.items) DB.watchlistLive = lf; }
       } catch (e) { /* no live feed — register only */ }
       try {
