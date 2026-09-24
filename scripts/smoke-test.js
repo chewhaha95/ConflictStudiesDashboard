@@ -273,6 +273,28 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   wv.querySelector('.wl-region[data-region="world"]').click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
   check("focus returns to the world view", wv.querySelector("svg.wl-svg").getAttribute("viewBox") === "0 0 1000 394");
+  // pan / zoom: wheel zooms in place (no re-render), markers stay screen-sized, drag pans, reset restores the preset
+  (() => {
+    const svg = wv.querySelector("svg.wl-svg");
+    svg.getBoundingClientRect = () => ({ left: 0, top: 0, width: 1000, height: 394 });
+    const vb0 = svg.getAttribute("viewBox");
+    svg.dispatchEvent(new window.WheelEvent("wheel", { deltaY: -300, clientX: 500, clientY: 197, bubbles: true, cancelable: true }));
+    const vb1 = svg.getAttribute("viewBox").split(" ").map(Number);
+    const scale1 = svg.querySelector(".wl-marker .wl-mk").getAttribute("transform");
+    check("map: wheel zooms the viewBox in place around the cursor", vb1[2] < 1000 && vb1[2] > 100 && svg === wv.querySelector("svg.wl-svg") && vb0 !== svg.getAttribute("viewBox"));
+    check("map: markers are counter-scaled so they keep their screen size", /scale\(0\.\d+\)/.test(scale1) && Math.abs(parseFloat(scale1.match(/scale\(([\d.]+)\)/)[1]) - vb1[2] / 1000) < 0.001);
+    check("map: region chips unpressed while in a free view", [...wv.querySelectorAll(".wl-region")].every(b => b.getAttribute("aria-pressed") === "false"));
+    svg.dispatchEvent(new window.MouseEvent("pointerdown", { button: 0, clientX: 400, clientY: 200, bubbles: true }));
+    svg.dispatchEvent(new window.MouseEvent("pointermove", { clientX: 300, clientY: 150, bubbles: true }));
+    svg.dispatchEvent(new window.MouseEvent("pointerup", { clientX: 300, clientY: 150, bubbles: true }));
+    const vb2 = svg.getAttribute("viewBox").split(" ").map(Number);
+    check("map: dragging pans the view (same zoom, shifted origin)", Math.abs(vb2[2] - vb1[2]) < 0.01 && vb2[0] > vb1[0] && vb2[1] > vb1[1]);
+    wv.querySelector('.wl-zoom[data-zoom="reset"]').click();
+  })();
+  await sleep(40);
+  wv = doc.querySelector("#view-watchlist .view-body");
+  check("map: reset returns to the selected focus preset", wv.querySelector("svg.wl-svg").getAttribute("viewBox") === "0 0 1000 394" && wv.querySelector('.wl-region[data-region="world"]').getAttribute("aria-pressed") === "true");
+  check("map: zoom buttons present (+ / − / reset)", wv.querySelectorAll(".wl-zoom").length === 3);
   const t1n = wl.items.filter(i => i.tier === 1).length;
   wv.querySelector('.wl-f-tier[data-tier="1"]').click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
