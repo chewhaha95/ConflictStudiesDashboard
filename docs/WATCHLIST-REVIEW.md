@@ -59,12 +59,15 @@ same way.
      relevance; Watch = baseline monitoring; Archive = reserve, revisit on a
      named trigger); if it changed from yesterday's, append
      `{date, state, note}` to `history`;
-   - maintain `timeline`: 4–8 entries `{date, text}` (ISO date, one plain
-     sentence, no state names) that recap the key events of the conflict's
-     current phase so far, in chronological order. Append today's event when
-     it is material, merge or drop the least important when over 8, and do
-     not rewrite past entries without cause. The dashboard shows it as
-     "Timeline so far" in the expanded row;
+   - maintain `timeline`: 4–8 entries `{date, text, url}` (ISO date of the
+     event, one plain sentence, no state names, the open-source article or
+     statement the entry rests on; add `"unverified": true` when it rests on
+     a single source) that recap the key events of the conflict's current
+     phase so far, in chronological order. Entries come from open-source
+     research, never from the register's own text. Append today's event
+     when it is material, merge or drop the least important when over 8,
+     and do not rewrite past entries without cause. The dashboard shows it
+     as "Timeline so far" in the expanded row;
    - append today's snapshot to `snapshots`:
      `{date: <today>, state, phase, escalation, tempo, adaptation, sgExposure}`
      with the values just set (one snapshot per review date; replace the
