@@ -311,6 +311,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       [...card.querySelectorAll(".wl-as-p")].map(p => p.textContent) .join("\n") === a.text.join("\n") && card.querySelector(".wl-as-date").textContent.includes(fmtD(a.date)) &&
       card.querySelectorAll(".wl-src-list a[href^='http']").length === a.sources.length && !/CSI Flash|should publish|Priority|Archive/.test(card.textContent);
   })());
+  check("page names the GitHub Pages data origin for mirrors (Cloudflare Pages / custom domain)", /<meta name="data-origin" content="https:\/\/chewhaha95\.github\.io\/ConflictStudiesDashboard\/"/.test(html));
   check("detail: without a live feed the reporting block explains the daily sync", /Latest open-source reporting/.test(det.textContent) && /No live feed loaded/.test(det.textContent));
   check("register: Coverage column present, empty without a feed", [...reg.querySelectorAll("thead th")].some(th => /Coverage/.test(th.textContent)) && reg.querySelectorAll("td.wl-feed-cell .wl-spark").length === 0);
   check("header: no live-feed status badge without a feed", !wv.querySelector(".wl-feedstat"));
@@ -680,6 +681,21 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       };
     })()
   };
+  // --- 1c. A mirror host (pages.dev) reads the live data files from the data origin
+  {
+    const domM = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true, url: "https://conflict-watchlist.pages.dev/conflict-dashboard.html" });
+    const seen = [];
+    domM.window.fetch = async (u) => { seen.push(String(u)); return routeFetch({ ok: false, status: 404, json: async () => ({}) })(u); };
+    domM.window.Chart = function () { return { destroy() {} }; }; domM.window.Chart.prototype = {};
+    domM.window.HTMLCanvasElement.prototype.getContext = () => ({});
+    domM.window.eval(appjs); await sleep(250);
+    const org = "https://chewhaha95.github.io/ConflictStudiesDashboard/";
+    check("mirror host: register, feed and weekly editions are fetched from the GitHub Pages data origin; code assets stay local",
+      seen.includes(org + "watchlist.json") && seen.includes(org + "watchlist-live.json") && seen.includes(org + "weekly-live.json") && seen.includes("sample-data.json") && seen.includes("assets/world-110m.json") && !seen.includes("watchlist.json"));
+    check("mirror host: the Watchlist tab renders from the cross-origin register", domM.window.document.querySelectorAll("#wl-register tbody tr.wl-row").length === wl.items.length);
+    domM.window.close();
+  }
+
   const dom2 = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true });
   global.window = dom2.window; global.document = dom2.window.document;
   // Live open-source feed stub: a 30-day timeline with a surge on the first item, headlines on all

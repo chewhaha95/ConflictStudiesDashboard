@@ -90,6 +90,29 @@ flags, staleness and surges:
 The Watchlist stands entirely on open sources: it neither displays nor uses
 the weekly brief shown on the Weekly tab.
 
+## Hosting and sharing
+
+The site is static. GitHub Pages (`.github/workflows/pages.yml`) is the primary
+deploy and the **data origin**: the sync workflows and the daily review commit
+`watchlist.json`, `watchlist-live.json` and `weekly-live.json` to `main`, and
+Pages serves them with `Access-Control-Allow-Origin: *`.
+
+A mirror on another host gives the dashboard a link that does not show the
+GitHub account. `conflict-dashboard.html` names the data origin in
+`<meta name="data-origin">`; when the page is served from any other host it
+reads the three live JSON files from that origin (falling back to its own copy
+if the read fails), so the mirror stays current without redeploying on every
+data commit. Same-origin, localhost and `file://` previews ignore the meta tag.
+
+**Cloudflare Pages mirror.** Workers & Pages → Create → Pages → Connect to
+Git → this repository, production branch `main`, no build command, output
+directory `/`. Under the project's Settings → Builds → *Build watch paths*,
+exclude `watchlist-live.json`, `watchlist.json` and `weekly-live.json` so the
+hourly feed commits do not consume the free build quota; code merges still
+deploy. `_headers` sets `Cache-Control: no-cache` there so a deploy is never
+hidden behind a cached `app.js`. A custom domain can be attached to either
+host.
+
 ## Development
 
 ```
