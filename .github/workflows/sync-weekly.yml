@@ -61,6 +61,14 @@ jobs:
         with:
           enablement: true
 
+      - name: Stamp asset versions (cache busting)
+        # Rewrites app.js?v=… / styles.css?v=… to the deployed commit so browsers never
+        # keep a stale script after a deploy. Applied to the artifact only, not committed.
+        run: |
+          v="${GITHUB_SHA::10}"
+          sed -i -E "s/(app\.js|styles\.css)\?v=[A-Za-z0-9]+/\1?v=$v/g" conflict-dashboard.html
+          grep -o '(app\.js|styles\.css)?v=[A-Za-z0-9]*' -E conflict-dashboard.html
+
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
