@@ -1785,6 +1785,9 @@
    * -------------------------------------------------------------------- */
   const Watchlist = {
     DIMS: ["phase", "escalation", "tempo", "adaptation", "sgExposure"],
+    TABLE_DIMS: ["escalation", "tempo", "adaptation"],      // dimensions shown as register columns
+    colDesc(k) { return ((this.defs().columns || {})[k]) || ""; },
+    levelDesc(d, v) { const def = this.defs().dimensions[d]; return def && def.levels && def.levels[v] ? def.levels[v] : ""; },
     TIER_R: { 1: 7, 2: 5.5, 3: 4.5 },          // marker radius by tier (map units at world zoom)
     NEAR_DAYS: 14,
 
@@ -1950,8 +1953,17 @@
     dimCell(it, d) {
       const v = it.dims[d]; if (!v) return `<td>—</td>`;
       const changed = v.prev != null && v.prev !== v.now;
-      return `<td class="wl-dim ${changed ? "wl-chg" : ""}" title="${esc(changed ? `Previous review: ${v.prev} → now: ${v.now}` : `Unchanged since previous review (${v.now})`)}">` +
+      const lvl = this.levelDesc(d, v.now);
+      const tip = (changed ? `Previous review: ${v.prev} → now: ${v.now}.` : `Unchanged since the previous review (${v.now}).`) + (lvl ? ` ${v.now}: ${lvl}` : "");
+      return `<td class="wl-dim ${changed ? "wl-chg" : ""}" title="${esc(tip)}">` +
         (changed ? `<span class="wl-prev">${esc(v.prev)}</span> → ` : "") + `<strong>${esc(v.now)}</strong></td>`;
+    },
+    statusCell(it) {
+      const st = it.status || {}; const ph = it.dims.phase || {};
+      const changed = ph.prev != null && ph.prev !== ph.now;
+      const links = (st.sources || []).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener" title="${esc(s.label)}">${esc(s.label)} ↗</a>`).join("");
+      return `<td class="wl-status"><div class="wl-status-sum">${esc(st.summary || ph.now || "")}</div>${links ? `<div class="wl-status-links">${links}</div>` : ""}
+        <div class="wl-phase-line" title="${esc(this.defs().dimensions.phase.desc || "")}">Phase: <b>${esc(ph.now || "—")}</b>${changed ? ` <span class="wl-prev">was: ${esc(ph.prev)}</span>` : ""}</div></td>`;
     },
 
     // ---- MAP (self-contained SVG, equirectangular, no tiles) -------------
@@ -2171,7 +2183,9 @@
     register(list) {
       const ranked = this.rank(list);
       const f = State.watchlist;
-      const dimHead = this.DIMS.map(d => `<th title="${esc(this.defs().dimensions[d].label)}">${esc(this.defs().dimensions[d].short)}</th>`).join("");
+      const dimHead = this.TABLE_DIMS.map(d => { const def = this.defs().dimensions[d]; const lv = def.levels ? Object.entries(def.levels).map(([k, v]) => `${k}: ${v}`).join("\n") : "";
+        return `<th class="wl-th-help" title="${esc(`${def.label}. ${def.desc || ""}${lv ? "\n\n" + lv : ""}`)}">${esc(def.short)}</th>`; }).join("");
+      const th = (k, label) => `<th class="wl-th-help" title="${esc(this.colDesc(k))}">${label}</th>`;
       const rows = ranked.map((it, i) => {
         const open = f.expanded.has(it.id);
         const nd = this.nextDue(it);
@@ -2182,19 +2196,19 @@
           <td>${this.tierTag(it.tier)}</td>
           <td class="theatre-cell"><button class="wl-expand" data-wl-toggle="${esc(it.id)}" aria-expanded="${open}" title="${open ? "Collapse" : "Expand"}">${open ? "▾" : "▸"}</button> ${esc(it.name)}${it.briefTheatre ? ` <span class="t-chip" title="Linked to the weekly brief theatre">brief</span>` : ""}</td>
           <td>${this.stateChip(it.state, this.moveGlyph(it))}</td>
-          ${this.DIMS.map(d => this.dimCell(it, d)).join("")}
-          <td class="wl-chgn ${chg ? "wl-chg" : ""}" title="Dimensions changed since the previous review">${chg ? `${chg} changed` : "—"}</td>
+          ${this.statusCell(it)}
+          ${this.TABLE_DIMS.map(d => this.dimCell(it, d)).join("")}
           ${this.feedCell(it)}
           <td class="wl-next">${nd ? `<span class="wl-due wl-due-${ds.cls}">${nd.due ? esc(this.fmtDate(nd.due)) : "undated"}</span> <span class="wl-next-t">${esc(nd.text)}</span>` : "—"}</td>
           <td>${this.confChip(it.confidence)}</td>
           <td>${this.scoreChip(it)}</td>
-        </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="${11 + this.DIMS.length}">${this.detail(it)}</td></tr>` : ""}`;
+        </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="${9 + this.TABLE_DIMS.length}">${this.detail(it)}</td></tr>` : ""}`;
       }).join("");
-      return `<div class="section"><div class="section-head"><h2>What materially changed?</h2><span class="hint">Register ordered by attention · highlighted cells changed since the previous review (hover for previous value) · expand a row for changes, indicators, the ignore verdict and the brief signal</span>
+      return `<div class="section"><div class="section-head"><h2>What materially changed?</h2><span class="hint">Register ordered by attention · highlighted cells changed since the previous review · hover a column header or a value for how it is defined · expand a row for changes, indicators, the ignore verdict and the brief signal</span>
           <div class="head-actions"><button class="btn" data-wl-expand-all>Expand all</button><button class="btn" data-wl-collapse-all>Collapse all</button></div></div>
         <div class="card matrix-wrap"><table class="matrix wl-register" id="wl-register"><thead><tr>
-          <th>#</th><th>Tier</th><th>Conflict</th><th>State</th>${dimHead}<th>Changed</th><th title="Open-source coverage, last 30 days (GDELT); shaded = last 7 days">Coverage</th><th>Next indicator</th><th>Conf.</th><th title="Attention score">Attn</th>
-        </tr></thead><tbody>${rows || `<tr><td colspan="${11 + this.DIMS.length}" class="empty">No items match the current filters.</td></tr>`}</tbody></table></div></div>`;
+          <th>#</th>${th("tier", "Tier")}<th>Conflict</th>${th("state", "State")}${th("status", "Current status")}${dimHead}${th("coverage", "Coverage")}${th("nextIndicator", "Next indicator")}${th("confidence", "Conf.")}${th("attention", "Attn")}
+        </tr></thead><tbody>${rows || `<tr><td colspan="${9 + this.TABLE_DIMS.length}" class="empty">No items match the current filters.</td></tr>`}</tbody></table></div></div>`;
     },
 
     indicators(list) {
@@ -2233,6 +2247,7 @@
           <p><strong>Attention score.</strong> ${esc((d.attentionScore || {}).desc || "")}</p>
           <p><strong>Moved / changed.</strong> A state move is <code>prevState ≠ state</code>; a changed dimension is <code>prev ≠ now</code>. The brief signal compares the latest brief edition with the one before it for linked theatres.</p>
           <p><strong>Staleness.</strong> Flagged when more than 1.5× the cadence has passed since <code>reviewDate</code>.</p>
+          <p><strong>Criteria.</strong> ${this.DIMS.filter(d => d !== "phase").map(d => { const def = this.defs().dimensions[d]; return `<em>${esc(def.label)}</em> — ${esc(def.desc || "")} ${def.levels ? Object.entries(def.levels).map(([k, v]) => `<b>${esc(k)}</b>: ${esc(v)}`).join(" ") : ""}`; }).join("<br>")}</p>
           <p><strong>Live feed.</strong> ${esc((d.feed || {}).source || "")} ${esc((d.feed || {}).surgeRule || "")} ${esc((d.feed || {}).titleFilter || "")}</p>
           <p><strong>Automated review.</strong> The register itself is rewritten weekly by a scheduled open-source review (see <code>docs/WATCHLIST-REVIEW.md</code>) and published directly; the brief is displayed as a signal, not used as a source.</p>
           <p><strong>Updating.</strong> ${esc(m.notes || "")} Source file: <code>watchlist.json</code>.</p>
