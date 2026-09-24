@@ -2627,7 +2627,20 @@
       Caps.computeDynamics();
 
       // header meta
-      el("#meta-updated").textContent = Time.fmtDateTime(DB.meta.lastUpdated);
+      // "Last updated" = the newest real sync across the live sources (brief editions,
+      // watchlist feed, watchlist review), falling back to the seed timestamp.
+      (() => {
+        const cands = [
+          { t: DB.liveSyncedAt, what: "brief sync" },
+          { t: DB.watchlistLive && DB.watchlistLive.syncedAt, what: "open-source feed sync" },
+          { t: DB.watchlist && DB.watchlist.meta && DB.watchlist.meta.reviewDate ? DB.watchlist.meta.reviewDate + "T00:00:00Z" : null, what: "watchlist review" },
+          { t: DB.meta.lastUpdated, what: "seed data" }
+        ].filter(c => c.t && !isNaN(new Date(c.t))).sort((p, q) => new Date(q.t) - new Date(p.t));
+        const top = cands[0];
+        el("#meta-updated").textContent = Time.fmtDateTime(top.t);
+        el("#meta-updated").title = cands.map(c => `${c.what}: ${Time.fmtDateTime(c.t)}`).join("\n");
+        const lbl = el("#meta-updated").previousElementSibling; if (lbl) lbl.textContent = `Last updated · ${top.what}`;
+      })();
 
       this.buildFilterControls();
       this.buildBriefsMenu();
