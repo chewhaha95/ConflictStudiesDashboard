@@ -639,6 +639,10 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   // live open-source feed wired through: header status, sparklines, surge flag + score bonus, headlines in the detail
   const wv2 = d2.querySelector("#view-watchlist .view-body");
   check("feed: header shows the live feed as synced", /● LIVE feed · synced/.test(wv2.querySelector(".wl-feedstat").textContent) && !wv2.querySelector(".wl-feedstat.off"));
+  check("header 'Last updated' reports the newest live sync, not the seed timestamp", (() => {
+    const v = d2.querySelector("#meta-updated"), l = v.previousElementSibling;
+    return !/30 May 2026/.test(v.textContent) && /open-source feed sync|brief sync/.test(l.textContent) && /seed data/.test(v.title);
+  })());
   check("feed: every register row carries a 30-day coverage sparkline + 7-day count", wv2.querySelectorAll("#wl-register tbody tr.wl-row td.wl-feed-cell .wl-spark").length === wl.items.length && wv2.querySelectorAll("#wl-register .wl-feed-n b").length === wl.items.length);
   check("feed: surge flagged on the surging item only and adds +8 to its attention score", (() => {
     const surged = wl.items[0];
