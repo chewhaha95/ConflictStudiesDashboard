@@ -258,7 +258,11 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("Q2: board counts match the register", cols.map(c => c.querySelectorAll(".wl-card-chip").length).join(",") === stateNames.map(s => wl.items.filter(i => i.state === s).length).join(","));
   // Q3/Q4 register
   const reg = wv.querySelector("#wl-register");
-  check(`Q3/Q4: register has ${N} rows ordered by attention`, reg.querySelectorAll("tbody tr.wl-row").length === N && reg.querySelector("tbody tr.wl-row").textContent.includes(ranked[0].name));
+  check(`Q3/Q4: register has ${N} rows ordered by tier (T1 first), then attention`, (() => {
+    const rows = [...reg.querySelectorAll("tbody tr.wl-row")]; if (rows.length !== N) return false;
+    const exp = ranked.slice().sort((a, b) => a.tier - b.tier);   // stable sort keeps attention order within a tier
+    return rows.every((r, k) => r.getAttribute("data-wl-row") === exp[k].id) && rows.every((r, k) => k === 0 || wl.items.find(i => i.id === r.getAttribute("data-wl-row")).tier >= wl.items.find(i => i.id === rows[k - 1].getAttribute("data-wl-row")).tier);
+  })());
   check("register: no Esc. risk / Tempo / Adaptation / SG exposure / Changed columns", ![...reg.querySelectorAll("thead th")].some(th => /Esc\. risk|Tempo|Adaptation|SG exposure|Changed/i.test(th.textContent)) && !reg.querySelector("td.wl-dim"));
   check("register: 'Topics of interest', 'Why it matters' and 'Watch areas' columns carry each item's three topics", (() => {
     const ths = [...reg.querySelectorAll("thead th")].map(th => th.textContent.trim());
