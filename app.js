@@ -2066,7 +2066,7 @@
 
     // ---- sections ------------------------------------------------------------
     header(list) {
-      const m = this.meta(), st = this.stale();
+      const m = this.meta();
       const f = State.watchlist;
       const tierChips = Object.keys(this.defs().tiers).map(t =>
         `<button class="fchip wl-f-tier" aria-pressed="${f.tiers.has(t)}" data-tier="${t}" title="${esc(this.defs().tiers[t].desc)}">Tier ${t} · ${esc(this.defs().tiers[t].name)}</button>`).join("");
@@ -2076,10 +2076,6 @@
         <div class="wl-head-row">
           <div>
             <div class="wl-title">${esc(m.title || "Conflict Watchlist")} <span class="wl-asof">— daily review as of ${esc(this.fmtDate(m.reviewDate))}</span></div>
-          </div>
-          ${(() => { const lf = this.feedMeta(); const h = this.feedAge(); return lf ? `<div class="wl-feedstat ${h != null && h > 36 ? "stale" : ""}" title="${esc(lf.source || "")} · ${lf.refreshed || "?"}/${lf.total || "?"} items refreshed">● LIVE feed · synced ${h == null ? "—" : h < 1 ? "under an hour ago" : h + "h ago"}</div>` : `<div class="wl-feedstat off">Live feed not loaded</div>`; })()}
-          <div class="wl-stale ${st.overdue ? "overdue" : "fresh"}" title="${esc(st.overdue ? `Review due ${this.fmtDate(st.nextDue)}; ${st.days} days since the last review.` : `Next review due ${this.fmtDate(st.nextDue)}.`)}">
-            ${st.overdue ? `⚠ Review overdue — ${st.days} days since last review` : `✓ Reviewed ${st.days} day${st.days === 1 ? "" : "s"} ago`}
           </div>
         </div>
         <div class="wl-filter-row">
@@ -2240,7 +2236,6 @@
         <div class="wl-method-body">
           <p><strong>Attention score.</strong> ${esc((d.attentionScore || {}).desc || "")}</p>
           <p><strong>Moved / changed.</strong> Every comparison is made against the register as it stood <code>compareDays</code> (${this.compareDays()}) days before the review date, taken from each item's per-review <code>snapshots</code> (the newest snapshot at least that old; the oldest on file until a full window has accrued). A state move is baseline state ≠ <code>state</code>; a changed dimension is baseline value ≠ <code>now</code>.</p>
-          <p><strong>Staleness.</strong> Flagged when more than 1.5× the cadence has passed since <code>reviewDate</code>.</p>
           <p><strong>Criteria.</strong> ${this.DIMS.filter(d => d !== "phase").map(d => { const def = this.defs().dimensions[d]; return `<em>${esc(def.label)}</em> — ${esc(def.desc || "")} ${def.levels ? Object.entries(def.levels).map(([k, v]) => `<b>${esc(k)}</b>: ${esc(v)}`).join(" ") : ""}`; }).join("<br>")}</p>
           <p><strong>Live feed.</strong> ${esc((d.feed || {}).source || "")} ${esc((d.feed || {}).surgeRule || "")} ${esc((d.feed || {}).titleFilter || "")}</p>
           <p><strong>Automated review.</strong> The register itself is rewritten daily by a scheduled open-source review (see <code>docs/WATCHLIST-REVIEW.md</code>) and published directly from open sources; the weekly brief on the Weekly tab is neither shown here nor used as a source.</p>
@@ -2451,38 +2446,6 @@
       Render.renderActiveView();
     },
 
-    // Quick-access "Weekly Briefs" menu in the top control bar: links straight to
-    // each synced brief edition (and the source site), plus an in-app jump to the
-    // Weekly tab. Falls back to the brief site when no live editions are loaded.
-    briefSite() { return DB.liveSiteUrl || "https://conflictstudiesandinsights.pages.dev"; },
-    buildBriefsMenu() {
-      const menu = el("#briefs-menu"); if (!menu) return;
-      const site = this.briefSite();
-      const eds = DB.liveEditions || [];
-      const rows = [`<button class="briefs-item briefs-inapp" data-open-weekly role="menuitem">📊 Open the Weekly tab (in dashboard)</button>`];
-      if (eds.length) {
-        rows.push(`<div class="briefs-sep">Read the original briefs${DB.liveSyncedAt ? ` · synced ${esc(Time.fmtDate ? Time.fmtDate(DB.liveSyncedAt) : DB.liveSyncedAt.slice(0, 10))}` : ""}</div>`);
-        eds.forEach((e, i) => {
-          const url = e.sourceUrl || site;
-          rows.push(`<a class="briefs-item" role="menuitem" href="${esc(url)}" target="_blank" rel="noopener">${i === 0 ? `<span class="briefs-live">● LIVE</span> ` : ""}${esc(e.rangeLabel || Time.fmtRange(e.weekStart, e.weekEnd))} <span class="briefs-ext">↗</span></a>`);
-        });
-      } else {
-        rows.push(`<div class="briefs-note">Live editions sync automatically — open the brief site to read the latest.</div>`);
-      }
-      rows.push(`<a class="briefs-item briefs-site" role="menuitem" href="${esc(site)}" target="_blank" rel="noopener">🌐 Open the full brief site <span class="briefs-ext">↗</span></a>`);
-      menu.innerHTML = rows.join("");
-      const inapp = menu.querySelector("[data-open-weekly]");
-      if (inapp) inapp.addEventListener("click", () => { this.toggleBriefsMenu(false); State.horizon = "weekly"; this.rerender(); });
-    },
-    toggleBriefsMenu(force) {
-      const btn = el("#briefs-toggle"), menu = el("#briefs-menu"), wrap = document.querySelector(".briefs-access");
-      if (!btn || !menu) return;
-      const open = force != null ? force : menu.hidden;
-      menu.hidden = !open;
-      btn.setAttribute("aria-expanded", String(open));
-      if (wrap) wrap.classList.toggle("open", open);
-    },
-
     buildFilterControls() {
       // theatre checkboxes
       el("#filter-theatres").innerHTML = DB.theatres.map(t =>
@@ -2503,13 +2466,6 @@
       document.querySelectorAll(".tab-btn").forEach(b =>
         b.addEventListener("click", () => { State.horizon = b.dataset.horizon; this.rerender(); }));
 
-      // weekly-briefs quick-access menu (top bar)
-      const briefsBtn = el("#briefs-toggle");
-      if (briefsBtn) {
-        briefsBtn.addEventListener("click", e => { e.stopPropagation(); this.toggleBriefsMenu(); });
-        document.addEventListener("click", e => { if (!e.target.closest(".briefs-access")) this.toggleBriefsMenu(false); });
-        document.addEventListener("keydown", e => { if (e.key === "Escape") this.toggleBriefsMenu(false); });
-      }
 
       // period select + date picker
       el("#period-select").addEventListener("change", e => { State.periodId = e.target.value; Render.renderActiveView(); });
@@ -2635,7 +2591,6 @@
       this.updateLastUpdated();
 
       this.buildFilterControls();
-      this.buildBriefsMenu();
       this.wire();
       this.rerender();
     },

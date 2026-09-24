@@ -163,30 +163,6 @@ select:hover { border-color: var(--accent); }
 .control-bar .spacer { margin-left: auto; }
 .export-group { display: inline-flex; gap: 8px; }
 
-/* Weekly-briefs quick access (beside the horizon tabs) */
-.briefs-access { position: relative; display: inline-flex; }
-.briefs-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 650; }
-.briefs-btn:hover { background: #16406f; border-color: #16406f; }
-.briefs-caret { font-size: 10px; transition: transform .15s; }
-.briefs-access.open .briefs-caret { transform: rotate(180deg); }
-.briefs-menu {
-  position: absolute; top: calc(100% + 6px); left: 0; z-index: 40;
-  min-width: 280px; max-width: 360px; max-height: 70vh; overflow-y: auto;
-  background: var(--bg-elev); border: 1px solid var(--border-strong);
-  border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 6px;
-}
-.briefs-item {
-  display: flex; align-items: center; gap: 6px; width: 100%; text-align: left;
-  padding: 8px 10px; border-radius: var(--radius-sm); font-size: 13px;
-  color: var(--text); background: none; border: 0; cursor: pointer; text-decoration: none;
-}
-.briefs-item:hover { background: var(--accent-soft); }
-.briefs-item .briefs-ext { margin-left: auto; color: var(--accent); font-weight: 700; }
-.briefs-inapp { font-weight: 650; color: var(--accent); }
-.briefs-site { border-top: 1px solid var(--border); margin-top: 4px; font-weight: 600; }
-.briefs-live { font-size: 10px; font-weight: 800; color: var(--tone-bad-fg); }
-.briefs-sep { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--text-faint); padding: 8px 10px 4px; }
-.briefs-note { font-size: 12px; color: var(--text-muted); padding: 6px 10px 8px; line-height: 1.5; }
 .btn {
   display: inline-flex; align-items: center; gap: 6px;
   border: 1px solid var(--border-strong); background: var(--bg-elev);
@@ -854,9 +830,6 @@ ul.wf-list li { margin-bottom: 8px; font-size: 13px; line-height: 1.5; }
 .wl-asof { font-weight: 500; color: var(--text-muted); }
 .wl-sub { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
 .wl-sub .chip b { font-weight: 800; }
-.wl-stale { font-size: 12px; font-weight: 700; padding: 6px 10px; border-radius: 999px; white-space: nowrap; }
-.wl-stale.overdue { color: var(--tone-warn-fg); background: var(--tone-warn-bg); border: 1px solid color-mix(in srgb, var(--tone-warn-fg) 35%, transparent); }
-.wl-stale.fresh { color: var(--tone-good-fg); background: var(--tone-good-bg); }
 .wl-filter-row { display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
 .wl-filter-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--text-faint); font-weight: 700; }
 
@@ -1042,9 +1015,6 @@ table.wl-indicators tr.ignored td { opacity: .7; }
 .wl-quiet { font-size: 12.5px; color: var(--text-muted); margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); }
 
 /* Live open-source feed */
-.wl-feedstat { font-size: 11.5px; font-weight: 700; padding: 5px 10px; border-radius: 999px; white-space: nowrap; color: var(--tone-good-fg); background: var(--tone-good-bg); margin-right: 8px; }
-.wl-feedstat.stale { color: var(--tone-warn-fg); background: var(--tone-warn-bg); }
-.wl-feedstat.off { color: var(--text-faint); background: var(--bg-sunken); }
 .wl-feed-cell { white-space: nowrap; }
 .wl-spark { display: block; overflow: visible; }
 .wl-spark polyline { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
@@ -1078,8 +1048,6 @@ table.wl-indicators tr.ignored td { opacity: .7; }
   .wl-zoom-hint { display: none; }
   .wl-board, .wl-act-grid, .wl-detail-grid { grid-template-columns: 1fr; }
   .wl-head-row { flex-direction: column; }
-  .wl-stale { white-space: normal; }
-  .wl-feedstat { margin: 0 0 6px; }
 }
 
 /* ----- Print stylesheet (PDF-friendly report export) ------------------ */
