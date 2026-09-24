@@ -1958,6 +1958,14 @@
       return `<td class="wl-dim ${changed ? "wl-chg" : ""}" title="${esc(tip)}">` +
         (changed ? `<span class="wl-prev">${esc(prev)}</span> → ` : "") + `<strong>${esc(v.now)}</strong></td>`;
     },
+    // Chronological timeline of what has happened so far: the register's `timeline`
+    // when present, else the state-history notes (minus the "Baseline:" prefix).
+    timelineOf(it) {
+      const src = Array.isArray(it.timeline) && it.timeline.length
+        ? it.timeline.map(t => ({ date: t.date, text: t.text || "" }))
+        : (it.history || []).map(h => ({ date: h.date, text: String(h.note || "").replace(/^Baseline:\s*/i, "") }));
+      return src.filter(t => t.date && t.text).sort((a, b) => String(a.date).localeCompare(String(b.date)));
+    },
     // Feed articles newest first (the sync ranks them by relevance)
     feedArticles(f) { return ((f && f.articles) || []).slice().sort((a, b) => String(b.date || "").localeCompare(String(a.date || ""))); },
     statusCell(it) {
@@ -2154,7 +2162,11 @@
         const ds = this.dueStatus(n.due);
         return `<li class="wl-ind"><span class="wl-ind-type">${esc(n.type)}</span> <span class="wl-due wl-due-${ds.cls}" title="${esc(n.due || "no date")}">${n.due ? esc(this.fmtDate(n.due)) + " · " : ""}${esc(ds.label)}</span><div class="wl-ind-text">${esc(n.text)}</div>${n.ifSeen ? `<div class="wl-ind-if">If seen → ${esc(n.ifSeen)}</div>` : ""}</li>`;
       }).join("");
-      const hist = (it.history || []).slice().reverse().map(h => `<li><span class="wl-hist-d">${esc(this.fmtDate(h.date))}</span> ${this.stateChip(h.state)} <span class="muted-note">${esc(h.note || "")}</span></li>`).join("");
+      // "Timeline so far": a short chronological run of what has happened (register
+      // `timeline` [{date, text}]; until the review writes one, the state-history
+      // notes stand in). No state chips: the intent is a quick recap, not audit.
+      const tl = this.timelineOf(it);
+      const hist = tl.map((h, i) => `<li class="${i === tl.length - 1 ? "wl-tl-latest" : ""}"><span class="wl-hist-d">${esc(this.fmtDate(h.date))}</span> <span class="wl-tl-text">${esc(h.text)}</span></li>`).join("");
       return `<div class="wl-detail-grid">
         <div class="wl-d-block"><div class="wl-d-h">What materially changed</div>
           <div class="wl-chg-line">${dimsLine}</div>
@@ -2164,7 +2176,7 @@
           <p class="wl-d-p">${it.ignore.flag ? `<strong>Yes</strong> — ${it.ignore.reasons.map(r => `<span class="tag">${esc(r)}</span>`).join(" ")} ${esc(it.ignore.note || "")}` : `<strong>No</strong> — keep on the active watch.${it.ignore.note ? " " + esc(it.ignore.note) : ""}`}</p>
           <div class="wl-d-meta">Confidence ${this.confChip(it.confidence)} · Army learning value <strong>${esc(it.learningValue || "—")}</strong> · Region ${esc(it.region || "—")}</div></div>
         ${this.feedBlock(it)}
-        <div class="wl-d-block wl-hist"><div class="wl-d-h">State history</div><ul class="wl-hist-list">${hist || "<li class='muted-note'>—</li>"}</ul>
+        <div class="wl-d-block wl-hist"><div class="wl-d-h">Timeline so far</div><ul class="wl-hist-list wl-tl-list">${hist || "<li class='muted-note'>—</li>"}</ul>
           ${(it.sources || []).length ? `<div class="wl-d-h sub">Sources (${it.sources.length})</div><ul class="wl-src-list">${it.sources.map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label || s.url)} ↗</a></li>`).join("")}</ul>` : ""}
           <button class="btn wl-show-map" data-wl-map="${esc(it.id)}">📍 Show on map</button></div>
       </div>`;

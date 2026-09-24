@@ -277,7 +277,12 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   const det = wv.querySelector(`tr[data-wl-detail="${probe.id}"]`);
   check("expanded row shows what changed / what next / ignore verdict / reporting / history (no brief signal)", !!det &&
     /What materially changed/.test(det.textContent) && /What might happen next/.test(det.textContent) && !/What CSI should do/.test(det.textContent) &&
-    /Ignore for now\?/.test(det.textContent) && !/\bQ[1-7]\b/.test(det.textContent) && !/Brief signal/.test(det.textContent) && !det.querySelector(".wl-brief") && /State history/.test(det.textContent));
+    /Ignore for now\?/.test(det.textContent) && !/\bQ[1-7]\b/.test(det.textContent) && !/Brief signal/.test(det.textContent) && !det.querySelector(".wl-brief") && /Timeline so far/.test(det.textContent) && !/State history/.test(det.textContent));
+  check("detail: timeline is a chronological dated recap with no state chips (history notes stand in until the register carries `timeline`)", (() => {
+    const exp = (probe.timeline && probe.timeline.length ? probe.timeline : probe.history.map(h => ({ date: h.date, text: h.note.replace(/^Baseline:\s*/i, "") }))).slice().sort((a, b) => a.date.localeCompare(b.date));
+    const lis = [...det.querySelectorAll(".wl-hist .wl-tl-list li")];
+    return lis.length === exp.length && !det.querySelector(".wl-hist .wl-state") && exp.every((e, k) => lis[k].textContent.includes(fmtD(e.date)) && lis[k].textContent.includes(e.text)) && lis[lis.length - 1].classList.contains("wl-tl-latest");
+  })());
   check("detail: every changed dimension spelled out (7 days ago → now)", det.querySelectorAll(".wl-chg-line .wl-chg-pill").length === changed(probe).length && changed(probe).every(d => det.textContent.includes(baseline(probe)[d])));
   check("detail: typed indicators with 'If seen →' consequences and rendered dates",
     det.querySelectorAll(".wl-ind").length === probe.next.length && det.querySelectorAll(".wl-ind .wl-ind-type").length === probe.next.length &&
