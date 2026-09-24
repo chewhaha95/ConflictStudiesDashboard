@@ -52,7 +52,7 @@ The watchlist is fully automated:
 ### Manual review (same procedure)
 
 Edit `watchlist.json` only — the dashboard derives rank, movements, change
-flags, staleness, surges and the brief signal:
+flags, staleness and surges:
 
 1. Set `meta.reviewDate` and `meta.previousReviewDate`.
 2. For each item, copy each dimension's `now` into `prev`, then set the new `now`
@@ -63,9 +63,8 @@ flags, staleness, surges and the brief signal:
    indicators with `due` dates where they exist) and `ignore`. Publication decisions (what to publish, escalate or leave) are made by the team outside the dashboard and are not recorded here.
 5. Run `npm test` — the smoke test validates the register schema.
 
-Items with `briefTheatre` set are enriched at runtime with the latest brief
-edition (live if `weekly-live.json` is synced, seed otherwise), so the brief's
-phase / trend / headline sits next to the analyst's call.
+The Watchlist stands entirely on open sources: it neither displays nor uses
+the weekly brief shown on the Weekly tab.
 
 ## Development
 

@@ -14,9 +14,8 @@ same way.
   CSIS, Crisis Group, Kyiv Independent, Meduza, Times of Israel, The National,
   Focus Taiwan, Japan Times, Bangkok Post, Nation Thailand, Khmer Times,
   Irrawaddy, DVB, Dawn, The Hindu, Singapore MFA/MHA/MINDEF statements.
-- **The weekly brief is not a source.** It is shown alongside as the brief
-  signal. Do not copy its assessments; where open sources contradict it, say so
-  in `changes`.
+- **The weekly brief is not a source and is not shown.** Do not copy its
+  assessments or reference it.
 - **Not a news archive.** `changes` holds only what materially moved since the
   previous review (3–6 bullets). `next` holds named, checkable indicators, dated
   where a date exists. If nothing changed, say "No material change since the
