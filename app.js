@@ -1924,7 +1924,7 @@
     },
     feedBlock(it) {
       const f = this.feed(it), lf = this.feedMeta();
-      if (!f) return `<div class="wl-d-block"><div class="wl-d-h">Latest open-source reporting</div><p class="muted-note">No live feed loaded — the feed syncs once a day (05:00 SGT) from GDELT into <code>watchlist-live.json</code>.</p></div>`;
+      if (!f) return `<div class="wl-d-block"><div class="wl-d-h">Latest open-source reporting</div><p class="muted-note">No live feed loaded — the feed syncs hourly from GDELT into <code>watchlist-live.json</code>.</p></div>`;
       const arts = this.feedArticles(f).slice(0, 8).map(x => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a><span class="wl-art-meta">${esc(x.domain)}${x.date ? " · " + esc(this.fmtDate(x.date)) : ""}</span></li>`).join("");
       return `<div class="wl-d-block wl-feed-block"><div class="wl-d-h">Latest open-source reporting <span class="briefs-live">● LIVE</span>${lf && lf.syncedAt ? ` · synced ${esc(Time.fmtDateTime(lf.syncedAt))}` : ""}</div>
         <div class="wl-feed-sum">${this.sparkline(f.timeline, 220, 36, f.granularity)}<div><b>${this.feedCount(f)}</b> articles in the last 7 days · <b>${f.prev7d}${f.capped ? "+" : ""}</b> the 7 days before${f.surge ? ` · <span class="wl-surge">coverage surge</span>` : ""}${f.capped ? ` · <span class="muted-note">counts capped at 250 per window</span>` : ""}<div class="muted-note">${esc(this.feedCaption(f))} · source: ${esc(this.feedSourceLabel(f))}${f.fetchedAt ? ` · this item refreshed ${esc(Time.fmtDateTime(f.fetchedAt))}` : ""}</div></div></div>
@@ -1964,10 +1964,10 @@
       const st = it.status || {}; const ph = it.dims.phase || {};
       const phPrev = this.prevOf(it, "phase"), changed = phPrev != null && phPrev !== ph.now;
       const links = (st.sources || []).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener" title="${esc(s.label)}">${esc(s.label)} ↗</a>`).join("");
-      const latest = st.latest && st.latest.text ? `<div class="wl-status-latest" title="The newest material development found at the daily review, dated by the reporting."><span class="wl-latest-tag">Latest · ${esc(this.fmtDate(st.latest.date))}</span> ${esc(st.latest.text)}${st.latest.url ? ` <a href="${esc(st.latest.url)}" target="_blank" rel="noopener" title="Source">↗</a>` : ""}</div>` : "";
+      // Newest title-matched headline from the live feed (hourly sync) sits on top of the summary
       const f = this.feed(it), art = this.feedArticles(f)[0];
-      const news = art ? `<div class="wl-status-news" title="Newest title-matched article in the live open-source feed (${esc(this.feedSourceLabel(f))}); a headline, not an assessment."><span class="wl-news-tag">Newest reporting${art.date ? " · " + esc(this.fmtDate(art.date)) : ""}</span> <a href="${esc(art.url)}" target="_blank" rel="noopener">${esc(art.title)}</a>${art.domain ? ` <span class="wl-art-meta">${esc(art.domain)}</span>` : ""}</div>` : "";
-      return `<td class="wl-status">${latest}<div class="wl-status-sum">${esc(st.summary || ph.now || "")}</div>${links ? `<div class="wl-status-links">${links}</div>` : ""}${news}
+      const news = art ? `<div class="wl-status-news" title="Newest title-matched article in the live open-source feed (${esc(this.feedSourceLabel(f))}, synced hourly); a headline, not an assessment."><span class="wl-news-tag">Newest reporting${art.date ? " · " + esc(this.fmtDate(art.date)) : ""}</span> <a href="${esc(art.url)}" target="_blank" rel="noopener">${esc(art.title)}</a>${art.domain ? ` <span class="wl-art-meta">${esc(art.domain)}</span>` : ""}</div>` : "";
+      return `<td class="wl-status">${news}<div class="wl-status-sum">${esc(st.summary || ph.now || "")}</div>${links ? `<div class="wl-status-links">${links}</div>` : ""}
         <div class="wl-phase-line" title="${esc(this.defs().dimensions.phase.desc || "")}">Phase: <b>${esc(ph.now || "—")}</b>${changed ? ` <span class="wl-prev">was: ${esc(phPrev)}</span>` : ""}</div></td>`;
     },
 

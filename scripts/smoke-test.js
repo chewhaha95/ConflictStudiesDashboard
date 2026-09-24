@@ -76,7 +76,6 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   try { wl = JSON.parse(wlRaw); check("watchlist.json parses", true); }
   catch (e) { check("watchlist.json parses", false, e.message); process.exit(1); }
   check("register defines criteria and level descriptions for every scaled dimension", ["escalation", "tempo", "adaptation", "sgExposure"].every(d => wl.definitions.dimensions[d].desc && wl.definitions.dimensions[d].scale.every(l => wl.definitions.dimensions[d].levels[l])));
-  check("every item carries a dated 'latest development' line with a source (status.latest)", wl.items.every(i => i.status && i.status.latest && /^\d{4}-\d{2}-\d{2}$/.test(i.status.latest.date) && i.status.latest.text && i.status.latest.text.length > 40 && /^https?:/.test(i.status.latest.url)));
   check("every item carries a current-status summary with 2+ article links", wl.items.every(i => i.status && i.status.summary.length > 80 && i.status.sources.length >= 2 && i.status.sources.every(s => /^https?:/.test(s.url))));
   check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
   check("register is reviewed daily (cadenceDays = 1)", wl.meta.cadenceDays === 1);
@@ -261,7 +260,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("register: SG exposure and Changed columns removed", ![...reg.querySelectorAll("thead th")].some(th => /SG exposure|Changed/i.test(th.textContent)));
   check("register: every row carries a plain-language current status with article links and the phase label", wl.items.every(i => {
     const row = reg.querySelector(`tr[data-wl-row="${i.id}"]`);
-    return row.querySelector(".wl-status-latest").textContent.includes(fmtD(i.status.latest.date)) && row.querySelector(".wl-status-latest").textContent.includes(i.status.latest.text) && !!row.querySelector(`.wl-status-latest a[href="${i.status.latest.url}"]`) && !row.querySelector(".wl-status-news") && row.querySelector(".wl-status-sum").textContent.trim() === i.status.summary && row.querySelectorAll(".wl-status-links a[href^='http']").length === i.status.sources.length && row.querySelector(".wl-phase-line").textContent.includes(i.dims.phase.now);
+    return !row.querySelector(".wl-status-latest") && !row.querySelector(".wl-status-news") && row.querySelector(".wl-status-sum").textContent.trim() === i.status.summary && row.querySelectorAll(".wl-status-links a[href^='http']").length === i.status.sources.length && row.querySelector(".wl-phase-line").textContent.includes(i.dims.phase.now);
   }));
   check("register: column headers and level values carry hover definitions", (() => {
     const ths = [...reg.querySelectorAll("thead th.wl-th-help")];
@@ -705,8 +704,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const det2 = d2.querySelector(`#view-watchlist tr[data-wl-detail="${liveProbe.id}"]`);
     return !!det2 && /Latest open-source reporting/.test(det2.textContent) && !!det2.querySelector(".wl-art-list a[href='https://example.org/feed/" + liveProbe.id + "']") && /FEED-HEADLINE/.test(det2.textContent) && det2.querySelector(".wl-art-list li a").textContent === "FEED-HEADLINE " + liveProbe.id;
   })());
-  check("feed: every status cell shows the newest feed headline (newest first, not relevance order)", (() => {
-    return wl.items.every(i => { const n = wv2.querySelector(`tr[data-wl-row="${i.id}"] .wl-status-news`); return !!n && n.querySelector("a").textContent === "FEED-HEADLINE " + i.id && n.querySelector("a").href === "https://example.org/feed/" + i.id; });
+  check("feed: every status cell opens with the newest feed headline (newest first, not relevance order); no 'Latest' line", (() => {
+    return wl.items.every(i => { const cell = wv2.querySelector(`tr[data-wl-row="${i.id}"] td.wl-status`), n = cell && cell.firstElementChild; return !!n && n.classList.contains("wl-status-news") && !cell.querySelector(".wl-status-latest") && n.querySelector("a").textContent === "FEED-HEADLINE " + i.id && n.querySelector("a").href === "https://example.org/feed/" + i.id; });
   })());
   d2.querySelector('.tab-btn[data-horizon="weekly"]').click(); await sleep(60);
   const opts2 = [...d2.querySelectorAll("#period-select option")];
