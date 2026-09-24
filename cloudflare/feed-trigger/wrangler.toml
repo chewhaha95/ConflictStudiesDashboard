@@ -1,0 +1,19 @@
+# Cloudflare Worker that fires the watchlist feed sync every hour.
+# Deploy with `npx wrangler deploy` from this folder, or paste worker.js into a
+# Worker created in the dashboard (see README.md). Secrets are never in this file.
+name = "csi-feed-trigger"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[triggers]
+crons = ["7 * * * *"]     # hourly at :07 UTC, matching the workflow's own schedule
+
+[vars]
+GH_OWNER = "chewhaha95"
+GH_REPO = "ConflictStudiesDashboard"
+WORKFLOW_FILE = "sync-watchlist-feed.yml"
+GH_REF = "main"
+
+# Secrets (set once, not stored here):
+#   npx wrangler secret put GITHUB_TOKEN
+#   npx wrangler secret put TRIGGER_KEY     (optional, for POST /run tests)
