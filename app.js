@@ -2167,11 +2167,28 @@
       const hist = tl.map((h, i) => `<li class="${i === tl.length - 1 ? "wl-tl-latest" : ""}"><span class="wl-hist-d">${esc(this.fmtDate(h.date))}</span> <span class="wl-tl-text">${esc(h.text)}</span>${h.unverified ? ` <span class="wl-tl-unv" title="Single source; not yet corroborated">unverified</span>` : ""}${h.url ? ` <a class="wl-tl-src" href="${esc(h.url)}" target="_blank" rel="noopener" title="Source">↗</a>` : ""}</li>`).join("");
       // Expanded row: the live reporting and the timeline only (what changed, the
       // indicators and the ignore verdict live in the page sections below).
-      return `<div class="wl-detail-grid wl-detail-two">
+      return `<div class="wl-detail-grid wl-detail-three">
         ${this.feedBlock(it)}
         <div class="wl-d-block wl-hist"><div class="wl-d-h">Timeline so far</div><ul class="wl-hist-list wl-tl-list">${hist || "<li class='muted-note'>—</li>"}</ul>
           ${(it.sources || []).length ? `<div class="wl-d-h sub">Sources (${it.sources.length})</div><ul class="wl-src-list">${it.sources.map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label || s.url)} ↗</a></li>`).join("")}</ul>` : ""}
           <button class="btn wl-show-map" data-wl-map="${esc(it.id)}">📍 Show on map</button></div>
+        ${this.assessmentBlock(it)}
+      </div>`;
+    },
+
+    assessmentBlock(it) {
+      // "Topic assessment": one or two paragraphs written through the item's three
+      // topics of interest, why they matter and their watch areas (register
+      // `assessment` {date, text[], sources[]}, researched from open sources by the
+      // daily review). It sits beside the timeline so the recap and the reading of
+      // it are read together.
+      const a = it.assessment || {};
+      const paras = Array.isArray(a.text) ? a.text.filter(Boolean) : (a.text ? [a.text] : []);
+      const topics = (it.topics || []).map((t, i) => `<li>${this.topicRef(it, i)} ${esc(t.topic)} <span class="wl-as-w">${this.watchTag(t.watch.status)}</span></li>`).join("");
+      return `<div class="wl-d-block wl-assess"><div class="wl-d-h">Topic assessment${a.date ? ` <span class="wl-as-date">as of ${esc(this.fmtDate(a.date))}</span>` : ""}</div>
+        ${topics ? `<ul class="wl-as-topics">${topics}</ul>` : ""}
+        ${paras.length ? paras.map(p => `<p class="wl-d-p wl-as-p">${esc(p)}</p>`).join("") : "<p class='muted-note'>No assessment yet.</p>"}
+        ${(a.sources || []).length ? `<div class="wl-d-h sub">Read more (${a.sources.length})</div><ul class="wl-src-list">${a.sources.map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label || s.url)} ↗</a></li>`).join("")}</ul>` : ""}
       </div>`;
     },
 

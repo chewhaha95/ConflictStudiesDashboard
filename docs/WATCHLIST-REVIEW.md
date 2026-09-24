@@ -38,7 +38,7 @@ same way.
   only". The team makes publication decisions outside the dashboard.
 - **Scope is fixed.** The twelve items, their ids, tiers and `geo` blocks do
   not change. Only states, dimensions, text, indicators, ignore
-  verdicts, history, sources and `feed` queries change.
+  verdicts, history, timeline, assessment, sources and `feed` queries change.
 
 ## Procedure
 
@@ -68,6 +68,19 @@ same way.
      when it is material, merge or drop the least important when over 8,
      and do not rewrite past entries without cause. The dashboard shows it
      as "Timeline so far" in the expanded row;
+   - rewrite `assessment` — `{date: <today>, text: [one or two paragraphs],
+     sources: [{label, url}] (3–5)}`: the "Topic assessment" card beside the
+     timeline. It is written through the item's three `topics`: for each
+     topic, what the last 14 days of open-source evidence says about its
+     watch area (say whether the Rising / Established / Contested status is
+     borne out or contradicted), and what that implies for the "why it
+     matters" question and adaptability. 140–230 words in total, plain
+     analytical prose, evidence dated ("on 18 Sep"), topics referred to by
+     name, all three covered, no bullets, no monitoring-state names, no
+     publication or action recommendations. It is not a news summary and
+     does not repeat `status` or `timeline`. Sources are the articles the
+     paragraphs rest on, newest first; mark single-source claims
+     "(single source)";
    - append today's snapshot to `snapshots`:
      `{date: <today>, state, phase, escalation, tempo, adaptation, sgExposure}`
      with the values just set (one snapshot per review date; replace the
