@@ -21,17 +21,16 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
-  sync-and-deploy:
+  # The sync runs in its own concurrency group so a Pages deploy from a merge
+  # to main can never cancel a 15–40 minute GDELT run (it did: a merge during
+  # a sync cancelled it). Only the short deploy job shares the "pages" group.
+  sync:
     runs-on: ubuntu-latest
     timeout-minutes: 55
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: watchlist-feed-sync
+      cancel-in-progress: false
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
@@ -59,6 +58,24 @@ jobs:
             git push origin HEAD:main
           fi
 
+  # Deploys the head of main (including the commit just pushed above — pushes
+  # made with GITHUB_TOKEN do not trigger pages.yml on their own).
+  deploy:
+    needs: sync
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
@@ -68,7 +85,7 @@ jobs:
         # Rewrites app.js?v=… / styles.css?v=… to the deployed commit so browsers never
         # keep a stale script after a deploy. Applied to the artifact only, not committed.
         run: |
-          v="${GITHUB_SHA::10}"
+          v="$(git rev-parse --short=10 HEAD)"
           sed -i -E "s/(app\.js|styles\.css)\?v=[A-Za-z0-9]+/\1?v=$v/g" conflict-dashboard.html
           grep -o '(app\.js|styles\.css)?v=[A-Za-z0-9]*' -E conflict-dashboard.html
 
