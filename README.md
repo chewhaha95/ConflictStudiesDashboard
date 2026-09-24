@@ -104,8 +104,9 @@ reads the three live JSON files from that origin (falling back to its own copy
 if the read fails), so the mirror stays current without redeploying on every
 data commit. Same-origin, localhost and `file://` previews ignore the meta tag.
 
-**Cloudflare Pages mirror.** Workers & Pages → Create → Pages → Connect to
-Git → this repository, production branch `main`, no build command, output
+**Cloudflare Pages mirror — the address to share:
+<https://csidashboard.pages.dev/>.** Set up as Workers & Pages → Create →
+Pages → Connect to Git → this repository, production branch `main`, no build command, output
 directory `/`. Under the project's Settings → Builds → *Build watch paths*,
 exclude `watchlist-live.json`, `watchlist.json` and `weekly-live.json` so the
 hourly feed commits do not consume the free build quota; code merges still
