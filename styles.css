@@ -927,6 +927,25 @@ ul.wf-list li { margin-bottom: 8px; font-size: 13px; line-height: 1.5; }
 .wl-card-chip.moved { border-color: var(--tone-bad-fg); }
 .wl-card-chip.ignored { opacity: .7; }
 
+/* Register: topics / why / watch areas */
+.wl-topic, .wl-why, .wl-watch { min-width: 200px; max-width: 300px; vertical-align: top; }
+.wl-tlist { margin: 0; padding-left: 18px; font-size: 12px; line-height: 1.4; }
+.wl-tlist li { margin-bottom: 8px; }
+.wl-tlist li:last-child { margin-bottom: 0; }
+.wl-adapt { display: inline-block; font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .3px; padding: 1px 5px; border-radius: 4px; margin-left: 4px; vertical-align: middle; }
+.wl-adapt-high { color: var(--tone-good-fg); background: var(--tone-good-bg); }
+.wl-adapt-medium { color: var(--tone-warn-fg); background: var(--tone-warn-bg); }
+.wl-adapt-low { color: var(--text-muted); background: var(--bg-sunken); }
+.wl-wstat { display: inline-block; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 2px; white-space: nowrap; }
+.wl-wstat-up { color: var(--tone-bad-fg); background: var(--tone-bad-bg); }
+.wl-wstat-steady { color: var(--tone-neutral-fg); background: var(--tone-neutral-bg); }
+.wl-wstat-down { color: var(--tone-good-fg); background: var(--tone-good-bg); }
+.wl-wstat-quiet { color: var(--text-muted); background: var(--bg-sunken); }
+.wl-tref { display: inline-block; font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 4px; color: var(--accent); background: var(--accent-soft); margin-left: 4px; cursor: help; }
+.wl-tref-x { color: var(--text-muted); background: var(--bg-sunken); }
+.wl-next-w { display: block; font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.35; }
+.wl-ind-topic { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
 /* Register */
 .wl-status { min-width: 300px; max-width: 420px; }
 .wl-topic, .wl-why { min-width: 200px; max-width: 300px; font-size: 12px; line-height: 1.45; vertical-align: top; }

@@ -80,10 +80,12 @@ same way.
      older than 7 days unless nothing newer exists). Do not write a
      `status.latest` field (remove it if present): the dashboard shows the
      newest headline from the hourly live feed above the summary;
-   - keep `topic` (the theme the Army follows this theatre for) and
-     `whyMatters` (one or two sentences on relevance to Singapore and the
-     Army) as stable framing: revise them only when the conflict's phase
-     changes, never for a day's news;
+   - do not edit `topics` (three per item: `topic`, `why`, `adaptability`,
+     `watch.status`, `watch.text`); the team sets them from the watchlist
+     workbook. Every `next` entry must carry `topic`: the 0-based index of
+     the topic and watch area it informs, or `null` when it bears on the
+     theatre as a whole (elections, summits, talks with no capability angle).
+     Prefer indicators that speak to a topic's watch area.
    - rewrite `whyNow` (one or two sentences), `changes` (7-day window, see
      ground rules), `next` (each with
      `type` from `definitions.indicatorTypes`, `due` as ISO date or null,

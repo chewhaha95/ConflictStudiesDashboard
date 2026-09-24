@@ -57,6 +57,15 @@ The watchlist is fully automated:
   changes, indicators, ignore verdicts, history, sources), runs
   `npm test` and pushes to `main`. Pages deploys on push.
 
+### Topics of interest
+
+Each item carries three team-set topics (`topics`: topic, why it matters here,
+adaptability, watch status and text), loaded from the watchlist workbook. They
+appear as the register's Topics of interest / Why it matters / Watch areas
+columns, and each indicator in `next` references the topic it informs
+(`topic` index, or null for cross-cutting), which the Next indicator column
+and the indicators table show. The automated review does not edit topics.
+
 ### Manual review (same procedure)
 
 Edit `watchlist.json` only — the dashboard derives rank, movements, change
