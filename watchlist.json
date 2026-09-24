@@ -6,7 +6,7 @@
     "cadenceDays": 1,
     "compareDays": 7,
     "reviewer": "Automated open-source review (daily, see docs/WATCHLIST-REVIEW.md); first run seeded by the 23 Sep 2026 open-source review. Items marked unverified need confirmation. Timelines researched from open sources on 24 Sep 2026.",
-    "notes": "Fully automated register: a scheduled open-source review rewrites this file daily (procedure in docs/WATCHLIST-REVIEW.md) and an hourly GitHub Action refreshes the live reporting feed (watchlist-live.json) from GDELT. Every comparison the dashboard shows (state moves, changed dimensions, the attention-score bonuses) is made against the register as it stood compareDays (7) days ago, taken from each item's `snapshots` (one entry per review: date, state and the five dimensions). Each review: (1) set reviewDate/previousReviewDate, (2) for every item set the new `now` on the five dimensions and the new `state`, then append today's snapshot (keep the last 60), (3) rewrite `status` (`summary`: plain-language current status whose first sentence states the newest development; `sources`: 2–3 links to the newest reporting), `whyNow`, `changes` (dated bullets covering the last 7 days: keep those still inside the window, add today's, drop older ones), `next`, `ignore` and `sources`, (4) record any state move in `history` and keep `timeline` (4–8 dated one-line events of the current phase, chronological) current. The dashboard derives attention rank, movements, changed-dimension flags, staleness, coverage surges — do not type those in. `next` holds named, checkable indicators."
+    "notes": "Fully automated register: a scheduled open-source review rewrites this file daily (procedure in docs/WATCHLIST-REVIEW.md) and an hourly GitHub Action refreshes the live reporting feed (watchlist-live.json) from GDELT. Every comparison the dashboard shows (state moves, changed dimensions, the attention-score bonuses) is made against the register as it stood compareDays (7) days ago, taken from each item's `snapshots` (one entry per review: date, state and the five dimensions). Each review: (1) set reviewDate/previousReviewDate, (2) for every item set the new `now` on the five dimensions and the new `state`, then append today's snapshot (keep the last 60), (3) rewrite `status` (`summary`: plain-language current status whose first sentence states the newest development; `sources`: 2–3 links to the newest reporting), `whyNow`, `topic` and `whyMatters` (stable framing, revise only on a phase change), `changes` (dated bullets covering the last 7 days: keep those still inside the window, add today's, drop older ones), `next`, `ignore` and `sources`, (4) record any state move in `history` and keep `timeline` (4–8 dated one-line events of the current phase, chronological) current. The dashboard derives attention rank, movements, changed-dimension flags, staleness, coverage surges — do not type those in. `next` holds named, checkable indicators."
   },
   "definitions": {
     "tiers": {
@@ -144,7 +144,9 @@
       "coverage": "Open-source coverage from the live feed (GDELT with Google News fallback): the sparkline is the last 30 days (or four weekly counts), the number is articles in the last 7 days with the change against the 7 before. 'Surge' = at least twice the prior week and at least 20 articles. Refreshes hourly.",
       "nextIndicator": "The soonest dated indicator to watch (named event, threshold, deadline, mobilisation sign, force movement, diplomatic decision or escalation indicator). Expand the row for the full list and what each would mean.",
       "confidence": "How well-sourced the assessment is: High (multiple independent, dated sources), Medium (some single-source or snippet-only items), Low (thin or contested reporting).",
-      "attention": "Attention score, the register's sort order. Hover a score for its breakdown."
+      "attention": "Attention score, the register's sort order. Hover a score for its breakdown.",
+      "topic": "Topic of interest: the theme the Army follows this theatre for (the capability, behaviour or mechanism under study). Stable framing; revised only when the conflict's phase changes.",
+      "whyMatters": "Why it matters: one or two sentences on the theatre's relevance to Singapore and the Army — exposure, learning value or regional role. Stable framing; revised only when the conflict's phase changes."
     }
   },
   "items": [
@@ -203,6 +205,8 @@
         }
       ],
       "whyNow": "Richest adaptation feed on the list: Russia industrialised jet-powered Geran-4/5 strikes (~3,000 in August, interception rate down to ~87%), Ukraine ran record-range refinery strikes and a 1,110-drone raid on Moscow, and Operation Vivaldi restored local manoeuvre at Lyman — while an energy-strike truce claimed by Trump at UNGA is unconfirmed by Kyiv.",
+      "topic": "Drone-centric attrition: mass jet-drone strike packages, interceptor drones, long-range strikes on energy, corps-level counterattacks.",
+      "whyMatters": "The richest live case of a modern force adapting under sustained drone and missile pressure; its lessons in air defence, deep strike and mobilisation transfer directly to a small state's defence planning.",
       "changes": [
         "Russia's strike architecture shifted to jet-powered drones: ~1,500 jet Gerans used in July and ~3,000 in August (56% of August packages), Ukrainian interception rates fell from ~92% to ~87%; Ukraine is field-testing four turbojet interceptors (ISW/Critical Threats 1 Sep).",
         "Ukraine's deep-strike campaign reached record range (Tyumen refinery ~2,000 km, 25 Jul; more than 12 refinery strikes 2–24 Aug; Astrakhan gas plant 24 Aug), Operation MoLoChKa hit 100+ shadow-fleet vessels in the Sea of Azov and Black Sea (July), and a 1,110-drone raid struck Moscow's refinery on 20 Sep; Russia answered with a 212-drone and missile barrage as UNGA opened.",
@@ -448,6 +452,8 @@
         }
       ],
       "whyNow": "The October 2025 truce formally holds but nothing in it is being implemented: Hamas accepted the Board of Peace roadmap and dissolved its governing committee, Israel rejected the roadmap and holds 65–70% of Gaza behind a lethally enforced Yellow Line while running decapitation raids. The October ISF pilot and the 27 Oct Israeli election decide the next phase.",
+      "topic": "Post-ceasefire stabilisation: enforcing a control line, targeted raids inside a truce, and the design of an international stabilisation force.",
+      "whyMatters": "Shows how a ceasefire is held without a settlement and what a multinational stabilisation force needs before it can deploy; direct relevance to peace-support and urban-operations doctrine.",
       "changes": [
         "Hamas dissolved its Government Emergency Committee (6 Jul), ceding civil administration to the National Committee for the Administration of Gaza, which Israel has blocked from entering; the Board of Peace issued a 15-point roadmap (30–31 Jul: phased decommissioning, verification committee, phased IDF withdrawal) that Hamas accepted and Netanyahu rejected on 9 Aug ('no withdrawal until real, not fictitious, disarmament').",
         "The security cabinet approved a ~200-troop International Stabilisation Force pilot at Rafah (26–27 Jul) on condition the IDF keeps the Yellow Line; Uganda's parliament approved ~1,200 troops (7 Aug) for an October deployment now 'in doubt', Morocco (up to 500) is first to deploy with a 150-person outpost under construction, Kosovo and Albania signed on, Indonesia's ~8,000 are suspended.",
@@ -678,6 +684,8 @@
         }
       ],
       "whyNow": "An active war over sea-lane access: the MOU lapsed, the US port blockade is back, Hormuz transits are in single digits on most counts, an IRGC salvo targeted a US carrier group and the US answered 'tanker for tanker' — while the first mediated face-to-face session (22 Sep) opened a diplomatic window that Trump ties to the November midterms. Highest Singapore-exposure item: more than half of Singapore's crude imports come through the Gulf and a Singapore-flagged ship was hit in June.",
+      "topic": "Sea-lane coercion: blockade, mine and missile threats to Hormuz, strikes on tankers and bases, and energy-route diplomacy.",
+      "whyMatters": "Highest Singapore exposure on the list: more than half of Singapore's crude comes through the Gulf, a Singapore-flagged ship was hit in June, and war-risk premiums feed straight into fuel and shipping costs.",
       "changes": [
         "The stand-down collapsed on 7–9 Jul (Iran struck three ships; the US revoked Iran's oil-sale licence and hit 90 targets), the naval blockade was reinstated on 14 Jul, Iranian missiles killed two US soldiers at Muwaffaq Salti (18–19 Jul) and IRGC strikes hit Kuwait, Bahrain, Jordan and Erbil (24 Jul) before a mutual pause on 25–26 Jul; the 60-day Islamabad MOU lapsed on 17 Aug with no deal (transits 3 a day, ~520 ships stranded, Iranian exports down to 156 kb/d).",
         "Kinetic resumption: US strikes on IRGC mine-rocket launchers on Larak Island (30 Aug) and rebuilt coastal radars (1–2 Sep); IRGC fire at bases in Jordan, Bahrain and Iraq; on 5 Sep an IRGC ballistic salvo targeted the USS George Washington group (evaded) and ~32 missiles damaged eight F-15s and an A-10 at Muwaffaq Salti; the US disabled the tankers Downy and Stark 1 and sank Kylo ('tanker for tanker').",
@@ -920,6 +928,8 @@
         }
       ],
       "whyNow": "The Trilateral Framework is nominally alive but the ceasefire is in name only: Israel besieged and then demolished the Ali al-Taher tunnel complex (about 1,100 tonnes of explosives, a magnitude 4.1 tremor) and declared its security zone 'complete', Hezbollah is waging drone, IED and ATGM attrition, and the Rome round slipped to October behind the 27 Oct Israeli election.",
+      "topic": "Holding a self-declared security zone against drone, roadside-bomb and anti-tank attrition while a framework agreement and army handover zones are negotiated.",
+      "whyMatters": "A live case of defending static positions against a hybrid adversary during ceasefire talks; lessons for counter-drone protection of fixed sites and for third-party monitoring mechanisms.",
       "changes": [
         "Pilot zones launched 20–22 Jul (Froun and Srifa outside the IDF buffer, Zawtar al-Gharbiyeh inside it; LAF deployed to Zawtar on 21 Jul after an IDF withdrawal); the LAF said Israeli shelling and bulldozing hindered completion (26 Jul) and on 9 Sep claimed control of all three zones with ~1,818 weapons seized (~86% light ammunition), with near-daily LAF–Hezbollah coordination and no depot dismantlement (FDD).",
         "The ceasefire effectively broke down on 15–16 Aug (Hezbollah drone wounded three Yahalom engineers on Ali al-Taher; IDF strikes on Ansar, Deir al-Zahrani and the ridge killed 11+); repeated LAF-handover formulas failed (Hezbollah's 20 Aug offer refused; Aoun approached Washington 24 Aug); the IDF 36th Division declared operational control on 3 Sep and demolished the 2 km-plus tunnel complex on 10 Sep, after which Katz and Netanyahu declared the security zone 'complete'.",
@@ -1152,6 +1162,8 @@
         }
       ],
       "whyNow": "No exchange of fire since the December truce, but the contest has hardened: Thailand is walling the border and holding occupied hills, Cambodia is internationalising through UNCLOS, UNESCO and ASEAN, and Singapore hosted the first conciliation session (14–16 Sep) and contributes observers.",
+      "topic": "No-war-no-peace border management in Singapore's near abroad: walls, ASEAN observers, legal contest and ceasefire monitoring.",
+      "whyMatters": "Singapore hosts the UNCLOS conciliation and contributes ASEAN observers; a relapse into fighting between two ASEAN members would test the bloc and Singapore's mediating role directly.",
       "changes": [
         "UNCLOS Annex V conciliation opened in Singapore (14–16 Sep, chair Katrina Cooper): Thailand insists the process is maritime-only, excludes Koh Kut and puts delimitation before resource-sharing; Cambodia seeks a treaty or joint-development regime; ~12-month non-binding process, next round in The Hague (date not published).",
         "Thai barrier building confirmed: an 8.4 km, 3.6 m Navy-built wall at Pong Nam Ron, Chanthaburi (first ~1 km done) and an Army programme at Sa Kaeo (5.1 km temporary, 10 km and 23.6 km permanent stages planned, electronic fence and CCTV); Cambodian forces inspect at every stage. The land border remains closed with land-trade losses near THB180bn.",
@@ -1381,6 +1393,8 @@
         }
       ],
       "whyNow": "Tempo is up: a rebranded Joint Task Force Western Hemisphere strike campaign (70th boat strike on 19 Sep), the first government–opposition talks, 100-year oil concessions and a Trump–Rodríguez meeting at UNGA — with elections deferred and Machado's return attempts failing.",
+      "topic": "Managed regime transition under external pressure, and a counter-cartel maritime strike campaign with its legal contest.",
+      "whyMatters": "A model of how a great power runs a post-intervention transition and uses lethal maritime interdiction; the relevance is comparative, with no direct Singapore exposure.",
       "changes": [
         "4 Aug: SOUTHCOM stood up Joint Task Force Western Hemisphere (18-nation Americas Counter Cartel Coalition), replacing Operation Southern Spear; 70th strike on 19 Sep (~234 killed to date, 14 strikes 23 Aug–19 Sep) with a late-August shift toward boarding before destruction; UN Special Rapporteur (22 Sep) calls the strikes serial extrajudicial killings.",
         "First in-person government–opposition talks (6–14 Aug; second round 15–17 Sep): frozen assets for earthquake recovery and a Supreme Tribunal overhaul agreed; no election date — Rodríguez: 'when Venezuela is ready'; Rubio: 'not years, but months and weeks'.",
@@ -1593,6 +1607,8 @@
         }
       ],
       "whyNow": "Moved up to Priority: a Philippine marine injured at Second Thomas (20 Jul), radar locks and flares on Philippine aircraft (2 and 7 Sep), the 18 Sep ramming off Palawan, and a PLAN surface action group plus H-6K bombers now routinely at Scarborough — with the Code of Conduct's 2026 deadline landing at the Manila summit in November.",
+      "topic": "Grey-zone escalation to physical contact: ramming, water cannon, radar locks and naval forces layered behind the coast guard; Code of Conduct diplomacy.",
+      "whyMatters": "Singapore's sea lanes and ASEAN cohesion run through this contest; the Code of Conduct deadline at the November summit and any incident with casualties would shape the region's security order.",
       "changes": [
         "20 Jul: CCG small-boat ramming and melee at Second Thomas Shoal injured a Philippine marine; 23–24 Jul water cannon at Scarborough with a CNN crew aboard; the 22–23 Aug resupply ran under a 'provisional understanding' with notification.",
         "Early Aug: PLA Southern Theatre surged a Type 052D, a Type 071 and frigates plus H-6K bombers with YJ-12 to Scarborough; 2 Sep 'Combat Patrol–Huangyan Dao' with JL-10 armed trainers locking radar on three Philippine aircraft; 7 Sep flares fired at a coast guard aircraft from Subi and Mischief reefs; a PLAN group (DDG, two 054A, 056A) now on station.",
@@ -1803,6 +1819,8 @@
         }
       ],
       "whyNow": "Singapore exposure raised: China Coast Guard 'law-enforcement' patrols east of Taiwan are now routine and a Singapore-flagged merchant ship complied with a CCG radio check. Han Kuang 42 ran unscripted with reservist brigades and drone logistics while US arms sales are frozen around Trump–Xi summitry.",
+      "topic": "Coast-guard quarantine patterns east of Taiwan, reservist-led defence exercises, civil resilience and mass drone procurement.",
+      "whyMatters": "Coast guard radio checks now reach Singapore-flagged shipping east of Taiwan, and Taiwan's whole-of-society defence and drone programmes are the closest analogue to Singapore's own total-defence model.",
       "changes": [
         "Late Jun–Jul: first and second CCG patrols 74–124 nm east of Taiwan radio-checking transiting merchantmen (a Singapore-flagged ship complied); Taiwan counted a record 110+ PLAN and CCG ships along the first island chain, while PLA air sorties fell ~52% year on year (Aug: 171 sorties, 55 median-line crossings) and no named drill was held.",
         "Han Kuang 42 (5–14 Aug): ~5,000 reservists in two brigades, first M1A2T employment, a new Littoral Combat Command, a deliberate mobile-internet slowdown and urban-resilience drills with first drone logistics deliveries.",
@@ -2010,6 +2028,8 @@
         }
       ],
       "whyNow": "Moved up to Active: China–Russia live fire inside Japan's claimed EEZ (19 Jul), a JL-3 SLBM test into the Pacific, expanding PLAN transits of the Nansei passages and a record ¥8.9 tn budget request — while Beijing's precondition (revise the Taiwan position) leaves no de-escalation path.",
+      "topic": "Coercive diplomacy between major powers: economic sanctions, live fire in disputed waters, expanding naval transits and alliance hedging.",
+      "whyMatters": "Shows how China applies sustained economic and military pressure on a US ally over Taiwan policy; a template Singapore could face, and a driver of Japan's growing regional security role.",
       "changes": [
         "26 Jun–2 Jul: eight PLAN ships used three of five Nansei passages alongside five Russian ships (MOD: 'expanding and intensifying'); 6 Jul JL-3 SLBM test ~7,000 km into the South Pacific (Pacific leaders' rebuke 4 Sep); 7 Jul JCG–CCG face-off in Senkaku territorial waters.",
         "19 Jul: PLAN destroyer Kaifeng live-fired ~100 nm off Okinotori inside Japan's claimed EEZ beside a Russian corvette; Japan protested; Beijing: Okinotori 'is a rock'. No radar lock-on or unsafe intercept found since December 2025.",
@@ -2208,6 +2228,8 @@
         }
       ],
       "whyNow": "The Line of Control is quiet but the trigger set is live: Jaish-e-Mohammed infiltrators killed in Udhampur (16–17 Sep), Pakistan's 'act of war' line on water, India's rejection of the arbitration award on the Indus Waters Treaty, and both leaders at UNGA on 25 Sep.",
+      "topic": "A frozen post-conflict ceasefire between nuclear powers: water lawfare, infiltration, drone smuggling and naval brushes.",
+      "whyMatters": "Escalation between two nuclear states can move from quiet to crisis in days; the Indus dispute and the Arabian Sea collision are the fastest paths, and a crisis would hit South Asian shipping and Singapore's diaspora links.",
       "changes": [
         "Indus Waters Treaty: the PCA Court of Arbitration ruled (31 Aug–1 Sep) that the treaty remains in force and 'abeyance' is impermissible, with interim restrictions on Ratle; India 'categorically rejects' the award as illegally constituted; Pakistan's corps commanders (8 Jul) called any diversion of its water share an act of war.",
         "Targeting of non-locals returned to Kashmir (31 Jul Kulgam shooting, first since Pahalgam) with no Indian stand-off response; two JeM militants killed at Udhampur on 16–17 Sep with a high alert across Kathua–Kishtwar; 486 drones recovered on the Punjab border year to date; a Pakistani UAV tracked over Rajouri on 28 Aug.",
@@ -2417,6 +2439,8 @@
         }
       ],
       "whyNow": "Moved up to Active: a fibre-optic FPV strike on the Tada-U fighter base (10 Sep), the failed junta Operation 4926 in Rakhine and the Arakan Army's counter-offensive around Sittwe, 500+ air attacks a month, and an ASEAN seat decision at the November summit that Singapore is co-shaping.",
+      "topic": "Resistance drone war against airpower, failed junta offensives, and ASEAN's handling of a member state in civil war.",
+      "whyMatters": "Singapore co-shapes ASEAN's Myanmar position ahead of the November summit, and fibre-optic FPV strikes on a fighter base show what low-cost drones can do to any air base.",
       "changes": [
         "Air war intensifying: ACLED counts >450 civilian deaths in H1 2026 with a new 2–5-jet sustained-strike tactic; the NUG reports 530 aerial attacks and 139 civilians killed in August (Myaung monastery 21 Aug, Mindat 30 Aug, Shadaw 5 Sep).",
         "Rakhine: junta 'Operation 4926' launched from the Sittwe, Kyaukphyu and Thandwe enclaves on 4 Sep (about 1,000 troops each, MLRS, drones, naval gunfire) and was repulsed by 5 Sep; the Arakan Army then took six or more outposts around Sittwe (15–19 Sep) and holds ~93% of the state; 5,000+ displaced.",
@@ -2632,6 +2656,8 @@
         }
       ],
       "whyNow": "Moved up to Priority: the Houthis ended the 2022 truce, seized the full Red Sea coast including Perim and the Hanish islands (3–11 Sep), and cut Bab al-Mandab transits to ~12 a day; a Singapore-flagged VLCC has already diverted; Iraqi militia drones shut Saudi Arabia's East-West pipeline while the US leaves Iraq by 30 Sep.",
+      "topic": "Chokepoint control by a non-state actor, militia drone strikes on energy infrastructure, the US drawdown in Iraq and an Israel–Syria settlement.",
+      "whyMatters": "Bab al-Mandab and the Gulf pipelines sit on Singapore's energy and shipping routes: a Singapore-flagged tanker has already diverted, and a Red Sea closure raises Asia–Europe freight rates at once.",
       "changes": [
         "Houthis declared the 2022 truce over and a 'naval blockade' of Saudi Arabia (20 Jul); ballistic missiles killed six on the Egyptian cargo ship Tihamah in Bab al-Mandab (11 Aug, first fatal ship attack since February) and hit a Bahri tanker off Yanbu (24 Aug); 12 attacks or attempts since July.",
         "3–11 Sep offensive took Mocha, Hays, Khawkhah, the Hanish islands and Perim — the whole Red Sea coast; Lloyd's List transits fell from ~30 to ~12 a day, Brent above $100, Asia–Europe rates up 25–40%; Trump reportedly declined a Saudi request for air support; Saudi two-week ceasefire offer via Oman and US–Houthi talks in Muscat (18 Sep), no Houthi reply yet.",

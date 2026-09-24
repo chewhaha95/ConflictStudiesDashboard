@@ -80,6 +80,10 @@ same way.
      older than 7 days unless nothing newer exists). Do not write a
      `status.latest` field (remove it if present): the dashboard shows the
      newest headline from the hourly live feed above the summary;
+   - keep `topic` (the theme the Army follows this theatre for) and
+     `whyMatters` (one or two sentences on relevance to Singapore and the
+     Army) as stable framing: revise them only when the conflict's phase
+     changes, never for a day's news;
    - rewrite `whyNow` (one or two sentences), `changes` (7-day window, see
      ground rules), `next` (each with
      `type` from `definitions.indicatorTypes`, `due` as ISO date or null,
