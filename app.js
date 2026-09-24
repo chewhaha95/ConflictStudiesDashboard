@@ -1905,6 +1905,23 @@
       const d = f.prev7d ? Math.round((f.count7d - f.prev7d) / f.prev7d * 100) : null;
       return `<td class="wl-feed-cell" title="Open-source coverage (GDELT): ${this.feedCount(f)} articles in the last 7 days vs ${f.prev7d}${f.capped ? "+" : ""} the 7 days before${f.capped ? " (counts capped at 250 per window)" : ""}">${this.sparkline(f.timeline, 72, 20, f.granularity)}<div class="wl-feed-n"><b>${this.feedCount(f)}</b>/7d${d != null ? ` <span class="wl-feed-d ${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d}%</span>` : ""}${f.surge ? ` <span class="wl-surge">surge</span>` : ""}${(() => { const h = this.feedItemAge(f); return h != null && h > 24 ? ` <span class="wl-feed-stale" title="This item last refreshed ${h}h ago">${Math.round(h / 24)}d old</span>` : ""; })()}</div></td>`;
     },
+    // Live movement signal from the open-source feed: surges and sharp coverage changes
+    // (last 7 days vs the 7 before). Refreshes with the feed; does not change states.
+    coverageMoves(list) {
+      return list.map(it => { const f = this.feed(it); if (!f || (!f.prev7d && !f.count7d)) return null;
+        const d = f.prev7d ? Math.round((f.count7d - f.prev7d) / f.prev7d * 100) : (f.count7d ? 999 : 0);
+        return { it, f, d }; }).filter(x => x && (x.f.surge || Math.abs(x.d) >= 50))
+        .sort((p, q) => (q.f.surge - p.f.surge) || Math.abs(q.d) - Math.abs(p.d));
+    },
+    coverageMovesBlock(list) {
+      const lf = this.feedMeta(); if (!lf) return "";
+      const rows = this.coverageMoves(list).map(({ it, f, d }) =>
+        `<li class="wl-mv-item minor wl-cov-item"><span class="wl-move ${d >= 0 ? "wl-move-up" : "wl-move-down"}">${d >= 0 ? "▲" : "▼"}</span> ${this.nameBtn(it)} <span class="wl-mv-path">coverage ${d >= 0 ? "+" : ""}${d === 999 ? "new" : d + "%"} · ${this.feedCount(f)} vs ${f.prev7d}${f.capped ? "+" : ""} articles${f.surge ? ` <span class="wl-surge">surge</span>` : ""}</span></li>`);
+      const h = this.feedAge();
+      return `<div class="wl-card-h sub">Live coverage moves <span class="briefs-live">● LIVE</span> <span class="wl-card-h-note">open-source feed, last 7 days vs the 7 before${h != null ? ` · synced ${h < 1 ? "under an hour" : h + "h"} ago` : ""}</span></div>
+        ${rows.length ? `<ul class="wl-mv-list">${rows.join("")}</ul>` : `<p class="muted-note">No item is surging or moving by 50% or more this week.</p>`}
+        <div class="muted-note wl-cov-note">A coverage move is a signal to look, not a state change: states move only at the weekly review.</div>`;
+    },
     feedBlock(it) {
       const f = this.feed(it), lf = this.feedMeta();
       if (!f) return `<div class="wl-d-block"><div class="wl-d-h">Latest open-source reporting</div><p class="muted-note">No live feed loaded — the feed syncs every 6 hours from GDELT into <code>watchlist-live.json</code>.</p></div>`;
@@ -2111,10 +2128,11 @@
             <div class="wl-legend">${legend}</div>
           </div>
           <div class="card card-pad wl-moves-card">
-            <div class="wl-card-h">Moved since previous review (${esc(this.fmtDate(this.meta().previousReviewDate))})</div>
+            <div class="wl-card-h">State moves since previous review (${esc(this.fmtDate(this.meta().previousReviewDate))}) <span class="wl-card-h-note">assessed at the weekly review · latest ${esc(this.fmtDate(this.meta().reviewDate))}</span></div>
             ${moves.length ? `<ul class="wl-mv-list">${moves.join("")}</ul>` : `<p class="muted-note">No state changes at this review.</p>`}
             ${recentRows.length ? `<div class="wl-card-h sub">Earlier moves (last 4 weeks)</div><ul class="wl-mv-list">${recentRows.join("")}</ul>` : ""}
             ${briefMoves.length ? `<div class="wl-card-h sub">Brief signal moved (latest vs previous edition)</div><ul class="wl-mv-list">${briefMoves.join("")}</ul>` : ""}
+            ${this.coverageMovesBlock(list)}
           </div>
         </div>
         <div class="wl-board">${board}</div>
