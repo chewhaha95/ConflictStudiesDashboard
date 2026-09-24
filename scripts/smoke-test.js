@@ -650,6 +650,11 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const others = [...wv2.querySelectorAll("#wl-register tbody tr.wl-row")].filter(r => r !== row);
     return !!row.querySelector(".wl-surge") && others.every(r => !r.querySelector(".wl-surge")) && /Live coverage surge: \+8/.test(row.querySelector(".wl-score .tip-body").textContent);
   })());
+  check("feed: 'Live coverage moves' block lists the surging item under the state moves", (() => {
+    const items = [...wv2.querySelectorAll(".wl-moves-card .wl-cov-item")];
+    return /Live coverage moves/.test(wv2.querySelector(".wl-moves-card").textContent) && items.length >= 1 && items[0].querySelector(".wl-name").textContent === wl.items[0].name && !!items[0].querySelector(".wl-surge");
+  })());
+  check("feed: the seed DOM (no feed) shows no coverage-moves block", !/Live coverage moves/.test(doc.querySelector("#view-watchlist .view-body").textContent) || doc.querySelector("#view-watchlist .wl-cov-item") === null);
   check("feed: expanded row lists the latest open-source headlines with links", (() => {
     const det2 = d2.querySelector(`#view-watchlist tr[data-wl-detail="${liveProbe.id}"]`);
     return !!det2 && /Latest open-source reporting/.test(det2.textContent) && !!det2.querySelector(".wl-art-list a[href='https://example.org/feed/" + liveProbe.id + "']") && /FEED-HEADLINE/.test(det2.textContent);
