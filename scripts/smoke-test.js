@@ -166,11 +166,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const css = fs.readFileSync(path.join(root, "styles.css"), "utf8");
     return /body\.watchlist-view \.header-meta \.meta-block\.optional \{ display: none; \}/.test(css) && doc.querySelector("#meta-range").closest(".meta-block").classList.contains("optional") && doc.querySelector("#meta-range").textContent === "—";
   })());
-  check("staleness flag is computed against today", (() => {
-    const el = wv.querySelector(".wl-stale"); if (!el) return false;
-    const days = Math.round((Date.now() - new Date(wl.meta.reviewDate).getTime()) / 86400000);
-    return el.classList.contains(days > wl.meta.cadenceDays * 1.5 ? "overdue" : "fresh");
-  })());
+  check("header carries no live-feed badge and no 'reviewed N days ago' badge", !wv.querySelector(".wl-feedstat") && !wv.querySelector(".wl-stale"));
   check("tier + state filter chips and hide-ignorable toggle", wv.querySelectorAll(".wl-f-tier").length === 3 && wv.querySelectorAll(".wl-f-state").length === stateNames.length && !!wv.querySelector(".wl-f-ignored"));
   // the seven questions, in order
   const h2s = [...wv.querySelectorAll(".section-head h2")].map(h => h.textContent);
@@ -289,7 +285,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     det.querySelectorAll(".wl-ind-if").length === probe.next.filter(n => n.ifSeen).length && probe.next.filter(n => n.due).every(n => det.textContent.includes(fmtD(n.due))));
   check("detail: without a live feed the reporting block explains the daily sync", /Latest open-source reporting/.test(det.textContent) && /No live feed loaded/.test(det.textContent));
   check("register: Coverage column present, empty without a feed", [...reg.querySelectorAll("thead th")].some(th => /Coverage/.test(th.textContent)) && reg.querySelectorAll("td.wl-feed-cell .wl-spark").length === 0);
-  check("header: live-feed status shows 'not loaded' without a feed", /Live feed not loaded/.test(wv.querySelector(".wl-feedstat").textContent));
+  check("header: no live-feed status badge without a feed", !wv.querySelector(".wl-feedstat"));
   check("detail: source links rendered when the item carries sources", (probe.sources || []).length
     ? det.querySelectorAll(".wl-src-list a[href^='http']").length === probe.sources.length
     : !det.querySelector(".wl-src-list"));
@@ -454,18 +450,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("no Theatre/Division mode switch", !doc.querySelector("[data-mode]"));
   check("no top division dropdown", !doc.querySelector("#division-select") && !doc.querySelector("#division-wrap"));
 
-  // weekly-briefs quick access sits beside the horizon tabs
-  check("Weekly Briefs quick-access button present beside the tabs",
-    !!doc.querySelector(".control-bar .briefs-access #briefs-toggle") &&
-    doc.querySelector(".seg").nextElementSibling.classList.contains("briefs-access"));
-  check("briefs menu is closed until opened", doc.querySelector("#briefs-menu").hidden === true);
-  doc.querySelector("#briefs-toggle").click(); await sleep(20);
-  check("clicking Weekly Briefs opens a menu with items", doc.querySelector("#briefs-menu").hidden === false && doc.querySelectorAll("#briefs-menu .briefs-item").length >= 2);
-  check("briefs menu links to the brief site + offers in-app Weekly tab",
-    !!doc.querySelector("#briefs-menu .briefs-site[href^='http']") && !!doc.querySelector("#briefs-menu [data-open-weekly]"));
-  // in-app item jumps to the Weekly view
-  doc.querySelector("#briefs-menu [data-open-weekly]").click(); await sleep(30);
-  check("in-app briefs item switches to the Weekly tab", doc.querySelector("#view-weekly").classList.contains("active"));
+  check("no Weekly Briefs quick-access menu in the control bar", !doc.querySelector("#briefs-toggle") && !doc.querySelector("#briefs-menu") && !doc.querySelector(".briefs-access"));
 
   // --- 5. Filters ----------------------------------------------------------
   console.log("\nFilters:");
@@ -699,7 +684,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   })());
   // live open-source feed wired through: header status, sparklines, surge flag + score bonus, headlines in the detail
   const wv2 = d2.querySelector("#view-watchlist .view-body");
-  check("feed: header shows the live feed as synced", /● LIVE feed · synced/.test(wv2.querySelector(".wl-feedstat").textContent) && !wv2.querySelector(".wl-feedstat.off"));
+  check("feed: header still carries no live-feed badge in live mode", !wv2.querySelector(".wl-feedstat") && !wv2.querySelector(".wl-stale"));
   check("header 'Last updated' reports the newest live sync, not the seed timestamp", (() => {
     const v = d2.querySelector("#meta-updated"), l = v.previousElementSibling;
     return !/30 May 2026/.test(v.textContent) && /open-source feed sync|watchlist review/.test(l.textContent) && /seed data/.test(v.title);
@@ -758,13 +743,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const after = d2.querySelector("#view-capabilities .view-body");
     return after.querySelectorAll(".matrix tbody tr").length > beforeRows && after.querySelectorAll(".contest-card").length > beforeContests;
   })());
-  // in live mode the briefs menu lists the actual synced editions (newest ● LIVE)
-  d2.querySelector("#briefs-toggle").click(); await sleep(20);
-  check("live briefs menu lists synced editions with source links", (() => {
-    const items = [...d2.querySelectorAll("#briefs-menu .briefs-item[href^='http']")];
-    const edLinks = items.filter(a => /example\.org\/(new|old)/.test(a.getAttribute("href") || ""));
-    return edLinks.length >= 2 && !!d2.querySelector("#briefs-menu .briefs-live");
-  })());
+  check("live mode: no Weekly Briefs menu either", !d2.querySelector("#briefs-toggle") && !d2.querySelector("#briefs-menu"));
 
   // restore globals for any later use
   global.window = window; global.document = doc;
