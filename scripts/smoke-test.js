@@ -161,7 +161,10 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check(`header: title carries the daily review date (${fmtD(wl.meta.reviewDate)}) and no subtitle (previous review / cadence / state counts removed)`,
     wv.querySelector(".wl-title").textContent.includes(`daily review as of ${fmtD(wl.meta.reviewDate)}`) && !wv.querySelector(".wl-sub") && !/Previous review|-day cadence|showing \d+/.test(wv.querySelector(".wl-head").textContent));
   check(`moves card names the 7-day comparison date (${fmtD(cmpDate)})`, wv.querySelector(".wl-moves-card .wl-card-h-note").textContent.includes(`compared with ${fmtD(cmpDate)}`));
-  check("header reporting range shows the comparison window, not the review-to-review gap", doc.querySelector("#meta-range").textContent.startsWith("Changes ") && doc.querySelector("#meta-range").textContent.includes(String(new Date(wl.meta.reviewDate).getUTCFullYear())));
+  check("header 'Reporting range' block is hidden on the Watchlist tab", (() => {
+    const css = fs.readFileSync(path.join(root, "styles.css"), "utf8");
+    return /body\.watchlist-view \.header-meta \.meta-block\.optional \{ display: none; \}/.test(css) && doc.querySelector("#meta-range").closest(".meta-block").classList.contains("optional") && doc.querySelector("#meta-range").textContent === "—";
+  })());
   check("staleness flag is computed against today", (() => {
     const el = wv.querySelector(".wl-stale"); if (!el) return false;
     const days = Math.round((Date.now() - new Date(wl.meta.reviewDate).getTime()) / 86400000);
@@ -216,7 +219,6 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   // the baseline, so a daily register compares against 7 days ago, not yesterday.
   await (async () => {
     const wl3 = JSON.parse(wlRaw);
-    const fmtRange3 = (a, b) => `${fmtD(a)} – ${fmtD(b)}`;   // same format as the app's Time.fmtRange
     const probe = wl3.items[0];
     const last = probe.snapshots[probe.snapshots.length - 1];
     const dayBefore = new Date(new Date(cmpCutoff).getTime() - 86400000).toISOString().slice(0, 10);
@@ -245,7 +247,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     check("rolling window: a state move over the last 7 days is listed as Watch → current state", !!major && major.textContent.includes("Watch") && major.textContent.includes(probe.state));
     check("rolling window: a dimension changed over the last 7 days is highlighted with the 7-day-old value", !!row && !!row.querySelector("td.wl-dim.wl-chg .wl-prev") && row.querySelector("td.wl-dim.wl-chg .wl-prev").textContent === "Low");
     check("rolling window: a history move before the window shows under 'Earlier moves', one inside it does not", !!minor && minor.textContent.includes(fmtD(dayBefore)) && !card.textContent.includes("move inside the window"));
-    check("rolling window: header reporting range runs from the earliest baseline to the review date", dom3.window.document.querySelector("#meta-range").textContent === `Changes ${fmtRange3(cmpDate, wl3.meta.reviewDate)}`);
+    check("rolling window: the moves card note names the earliest baseline as the comparison date", card.querySelector(".wl-card-h-note").textContent.includes(`compared with ${fmtD(cmpDate)}`));
   })();
   const cols = [...wv.querySelectorAll(".wl-board .wl-col")];
   check("Q2: state board has the monitoring states in order", cols.length === stateNames.length && cols.map(c => c.querySelector(".wl-state").textContent.trim()).join(",") === stateNames.join(","));

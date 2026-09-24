@@ -2255,7 +2255,7 @@
         return;
       }
       const m = this.meta();
-      el("#meta-range").textContent = `Changes ${Time.fmtRange(this.compareDate(), m.reviewDate)}`;
+      el("#meta-range").textContent = "—";   // block is hidden on the Watchlist tab (styles: body.watchlist-view)
       const list = this.filtered();
       container.innerHTML =
         this.header(list) +
