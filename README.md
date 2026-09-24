@@ -15,7 +15,7 @@ The Watchlist answers six questions, in order, from `watchlist.json`:
 |---|----------|-------------------|
 | Q1 | What deserves attention now? | Ranked top-5 with an explainable attention score |
 | Q2 | Which theatres moved state (Watch → Active → Priority) in the last 7 days? | Map markers (▲▼), "State moves in the last 7 days" + "Earlier moves", state board |
-| Q3 | What has materially changed in the last 7 days? | Register rows (plain-language current status with article links) + expanded "What materially changed" |
+| Q3 | What has materially changed in the last 7 days? | Register rows (dated "Latest" development, plain-language current status with links, newest live headline) + expanded "What materially changed" |
 | Q4 | Did phase / escalation risk / tempo / adaptation / Singapore exposure change over the last 7 days? | Highlighted register cells (7 days ago → now); hover a header or value for the criteria |
 | Q5 | What might happen next? | Typed, dated indicators (named event, threshold, deadline, mobilisation sign, force movement, diplomatic decision, escalation indicator) |
 | Q6 | What can be ignored for now? | Ignore-for-now list with reason tags and revisit triggers |
