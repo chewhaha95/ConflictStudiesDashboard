@@ -114,6 +114,12 @@ deploy. `_headers` sets `Cache-Control: no-cache` there so a deploy is never
 hidden behind a cached `app.js`. A custom domain can be attached to either
 host.
 
+**Hourly feed trigger.** GitHub runs this repository's `schedule:` workflows
+hours late, so the feed sync is fired every hour by a Cloudflare Worker cron
+that calls GitHub's workflow-dispatch API; see
+[`cloudflare/feed-trigger/README.md`](cloudflare/feed-trigger/README.md) for
+the five-minute setup (a fine-grained token with Actions write on this repo).
+
 ## Development
 
 ```
