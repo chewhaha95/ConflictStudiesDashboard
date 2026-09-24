@@ -23,8 +23,13 @@ same way.
   previous review" and keep levels unchanged.
 - **Flag, don't guess.** Single-source or unverifiable items are labelled
   "Unverified (single source)". Conflicting dates are stated as conflicting.
+- **No publication prompts.** Do not write a `csi` field or recommend what to
+  publish, escalate or leave (no "CSI Flash", "weekly awareness post" and the
+  like, in `ifSeen` or anywhere else). Phrase consequences analytically:
+  "escalate", "flag this week", "note for the monthly pattern set", "track
+  only". The team makes publication decisions outside the dashboard.
 - **Scope is fixed.** The twelve items, their ids, tiers and `geo` blocks do
-  not change. Only states, dimensions, text, indicators, CSI actions, ignore
+  not change. Only states, dimensions, text, indicators, ignore
   verdicts, history, sources and `feed` queries change.
 
 ## Procedure
@@ -47,8 +52,7 @@ same way.
      if it changed, append `{date, state, note}` to `history`;
    - rewrite `whyNow` (one or two sentences), `changes`, `next` (each with
      `type` from `definitions.indicatorTypes`, `due` as ISO date or null,
-     `ifSeen`), `csi` (`action` from `definitions.actions`, optional `also`,
-     `rationale`), `ignore` (`flag`, `reasons` from
+     `ifSeen`), `ignore` (`flag`, `reasons` from
      `definitions.ignoreReasons`, `note`), `confidence`, `learningValue`,
      and replace `sources` with the run's citations (label + URL);
    - adjust `feed.query` / `feed.terms` only if the item's vocabulary
@@ -65,7 +69,6 @@ same way.
 
 state (Priority 40 / Active 25 / Watch 10 / Archive 0) + escalation (Severe
 20 / High 15 / Moderate 8 / Low 2) + 5 per changed dimension + 10 if the state
-moved up + CSI action (Flash 20 / Weekly 10 / Monthly 5 / Quarterly 3 /
-Dashboard 0) + Singapore exposure (High 8 / Moderate 4 / Low 0) + tier (T1 6 /
+moved up + Singapore exposure (High 8 / Moderate 4 / Low 0) + tier (T1 6 /
 T2 3 / T3 0) + 8 on a live coverage surge. Items flagged ignore-for-now rank
 last.

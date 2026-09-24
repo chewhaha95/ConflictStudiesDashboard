@@ -76,10 +76,12 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   try { wl = JSON.parse(wlRaw); check("watchlist.json parses", true); }
   catch (e) { check("watchlist.json parses", false, e.message); process.exit(1); }
   check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
-  check("watchlist defines 3 tiers / 4 states / 5 CSI actions",
+  check("watchlist defines 3 tiers / 4 states and no publication actions",
     Object.keys(wl.definitions.tiers).join(",") === "1,2,3" &&
     Object.keys(wl.definitions.states).sort().join(",") === "Active,Archive,Priority,Watch" &&
-    Object.keys(wl.definitions.actions).length === 5);
+    !wl.definitions.actions && wl.items.every(i => !i.csi));
+  check("no publication prompts (CSI Flash / awareness post / …) anywhere in the register",
+    !/CSI Flash|Weekly awareness post|Monthly pattern review|Quarterly candidate|Dashboard only|\bCSI\b/.test(wlRaw));
   check("watchlist items span the three tiers", wl.items.length >= 3 && [1, 2, 3].every(n => wl.items.some(i => i.tier === n)), "got " + wl.items.length);
   check("prevState / dims.prev are the previous review's values (no self-referential history)", wl.items.every(i => i.history[i.history.length - 1].state === i.state));
   check("every item carries an open-source feed query + title terms", wl.items.every(i => i.feed && i.feed.query && Array.isArray(i.feed.terms) && i.feed.terms.length));
@@ -90,8 +92,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     i.geo && typeof i.geo.lat === "number" && typeof i.geo.lon === "number" && Array.isArray(i.geo.countries) &&
     DIMS.every(d => i.dims[d] && i.dims[d].now != null && i.dims[d].prev != null) &&
     Array.isArray(i.changes) && Array.isArray(i.next) && i.next.every(n => wl.definitions.indicatorTypes.includes(n.type) && n.text) &&
-    i.csi && wl.definitions.actions[i.csi.action] && i.ignore && typeof i.ignore.flag === "boolean" && Array.isArray(i.history) && i.history.length >= 1);
-  check("every watchlist item has state, geo, 5 dims (now+prev), changes, typed indicators, CSI action, ignore verdict, history", wlOk);
+    i.ignore && typeof i.ignore.flag === "boolean" && Array.isArray(i.history) && i.history.length >= 1);
+  check("every watchlist item has state, geo, 5 dims (now+prev), changes, typed indicators, ignore verdict, history", wlOk);
   check("Tier 1 = Russia-Ukraine / Israel-Palestine / US-Israel-Iran / Israel-Lebanon / Thailand-Cambodia",
     wl.items.filter(i => i.tier === 1).map(i => i.id).sort().join(",") === "IL_GZ,IL_LB,IL_US_IR,RU_UA,TH_KH");
   check("Tier 2 = US-Venezuela / South China Sea / Taiwan Strait / China-Japan",
@@ -128,19 +130,17 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   const movedUp = i => moved(i) && stOrder(i.state) < stOrder(i.prevState);
   const scoreOf = i => ({ Priority: 40, Active: 25, Watch: 10, Archive: 0 }[i.state] || 0) +
     ({ Severe: 20, High: 15, Moderate: 8, Low: 2 }[i.dims.escalation.now] || 0) + changed(i).length * 5 + (movedUp(i) ? 10 : 0) +
-    ({ "CSI Flash": 20, "Weekly awareness post": 10, "Monthly pattern review": 5, "Quarterly candidate": 3, "Dashboard only": 0 }[i.csi.action] || 0) +
     ({ High: 8, Moderate: 4, Low: 0 }[i.dims.sgExposure.now] || 0) + ({ 1: 6, 2: 3, 3: 0 }[i.tier] || 0);
   const ranked = wl.items.slice().sort((a, b) => (a.ignore.flag - b.ignore.flag) || (scoreOf(b) - scoreOf(a)) || (a.tier - b.tier) || a.name.localeCompare(b.name));
   const N = wl.items.length;
   const ignoredItems = wl.items.filter(i => i.ignore.flag);
-  const quietItems = wl.items.filter(i => !i.ignore.flag && !changed(i).length && !moved(i) && i.csi.action === "Dashboard only");
+  const quietItems = wl.items.filter(i => !i.ignore.flag && !changed(i).length && !moved(i));
   const movedItems = wl.items.filter(moved);
   const zoneCount = wl.items.reduce((a, i) => a + (i.geo.zones || []).length, 0);
   const briefLinked = wl.items.filter(i => i.briefTheatre);
   const allInd = wl.items.flatMap(i => i.next);
   const datedInd = allInd.filter(n => n.due).sort((a, b) => a.due.localeCompare(b.due));
   const stateNames = Object.keys(wl.definitions.states).sort((a, b) => stOrder(a) - stOrder(b));
-  const actionNames = Object.keys(wl.definitions.actions).sort((a, b) => wl.definitions.actions[a].order - wl.definitions.actions[b].order);
 
   check("no boot error", doc.querySelector("#boot-error").style.display === "none");
   check("Watchlist is the first tab and the landing view",
@@ -157,10 +157,12 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("tier + state filter chips and hide-ignorable toggle", wv.querySelectorAll(".wl-f-tier").length === 3 && wv.querySelectorAll(".wl-f-state").length === stateNames.length && !!wv.querySelector(".wl-f-ignored"));
   // the seven questions, in order
   const h2s = [...wv.querySelectorAll(".section-head h2")].map(h => h.textContent);
-  check("answers the seven questions as ordered sections (no Q-number prefixes)",
+  check("answers the questions as ordered sections (no CSI-action section, no Q-number prefixes)",
     /^What deserves attention now\?/.test(h2s[0]) && /^Which theatres moved\?/.test(h2s[1]) && /^What materially changed\?/.test(h2s[2]) &&
-    /^What might happen next\?/.test(h2s[3]) && /^What should CSI do with it\?/.test(h2s[4]) && /^What can be ignored for now\?/.test(h2s[5]) &&
-    h2s.every(h => !/\bQ[1-7]\b/.test(h)), h2s.join(" | "));
+    /^What might happen next\?/.test(h2s[3]) && /^What can be ignored for now\?/.test(h2s[4]) && h2s.length === 5 &&
+    h2s.every(h => !/\bQ[1-7]\b/.test(h) && !/CSI/.test(h)), h2s.join(" | "));
+  check("no CSI action chips, columns or prompts rendered on the Watchlist tab", !wv.querySelector(".wl-action") && !wv.querySelector(".wl-act-grid") &&
+    ![...wv.querySelectorAll("#wl-register thead th")].some(th => /CSI/.test(th.textContent)) && !/CSI Flash|Weekly awareness post|Dashboard only/.test(wv.textContent));
   // Q1 attention ranking
   const rank = [...wv.querySelectorAll(".wl-rank .wl-rank-item")];
   const expTop = ranked.filter(i => !i.ignore.flag).slice(0, 5);
@@ -216,8 +218,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   reg.querySelector(`[data-wl-toggle="${probe.id}"]`).click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
   const det = wv.querySelector(`tr[data-wl-detail="${probe.id}"]`);
-  check("expanded row shows what changed / what next / CSI call / ignore verdict / brief signal / history", !!det &&
-    /What materially changed/.test(det.textContent) && /What might happen next/.test(det.textContent) && /What CSI should do/.test(det.textContent) &&
+  check("expanded row shows what changed / what next / ignore verdict / brief signal / history", !!det &&
+    /What materially changed/.test(det.textContent) && /What might happen next/.test(det.textContent) && !/What CSI should do/.test(det.textContent) &&
     /Ignore for now\?/.test(det.textContent) && !/\bQ[1-7]\b/.test(det.textContent) && /Brief signal/.test(det.textContent) && /State history/.test(det.textContent));
   check("detail: every changed dimension spelled out (prev → now)", det.querySelectorAll(".wl-chg-line .wl-chg-pill").length === changed(probe).length && changed(probe).every(d => det.textContent.includes(probe.dims[d].prev)));
   check("detail: typed indicators with 'If seen →' consequences and rendered dates",
@@ -230,7 +232,6 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("detail: source links rendered when the item carries sources", (probe.sources || []).length
     ? det.querySelectorAll(".wl-src-list a[href^='http']").length === probe.sources.length
     : !det.querySelector(".wl-src-list"));
-  check("detail: primary CSI action chip + rationale", !!det.querySelector(".wl-action") && det.querySelector(".wl-action").textContent.trim() === probe.csi.action && det.textContent.includes(probe.csi.rationale.slice(0, 40)));
   // Q5 indicators table
   const ind = wv.querySelector("#wl-indicators");
   const indRows = [...ind.querySelectorAll("tbody tr:not(.wl-sep)")];
@@ -244,12 +245,6 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     return before.length === datedInd.length && before.every(r => r.querySelector(".wl-due-sub")) && dues[0].includes(fmtD(datedInd[0].due)) && dues[dues.length - 1].includes(fmtD(datedInd[datedInd.length - 1].due));
   })());
   check("Q5: indicator types are the seven named kinds", [...ind.querySelectorAll(".wl-ind-type")].every(s => wl.definitions.indicatorTypes.includes(s.textContent.trim())));
-  // Q6 actions
-  const acts = [...wv.querySelectorAll(".wl-act-grid .wl-act-col")];
-  check("Q6: 5 action columns in escalation order (Flash → Weekly → Monthly → Quarterly → Dashboard only)", acts.length === 5 && acts.map(a => a.querySelector(".wl-action").textContent.trim()).join("|") === actionNames.join("|"));
-  check("Q6: every item placed under exactly one primary action", acts.reduce((n, a) => n + a.querySelectorAll(".wl-act-item").length, 0) === N &&
-    acts.every((a, k) => a.querySelectorAll(".wl-act-item").length === wl.items.filter(i => i.csi.action === actionNames[k]).length));
-  check("Q6: secondary feeds listed ('Also feeds')", wl.items.some(i => i.csi.also && i.csi.also.length) ? acts.some(a => /Also feeds/.test(a.textContent)) : true);
   // Q7 ignore
   const ig = [...wv.querySelectorAll(".wl-ig-list .wl-ig-item")];
   check(`Q7: ignore-for-now list = the ${ignoredItems.length} flagged items with reason tags + revisit trigger`,
@@ -318,7 +313,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("export JSON/CSV carry the watchlist (derived score / movement / brief signal columns)", dl.length === 2 && (() => {
     const j = JSON.parse(dl[0].text); const csvHead = dl[1].text.split("\n")[0];
     return j.view === "watchlist" && j.items.length === N && typeof j.items[0].attentionScore === "number" && "movement" in j.items[0] &&
-      /attentionScore/.test(csvHead) && /stateMove/.test(csvHead) && dl[1].text.split("\n").length === N + 1;
+      /attentionScore/.test(csvHead) && /stateMove/.test(csvHead) && !/csi/i.test(csvHead) && dl[1].text.split("\n").length === N + 1;
   })());
   // hand over to the Weekly tab for the brief-structure checks below
   doc.querySelector('.tab-btn[data-horizon="weekly"]').click(); await sleep(60);

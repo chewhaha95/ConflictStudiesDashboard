@@ -1776,7 +1776,7 @@
    * 8c. CONFLICT WATCHLIST  (attention tracker + map)
    *     Analyst-maintained register (watchlist.json) rendered as a decision
    *     page: where to spend attention, what moved, what changed, what to
-   *     watch next, what CSI should do, and what to ignore for now. All
+   *     watch next, and what to ignore for now. All
    *     ranking / movement / change flags are DERIVED here (deterministic and
    *     explainable) — the register only stores the analyst's assessment.
    *     Linked theatres are enriched with the latest brief edition (live if
@@ -1794,9 +1794,7 @@
     items() { return this.data() ? this.data().items : []; },
     byId(id) { return this.items().find(i => i.id === id); },
     stateDef(s) { return this.defs().states[s] || { order: 9, tone: "neutral", desc: "" }; },
-    actionDef(a) { return this.defs().actions[a] || { order: 9, tone: "neutral", desc: "" }; },
     stateOrder() { return Object.keys(this.defs().states).sort((a, b) => this.stateDef(a).order - this.stateDef(b).order); },
-    actionOrder() { return Object.keys(this.defs().actions).sort((a, b) => this.actionDef(a).order - this.actionDef(b).order); },
     tone(t) { return `tone-${t || "neutral"}`; },
     fmtDate(s) { return s ? new Date(s).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : "—"; },
     today() { return Time.iso(new Date()); },
@@ -1834,7 +1832,6 @@
       const er = { Severe: 20, High: 15, Moderate: 8, Low: 2 }[it.dims.escalation.now]; parts.push({ label: `Escalation ${it.dims.escalation.now}`, pts: er == null ? 0 : er });
       const ch = this.changedDims(it).length; if (ch) parts.push({ label: `${ch} dimension${ch === 1 ? "" : "s"} changed`, pts: ch * 5 });
       const mv = this.movement(it); if (mv && mv.dir === "up") parts.push({ label: `Moved up (${mv.from} → ${mv.to})`, pts: 10 });
-      const ac = { "CSI Flash": 20, "Weekly awareness post": 10, "Monthly pattern review": 5, "Quarterly candidate": 3, "Dashboard only": 0 }[it.csi.action]; parts.push({ label: it.csi.action, pts: ac == null ? 0 : ac });
       const sg = { High: 8, Moderate: 4, Low: 0 }[it.dims.sgExposure.now]; parts.push({ label: `SG exposure ${it.dims.sgExposure.now}`, pts: sg == null ? 0 : sg });
       const tr = { 1: 6, 2: 3, 3: 0 }[it.tier]; parts.push({ label: `Tier ${it.tier}`, pts: tr == null ? 0 : tr });
       const f = this.feed(it); if (f && f.surge) parts.push({ label: "Live coverage surge", pts: 8 });
@@ -1880,7 +1877,7 @@
       const cadence = m.cadenceDays || 7;
       return { days, cadence, overdue: days > cadence * 1.5, nextDue: Time.iso(new Date(new Date(m.reviewDate).getTime() + cadence * 86400000)) };
     },
-    quiet(it) { return !it.ignore.flag && !this.changedDims(it).length && !this.movement(it) && it.csi.action === "Dashboard only"; },
+    quiet(it) { return !it.ignore.flag && !this.changedDims(it).length && !this.movement(it); },
 
     // ---- live open-source feed (watchlist-live.json, synced from GDELT) ------
     feed(it) { const lf = DB.watchlistLive; return lf && lf.items && lf.items[it.id] ? lf.items[it.id] : null; },
@@ -1943,7 +1940,6 @@
     // ---- small render helpers -------------------------------------------
     stateChip(s, extra) { return `<span class="chip wl-state ${this.tone(this.stateDef(s).tone)}" title="${esc(this.stateDef(s).desc)}">${esc(s)}${extra || ""}</span>`; },
     tierTag(t) { return `<span class="wl-tier wl-tier-${t}" title="${esc((this.defs().tiers[t] || {}).name || "")}">T${t}</span>`; },
-    actionChip(a) { return `<span class="chip wl-action ${this.tone(this.actionDef(a).tone)}" title="${esc(this.actionDef(a).desc)}">${esc(a)}</span>`; },
     moveGlyph(it) { const m = this.movement(it); return m ? `<span class="wl-move wl-move-${m.dir}" title="${esc(`${m.from} → ${m.to} (${this.fmtDate(m.date)})`)}">${m.dir === "up" ? "▲" : "▼"}</span>` : ""; },
     confChip(c) { return c ? `<span class="ev-conf conf-${esc(String(c).toLowerCase())}">${esc(c)}</span>` : ""; },
     nameBtn(it, cls) { return `<button class="wl-name ${cls || ""}" data-wl-open="${esc(it.id)}" title="Open ${esc(it.name)} in the register">${esc(it.name)}</button>`; },
@@ -2029,7 +2025,7 @@
           const sel = selected === it.id;
           const mv = Watchlist.movement(it);
           const tone = Watchlist.stateDef(it.state).tone;
-          const tip = `${it.name} · Tier ${it.tier} · ${it.state}${mv ? ` (${mv.dir === "up" ? "moved up" : "moved down"} from ${mv.from})` : ""} · Escalation ${it.dims.escalation.now} · ${it.csi.action}`;
+          const tip = `${it.name} · Tier ${it.tier} · ${it.state}${mv ? ` (${mv.dir === "up" ? "moved up" : "moved down"} from ${mv.from})` : ""} · Escalation ${it.dims.escalation.now}`;
           const lx = (it.geo.labelDx || 0), ly = (it.geo.labelDy || -12);
           const anchor = lx > 4 ? "start" : lx < -4 ? "end" : "middle";
           return `<g class="wl-marker wl-m-${tone} ${sel ? "selected" : ""} ${it.ignore.flag ? "ignored" : ""}" data-wl="${esc(it.id)}" tabindex="0" role="button" aria-label="${esc(tip)}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})">
@@ -2084,19 +2080,19 @@
       const ranked = this.rank(list);
       const top = ranked.filter(i => !i.ignore.flag).slice(0, 5);
       const rest = ranked.length - top.length;
-      const dashOnly = list.filter(i => i.csi.action === "Dashboard only" && !i.ignore.flag).length;
+      const quietN = list.filter(i => this.quiet(i)).length;
       const ignored = list.filter(i => i.ignore.flag).length;
       const rows = top.map((it, i) => `<li class="wl-rank-item">
           <span class="wl-rank-n">${i + 1}</span>
           <div class="wl-rank-body">
-            <div class="wl-rank-head">${this.nameBtn(it, "wl-name-lg")} ${this.tierTag(it.tier)} ${this.stateChip(it.state, this.moveGlyph(it))} ${this.actionChip(it.csi.action)} ${this.scoreChip(it)}</div>
+            <div class="wl-rank-head">${this.nameBtn(it, "wl-name-lg")} ${this.tierTag(it.tier)} ${this.stateChip(it.state, this.moveGlyph(it))} ${this.scoreChip(it)}</div>
             <div class="wl-rank-why">${esc(it.whyNow || "")}</div>
           </div></li>`).join("");
       return `<div class="section"><div class="section-head"><h2>What deserves attention now?</h2><span class="hint">Ranked by the explainable attention score — hover a score for its breakdown</span></div>
         <div class="card bluf-card card-pad wl-bluf">
           <div class="bluf-label">Where to spend limited attention this week</div>
           ${top.length ? `<ol class="wl-rank">${rows}</ol>` : `<p class="muted-note">No items match the current filters.</p>`}
-          <div class="bluf-sub">${rest > 0 ? `${rest} further item${rest === 1 ? "" : "s"} below the fold in the register. ` : ""}${dashOnly} on <em>Dashboard only</em> with no change · ${ignored} flagged ignore-for-now (see the ignore list below).</div>
+          <div class="bluf-sub">${rest > 0 ? `${rest} further item${rest === 1 ? "" : "s"} below the fold in the register. ` : ""}${quietN} quiet (no change, no move) · ${ignored} flagged ignore-for-now (see the ignore list below).</div>
         </div></div>`;
     },
 
@@ -2161,10 +2157,7 @@
           <div class="wl-chg-line">${dimsLine}</div>
           <ul class="wl-bullets">${(it.changes || []).map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>
         <div class="wl-d-block"><div class="wl-d-h">What might happen next</div>${next ? `<ul class="wl-ind-list">${next}</ul>` : `<p class="muted-note">No indicators recorded.</p>`}</div>
-        <div class="wl-d-block"><div class="wl-d-h">What CSI should do</div>
-          <div>${this.actionChip(it.csi.action)} ${(it.csi.also || []).map(a => `<span class="t-chip">also: ${esc(a)}</span>`).join(" ")}</div>
-          <p class="wl-d-p">${esc(it.csi.rationale || "")}</p>
-          <div class="wl-d-h sub">Ignore for now?</div>
+        <div class="wl-d-block"><div class="wl-d-h">Ignore for now?</div>
           <p class="wl-d-p">${it.ignore.flag ? `<strong>Yes</strong> — ${it.ignore.reasons.map(r => `<span class="tag">${esc(r)}</span>`).join(" ")} ${esc(it.ignore.note || "")}` : `<strong>No</strong> — keep on the active watch.${it.ignore.note ? " " + esc(it.ignore.note) : ""}`}</p>
           <div class="wl-d-meta">Confidence ${this.confChip(it.confidence)} · Army learning value <strong>${esc(it.learningValue || "—")}</strong> · Region ${esc(it.region || "—")}</div></div>
         ${briefBlock}
@@ -2193,16 +2186,15 @@
           <td class="wl-chgn ${chg ? "wl-chg" : ""}" title="Dimensions changed since the previous review">${chg ? `${chg} changed` : "—"}</td>
           ${this.feedCell(it)}
           <td class="wl-next">${nd ? `<span class="wl-due wl-due-${ds.cls}">${nd.due ? esc(this.fmtDate(nd.due)) : "undated"}</span> <span class="wl-next-t">${esc(nd.text)}</span>` : "—"}</td>
-          <td>${this.actionChip(it.csi.action)}</td>
           <td>${this.confChip(it.confidence)}</td>
           <td>${this.scoreChip(it)}</td>
-        </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="${12 + this.DIMS.length}">${this.detail(it)}</td></tr>` : ""}`;
+        </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="${11 + this.DIMS.length}">${this.detail(it)}</td></tr>` : ""}`;
       }).join("");
-      return `<div class="section"><div class="section-head"><h2>What materially changed?</h2><span class="hint">Register ordered by attention · highlighted cells changed since the previous review (hover for previous value) · expand a row for changes, indicators, CSI call and the brief signal</span>
+      return `<div class="section"><div class="section-head"><h2>What materially changed?</h2><span class="hint">Register ordered by attention · highlighted cells changed since the previous review (hover for previous value) · expand a row for changes, indicators, the ignore verdict and the brief signal</span>
           <div class="head-actions"><button class="btn" data-wl-expand-all>Expand all</button><button class="btn" data-wl-collapse-all>Collapse all</button></div></div>
         <div class="card matrix-wrap"><table class="matrix wl-register" id="wl-register"><thead><tr>
-          <th>#</th><th>Tier</th><th>Conflict</th><th>State</th>${dimHead}<th>Changed</th><th title="Open-source coverage, last 30 days (GDELT); shaded = last 7 days">Coverage</th><th>Next indicator</th><th>CSI action</th><th>Conf.</th><th title="Attention score">Attn</th>
-        </tr></thead><tbody>${rows || `<tr><td colspan="${12 + this.DIMS.length}" class="empty">No items match the current filters.</td></tr>`}</tbody></table></div></div>`;
+          <th>#</th><th>Tier</th><th>Conflict</th><th>State</th>${dimHead}<th>Changed</th><th title="Open-source coverage, last 30 days (GDELT); shaded = last 7 days">Coverage</th><th>Next indicator</th><th>Conf.</th><th title="Attention score">Attn</th>
+        </tr></thead><tbody>${rows || `<tr><td colspan="${11 + this.DIMS.length}" class="empty">No items match the current filters.</td></tr>`}</tbody></table></div></div>`;
     },
 
     indicators(list) {
@@ -2219,20 +2211,6 @@
       return `<div class="section"><div class="section-head"><h2>What might happen next?</h2><span class="hint">Named events, thresholds, deadlines, mobilisation signs, force movements, diplomatic decisions and escalation indicators — dated first</span></div>
         <div class="card matrix-wrap"><table class="matrix wl-indicators" id="wl-indicators"><thead><tr><th>Due</th><th>Conflict</th><th>Type</th><th>Indicator to watch</th><th>If seen →</th></tr></thead>
         <tbody>${dated.map(row).join("")}${undated.length ? `<tr class="wl-sep"><td colspan="5">Undated indicators (trigger-based)</td></tr>${undated.map(row).join("")}` : ""}${!all.length ? `<tr><td colspan="5" class="empty">No indicators for the current filters.</td></tr>` : ""}</tbody></table></div></div>`;
-    },
-
-    actions(list) {
-      const ranked = this.rank(list);
-      const cols = this.actionOrder().map(a => {
-        const primary = ranked.filter(i => i.csi.action === a);
-        const also = ranked.filter(i => i.csi.action !== a && (i.csi.also || []).includes(a));
-        return `<div class="wl-act-col wl-act-${this.actionDef(a).tone}">
-          <div class="wl-act-h">${this.actionChip(a)} <span class="wl-col-n">${primary.length}</span><div class="wl-col-desc">${esc(this.actionDef(a).desc)}</div></div>
-          ${primary.map(it => `<div class="wl-act-item"><div>${this.nameBtn(it)} ${this.tierTag(it.tier)}</div><div class="wl-act-why">${esc(it.csi.rationale || "")}</div></div>`).join("") || `<div class="muted-note">Nothing this week.</div>`}
-          ${also.length ? `<div class="wl-act-also">Also feeds: ${also.map(it => this.nameBtn(it)).join(", ")}</div>` : ""}
-        </div>`;
-      }).join("");
-      return `<div class="section"><div class="section-head"><h2>What should CSI do with it?</h2><span class="hint">Publication decision per item — one primary action, optional secondary feeds</span></div><div class="wl-act-grid">${cols}</div></div>`;
     },
 
     ignoreSection(list) {
@@ -2281,7 +2259,6 @@
         this.mapSection(list) +
         this.register(list) +
         this.indicators(list) +
-        this.actions(list) +
         this.ignoreSection(list) +
         this.method();
       this.wire(container);
@@ -2401,12 +2378,12 @@
         return [it.tier, it.name, it.state, mv ? `${mv.from} → ${mv.to}` : "",
           ...this.DIMS.map(d => it.dims[d].now), this.changedDims(it).map(d => this.defs().dimensions[d].short).join("|"),
           (it.changes || []).join(" | "), nd ? (nd.due || "") : "", nd ? nd.text : "",
-          it.csi.action, (it.csi.also || []).join("|"), it.csi.rationale, it.ignore.flag ? "yes" : "no", it.ignore.reasons.join("|"),
+          it.ignore.flag ? "yes" : "no", it.ignore.reasons.join("|"),
           it.confidence, it.learningValue, this.score(it).total, (it.sources || []).map(s => s.url).join("|"),
           f7 ? f7.count7d : "", f7 ? f7.prev7d : "", f7 ? (f7.surge ? "yes" : "no") : ""];
       });
     },
-    exportCols() { return ["tier", "conflict", "state", "stateMove", ...this.DIMS, "changedDims", "materialChanges", "nextDue", "nextIndicator", "csiAction", "csiAlso", "csiRationale", "ignoreForNow", "ignoreReasons", "confidence", "learningValue", "attentionScore", "sources", "coverage7d", "coveragePrev7d", "coverageSurge"]; }
+    exportCols() { return ["tier", "conflict", "state", "stateMove", ...this.DIMS, "changedDims", "materialChanges", "nextDue", "nextIndicator", "ignoreForNow", "ignoreReasons", "confidence", "learningValue", "attentionScore", "sources", "coverage7d", "coveragePrev7d", "coverageSurge"]; }
   };
 
   const App = {

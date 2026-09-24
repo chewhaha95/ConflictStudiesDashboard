@@ -5,7 +5,7 @@
     "previousReviewDate": "2026-06-29",
     "cadenceDays": 7,
     "reviewer": "Automated open-source review (weekly, see docs/WATCHLIST-REVIEW.md); first run seeded by the 23 Sep 2026 open-source review. Items marked unverified need confirmation.",
-    "notes": "Fully automated register: a scheduled open-source review rewrites this file weekly (procedure in docs/WATCHLIST-REVIEW.md) and a 6-hourly GitHub Action refreshes the live reporting feed (watchlist-live.json) from GDELT. Each review: (1) set reviewDate/previousReviewDate, (2) for every item move `prev` <- `now` on the five dimensions and then set the new `now`, (3) rewrite `changes`, `next`, `csi`, `ignore` and `sources` for what is true THIS week only, (4) record any state move in `history`. The dashboard derives attention rank, movements, changed-dimension flags, staleness, coverage surges and the brief signal — do not type those in. Not a news archive: `changes` holds only what materially moved since the previous review; `next` holds named, checkable indicators."
+    "notes": "Fully automated register: a scheduled open-source review rewrites this file weekly (procedure in docs/WATCHLIST-REVIEW.md) and a 6-hourly GitHub Action refreshes the live reporting feed (watchlist-live.json) from GDELT. Each review: (1) set reviewDate/previousReviewDate, (2) for every item move `prev` <- `now` on the five dimensions and then set the new `now`, (3) rewrite `changes`, `next`, `ignore` and `sources` for what is true THIS week only, (4) record any state move in `history`. The dashboard derives attention rank, movements, changed-dimension flags, staleness, coverage surges and the brief signal — do not type those in. Not a news archive: `changes` holds only what materially moved since the previous review; `next` holds named, checkable indicators."
   },
   "definitions": {
     "tiers": {
@@ -42,33 +42,6 @@
         "order": 4,
         "tone": "faint",
         "desc": "Reserve — retained for reference and pattern work; revisit only on a named trigger."
-      }
-    },
-    "actions": {
-      "CSI Flash": {
-        "order": 1,
-        "tone": "bad",
-        "desc": "Same-day short note: a threshold was crossed or Singapore exposure changed."
-      },
-      "Weekly awareness post": {
-        "order": 2,
-        "tone": "warn",
-        "desc": "One item in this week's brief or awareness post."
-      },
-      "Monthly pattern review": {
-        "order": 3,
-        "tone": "research",
-        "desc": "Feed the monthly tactical-learning / pattern cycle."
-      },
-      "Quarterly candidate": {
-        "order": 4,
-        "tone": "neutral",
-        "desc": "Candidate for a quarterly deep-dive or case study."
-      },
-      "Dashboard only": {
-        "order": 5,
-        "tone": "faint",
-        "desc": "Track here; nothing to publish."
       }
     },
     "dimensions": {
@@ -130,7 +103,7 @@
       "No current Army learning value"
     ],
     "attentionScore": {
-      "desc": "Deterministic, explainable rank. state (Priority 40 / Active 25 / Watch 10 / Archive 0) + escalation risk (Severe 20 / High 15 / Moderate 8 / Low 2) + 5 per dimension that changed since the previous review + 10 if the state moved up + CSI action (Flash 20 / Weekly 10 / Monthly 5 / Quarterly 3 / Dashboard 0) + Singapore exposure (High 8 / Moderate 4 / Low 0) + tier (T1 6 / T2 3 / T3 0) + 8 if the live open-source feed shows a coverage surge (see definitions.feed.surgeRule). Items flagged ignore-for-now are shown but ranked last."
+      "desc": "Deterministic, explainable rank. state (Priority 40 / Active 25 / Watch 10 / Archive 0) + escalation risk (Severe 20 / High 15 / Moderate 8 / Low 2) + 5 per dimension that changed since the previous review + 10 if the state moved up + Singapore exposure (High 8 / Moderate 4 / Low 0) + tier (T1 6 / T2 3 / T3 0) + 8 if the live open-source feed shows a coverage surge (see definitions.feed.surgeRule). Items flagged ignore-for-now are shown but ranked last."
     },
     "feed": {
       "source": "GDELT DOC 2.0 API (open, no key). Per item: 30-day daily article counts (TimelineVolRaw) and the most relevant English-language articles of the last 7 days (ArtList, HybridRel). Synced by .github/workflows/sync-watchlist-feed.yml into watchlist-live.json.",
@@ -193,13 +166,13 @@
           "type": "Threshold",
           "text": "An energy-infrastructure strike moratorium is formalised (or collapses) after Trump's UNGA claim.",
           "due": "2026-09-30",
-          "ifSeen": "Formalised → phase check and Weekly awareness post; collapse → expect the winter energy campaign to open early."
+          "ifSeen": "Formalised → phase check and flag this week; collapse → expect the winter energy campaign to open early."
         },
         {
           "type": "Named event",
           "text": "US–Ukraine–Russia trilateral round (Budanov: 'preparing for October'; venue unconfirmed, Geneva used in February).",
           "due": null,
-          "ifSeen": "Terms on the table → Weekly awareness post; watch for a strike pause as a bargaining signal."
+          "ifSeen": "Terms on the table → flag this week; watch for a strike pause as a bargaining signal."
         },
         {
           "type": "Deadline",
@@ -217,13 +190,13 @@
           "type": "Mobilisation sign",
           "text": "A Russian mobilisation decree (600,000 reported in preparation; Kursk and Penza security reshuffle 31 Aug) or Ukraine's 'radical' mobilisation changes enacted.",
           "due": null,
-          "ifSeen": "Monthly pattern review on force generation under attrition."
+          "ifSeen": "monthly pattern note on force generation under attrition."
         },
         {
           "type": "Threshold",
           "text": "Ukrainian interception rate below ~85%, or the first mass Geran-5 (600 km/h) salvo.",
           "due": null,
-          "ifSeen": "Weekly awareness post on saturation volume versus interceptor stocks."
+          "ifSeen": "flag this week on saturation volume versus interceptor stocks."
         },
         {
           "type": "Escalation indicator",
@@ -235,17 +208,9 @@
           "type": "Named event",
           "text": "G20 Leaders' Summit, Miami — floated as a possible trilateral venue; Zelensky ready to meet Putin if he attends.",
           "due": "2026-12-14",
-          "ifSeen": "A leaders' meeting would reset the diplomatic phase → CSI Flash."
+          "ifSeen": "A leaders' meeting would reset the diplomatic phase → escalate immediately."
         }
       ],
-      "csi": {
-        "action": "Weekly awareness post",
-        "also": [
-          "Monthly pattern review",
-          "Quarterly candidate"
-        ],
-        "rationale": "Jet-drone industrialisation versus cheap interceptors, record-range deep strikes and restored manoeuvre through OPSEC and counter-EW are directly transferable to GBAD and installation-protection planning; volume-saturation fires versus interceptor economics stays the quarterly candidate."
-      },
       "ignore": {
         "flag": false,
         "reasons": [],
@@ -374,31 +339,31 @@
           "type": "Named event",
           "text": "First anniversary of the ceasefire — Board of Peace progress assessment.",
           "due": "2026-10-10",
-          "ifSeen": "Assessment names Israeli non-implementation → phase stays 'without implementation'; Weekly awareness post if the Board suspends the roadmap."
+          "ifSeen": "Assessment names Israeli non-implementation → phase stays 'without implementation'; flag this week if the Board suspends the roadmap."
         },
         {
           "type": "Force movement",
           "text": "Ugandan and Moroccan ISF advance elements enter the Rafah pilot zone (October target, in doubt; needs Netanyahu, Katz and Sa'ar sign-off).",
           "due": "2026-10-15",
-          "ifSeen": "First third-party force in Gaza → Monthly pattern review on stabilisation-force entry; slippage → Board of Peace credibility falls."
+          "ifSeen": "First third-party force in Gaza → monthly pattern note on stabilisation-force entry; slippage → Board of Peace credibility falls."
         },
         {
           "type": "Named event",
           "text": "Israeli Knesset election (results confirmed 4 Nov); the Board flagged it as the variable for continuity.",
           "due": "2026-10-27",
-          "ifSeen": "Re-check phase and CSI action after the result."
+          "ifSeen": "Re-check phase and the team action after the result."
         },
         {
           "type": "Diplomatic decision",
           "text": "Israeli approval of NCAG entry or an IDF pullback to the Yellow Line — the roadmap's phase-1 trigger.",
           "due": null,
-          "ifSeen": "Phase change to managed transition → Weekly awareness post."
+          "ifSeen": "Phase change to managed transition → flag this week."
         },
         {
           "type": "Escalation indicator",
           "text": "Hamas suspends the roadmap or resumes rocket fire; further senior-leader raids; the Yellow Line advances beyond 70%.",
           "due": null,
-          "ifSeen": "Move to Priority; CSI Flash on a phase change."
+          "ifSeen": "Move to Priority; escalate on a phase change."
         },
         {
           "type": "Threshold",
@@ -407,13 +372,6 @@
           "ifSeen": "Humanitarian collapse indicator → note for the monthly."
         }
       ],
-      "csi": {
-        "action": "Monthly pattern review",
-        "also": [
-          "Quarterly candidate"
-        ],
-        "rationale": "Intelligence-led decapitation raids inside a ceasefire and Yellow Line creep as low-signature consolidation are targeting and stabilisation learning; governance-transfer-without-disarmament remains the quarterly case. No weekly trigger unless the ISF lands or the truce breaks."
-      },
       "ignore": {
         "flag": false,
         "reasons": [],
@@ -538,13 +496,13 @@
           "type": "Diplomatic decision",
           "text": "Outcome of the UNGA shuttle (Qatar, Pakistan, Oman): a venue and date for a formal round, or a lapse back to strikes.",
           "due": "2026-09-29",
-          "ifSeen": "Announced round or blockade easing → CSI Flash the same day."
+          "ifSeen": "Announced round or blockade easing → escalate the same day."
         },
         {
           "type": "Threshold",
           "text": "Iran's '7-day reopening' offer taken up: US eases the blockade and daily transits sustain above ~30, or Iranian crude loadings exceed 300 kb/d.",
           "due": null,
-          "ifSeen": "Deal in motion → downgrade Singapore exposure to Moderate; CSI action to weekly."
+          "ifSeen": "Deal in motion → downgrade Singapore exposure to Moderate; attention to weekly."
         },
         {
           "type": "Deadline",
@@ -556,7 +514,7 @@
           "type": "Escalation indicator",
           "text": "Renewed IRGC ballistic launches at Gulf hosts or carriers, new mine-laying, or Houthi strikes from Perim and Mokha on Bab al-Mandab traffic.",
           "due": null,
-          "ifSeen": "CSI Flash the same day."
+          "ifSeen": "escalate the same day."
         },
         {
           "type": "Named event",
@@ -577,13 +535,6 @@
           "ifSeen": "Internal-security posture rising → Iran's external escalation calculus may change; note for the monthly."
         }
       ],
-      "csi": {
-        "action": "CSI Flash",
-        "also": [
-          "Monthly pattern review"
-        ],
-        "rationale": "Hormuz terms bear directly on Singapore fuel and shipping exposure; rocket-launched mines, tanker-for-tanker economic targeting, drone mine-clearing and escorted convoys feed the monthly pattern review."
-      },
       "ignore": {
         "flag": false,
         "reasons": [],
@@ -721,7 +672,7 @@
           "type": "Named event",
           "text": "Rome round 8 (October, date not published) — tests pilot-zone expansion and the verification mechanism.",
           "due": null,
-          "ifSeen": "Dated new handovers → Weekly awareness post."
+          "ifSeen": "Dated new handovers → flag this week."
         },
         {
           "type": "Diplomatic decision",
@@ -733,7 +684,7 @@
           "type": "Named event",
           "text": "Israeli Knesset election (Likud trailing Eisenkot's Yashar in polls); substantive withdrawal talks only after the result.",
           "due": "2026-10-27",
-          "ifSeen": "Re-check the Gray Line decision and CSI action after the result."
+          "ifSeen": "Re-check the Gray Line decision and the team action after the result."
         },
         {
           "type": "Named event",
@@ -745,7 +696,7 @@
           "type": "Escalation indicator",
           "text": "Hezbollah rocket fire into Israel (rather than drones inside the zone) or IDF strikes on Dahiyeh — a breakdown of the 1 June understandings.",
           "due": null,
-          "ifSeen": "Move tempo to High; CSI Flash."
+          "ifSeen": "Move tempo to High; escalate immediately."
         },
         {
           "type": "Threshold",
@@ -754,13 +705,6 @@
           "ifSeen": "Note only; humanitarian indicator."
         }
       ],
-      "csi": {
-        "action": "Weekly awareness post",
-        "also": [
-          "Quarterly candidate"
-        ],
-        "rationale": "Subterranean denial as two tracks (tactical clearing, then strategic demolition), Hezbollah's shift to FPV drones, IEDs and ATGMs against a consolidating force, and the LAF's quiet coordination with the group it is meant to disarm are combat-engineer, force-protection and stabilisation learning."
-      },
       "ignore": {
         "flag": false,
         "reasons": [],
@@ -899,34 +843,27 @@
           "type": "Named event",
           "text": "49th ASEAN Summit, Manila (published dates conflict: 10–12 or 16–18 Nov) — possible Anutin–Hun Manet encounter and ASEAN Observer Team mandate review.",
           "due": "2026-11-10",
-          "ifSeen": "Leaders' commitment on the JBC → Dashboard only; absence → Weekly awareness post."
+          "ifSeen": "Leaders' commitment on the JBC → track only; absence → flag this week."
         },
         {
           "type": "Threshold",
           "text": "Completion of the 8.4 km Chanthaburi wall, or fencing starting in contested Surin, Sisaket or Ubon sectors.",
           "due": null,
-          "ifSeen": "Fencing inside disputed zones → Cambodian protest cycle; Monthly pattern review on engineering consolidation."
+          "ifSeen": "Fencing inside disputed zones → Cambodian protest cycle; monthly pattern note on engineering consolidation."
         },
         {
           "type": "Force movement",
           "text": "Delivery of the remaining 54 T-59D tanks, or tanks moving toward the border sectors.",
           "due": null,
-          "ifSeen": "Grey-zone capability building under a ceasefire → Monthly pattern review."
+          "ifSeen": "Grey-zone capability building under a ceasefire → monthly pattern note."
         },
         {
           "type": "Escalation indicator",
           "text": "A repeat airspace incursion, a drone crossing the line, an exchange of fire along the wall, or a landmine casualty.",
           "due": null,
-          "ifSeen": "Move to Priority; CSI Flash."
+          "ifSeen": "Move to Priority; escalate immediately."
         }
       ],
-      "csi": {
-        "action": "Dashboard only",
-        "also": [
-          "Monthly pattern review"
-        ],
-        "rationale": "Nothing kinetic to publish; the engineering-consolidation and lawfare pattern (walls, evidence videos, UNCLOS scope limits versus internationalisation) is monthly material, and Singapore's observer and host roles keep it on the near-abroad watch."
-      },
       "ignore": {
         "flag": false,
         "reasons": [],
@@ -1054,7 +991,7 @@
           "type": "Named event",
           "text": "Third round of government–opposition talks (political guarantees, prisoners, judiciary).",
           "due": null,
-          "ifSeen": "Transition consolidating → Monthly pattern review only."
+          "ifSeen": "Transition consolidating → monthly pattern note only."
         },
         {
           "type": "Diplomatic decision",
@@ -1066,7 +1003,7 @@
           "type": "Escalation indicator",
           "text": "JTF-WHEM strikes extended to Mexico, Colombia or Cuba, or a Cuba fuel blockade.",
           "due": null,
-          "ifSeen": "Regional escalation → Weekly awareness post."
+          "ifSeen": "Regional escalation → flag this week."
         },
         {
           "type": "Force movement",
@@ -1075,13 +1012,6 @@
           "ifSeen": "Posture change → re-check escalation risk."
         }
       ],
-      "csi": {
-        "action": "Monthly pattern review",
-        "also": [
-          "Quarterly candidate"
-        ],
-        "rationale": "Coalition counter-cartel maritime interdiction and post-intervention transition are pattern-review cases; no Singapore nexus and no weekly trigger."
-      },
       "ignore": {
         "flag": false,
         "reasons": [],
@@ -1207,28 +1137,21 @@
           "type": "Force movement",
           "text": "Next Second Thomas Shoal resupply (roughly monthly; last 22–23 Aug).",
           "due": null,
-          "ifSeen": "Boarding or water cannon with injuries → CSI Flash."
+          "ifSeen": "Boarding or water cannon with injuries → escalate immediately."
         },
         {
           "type": "Named event",
           "text": "49th ASEAN Summit and ASEAN–China Summit, Manila (published dates conflict: 10–12 or 16–18 Nov) — the effective deadline for a '2026' Code of Conduct.",
           "due": "2026-11-10",
-          "ifSeen": "Diluted text or slippage → Weekly awareness post on ASEAN centrality."
+          "ifSeen": "Diluted text or slippage → flag this week on ASEAN centrality."
         },
         {
           "type": "Threshold",
           "text": "Chinese boarding or seizure of a Philippine vessel, a Philippine fatality, direct PLAN (not CCG) action, or Manila invoking Mutual Defence Treaty consultations.",
           "due": null,
-          "ifSeen": "CSI Flash the same day."
+          "ifSeen": "escalate the same day."
         }
       ],
-      "csi": {
-        "action": "Weekly awareness post",
-        "also": [
-          "Monthly pattern review"
-        ],
-        "rationale": "Incident cadence and the COC deadline make this a weekly item; grey-zone layering (armed trainers, radar locks, forward PLAN presence) goes to the monthly pattern set; a threshold event escalates to a Flash."
-      },
       "ignore": {
         "flag": false,
         "reasons": [],
@@ -1348,7 +1271,7 @@
           "type": "Named event",
           "text": "Trump–Xi summit — any shift from 'does not support' to 'opposes' Taiwan independence, or an arms-sale freeze.",
           "due": "2026-09-24",
-          "ifSeen": "Wording shift → Weekly awareness post; arms freeze → note for the monthly."
+          "ifSeen": "Wording shift → flag this week; arms freeze → note for the monthly."
         },
         {
           "type": "Named event",
@@ -1372,16 +1295,9 @@
           "type": "Threshold",
           "text": "CCG physically stopping or boarding a merchant ship east of Taiwan, or PLA sorties returning above 300 a month.",
           "due": null,
-          "ifSeen": "Move to Priority; CSI Flash on any Singapore-flagged vessel."
+          "ifSeen": "Move to Priority; escalate on any Singapore-flagged vessel."
         }
       ],
-      "csi": {
-        "action": "Monthly pattern review",
-        "also": [
-          "Quarterly candidate"
-        ],
-        "rationale": "Whole-of-society mobilisation (unscripted Han Kuang, comms-degradation drills, mass drone procurement, civilian drone literacy) is Army learning; the quarantine-rehearsal pattern is the quarterly candidate."
-      },
       "ignore": {
         "flag": false,
         "reasons": [],
@@ -1489,7 +1405,7 @@
           "type": "Named event",
           "text": "Trump–Xi summit outcomes on Taiwan — Tokyo's core concern.",
           "due": "2026-09-24",
-          "ifSeen": "A 'grand bargain' formulation → Weekly awareness post on alliance implications."
+          "ifSeen": "A 'grand bargain' formulation → flag this week on alliance implications."
         },
         {
           "type": "Named event",
@@ -1513,14 +1429,9 @@
           "type": "Escalation indicator",
           "text": "A new fire-control radar lock or unsafe intercept, JCG–CCG physical contact at the Senkakus, a CCG territorial-water stay beyond the 92-hour record, or a carrier group operating east of the Nansei chain during Japanese drills.",
           "due": null,
-          "ifSeen": "Weekly awareness post; move to Priority on physical contact."
+          "ifSeen": "flag this week; move to Priority on physical contact."
         }
       ],
-      "csi": {
-        "action": "Dashboard only",
-        "also": [],
-        "rationale": "Track; publish only on an intercept-type incident or a thaw. Little direct Army learning value at present."
-      },
       "ignore": {
         "flag": false,
         "reasons": [],
@@ -1625,7 +1536,7 @@
           "type": "Named event",
           "text": "Sharif and Modi both address UNGA; watch Kashmir, water and terrorism rhetoric and rights of reply.",
           "due": "2026-09-25",
-          "ifSeen": "Rhetoric only → Dashboard only."
+          "ifSeen": "Rhetoric only → track only."
         },
         {
           "type": "Named event",
@@ -1655,14 +1566,9 @@
           "type": "Mobilisation sign",
           "text": "Forward deployment of strike-corps elements or air-defence redeployment along the border.",
           "due": null,
-          "ifSeen": "Move to Active; Weekly awareness post."
+          "ifSeen": "Move to Active; flag this week."
         }
       ],
-      "csi": {
-        "action": "Quarterly candidate",
-        "also": [],
-        "rationale": "The May 2025 four-day stand-off strike, drone and IADS exchange is a bounded case for the quarterly cycle; nothing this quarter changes that."
-      },
       "ignore": {
         "flag": true,
         "reasons": [
@@ -1764,13 +1670,13 @@
           "type": "Force movement",
           "text": "Post-monsoon offensives: junta pushes on Kanpetlet and Mindat (Chin), renewed Sittwe and Kyaukphyu breakouts, the KIA's Bhamo endgame (180-truck convoy into Saw on 19 Sep).",
           "due": null,
-          "ifSeen": "A major town changing hands → Weekly awareness post."
+          "ifSeen": "A major town changing hands → flag this week."
         },
         {
           "type": "Escalation indicator",
           "text": "Further FPV strikes on airbases (Tada-U, Magway, Toungoo) and the junta's counter-UAS response (netting, dispersal).",
           "due": null,
-          "ifSeen": "Monthly pattern review on C-UAS for fixed bases."
+          "ifSeen": "monthly pattern note on C-UAS for fixed bases."
         },
         {
           "type": "Diplomatic decision",
@@ -1788,14 +1694,9 @@
           "type": "Threshold",
           "text": "Arakan Army moves on Sittwe proper or Kyaukphyu port (Chinese CMEC interest), or Bangladesh–AA repatriation talks produce a channel.",
           "due": null,
-          "ifSeen": "Regional and refugee-flow dimension → Weekly awareness post."
+          "ifSeen": "Regional and refugee-flow dimension → flag this week."
         }
       ],
-      "csi": {
-        "action": "Monthly pattern review",
-        "also": [],
-        "rationale": "Anti-jamming FPV strikes on a fighter base and riverine interdiction are pattern-review material for airbase protection and C-UAS; no weekly trigger unless a major town falls."
-      },
       "ignore": {
         "flag": false,
         "reasons": [],
@@ -1916,7 +1817,7 @@
           "type": "Diplomatic decision",
           "text": "Houthi answer to the Saudi two-week ceasefire offer and the Muscat channel; whether non-Saudi hulls stay off the target list.",
           "due": null,
-          "ifSeen": "Acceptance → tempo down; a hit on a non-Saudi hull → CSI Flash on shipping-route exposure."
+          "ifSeen": "Acceptance → tempo down; a hit on a non-Saudi hull → escalate on shipping-route exposure."
         },
         {
           "type": "Deadline",
@@ -1928,7 +1829,7 @@
           "type": "Threshold",
           "text": "Saudi East-West pipeline restart, or a second militia strike on Gulf energy infrastructure.",
           "due": null,
-          "ifSeen": "Energy-route exposure → CSI Flash."
+          "ifSeen": "Energy-route exposure → escalate immediately."
         },
         {
           "type": "Named event",
@@ -1940,16 +1841,9 @@
           "type": "Diplomatic decision",
           "text": "Israel–Syria security agreement signing (three-zone model, US-supervised operations room).",
           "due": null,
-          "ifSeen": "Buffer-zone incidents should fall → Dashboard only for the Syria strand."
+          "ifSeen": "Buffer-zone incidents should fall → track only for the Syria strand."
         }
       ],
-      "csi": {
-        "action": "CSI Flash",
-        "also": [
-          "Weekly awareness post"
-        ],
-        "rationale": "Red Sea transits at a third of the 2023 baseline and a Singapore-flagged VLCC already diverted make this a same-day Flash item; coastal terrain seizure as maritime leverage is the pattern note."
-      },
       "ignore": {
         "flag": false,
         "reasons": [],
