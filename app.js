@@ -1903,7 +1903,7 @@
     feedCell(it) {
       const f = this.feed(it); if (!f) return `<td class="wl-feed-cell"><span class="muted-note">—</span></td>`;
       const d = f.prev7d ? Math.round((f.count7d - f.prev7d) / f.prev7d * 100) : null;
-      return `<td class="wl-feed-cell" title="Open-source coverage (GDELT): ${this.feedCount(f)} articles in the last 7 days vs ${f.prev7d}${f.capped ? "+" : ""} the 7 days before${f.capped ? " (counts capped at 250 per window)" : ""}">${this.sparkline(f.timeline, 72, 20, f.granularity)}<div class="wl-feed-n"><b>${this.feedCount(f)}</b>/7d${d != null ? ` <span class="wl-feed-d ${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d}%</span>` : ""}${f.surge ? ` <span class="wl-surge">surge</span>` : ""}${(() => { const h = this.feedItemAge(f); return h != null && h > 24 ? ` <span class="wl-feed-stale" title="This item last refreshed ${h}h ago">${Math.round(h / 24)}d old</span>` : ""; })()}</div></td>`;
+      return `<td class="wl-feed-cell" title="Open-source coverage (GDELT): ${this.feedCount(f)} articles in the last 7 days vs ${f.prev7d}${f.capped ? "+" : ""} the 7 days before${f.capped ? " (counts capped at 250 per window)" : ""}">${this.sparkline(f.timeline, 72, 20, f.granularity)}<div class="wl-feed-n"><b>${this.feedCount(f)}</b>/7d${d != null ? ` <span class="wl-feed-d ${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d}%</span>` : ""}${f.surge ? ` <span class="wl-surge">surge</span>` : ""}${(() => { const h = this.feedItemAge(f); return h != null && h > 36 ? ` <span class="wl-feed-stale" title="This item last refreshed ${h}h ago">${Math.round(h / 24)}d old</span>` : ""; })()}</div></td>`;
     },
     // Live movement signal from the open-source feed: surges and sharp coverage changes
     // (last 7 days vs the 7 before). Refreshes with the feed; does not change states.
@@ -1924,7 +1924,7 @@
     },
     feedBlock(it) {
       const f = this.feed(it), lf = this.feedMeta();
-      if (!f) return `<div class="wl-d-block"><div class="wl-d-h">Latest open-source reporting</div><p class="muted-note">No live feed loaded — the feed syncs every 6 hours from GDELT into <code>watchlist-live.json</code>.</p></div>`;
+      if (!f) return `<div class="wl-d-block"><div class="wl-d-h">Latest open-source reporting</div><p class="muted-note">No live feed loaded — the feed syncs once a day (06:30 SGT) from GDELT into <code>watchlist-live.json</code>.</p></div>`;
       const arts = (f.articles || []).slice(0, 8).map(x => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a><span class="wl-art-meta">${esc(x.domain)}${x.date ? " · " + esc(this.fmtDate(x.date)) : ""}</span></li>`).join("");
       return `<div class="wl-d-block wl-feed-block"><div class="wl-d-h">Latest open-source reporting <span class="briefs-live">● LIVE</span>${lf && lf.syncedAt ? ` · synced ${esc(Time.fmtDateTime(lf.syncedAt))}` : ""}</div>
         <div class="wl-feed-sum">${this.sparkline(f.timeline, 220, 36, f.granularity)}<div><b>${this.feedCount(f)}</b> articles in the last 7 days · <b>${f.prev7d}${f.capped ? "+" : ""}</b> the 7 days before${f.surge ? ` · <span class="wl-surge">coverage surge</span>` : ""}${f.capped ? ` · <span class="muted-note">counts capped at 250 per window</span>` : ""}<div class="muted-note">${esc(this.feedCaption(f))} · source: ${esc(this.feedSourceLabel(f))}${f.fetchedAt ? ` · this item refreshed ${esc(Time.fmtDateTime(f.fetchedAt))}` : ""}</div></div></div>
@@ -2072,7 +2072,7 @@
           <div>
             <div class="wl-title">${esc(m.title || "Conflict Watchlist")} <span class="wl-asof">— daily review as of ${esc(this.fmtDate(m.reviewDate))}</span></div>
           </div>
-          ${(() => { const lf = this.feedMeta(); const h = this.feedAge(); return lf ? `<div class="wl-feedstat ${h != null && h > 24 ? "stale" : ""}" title="${esc(lf.source || "")} · ${lf.refreshed || "?"}/${lf.total || "?"} items refreshed">● LIVE feed · synced ${h == null ? "—" : h < 1 ? "under an hour ago" : h + "h ago"}</div>` : `<div class="wl-feedstat off">Live feed not loaded</div>`; })()}
+          ${(() => { const lf = this.feedMeta(); const h = this.feedAge(); return lf ? `<div class="wl-feedstat ${h != null && h > 36 ? "stale" : ""}" title="${esc(lf.source || "")} · ${lf.refreshed || "?"}/${lf.total || "?"} items refreshed">● LIVE feed · synced ${h == null ? "—" : h < 1 ? "under an hour ago" : h + "h ago"}</div>` : `<div class="wl-feedstat off">Live feed not loaded</div>`; })()}
           <div class="wl-stale ${st.overdue ? "overdue" : "fresh"}" title="${esc(st.overdue ? `Review due ${this.fmtDate(st.nextDue)}; ${st.days} days since the last review.` : `Next review due ${this.fmtDate(st.nextDue)}.`)}">
             ${st.overdue ? `⚠ Review overdue — ${st.days} days since last review` : `✓ Reviewed ${st.days} day${st.days === 1 ? "" : "s"} ago`}
           </div>

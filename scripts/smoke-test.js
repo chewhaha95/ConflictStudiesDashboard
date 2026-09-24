@@ -286,7 +286,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("detail: typed indicators with 'If seen →' consequences and rendered dates",
     det.querySelectorAll(".wl-ind").length === probe.next.length && det.querySelectorAll(".wl-ind .wl-ind-type").length === probe.next.length &&
     det.querySelectorAll(".wl-ind-if").length === probe.next.filter(n => n.ifSeen).length && probe.next.filter(n => n.due).every(n => det.textContent.includes(fmtD(n.due))));
-  check("detail: without a live feed the reporting block explains the 6-hourly sync", /Latest open-source reporting/.test(det.textContent) && /No live feed loaded/.test(det.textContent));
+  check("detail: without a live feed the reporting block explains the daily sync", /Latest open-source reporting/.test(det.textContent) && /No live feed loaded/.test(det.textContent));
   check("register: Coverage column present, empty without a feed", [...reg.querySelectorAll("thead th")].some(th => /Coverage/.test(th.textContent)) && reg.querySelectorAll("td.wl-feed-cell .wl-spark").length === 0);
   check("header: live-feed status shows 'not loaded' without a feed", /Live feed not loaded/.test(wv.querySelector(".wl-feedstat").textContent));
   check("detail: source links rendered when the item carries sources", (probe.sources || []).length

@@ -6,14 +6,15 @@ name: Sync watchlist open-source feed
 # Watchlist tab's coverage sparklines, surge flags and "latest reporting"
 # lists stay current without anyone touching the repo.
 #
-# Runs every 6 hours and on demand. GDELT throttles shared runner IPs, so the
+# Runs once a day at 06:30 SGT (22:30 UTC), half an hour before the daily
+# open-source review, and on demand. GDELT throttles shared runner IPs, so the
 # script retries with backoff, falls back to Google News RSS, refreshes the
 # stalest items first and keeps previous data for the rest — the feed converges
 # across runs. It exits non-zero only when nothing at all could be refreshed.
 
 on:
   schedule:
-    - cron: "17 */6 * * *"   # every 6 hours (UTC), off the hour to avoid GDELT peaks
+    - cron: "30 22 * * *"    # daily 22:30 UTC = 06:30 SGT, ahead of the 07:00 SGT review
   workflow_dispatch:
 
 permissions:
