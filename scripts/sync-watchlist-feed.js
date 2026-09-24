@@ -9,7 +9,8 @@
  *     mode=ArtList queries (GDELT refuses the timeline modes from some
  *     networks; ArtList is capped at 250 records per window, flagged `capped`)
  *   • the most relevant English-language articles of the last 7 days
- *     (mode=ArtList, sort=HybridRel), title-filtered by the item's terms
+ *     (mode=ArtList, sort=DateDesc, newest first) merged with a Google News
+ *     RSS pull, title-filtered by the item's terms, newest first
  * and writes watchlist-live.json:
  *   { __live, syncedAt, source, items: { <id>: { query, granularity,
  *     timeline, count7d, prev7d, capped, surge, articles } } }
@@ -31,7 +32,7 @@ const path = require("path");
 const API = "https://api.gdeltproject.org/api/v2/doc/doc";
 const ROOT = path.resolve(__dirname, "..");
 const REG = path.join(ROOT, "watchlist.json");
-const OUT = path.join(ROOT, "watchlist-live.json");
+const OUT = process.env.FEED_OUT || path.join(ROOT, "watchlist-live.json");   // FEED_OUT: write elsewhere when testing
 const PACE_MS = Number(process.env.GDELT_PACE_MS || 5500);
 const RETRY_MS = [12000, 30000];                 // backoff after a 429 / network error
 const DEADLINE_MS = Number(process.env.FEED_DEADLINE_MS || 40 * 60 * 1000);
@@ -84,7 +85,8 @@ async function rssSearch(q, days) {
     const title = norm(tag(x, "title")), link = tag(x, "link"), pub = tag(x, "pubDate"), source = tag(x, "source");
     const d = pub ? new Date(pub) : null;
     if (!title || !link) continue;
-    items.push({ title: title.replace(/\s+-\s+[^-]+$/, ""), url: link, domain: source || "news.google.com", country: "", date: d && !isNaN(d) ? d.toISOString().slice(0, 10) : null, ts: d && !isNaN(d) ? d.getTime() : null });
+    const iso = d && !isNaN(d) ? d.toISOString() : null;
+    items.push({ title: title.replace(/\s+-\s+[^-]+$/, ""), url: link, domain: source || "news.google.com", country: "", date: iso ? iso.slice(0, 10) : null, ts: iso });
   }
   return items;
 }
@@ -96,7 +98,7 @@ function rssWeekly(items) {
   const out = [];
   for (let w = 3; w >= 0; w--) {
     const end = now - w * 7 * 86400000, start = end - 7 * 86400000;
-    out.push({ date: new Date(start).toISOString().slice(0, 10), value: items.filter(i => i.ts != null && i.ts >= start && i.ts < end).length });
+    out.push({ date: new Date(start).toISOString().slice(0, 10), value: items.filter(i => i.ts && Date.parse(i.ts) >= start && Date.parse(i.ts) < end).length });
   }
   return { timeline: out, capped: items.length >= 90 };
 }
@@ -107,7 +109,7 @@ function parseTimeline(j) {
   return series.map(p => ({ date: `${p.date.slice(0, 4)}-${p.date.slice(4, 6)}-${p.date.slice(6, 8)}`, value: Number(p.value) || 0 }));
 }
 
-function parseArticles(j, terms) {
+function parseArticles(j, feed) {
   const arts = (j && j.articles) || [];
   const seen = new Set();
   const out = [];
@@ -115,19 +117,47 @@ function parseArticles(j, terms) {
     const title = norm(a.title);
     const lower = title.toLowerCase();
     if (!title || !a.url) continue;
-    if (terms.length && !terms.some(t => lower.includes(t))) continue;   // cut full-text noise
+    if (!titleMatch({ title }, feed)) continue;   // cut full-text noise
     const key = lower.replace(/[^a-z0-9]/g, "").slice(0, 60);
     if (seen.has(key)) continue;
     seen.add(key);
-    const d = String(a.seendate || "");
-    out.push({
-      title, url: a.url, domain: a.domain || "",
-      country: a.sourcecountry || "",
-      date: d.length >= 8 ? `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}` : null
-    });
-    if (out.length >= MAX_ARTICLES) break;
+    const d = String(a.seendate || "");                       // 20260924T133000Z
+    const date = d.length >= 8 ? `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}` : null;
+    const ts = d.length >= 15 ? `${date}T${d.slice(9, 11)}:${d.slice(11, 13)}:${d.slice(13, 15)}Z` : (date ? `${date}T00:00:00Z` : null);
+    out.push({ title, url: a.url, domain: a.domain || "", country: a.sourcecountry || "", date, ts });
   }
   return out;
+}
+
+// Relevance guard on titles. `feed.terms`: any one must appear. `feed.require`
+// (optional): a list of groups, at least one term of EVERY group must appear
+// (two-party theatres: one term per side, so "Thai rocker wins talent show"
+// and "India v Pakistan cricket" do not pass). `feed.exclude` (optional) and
+// the global EXCLUDE list drop sport, entertainment and other title noise.
+const EXCLUDE = ["cricket", "asian games", "olympic", "world cup", "football", "soccer", "tennis", "badminton", "hockey", "basketball",
+  "pageant", "miss universe", "got talent", "box office", "k-pop", "concert", "celebrity", "recipe", "horoscope", "premier league"];
+const wordRe = t => new RegExp(`(^|[^a-z0-9])${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^a-z0-9]|$)`);
+const titleMatch = (a, feed) => {
+  const lower = String(a.title || "").toLowerCase();
+  const terms = feed.terms || [];
+  if (terms.length && !terms.some(t => lower.includes(t))) return false;
+  if ((feed.require || []).some(group => !group.some(t => lower.includes(t)))) return false;
+  if ([...EXCLUDE, ...(feed.exclude || [])].some(t => wordRe(t).test(lower))) return false;
+  return true;
+};
+
+// Merge article lists from several sources: dedupe by URL and by normalised
+// title, newest first by timestamp (date when no time is known), cap at MAX_ARTICLES.
+function mergeArticles(lists) {
+  const seen = new Set(), out = [];
+  for (const a of [].concat(...lists)) {
+    const key = a.title.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 60);
+    if (seen.has(key) || seen.has(a.url)) continue;
+    seen.add(key); seen.add(a.url);
+    out.push(a);
+  }
+  out.sort((x, y) => String(y.ts || y.date || "").localeCompare(String(x.ts || x.date || "")));
+  return out.slice(0, MAX_ARTICLES);
 }
 
 function windows(timeline, granularity, capped) {
@@ -163,7 +193,7 @@ async function weeklyWindows(q) {
 
 async function fetchItem(it) {
   const q = `${it.feed.query} sourcelang:english`;
-  const terms = it.feed.terms || [];
+  const feed = it.feed;
   let timeline = [], granularity = "day", capped = false, articles = [], src = [];
   let throttled = false;
 
@@ -177,28 +207,38 @@ async function fetchItem(it) {
     catch (e) { if (e instanceof Throttled) throttled = true; }
   }
 
-  // 2. GDELT relevant articles (unless throttled), else RSS
+  // 2. Newest title-matched articles: GDELT newest-first over the last 3 days
+  //    (unless throttled) merged with a Google News pull over the same window,
+  //    so the "Newest reporting" line is the latest article, not the most
+  //    relevant one. Widened to 7 days when the 3-day window is thin.
+  const lists = [];
   if (!throttled) {
-    try { articles = parseArticles(await gdelt({ query: q, mode: "ArtList", format: "json", timespan: "7d", maxrecords: 75, sort: "HybridRel" }), terms); src.push("gdelt-articles"); }
+    try { lists.push(parseArticles(await gdelt({ query: q, mode: "ArtList", format: "json", timespan: "3d", maxrecords: 250, sort: "DateDesc" }), feed)); src.push("gdelt-articles"); }
     catch (e) { if (e instanceof Throttled) throttled = true; }
   }
-  let rss = null;
-  if (!articles.length || timeline.length < 4) {
-    rss = await rssSearch(rssQuery(it.feed.query), 28);
-    if (!articles.length) {
-      articles = rss.filter(a => !terms.length || terms.some(t => a.title.toLowerCase().includes(t))).slice(0, MAX_ARTICLES).map(({ ts, ...a }) => a);
-      src.push("rss-articles");
-    }
-    if (timeline.length < 4) { const w = rssWeekly(rss); timeline = w.timeline; capped = w.capped; granularity = "week"; src.push("rss-counts"); }
+  try { lists.push((await rssSearch(rssQuery(it.feed.query), 3)).filter(a => titleMatch(a, feed))); src.push("rss-articles"); }
+  catch (e) { /* RSS unavailable this run */ }
+  articles = mergeArticles(lists);
+  if (articles.length < 6) {
+    try { lists.push((await rssSearch(rssQuery(it.feed.query), 7)).filter(a => titleMatch(a, feed))); articles = mergeArticles(lists); }
+    catch (e) { /* keep what we have */ }
+  }
+  if (timeline.length < 4) {
+    const rss = await rssSearch(rssQuery(it.feed.query), 28);
+    const w = rssWeekly(rss); timeline = w.timeline; capped = w.capped; granularity = "week"; src.push("rss-counts");
   }
   if (timeline.length < 2) throw new Error("no coverage data from GDELT or RSS");
   return Object.assign({ query: q, granularity, timeline, articles, source: src.join("+"), fetchedAt: new Date().toISOString() },
     windows(timeline, granularity, capped));
 }
 
+module.exports = { titleMatch, mergeArticles, parseArticles, rssSearch, rssQuery, EXCLUDE };
+if (require.main !== module) return;
+
 (async () => {
   const reg = JSON.parse(fs.readFileSync(REG, "utf8"));
-  const items = reg.items.filter(i => i.feed && i.feed.query);
+  const only = (process.env.FEED_ONLY || "").split(",").map(x => x.trim()).filter(Boolean);   // FEED_ONLY=SCS,TW: test a subset
+  const items = reg.items.filter(i => i.feed && i.feed.query && (!only.length || only.includes(i.id)));
   let prev = {};
   try { prev = JSON.parse(fs.readFileSync(OUT, "utf8")).items || {}; } catch (e) { /* first run */ }
 

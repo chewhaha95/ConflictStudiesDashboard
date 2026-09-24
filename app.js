@@ -1982,8 +1982,8 @@
         : (it.history || []).map(h => ({ date: h.date, text: String(h.note || "").replace(/^Baseline:\s*/i, "") }));
       return src.filter(t => t.date && t.text).sort((a, b) => String(a.date).localeCompare(String(b.date)));
     },
-    // Feed articles newest first (the sync ranks them by relevance)
-    feedArticles(f) { return ((f && f.articles) || []).slice().sort((a, b) => String(b.date || "").localeCompare(String(a.date || ""))); },
+    // Feed articles newest first: by timestamp when the sync recorded one, else by date
+    feedArticles(f) { return ((f && f.articles) || []).slice().sort((a, b) => String(b.ts || b.date || "").localeCompare(String(a.ts || a.date || ""))); },
     // Topics of interest (team-set, three per item) and the watch area each indicator informs
     topicOf(it, idx) { return idx != null && it.topics && it.topics[idx] ? it.topics[idx] : null; },
     watchTag(status) {

@@ -47,10 +47,16 @@ The watchlist is fully automated:
 - **Live reporting feed** — `.github/workflows/sync-watchlist-feed.yml` runs
   `scripts/sync-watchlist-feed.js` hourly against the open GDELT DOC
   2.0 API and commits `watchlist-live.json`: a 30-day daily coverage
-  timeline and the latest title-matched articles per item. The register shows
-  a coverage sparkline, a 7-day count with change, a **surge** flag (≥2× the
-  previous week and ≥20 articles, +8 attention points) and the headlines in
-  each expanded row. Queries live in each item's `feed` block.
+  timeline and the newest title-matched articles per item (GDELT newest-first
+  over the last 3 days merged with a Google News pull, so the "Newest
+  reporting" line is the latest article, not the most relevant one). The
+  register shows a coverage sparkline, a 7-day count with change, a **surge**
+  flag (≥2× the previous week and ≥20 articles, +8 attention points) and the
+  headlines in each expanded row. Queries live in each item's `feed` block:
+  `query` (GDELT syntax), `terms` (any must appear in the title), optional
+  `require` (groups; one term from every group, e.g. one per side of a
+  two-party theatre) and `exclude`, plus a global sport/entertainment
+  exclusion list in the script.
 - **Daily automated review** — a scheduled Claude Code session (05:30 SGT, published by 07:00)
   follows `docs/WATCHLIST-REVIEW.md`: researches all twelve items from open
   sources, rewrites `watchlist.json` (states, dimensions, a daily snapshot,

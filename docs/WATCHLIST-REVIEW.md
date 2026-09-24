@@ -105,7 +105,8 @@ same way.
      `ifSeen`), `ignore` (`flag`, `reasons` from
      `definitions.ignoreReasons`, `note`), `confidence`, `learningValue`,
      and replace `sources` with the run's citations (label + URL);
-   - adjust `feed.query` / `feed.terms` only if the item's vocabulary
+   - adjust `feed.query` / `feed.terms` / `feed.require` / `feed.exclude`
+     (see `definitions.feed`) only if the item's vocabulary
      changed (new place names, operations, actors).
 4. Update `meta.reviewer` to "Automated open-source review, <date>".
 5. Validate: `npm test` must pass (it checks scales, dates, snapshots,
