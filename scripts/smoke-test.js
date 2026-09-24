@@ -158,8 +158,9 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     doc.querySelector(".tab-btn").dataset.horizon === "watchlist" && doc.querySelector("#view-watchlist").classList.contains("active") && doc.body.classList.contains("watchlist-view"));
   let wv = doc.querySelector("#view-watchlist .view-body");
   check("period selector disabled (register is review-dated)", doc.querySelector("#period-select").disabled && /Review as of/.test(doc.querySelector("#period-select").textContent));
-  check(`header: review date (${fmtD(wl.meta.reviewDate)}), 7-day comparison date (${fmtD(cmpDate)}), previous review, cadence and state counts`,
-    wv.textContent.includes(`review as of ${fmtD(wl.meta.reviewDate)}`) && wv.querySelector(".wl-sub .wl-cmp").textContent === `Compared with ${fmtD(cmpDate)} (${wl.meta.compareDays}-day window)` && wv.textContent.includes(`previous review ${fmtD(wl.meta.previousReviewDate)}`) && wv.querySelectorAll(".wl-sub .wl-state").length === stateNames.length);
+  check(`header: title carries the daily review date (${fmtD(wl.meta.reviewDate)}) and no subtitle (previous review / cadence / state counts removed)`,
+    wv.querySelector(".wl-title").textContent.includes(`daily review as of ${fmtD(wl.meta.reviewDate)}`) && !wv.querySelector(".wl-sub") && !/Previous review|-day cadence|showing \d+/.test(wv.querySelector(".wl-head").textContent));
+  check(`moves card names the 7-day comparison date (${fmtD(cmpDate)})`, wv.querySelector(".wl-moves-card .wl-card-h-note").textContent.includes(`compared with ${fmtD(cmpDate)}`));
   check("header reporting range shows the comparison window, not the review-to-review gap", doc.querySelector("#meta-range").textContent.startsWith("Changes ") && doc.querySelector("#meta-range").textContent.includes(String(new Date(wl.meta.reviewDate).getUTCFullYear())));
   check("staleness flag is computed against today", (() => {
     const el = wv.querySelector(".wl-stale"); if (!el) return false;
@@ -240,7 +241,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const minor = [...card.querySelectorAll(".wl-mv-item.minor")].find(li => li.querySelector(".wl-name").textContent === probe.name);
     const row = v3.querySelector(`tr[data-wl-row="${probe.id}"]`);
     check("rolling window: the snapshot 7 days old is the baseline, yesterday's review is not (move glyph tooltip + row tooltip name the 7-day-old values)",
-      !!row && row.querySelector("td.wl-dim.wl-chg").title.startsWith(`${wl3.meta.compareDays} days ago: Low`) && !v3.querySelector(".wl-sub .wl-cmp").textContent.includes(fmtD(yesterday)));
+      !!row && row.querySelector("td.wl-dim.wl-chg").title.startsWith(`${wl3.meta.compareDays} days ago: Low`) && !v3.querySelector(".wl-moves-card .wl-card-h-note").textContent.includes(`compared with ${fmtD(yesterday)}`));
     check("rolling window: a state move over the last 7 days is listed as Watch → current state", !!major && major.textContent.includes("Watch") && major.textContent.includes(probe.state));
     check("rolling window: a dimension changed over the last 7 days is highlighted with the 7-day-old value", !!row && !!row.querySelector("td.wl-dim.wl-chg .wl-prev") && row.querySelector("td.wl-dim.wl-chg .wl-prev").textContent === "Low");
     check("rolling window: a history move before the window shows under 'Earlier moves', one inside it does not", !!minor && minor.textContent.includes(fmtD(dayBefore)) && !card.textContent.includes("move inside the window"));
@@ -351,7 +352,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   wv.querySelector('.wl-f-tier[data-tier="1"]').click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
   check(`tier filter narrows map, register, indicators and board to Tier 1 (${t1n} items)`,
-    wv.querySelectorAll(".wl-marker").length === t1n && wv.querySelectorAll("#wl-register tbody tr.wl-row").length === t1n && wv.querySelectorAll(".wl-board .wl-card-chip").length === t1n && wv.textContent.includes(`showing ${t1n}`));
+    wv.querySelectorAll(".wl-marker").length === t1n && wv.querySelectorAll("#wl-register tbody tr.wl-row").length === t1n && wv.querySelectorAll(".wl-board .wl-card-chip").length === t1n);
   wv.querySelector("[data-wl-reset]").click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
   wv.querySelector(".wl-f-ignored").click(); await sleep(40);

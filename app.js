@@ -2062,7 +2062,6 @@
     // ---- sections ------------------------------------------------------------
     header(list) {
       const m = this.meta(), st = this.stale();
-      const counts = this.stateOrder().map(s => `${this.stateChip(s, ` <b>${this.items().filter(i => i.state === s).length}</b>`)}`).join(" ");
       const f = State.watchlist;
       const tierChips = Object.keys(this.defs().tiers).map(t =>
         `<button class="fchip wl-f-tier" aria-pressed="${f.tiers.has(t)}" data-tier="${t}" title="${esc(this.defs().tiers[t].desc)}">Tier ${t} · ${esc(this.defs().tiers[t].name)}</button>`).join("");
@@ -2071,8 +2070,7 @@
       return `<div class="card card-pad wl-head">
         <div class="wl-head-row">
           <div>
-            <div class="wl-title">${esc(m.title || "Conflict Watchlist")} <span class="wl-asof">— review as of ${esc(this.fmtDate(m.reviewDate))}</span></div>
-            <div class="wl-sub"><span class="wl-cmp" title="Every state move, changed dimension and score bonus on this page is measured against the register as it stood ${this.compareDays()} days before the review date (the newest snapshot at least that old; the oldest on file until the register has accrued a full window).">Compared with ${esc(this.fmtDate(this.compareDate(list)))} (${this.compareDays()}-day window)</span> · previous review ${esc(this.fmtDate(m.previousReviewDate))} · ${(m.cadenceDays || 7) === 1 ? "daily review" : (m.cadenceDays || 7) + "-day cadence"} · ${this.items().length} items · showing ${list.length} &nbsp; ${counts}</div>
+            <div class="wl-title">${esc(m.title || "Conflict Watchlist")} <span class="wl-asof">— daily review as of ${esc(this.fmtDate(m.reviewDate))}</span></div>
           </div>
           ${(() => { const lf = this.feedMeta(); const h = this.feedAge(); return lf ? `<div class="wl-feedstat ${h != null && h > 24 ? "stale" : ""}" title="${esc(lf.source || "")} · ${lf.refreshed || "?"}/${lf.total || "?"} items refreshed">● LIVE feed · synced ${h == null ? "—" : h < 1 ? "under an hour ago" : h + "h ago"}</div>` : `<div class="wl-feedstat off">Live feed not loaded</div>`; })()}
           <div class="wl-stale ${st.overdue ? "overdue" : "fresh"}" title="${esc(st.overdue ? `Review due ${this.fmtDate(st.nextDue)}; ${st.days} days since the last review.` : `Next review due ${this.fmtDate(st.nextDue)}.`)}">
