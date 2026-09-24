@@ -9,7 +9,7 @@ it locally.
 
 ## Watchlist tab (landing view)
 
-The Watchlist answers seven questions, in order, from `watchlist.json`:
+The Watchlist answers six questions, in order, from `watchlist.json`:
 
 | # | Question | Where on the page |
 |---|----------|-------------------|
@@ -18,8 +18,7 @@ The Watchlist answers seven questions, in order, from `watchlist.json`:
 | Q3 | What has materially changed? | Register rows + expanded "What materially changed" |
 | Q4 | Did phase / escalation risk / tempo / adaptation / Singapore exposure change? | Highlighted register cells (previous → now) |
 | Q5 | What might happen next? | Typed, dated indicators (named event, threshold, deadline, mobilisation sign, force movement, diplomatic decision, escalation indicator) |
-| Q6 | What should CSI do? | Action board: CSI Flash / Weekly awareness post / Monthly pattern review / Quarterly candidate / Dashboard only |
-| Q7 | What can be ignored for now? | Ignore-for-now list with reason tags and revisit triggers |
+| Q6 | What can be ignored for now? | Ignore-for-now list with reason tags and revisit triggers |
 
 **Tiers** (standing relevance): T1 Priority Conflicts · T2 Active Regional &
 Escalation Watches · T3 Baseline Regional Research Reserve.
@@ -47,7 +46,7 @@ The watchlist is fully automated:
 - **Weekly automated review** — a scheduled Claude Code session follows
   `docs/WATCHLIST-REVIEW.md`: researches all twelve items from open sources,
   rewrites `watchlist.json` (states, dimensions with previous values,
-  changes, indicators, CSI actions, ignore verdicts, history, sources), runs
+  changes, indicators, ignore verdicts, history, sources), runs
   `npm test` and pushes to `main`. Pages deploys on push.
 
 ### Manual review (same procedure)
@@ -61,7 +60,7 @@ flags, staleness, surges and the brief signal:
 3. Set `prevState` to the state at the previous review and `state` to the new
    one; append any move to `history`.
 4. Rewrite `whyNow`, `changes` (this week only), `next` (named, checkable
-   indicators with `due` dates where they exist), `csi` and `ignore`.
+   indicators with `due` dates where they exist) and `ignore`. Publication decisions (what to publish, escalate or leave) are made by the team outside the dashboard and are not recorded here.
 5. Run `npm test` — the smoke test validates the register schema.
 
 Items with `briefTheatre` set are enriched at runtime with the latest brief
