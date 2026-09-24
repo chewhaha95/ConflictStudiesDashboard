@@ -135,7 +135,10 @@
     "feed": {
       "source": "GDELT DOC 2.0 API (open, no key). Per item: 30-day daily article counts (TimelineVolRaw) and the most relevant English-language articles of the last 7 days (ArtList, HybridRel). Synced by .github/workflows/sync-watchlist-feed.yml into watchlist-live.json.",
       "surgeRule": "A coverage surge is flagged when the last 7 days carry at least twice the article volume of the 7 days before and at least 20 articles; a surge adds 8 points to the attention score.",
-      "titleFilter": "Articles are kept only when the title contains one of the item's terms, to cut GDELT's full-text noise."
+      "titleFilter": "Articles are kept only when the title contains one of the item's terms, to cut GDELT's full-text noise.",
+      "terms": "Title filter: at least one of these substrings must appear in an article title for it to count as reporting on the item.",
+      "require": "Optional groups of substrings; a title must contain at least one term from every group (two-party theatres: one term per side).",
+      "exclude": "Optional substrings that drop a title (sport, entertainment and other noise), in addition to the sync's global list."
     },
     "columns": {
       "tier": "Standing relevance to the Army: T1 Priority Conflicts, T2 Active Regional & Escalation Watches, T3 Baseline Regional Research Reserve. Tiers do not change week to week.",
@@ -1016,6 +1019,14 @@
           "hormuz",
           "irgc",
           "tehran"
+        ],
+        "require": [
+          [
+            "iran",
+            "hormuz",
+            "irgc",
+            "tehran"
+          ]
         ]
       },
       "status": {
@@ -1312,6 +1323,9 @@
           "lebanese",
           "litani",
           "nabatieh"
+        ],
+        "exclude": [
+          "pope"
         ]
       },
       "status": {
@@ -1598,6 +1612,24 @@
           "cambodia",
           "thai",
           "preah vihear"
+        ],
+        "require": [
+          [
+            "thai",
+            "thailand"
+          ],
+          [
+            "cambodia",
+            "cambodian",
+            "khmer",
+            "preah vihear",
+            "phnom penh"
+          ]
+        ],
+        "exclude": [
+          "thai pbs world's",
+          "soap",
+          "drama series"
         ]
       },
       "status": {
@@ -2143,13 +2175,22 @@
         "query": "(\"South China Sea\" OR Scarborough OR \"Second Thomas Shoal\" OR Ayungin OR \"Sabina Shoal\" OR Spratly)",
         "terms": [
           "south china sea",
-          "scarborough",
+          "scarborough shoal",
           "second thomas",
           "ayungin",
-          "sabina",
+          "sabina shoal",
           "spratly",
-          "philippine",
-          "coast guard"
+          "west philippine sea",
+          "philippine coast guard",
+          "china coast guard",
+          "bajo de masinloc"
+        ],
+        "exclude": [
+          "scarborough news",
+          "scarborough town",
+          "rnli",
+          "yorkshire",
+          "toronto"
         ]
       },
       "status": {
@@ -2416,6 +2457,25 @@
         "query": "(Taiwan OR \"Taiwan Strait\" OR \"Han Kuang\") (China OR Chinese OR PLA OR Beijing OR \"coast guard\")",
         "terms": [
           "taiwan"
+        ],
+        "require": [
+          [
+            "taiwan",
+            "taipei"
+          ],
+          [
+            "china",
+            "chinese",
+            "beijing",
+            "pla",
+            "strait",
+            "coast guard",
+            "cross-strait",
+            "blockade",
+            "drill",
+            "warship",
+            "xi "
+          ]
         ]
       },
       "status": {
@@ -2684,6 +2744,22 @@
           "senkaku",
           "takaichi",
           "tokyo"
+        ],
+        "require": [
+          [
+            "japan",
+            "japanese",
+            "tokyo",
+            "takaichi",
+            "senkaku"
+          ],
+          [
+            "china",
+            "chinese",
+            "beijing",
+            "pla",
+            "senkaku"
+          ]
         ]
       },
       "status": {
@@ -2958,6 +3034,24 @@
           "indus",
           "line of control",
           "india"
+        ],
+        "require": [
+          [
+            "india",
+            "indian",
+            "kashmir",
+            "indus",
+            "line of control",
+            "new delhi"
+          ],
+          [
+            "pakistan",
+            "pakistani",
+            "kashmir",
+            "indus",
+            "line of control",
+            "islamabad"
+          ]
         ]
       },
       "status": {
