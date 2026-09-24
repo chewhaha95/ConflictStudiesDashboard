@@ -6,7 +6,7 @@
     "cadenceDays": 1,
     "compareDays": 7,
     "reviewer": "Automated open-source review (daily, see docs/WATCHLIST-REVIEW.md); first run seeded by the 23 Sep 2026 open-source review. Items marked unverified need confirmation.",
-    "notes": "Fully automated register: a scheduled open-source review rewrites this file daily (procedure in docs/WATCHLIST-REVIEW.md) and a daily GitHub Action (05:00 SGT) refreshes the live reporting feed (watchlist-live.json) from GDELT. Every comparison the dashboard shows (state moves, changed dimensions, the attention-score bonuses) is made against the register as it stood compareDays (7) days ago, taken from each item's `snapshots` (one entry per review: date, state and the five dimensions). Each review: (1) set reviewDate/previousReviewDate, (2) for every item set the new `now` on the five dimensions and the new `state`, then append today's snapshot (keep the last 60), (3) rewrite `status` (`latest`: the newest material development with date and source; `summary`: plain-language current status whose first sentence states the newest development; `sources`: 2–3 links to the newest reporting), `whyNow`, `changes` (dated bullets covering the last 7 days: keep those still inside the window, add today's, drop older ones), `next`, `ignore` and `sources`, (4) record any state move in `history`. The dashboard derives attention rank, movements, changed-dimension flags, staleness, coverage surges — do not type those in. `next` holds named, checkable indicators."
+    "notes": "Fully automated register: a scheduled open-source review rewrites this file daily (procedure in docs/WATCHLIST-REVIEW.md) and an hourly GitHub Action refreshes the live reporting feed (watchlist-live.json) from GDELT. Every comparison the dashboard shows (state moves, changed dimensions, the attention-score bonuses) is made against the register as it stood compareDays (7) days ago, taken from each item's `snapshots` (one entry per review: date, state and the five dimensions). Each review: (1) set reviewDate/previousReviewDate, (2) for every item set the new `now` on the five dimensions and the new `state`, then append today's snapshot (keep the last 60), (3) rewrite `status` (`summary`: plain-language current status whose first sentence states the newest development; `sources`: 2–3 links to the newest reporting), `whyNow`, `changes` (dated bullets covering the last 7 days: keep those still inside the window, add today's, drop older ones), `next`, `ignore` and `sources`, (4) record any state move in `history` and keep `timeline` (4–8 dated one-line events of the current phase, chronological) current. The dashboard derives attention rank, movements, changed-dimension flags, staleness, coverage surges — do not type those in. `next` holds named, checkable indicators."
   },
   "definitions": {
     "tiers": {
@@ -140,8 +140,8 @@
     "columns": {
       "tier": "Standing relevance to the Army: T1 Priority Conflicts, T2 Active Regional & Escalation Watches, T3 Baseline Regional Research Reserve. Tiers do not change week to week.",
       "state": "Today's monitoring state: Priority (direct strategic relevance or high Army learning value), Active (material trend, escalation or regional relevance), Watch (baseline monitoring), Archive (reserve; revisit on a named trigger). ▲▼ marks a move over the last 7 days.",
-      "status": "Current status: a dated 'Latest' line (the newest material development the daily review found, with its source) above a plain-language summary of what is happening now, with links to the newest reporting it rests on; below them, the newest title-matched headline from the live open-source feed. The phase label sits beneath; a struck-through label is the phase 7 days ago.",
-      "coverage": "Open-source coverage from the live feed (GDELT with Google News fallback): the sparkline is the last 30 days (or four weekly counts), the number is articles in the last 7 days with the change against the 7 before. 'Surge' = at least twice the prior week and at least 20 articles. Refreshes daily at 05:00 SGT.",
+      "status": "Current status: the newest title-matched headline from the live open-source feed (synced hourly) on top, then a plain-language summary of what is happening now whose first sentence states the newest development, with links to the newest reporting it rests on. The phase label sits beneath; a struck-through label is the phase 7 days ago.",
+      "coverage": "Open-source coverage from the live feed (GDELT with Google News fallback): the sparkline is the last 30 days (or four weekly counts), the number is articles in the last 7 days with the change against the 7 before. 'Surge' = at least twice the prior week and at least 20 articles. Refreshes hourly.",
       "nextIndicator": "The soonest dated indicator to watch (named event, threshold, deadline, mobilisation sign, force movement, diplomatic decision or escalation indicator). Expand the row for the full list and what each would mean.",
       "confidence": "How well-sourced the assessment is: High (multiple independent, dated sources), Medium (some single-source or snippet-only items), Low (thin or contested reporting).",
       "attention": "Attention score, the register's sort order. Hover a score for its breakdown."
@@ -320,6 +320,40 @@
           "note": "Baseline: Tier 1, followed weekly."
         }
       ],
+      "timeline": [
+        {
+          "date": "2026-07-22",
+          "text": "Zelensky replaces Syrskyi with Maj Gen Drapatyi as commander-in-chief and Defence Minister Fedorov with Khmara amid protests."
+        },
+        {
+          "date": "2026-07-25",
+          "text": "Ukraine's deep-strike campaign reaches record range with a drone hit on the Tyumen refinery about 2,000 km away."
+        },
+        {
+          "date": "2026-08-24",
+          "text": "Ukraine strikes the Astrakhan gas plant after more than a dozen refinery strikes in August, while Russia's monthly ground gains shrink to about 90 km²."
+        },
+        {
+          "date": "2026-09-01",
+          "text": "ISW assesses that Russia's strike campaign has shifted to mass jet-powered Geran drones, with Ukrainian interception rates falling to about 87%."
+        },
+        {
+          "date": "2026-09-06",
+          "text": "Witkoff and Kushner meet Putin and then Zelensky without reaching a deal."
+        },
+        {
+          "date": "2026-09-15",
+          "text": "Ukraine's 3rd Army Corps confirms Operation Vivaldi, clearing about 85 km² north-west of Lyman."
+        },
+        {
+          "date": "2026-09-20",
+          "text": "A 1,110-drone raid strikes Moscow's refinery."
+        },
+        {
+          "date": "2026-09-22",
+          "text": "At the UN Trump claims an energy-strike halt that Kyiv says it was not told about; a US-led trilateral round is being prepared for October."
+        }
+      ],
       "feed": {
         "query": "(Ukraine OR Ukrainian OR Zelensky OR Kyiv) (Russia OR Russian OR Kremlin OR Putin)",
         "terms": [
@@ -335,11 +369,6 @@
         ]
       },
       "status": {
-        "latest": {
-          "date": "2026-09-22",
-          "text": "At the UN General Assembly Trump claimed an energy-strike halt that Kyiv says it was not told about; a US-led trilateral round is being prepared for October while Russia keeps up mass jet-drone attacks on the grid.",
-          "url": "https://kyivindependent.com/zelensky-meets-trump-at-un-amid-push-for-russia-ukraine-energy-truce/"
-        },
         "summary": "Front lines are largely static, but both sides are striking deep: Russia with mass jet-drone attacks on Ukraine's grid and industry, Ukraine with record-range strikes on Russian refineries and gas plants and a 1,110-drone raid on Moscow. A US-led talks track is live (a trilateral round is being prepared for October) while Ukraine's Operation Vivaldi claws back ground near Lyman.",
         "sources": [
           {
@@ -508,6 +537,36 @@
           "note": "Baseline: ceasefire holding, stabilisation learning."
         }
       ],
+      "timeline": [
+        {
+          "date": "2026-07-06",
+          "text": "Hamas dissolves its Government Emergency Committee, ceding civil administration to a National Committee that Israel blocks from entering Gaza."
+        },
+        {
+          "date": "2026-07-27",
+          "text": "Israel's security cabinet approves a 200-troop International Stabilisation Force pilot at Rafah on condition the IDF keeps the Yellow Line."
+        },
+        {
+          "date": "2026-07-31",
+          "text": "The Board of Peace issues a 15-point roadmap for phased Hamas decommissioning and IDF withdrawal."
+        },
+        {
+          "date": "2026-08-09",
+          "text": "Netanyahu rejects the 15-point plan that Hamas had accepted."
+        },
+        {
+          "date": "2026-08-24",
+          "text": "Israeli strikes hit a desalination plant, a mosque and an aid warehouse as IDF control reaches about 70% of Gaza."
+        },
+        {
+          "date": "2026-09-01",
+          "text": "Israeli special forces capture Hamas internal-security chief Muein al-Arabeed in Gaza City; Hamas warns the truce could break down completely."
+        },
+        {
+          "date": "2026-09-11",
+          "text": "An airstrike kills Khan Younis Brigade commander Muhammad al-Yazouri."
+        }
+      ],
       "feed": {
         "query": "(Gaza OR Hamas OR Rafah OR \"Khan Younis\")",
         "terms": [
@@ -518,11 +577,6 @@
         ]
       },
       "status": {
-        "latest": {
-          "date": "2026-09-11",
-          "text": "An airstrike killed Khan Younis Brigade commander Muhammad al-Yazouri; Hamas warned after the 1 September capture of its internal-security chief that the truce could 'break down completely'.",
-          "url": "https://www.timesofisrael.com/idf-kills-commander-of-hamass-khan-younis-brigade-in-southern-gaza-airstrike/"
-        },
         "summary": "The October 2025 ceasefire formally holds but nothing in it is being implemented: Israel holds about 70% of Gaza behind the Yellow Line and runs targeted strikes and raids on Hamas commanders, while the Board of Peace disarmament roadmap that Hamas accepted has been rejected by Netanyahu. A first international stabilisation contingent was meant to enter Rafah in October but is now in doubt.",
         "sources": [
           {
@@ -722,6 +776,40 @@
           "note": "Baseline: Hormuz crisis, direct Singapore exposure."
         }
       ],
+      "timeline": [
+        {
+          "date": "2026-07-09",
+          "text": "The US–Iran stand-down collapses after Iran strikes three ships; the US revokes Iran's oil-sale licence and hits 90 targets."
+        },
+        {
+          "date": "2026-07-14",
+          "text": "The US naval blockade of Iran is reinstated."
+        },
+        {
+          "date": "2026-07-19",
+          "text": "Iranian missiles kill two US soldiers at Muwaffaq Salti air base in Jordan."
+        },
+        {
+          "date": "2026-08-30",
+          "text": "US strikes hit IRGC mine-rocket launchers on Larak Island, ending weeks of pause."
+        },
+        {
+          "date": "2026-09-05",
+          "text": "An IRGC ballistic salvo targets the USS George Washington group and damages aircraft at Muwaffaq Salti; tanker-for-tanker strikes follow."
+        },
+        {
+          "date": "2026-09-09",
+          "text": "The IAEA Board refers Iran to the UN Security Council, the first referral in 20 years."
+        },
+        {
+          "date": "2026-09-19",
+          "text": "Iran sends terms via Qatar, offering to reopen Hormuz within 7 days if the blockade eases."
+        },
+        {
+          "date": "2026-09-22",
+          "text": "A three-hour mediated Araghchi–Witkoff–Kushner session at the UN is called promising; Trump ties any deal to after the November midterms."
+        }
+      ],
       "feed": {
         "query": "(Iran OR Hormuz OR IRGC OR Tehran) (Israel OR \"United States\" OR Navy OR Strait OR tanker OR missile)",
         "terms": [
@@ -732,11 +820,6 @@
         ]
       },
       "status": {
-        "latest": {
-          "date": "2026-09-22",
-          "text": "A three-hour mediated Araghchi–Witkoff–Kushner session at the UN was called 'promising, constructive'; Iran offers to reopen Hormuz within 7 days if the blockade eases, while Trump ties any deal to after the November midterms.",
-          "url": "https://www.aljazeera.com/news/2026/9/23/us-iran-hold-mediated-unga-talks-on-ending-war-opening-strait-of-hormuz"
-        },
         "summary": "An active war over the Strait of Hormuz: the US blockade is back, transits are a fraction of normal, and in early September the two sides traded a missile salvo at a US carrier group and 'tanker-for-tanker' strikes. The first mediated face-to-face talks took place at the UN on 22 September; Trump ties any deal to after the November midterms.",
         "sources": [
           {
@@ -920,6 +1003,36 @@
           "note": "Washington Framework signed; Military Coordination Group may seek regional partners; fighting continues."
         }
       ],
+      "timeline": [
+        {
+          "date": "2026-06-29",
+          "text": "The United States, Israel and Lebanon sign the Trilateral Framework in Washington."
+        },
+        {
+          "date": "2026-07-22",
+          "text": "Pilot-zone handovers begin at Froun, Srifa and Zawtar al-Gharbiyeh, with the Lebanese army deploying to Zawtar after an IDF withdrawal."
+        },
+        {
+          "date": "2026-08-16",
+          "text": "The ceasefire effectively breaks down after a Hezbollah drone wounds three Israeli engineers on Ali al-Taher and IDF strikes kill 11 or more."
+        },
+        {
+          "date": "2026-09-04",
+          "text": "Hezbollah shifts to FPV drones, roadside bombs and anti-tank missiles inside the zone; IDF retaliation expands north to Nabatieh al-Fawqa."
+        },
+        {
+          "date": "2026-09-07",
+          "text": "An Israeli 'Gray Line' pullback plan is reported but not politically approved."
+        },
+        {
+          "date": "2026-09-10",
+          "text": "Israel demolishes the Ali al-Taher tunnel complex and declares its southern security zone complete."
+        },
+        {
+          "date": "2026-09-16",
+          "text": "Ambassadors meet at the State Department on expanding the pilot zones; the Rome round slips to October, after Israel's 27 October election."
+        }
+      ],
       "feed": {
         "query": "(Hezbollah OR Lebanon OR Lebanese OR Litani OR Nabatieh)",
         "terms": [
@@ -931,11 +1044,6 @@
         ]
       },
       "status": {
-        "latest": {
-          "date": "2026-09-16",
-          "text": "Ambassadors met at the State Department on expanding the pilot zones; the Rome round has slipped to October, after Israel's 27 October election, while Hezbollah drones and roadside bombs continue inside the security zone.",
-          "url": "https://www.arabnews.com/middle-east/israel-and-lebanon-to-meet-in-rome-in-october-us-state-department-official-says-3001594"
-        },
         "summary": "Israel has cleared and demolished Hezbollah's Ali al-Taher tunnel complex and declared its southern security zone complete, while Hezbollah harasses the zone with drones and roadside bombs. The June framework's pilot-zone handovers to the Lebanese army have stalled, and the next round of talks slipped to October, after Israel's 27 October election.",
         "sources": [
           {
@@ -1105,6 +1213,36 @@
           "note": "Baseline: near-abroad ceasefire, ASEAN observers."
         }
       ],
+      "timeline": [
+        {
+          "date": "2026-04-27",
+          "text": "The December 2025 ceasefire holds with ASEAN observers on the border and no exchange of fire."
+        },
+        {
+          "date": "2026-08-23",
+          "text": "PM Anutin visits Thai troops on Hill 500; Cambodia protests an 'illegal occupation'."
+        },
+        {
+          "date": "2026-09-04",
+          "text": "A Thai helicopter crosses about 400 m into Battambang airspace, drawing a Cambodian protest."
+        },
+        {
+          "date": "2026-09-07",
+          "text": "Thailand takes the ASEAN Observer Team into O'Smach."
+        },
+        {
+          "date": "2026-09-15",
+          "text": "The Royal Thai Army's 'Truth from Preah Vihear' video shows drone strikes from the 2025 fighting, not new ones; Cambodia rejects the 'military base' claim."
+        },
+        {
+          "date": "2026-09-16",
+          "text": "UNCLOS conciliation on the maritime boundary opens in Singapore, with the next round due in The Hague."
+        },
+        {
+          "date": "2026-09-21",
+          "text": "Hun Manet's Peace Day message urges Thailand to honour the agreements while Thailand keeps building border walls at Chanthaburi and Sa Kaeo."
+        }
+      ],
       "feed": {
         "query": "(Thailand OR Thai) (Cambodia OR Cambodian OR \"Preah Vihear\")",
         "terms": [
@@ -1114,11 +1252,6 @@
         ]
       },
       "status": {
-        "latest": {
-          "date": "2026-09-16",
-          "text": "UNCLOS conciliation on the maritime boundary opened in Singapore (14–16 September): Thailand insists it is maritime-only and excludes Koh Kut, Cambodia seeks a treaty or joint-development regime; the next round is in The Hague.",
-          "url": "https://www.khaosodenglish.com/politics/2026/09/15/thailands-full-opening-statement-to-first-unclos-conciliation-meeting-with-cambodia/"
-        },
         "summary": "The December ceasefire holds with no exchange of fire, but Thailand is walling stretches of the border and holding contested hills while Cambodia protests and has taken the dispute to UNCLOS conciliation, which opened in Singapore in mid-September. Land crossings remain closed and no border-committee meeting has been held this year.",
         "sources": [
           {
@@ -1276,6 +1409,40 @@
           "note": "Baseline: post-January 2026 operation; transition under US pressure."
         }
       ],
+      "timeline": [
+        {
+          "date": "2026-04-27",
+          "text": "Venezuela is in a US-managed transition after Maduro's capture in January."
+        },
+        {
+          "date": "2026-08-04",
+          "text": "SOUTHCOM stands up Joint Task Force Western Hemisphere with an 18-nation counter-cartel coalition."
+        },
+        {
+          "date": "2026-08-14",
+          "text": "First in-person government–opposition talks end with frozen assets released for earthquake recovery and a Supreme Tribunal overhaul, but no election date."
+        },
+        {
+          "date": "2026-08-28",
+          "text": "The NABEP oil deal grants 100-year concessions on 17 fields with a Pentagon stake and US$100 billion pledged."
+        },
+        {
+          "date": "2026-09-16",
+          "text": "A UN fact-finding mission reports protests up 181% year on year, 344 political prisoners and colectivos not dismantled."
+        },
+        {
+          "date": "2026-09-17",
+          "text": "A second round of government–opposition talks ends without an election date."
+        },
+        {
+          "date": "2026-09-19",
+          "text": "The 70th US strike on a suspected drug boat brings the toll to about 234 killed."
+        },
+        {
+          "date": "2026-09-22",
+          "text": "Trump meets acting president Rodríguez at the UN while Machado fails three times to return to Venezuela."
+        }
+      ],
       "feed": {
         "query": "(Venezuela OR Venezuelan OR Caracas OR Maduro OR \"Delcy Rodriguez\" OR Machado)",
         "terms": [
@@ -1289,11 +1456,6 @@
         ]
       },
       "status": {
-        "latest": {
-          "date": "2026-09-22",
-          "text": "Trump held a pull-aside with acting president Rodríguez at the UN, the first since Maduro's capture; the same day Machado made three failed attempts to return by sea and air.",
-          "url": "https://www.usnews.com/news/world/articles/2026-09-22/venezuelan-opposition-leader-machado-fails-in-return-attempts-as-rodriguez-meets-trump"
-        },
         "summary": "Venezuela is in a US-managed transition after Maduro's capture: government–opposition talks have started but no election date is set, a US-backed oil deal has been signed, and Trump met acting president Rodríguez at the UN. Offshore, the US counter-cartel task force keeps striking boats (its 70th on 19 September) as UN experts call the campaign unlawful.",
         "sources": [
           {
@@ -1456,6 +1618,40 @@
           "note": "Injury, ramming, radar locks and a forward PLAN group at Scarborough; COC deadline at the November summit."
         }
       ],
+      "timeline": [
+        {
+          "date": "2026-07-20",
+          "text": "A China Coast Guard small-boat ramming and melee at Second Thomas Shoal injures a Philippine marine."
+        },
+        {
+          "date": "2026-07-24",
+          "text": "Chinese water cannon hit Philippine vessels at Scarborough Shoal with a CNN crew aboard."
+        },
+        {
+          "date": "2026-08-23",
+          "text": "The Second Thomas Shoal resupply runs under a 'provisional understanding' with notification."
+        },
+        {
+          "date": "2026-09-02",
+          "text": "PLA 'Combat Patrol–Huangyan Dao' has JL-10 armed trainers lock radar on three Philippine aircraft at Scarborough."
+        },
+        {
+          "date": "2026-09-07",
+          "text": "Flares are fired at a Philippine coast guard aircraft from Subi and Mischief reefs while a PLAN group stays on station at Scarborough."
+        },
+        {
+          "date": "2026-09-11",
+          "text": "The 58th China–ASEAN Code of Conduct working group meets in Manila as hopes of a 2026 deal fade."
+        },
+        {
+          "date": "2026-09-18",
+          "text": "CCG-21585 rams the fisheries vessel BRP Datu Magat Salamat 54 nm off Palawan; the US ambassador condemns a 'deliberate ramming'."
+        },
+        {
+          "date": "2026-09-20",
+          "text": "The ADMM-Plus maritime exercise opens with USS Canberra and a P-8A taking part."
+        }
+      ],
       "feed": {
         "query": "(\"South China Sea\" OR Scarborough OR \"Second Thomas Shoal\" OR Ayungin OR \"Sabina Shoal\" OR Spratly)",
         "terms": [
@@ -1470,11 +1666,6 @@
         ]
       },
       "status": {
-        "latest": {
-          "date": "2026-09-18",
-          "text": "China Coast Guard ship CCG-21585 rammed the Philippine fisheries vessel BRP Datu Magat Salamat 54 nm off Palawan during a fuel-subsidy run; the US ambassador condemned a 'deliberate ramming'.",
-          "url": "https://news.usni.org/2026/09/18/video-china-coast-guard-rams-philippine-fisheries-vessel-in-south-china-sea"
-        },
         "summary": "China is now using physical force around Philippine-held features: a marine was injured at Second Thomas Shoal in July, fighter trainers locked radar on Philippine aircraft at Scarborough in early September, and a coast-guard ship rammed a fisheries vessel off Palawan on 18 September. Code of Conduct talks continue toward the November ASEAN summit but are widely judged unlikely to conclude.",
         "sources": [
           {
@@ -1628,6 +1819,36 @@
           "note": "Baseline: coercive pressure, civil-resilience learning."
         }
       ],
+      "timeline": [
+        {
+          "date": "2026-07-08",
+          "text": "China Coast Guard begins patrols 74–124 nm east of Taiwan, radio-checking transiting merchant ships including a Singapore-flagged vessel."
+        },
+        {
+          "date": "2026-08-14",
+          "text": "Han Kuang 42 ends after 5,000 reservists, first M1A2T employment, a new Littoral Combat Command and urban-resilience drills."
+        },
+        {
+          "date": "2026-08-20",
+          "text": "Taiwan proposes a record 2027 defence budget of NT$1.12 trillion, 3.01% of GDP."
+        },
+        {
+          "date": "2026-08-28",
+          "text": "Taiwan counts a record 110-plus PLAN and coast guard ships along the first island chain while PLA air sorties fall by half."
+        },
+        {
+          "date": "2026-09-03",
+          "text": "A NT$607.6 billion supplementary budget funds 40,000 coastal attack drones, 600 reconnaissance drones and 100 unmanned surface vessels."
+        },
+        {
+          "date": "2026-09-18",
+          "text": "New Zealand ships transit the Taiwan Strait."
+        },
+        {
+          "date": "2026-09-21",
+          "text": "Reports say Washington is weighing a delay of the paused US$14 billion arms package until after APEC and the G20 at Xi's request."
+        }
+      ],
       "feed": {
         "query": "(Taiwan OR \"Taiwan Strait\" OR \"Han Kuang\") (China OR Chinese OR PLA OR Beijing OR \"coast guard\")",
         "terms": [
@@ -1635,11 +1856,6 @@
         ]
       },
       "status": {
-        "latest": {
-          "date": "2026-09-21",
-          "text": "Reports that Washington is weighing a delay of the paused US$14 bn arms package until after APEC and the G20 at Xi's request; New Zealand ships transited the Strait on 18 September.",
-          "url": "https://www.taipeitimes.com/News/taiwan/archives/2026/09/21/2003864623"
-        },
         "summary": "Quiet in the air, busy at sea: PLA sorties are down by half this year while Chinese coast-guard patrols east of Taiwan have become routine, including radio checks on passing merchant ships (one Singapore-flagged). Taiwan ran its largest reservist-led Han Kuang exercise in August and is funding mass drone procurement; US arms sales are paused around Trump–Xi summitry.",
         "sources": [
           {
@@ -1798,6 +2014,36 @@
           "note": "EEZ live fire with Russia, JL-3 test, expanding Nansei transits, record budget request; no thaw path."
         }
       ],
+      "timeline": [
+        {
+          "date": "2026-04-27",
+          "text": "The diplomatic freeze since Takaichi's late-2025 Taiwan remark continues, with China's seafood ban, travel advisory and rare-earth curbs in force."
+        },
+        {
+          "date": "2026-07-02",
+          "text": "Eight PLAN ships use three of the five Nansei passages alongside five Russian ships."
+        },
+        {
+          "date": "2026-07-06",
+          "text": "China tests a JL-3 submarine-launched ballistic missile about 7,000 km into the South Pacific."
+        },
+        {
+          "date": "2026-07-07",
+          "text": "Japanese and Chinese coast guards face off in Senkaku territorial waters."
+        },
+        {
+          "date": "2026-07-19",
+          "text": "The PLAN destroyer Kaifeng live-fires inside Japan's claimed EEZ off Okinotori beside a Russian corvette; Japan protests."
+        },
+        {
+          "date": "2026-08-27",
+          "text": "A cross-party Diet delegation in Beijing is told there is no policy change without a revised Taiwan position."
+        },
+        {
+          "date": "2026-09-22",
+          "text": "Takaichi meets Trump and joins a US–Japan–ROK trilateral to pre-empt a US–China bargain."
+        }
+      ],
       "feed": {
         "query": "(Japan OR Japanese OR Senkaku OR Takaichi) (China OR Chinese OR Beijing OR PLA)",
         "terms": [
@@ -1808,11 +2054,6 @@
         ]
       },
       "status": {
-        "latest": {
-          "date": "2026-09-22",
-          "text": "Takaichi met Trump and joined a US–Japan–ROK trilateral to pre-empt a US–China bargain; the freeze with Beijing persists, with the seafood ban, travel advisory and rare-earth curbs still in force.",
-          "url": "https://asiatimes.com/2026/09/takaichi-scrambles-to-reach-trump-before-he-sees-xi/"
-        },
         "summary": "A diplomatic freeze ten months on: China's seafood ban, travel advisory and rare-earth curbs stay in force and Beijing says nothing changes until Tokyo revises its Taiwan position. Militarily, Chinese and Russian warships live-fired inside Japan's claimed EEZ in July and PLA transits of the Nansei passages are expanding; Japan has requested a record defence budget.",
         "sources": [
           {
@@ -1967,6 +2208,32 @@
           "note": "Baseline: reserve; case-study value."
         }
       ],
+      "timeline": [
+        {
+          "date": "2026-07-08",
+          "text": "Pakistan's corps commanders call any Indian diversion of its Indus water share an act of war."
+        },
+        {
+          "date": "2026-07-31",
+          "text": "Gunmen target non-local civilians at Kulgam, the first such attack in Kashmir since Pahalgam."
+        },
+        {
+          "date": "2026-08-28",
+          "text": "A Pakistani UAV is tracked over Rajouri as drone drops on the Punjab border run weekly."
+        },
+        {
+          "date": "2026-09-01",
+          "text": "The Court of Arbitration rules the Indus Waters Treaty remains in force and India rejects the award; Modi and Sharif attend the SCO summit without a bilateral."
+        },
+        {
+          "date": "2026-09-15",
+          "text": "A reported collision between an Indian destroyer and a Pakistani patrol vessel in the Arabian Sea remains unverified."
+        },
+        {
+          "date": "2026-09-17",
+          "text": "Two Jaish-e-Mohammed militants are killed at Udhampur with a high alert across Kathua–Kishtwar."
+        }
+      ],
       "feed": {
         "query": "(India OR Indian OR Kashmir) (Pakistan OR Pakistani OR \"Line of Control\" OR Indus)",
         "terms": [
@@ -1978,11 +2245,6 @@
         ]
       },
       "status": {
-        "latest": {
-          "date": "2026-09-17",
-          "text": "Two Jaish-e-Mohammed militants were killed at Udhampur with a high alert across Kathua–Kishtwar; a reported 15 September collision between an Indian destroyer and a Pakistani patrol vessel in the Arabian Sea is unverified.",
-          "url": "https://www.business-standard.com/amp/external-affairs-defence-security/news/two-jem-terrorists-killed-in-ongoing-operation-in-j-k-s-udhampur-officials-126091700209_1.html"
-        },
         "summary": "The Line of Control is quiet but the water dispute has escalated: an arbitration court ruled that the Indus Waters Treaty still binds India, which rejected the award, after Pakistan's army called any diversion of water an act of war. Militant infiltration continues in Jammu (two attackers killed in Udhampur in mid-September) and drone drops on the Punjab border are weekly.",
         "sources": [
           {
@@ -2137,6 +2399,40 @@
           "note": "FPV strike on Tada-U airbase, failed junta Rakhine offensive and AA counter-offensive, ASEAN seat decision pending."
         }
       ],
+      "timeline": [
+        {
+          "date": "2026-07-23",
+          "text": "ASEAN foreign ministers in Manila keep Myanmar's representation non-political and demand demonstrable progress."
+        },
+        {
+          "date": "2026-07-31",
+          "text": "Min Aung Hlaing's 100-day peace-talks deadline passes with the KNU, CNF and ABSDF rejecting talks."
+        },
+        {
+          "date": "2026-08-21",
+          "text": "An air strike hits Myaung monastery as the NUG counts 530 aerial attacks and 139 civilians killed in August."
+        },
+        {
+          "date": "2026-09-04",
+          "text": "The junta launches Operation 4926 from the Sittwe, Kyaukphyu and Thandwe enclaves in Rakhine."
+        },
+        {
+          "date": "2026-09-05",
+          "text": "The Arakan Army repulses the offensive within a day."
+        },
+        {
+          "date": "2026-09-10",
+          "text": "Six fibre-optic FPV drones strike Tada-U airbase near Mandalay, the first resistance strike on a fighter base."
+        },
+        {
+          "date": "2026-09-14",
+          "text": "The KIA wipes out a 130-man breakout column from Bhamo after destroying about 25 Irrawaddy supply vessels."
+        },
+        {
+          "date": "2026-09-19",
+          "text": "The Arakan Army takes six or more outposts around Sittwe and holds about 93% of Rakhine."
+        }
+      ],
       "feed": {
         "query": "(Myanmar OR Burma OR \"Arakan Army\" OR Rakhine OR \"Min Aung Hlaing\")",
         "terms": [
@@ -2150,11 +2446,6 @@
         ]
       },
       "status": {
-        "latest": {
-          "date": "2026-09-19",
-          "text": "The Arakan Army took six or more outposts around Sittwe (15–19 September) after the junta's Operation 4926 was repulsed within a day; fibre-optic FPV drones hit Tada-U airbase on 10 September.",
-          "url": "https://english.dvb.no/myanmar-military-launches-operation-4926-against-arakan-army-in-rakhine-state/"
-        },
         "summary": "The junta's dry-season offensive in Rakhine failed within a day and the Arakan Army has pushed back around Sittwe, while resistance forces struck a fighter base with fibre-optic drones for the first time on 10 September. Air strikes run at over 500 a month; ASEAN still refuses political recognition ahead of its November summit.",
         "sources": [
           {
@@ -2328,6 +2619,36 @@
           "note": "Houthis seized the Red Sea coast and cut Bab al-Mandab transits to ~12/day; Saudi pipeline shut by Iraqi militia drones; US leaving Iraq."
         }
       ],
+      "timeline": [
+        {
+          "date": "2026-06-08",
+          "text": "The Houthis reinstate their Red Sea shipping ban."
+        },
+        {
+          "date": "2026-07-20",
+          "text": "The Houthis declare the 2022 truce with Saudi Arabia over and announce a naval blockade of the kingdom."
+        },
+        {
+          "date": "2026-07-29",
+          "text": "US–Saudi strikes hit the PMF in seven Iraqi provinces after militia drones on Saudi oil."
+        },
+        {
+          "date": "2026-08-11",
+          "text": "Houthi ballistic missiles kill six on the Egyptian cargo ship Tihamah in Bab al-Mandab, the first fatal ship attack since February."
+        },
+        {
+          "date": "2026-08-24",
+          "text": "Jordan hosts Israel–Syria security talks proposing a US-supervised operations room."
+        },
+        {
+          "date": "2026-09-11",
+          "text": "A Houthi offensive takes Mocha, Hays, Khawkhah, the Hanish islands and Perim, giving it the whole Red Sea coast; Bab al-Mandab transits fall to about 12 a day."
+        },
+        {
+          "date": "2026-09-12",
+          "text": "Iraqi militia drones from Maysan shut Saudi Arabia's East-West pipeline; Saudi Arabia offers a two-week ceasefire via Oman."
+        }
+      ],
       "feed": {
         "query": "(Houthi OR Houthis OR \"Red Sea\" OR \"Bab al-Mandab\" OR \"Bab el-Mandeb\" OR Yemen OR \"Iraqi militia\" OR \"Popular Mobilization\" OR \"Golan\")",
         "terms": [
@@ -2343,11 +2664,6 @@
         ]
       },
       "status": {
-        "latest": {
-          "date": "2026-09-12",
-          "text": "Iraqi militia drones from Maysan shut Saudi Arabia's East-West pipeline (11–12 September) as the Houthis took Perim and control of Bab al-Mandab; Saudi Arabia has offered a two-week ceasefire via Oman.",
-          "url": "https://www.aljazeera.com/news/2026/9/12/saudi-arabia-shuts-critical-oil-pipeline-after-drone-attack-what-happened"
-        },
         "summary": "The Houthis have ended their truce with Saudi Arabia, seized the full Red Sea coast including the Bab al-Mandab islands, and cut transits there to about a dozen a day; Saudi Arabia has offered a two-week ceasefire via Oman. Iraqi militia drones shut Saudi Arabia's main east–west pipeline in mid-September as the last US troops leave Iraq, and Israel keeps striking in Syria while a security deal is negotiated.",
         "sources": [
           {
