@@ -77,7 +77,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   catch (e) { check("watchlist.json parses", false, e.message); process.exit(1); }
   check("register defines criteria and level descriptions for every scaled dimension", ["escalation", "tempo", "adaptation", "sgExposure"].every(d => wl.definitions.dimensions[d].desc && wl.definitions.dimensions[d].scale.every(l => wl.definitions.dimensions[d].levels[l])));
   check("every item carries a researched timeline (4–8 chronological entries, ISO dates, source URLs)", wl.items.every(i => Array.isArray(i.timeline) && i.timeline.length >= 4 && i.timeline.length <= 8 && i.timeline.every(t => /^\d{4}-\d{2}-\d{2}$/.test(t.date) && t.text && t.text.length > 20 && /^https?:/.test(t.url || "")) && i.timeline.every((t, k) => k === 0 || t.date >= i.timeline[k - 1].date)));
-  check("every item carries a 'topic of interest' and a 'why it matters' line", wl.items.every(i => typeof i.topic === "string" && i.topic.length > 40 && typeof i.whyMatters === "string" && i.whyMatters.length > 60));
+  check("every item carries three team-set topics (topic, why, adaptability, watch status + text)", wl.items.every(i => Array.isArray(i.topics) && i.topics.length === 3 && i.topics.every(x => x.topic && x.why && ["High", "Medium", "Low"].includes(x.adaptability) && x.watch && x.watch.text)));
+  check("every indicator references a topic index (0–2) or null for cross-cutting", wl.items.every(i => i.next.every(n => n.topic === null || (Number.isInteger(n.topic) && n.topic >= 0 && n.topic < i.topics.length))));
   check("every item carries a current-status summary with 2+ article links", wl.items.every(i => i.status && i.status.summary.length > 80 && i.status.sources.length >= 2 && i.status.sources.every(s => /^https?:/.test(s.url))));
   check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
   check("register is reviewed daily (cadenceDays = 1)", wl.meta.cadenceDays === 1);
@@ -254,18 +255,29 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   const reg = wv.querySelector("#wl-register");
   check(`Q3/Q4: register has ${N} rows ordered by attention`, reg.querySelectorAll("tbody tr.wl-row").length === N && reg.querySelector("tbody tr.wl-row").textContent.includes(ranked[0].name));
   check("register: no Esc. risk / Tempo / Adaptation / SG exposure / Changed columns", ![...reg.querySelectorAll("thead th")].some(th => /Esc\. risk|Tempo|Adaptation|SG exposure|Changed/i.test(th.textContent)) && !reg.querySelector("td.wl-dim"));
-  check("register: 'Topic of interest' and 'Why it matters' columns carry each item's text", (() => {
+  check("register: 'Topics of interest', 'Why it matters' and 'Watch areas' columns carry each item's three topics", (() => {
     const ths = [...reg.querySelectorAll("thead th")].map(th => th.textContent.trim());
-    return ths.indexOf("Topic of interest") === ths.indexOf("Current status") + 1 && ths.indexOf("Why it matters") === ths.indexOf("Topic of interest") + 1 &&
-      wl.items.every(i => { const row = reg.querySelector(`tr[data-wl-row="${i.id}"]`); return row.querySelector("td.wl-topic").textContent === i.topic && row.querySelector("td.wl-why").textContent === i.whyMatters; });
+    return ths.indexOf("Topics of interest") === ths.indexOf("Current status") + 1 && ths.indexOf("Why it matters") === ths.indexOf("Topics of interest") + 1 && ths.indexOf("Watch areas") === ths.indexOf("Why it matters") + 1 &&
+      wl.items.every(i => {
+        const row = reg.querySelector(`tr[data-wl-row="${i.id}"]`);
+        return row.querySelectorAll("td.wl-topic .wl-tlist li").length === 3 && row.querySelectorAll("td.wl-why .wl-tlist li").length === 3 && row.querySelectorAll("td.wl-watch .wl-tlist li").length === 3 &&
+          row.querySelectorAll("td.wl-topic .wl-adapt").length === 3 && row.querySelector("td.wl-topic").textContent.includes(i.topics[0].topic) && row.querySelector("td.wl-watch").textContent.includes(i.topics[2].watch.text.slice(0, 30));
+      });
   })());
+  check("register: the next indicator names the topic and watch area it informs (or cross-cutting)", wl.items.every(i => {
+    const row = reg.querySelector(`tr[data-wl-row="${i.id}"]`); const ref = row.querySelector("td.wl-next .wl-tref"); if (!ref) return false;
+    const nd = i.next.filter(n => n.due).sort((p, q) => p.due.localeCompare(q.due))[0] || i.next[0];
+    return nd.topic == null ? /cross-cutting/.test(ref.textContent) : (ref.textContent === `Topic ${nd.topic + 1}` && !!row.querySelector("td.wl-next .wl-next-w"));
+  }));
+  check("register: 'Watch areas' column present with hover definition", [...reg.querySelectorAll("thead th")].some(th => /Watch areas/.test(th.textContent) && /Rising/.test(th.getAttribute("title") || "")));
+  check("indicators table: each indicator shows its topic reference", wv.querySelectorAll("#wl-indicators .wl-ind-topic .wl-tref").length === wl.items.reduce((a, i) => a + i.next.length, 0));
   check("register: every row carries a plain-language current status with article links and the phase label", wl.items.every(i => {
     const row = reg.querySelector(`tr[data-wl-row="${i.id}"]`);
     return !row.querySelector(".wl-status-latest") && !row.querySelector(".wl-status-news") && row.querySelector(".wl-status-sum").textContent.trim() === i.status.summary && row.querySelectorAll(".wl-status-links a[href^='http']").length === i.status.sources.length && row.querySelector(".wl-phase-line").textContent.includes(i.dims.phase.now);
   }));
   check("register: column headers and level values carry hover definitions", (() => {
     const ths = [...reg.querySelectorAll("thead th.wl-th-help")];
-    return ths.length >= 8 && ths.every(th => (th.getAttribute("title") || "").length > 30) && [...reg.querySelectorAll("td.wl-topic, td.wl-why")].every(td => (td.getAttribute("title") || "").length > 30);
+    return ths.length >= 8 && ths.every(th => (th.getAttribute("title") || "").length > 30) && [...reg.querySelectorAll("td.wl-topic, td.wl-why, td.wl-watch")].every(td => (td.getAttribute("title") || "").length > 30);
   })());
   check("register: no brief link tag on any row", reg.querySelectorAll("tr.wl-row .t-chip").length === 0);
   check("register: rows collapsed by default", reg.querySelectorAll("tr.wl-detail-row").length === 0);

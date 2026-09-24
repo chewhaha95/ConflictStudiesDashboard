@@ -1384,7 +1384,7 @@
           <th>Lifecycle ${this.srcBadge("research-judged")} ${this.metricTip("lifecycle")}</th><th>Heat ${this.metricTip("heat")}</th>
           <th>Activity (${this.briefMode ? this.axisLen + "&nbsp;ed" : "8&nbsp;wk"})</th>
           <th>Trend ${this.metricTip("trend")}</th><th>Source</th><th>Supporting briefs</th>
-        </tr></thead><tbody>${invRows || `<tr><td colspan="11"><div class="empty">No standalone observed capabilities — all observed items are in a contest.</div></td></tr>`}</tbody></table></div></div>`;
+        </tr></thead><tbody>${invRows || `<tr><td colspan="12"><div class="empty">No standalone observed capabilities — all observed items are in a contest.</div></td></tr>`}</tbody></table></div></div>`;
 
       // ---- Supersession (graded: fully / partially / niche) — Layer 2 ----
       // Replacement / supersession is a capability-development judgment, so each
@@ -1959,6 +1959,21 @@
     },
     // Feed articles newest first (the sync ranks them by relevance)
     feedArticles(f) { return ((f && f.articles) || []).slice().sort((a, b) => String(b.date || "").localeCompare(String(a.date || ""))); },
+    // Topics of interest (team-set, three per item) and the watch area each indicator informs
+    topicOf(it, idx) { return idx != null && it.topics && it.topics[idx] ? it.topics[idx] : null; },
+    watchTag(status) {
+      const s = String(status || ""); if (!s) return "";
+      const cls = /rising/i.test(s) ? "up" : /declin/i.test(s) ? "down" : /trigger|background/i.test(s) ? "quiet" : "steady";
+      return `<span class="wl-wstat wl-wstat-${cls}">${esc(s)}</span>`;
+    },
+    adaptChip(v) { return v ? `<span class="wl-adapt wl-adapt-${esc(String(v).toLowerCase())}" title="${esc(this.colDesc("adaptability"))}">${esc(v)}</span>` : ""; },
+    topicRef(it, idx) {
+      const t = this.topicOf(it, idx);
+      return t ? `<span class="wl-tref" title="${esc(`Topic ${idx + 1}: ${t.topic} — ${t.watch.text}`)}">Topic ${idx + 1}</span>` : `<span class="wl-tref wl-tref-x" title="Bears on the theatre as a whole rather than one topic">cross-cutting</span>`;
+    },
+    topicsCell(it) { return `<td class="wl-topic" title="${esc(this.colDesc("topic"))}"><ol class="wl-tlist">${(it.topics || []).map(t => `<li><b>${esc(t.topic)}</b> ${this.adaptChip(t.adaptability)}</li>`).join("")}</ol></td>`; },
+    whyCell(it) { return `<td class="wl-why" title="${esc(this.colDesc("whyMatters"))}"><ol class="wl-tlist">${(it.topics || []).map(t => `<li>${esc(t.why)}</li>`).join("")}</ol></td>`; },
+    watchCell(it) { return `<td class="wl-watch" title="${esc(this.colDesc("watchAreas"))}"><ol class="wl-tlist">${(it.topics || []).map(t => `<li>${this.watchTag(t.watch.status)} ${esc(t.watch.text)}</li>`).join("")}</ol></td>`; },
     statusCell(it) {
       const st = it.status || {}; const ph = it.dims.phase || {};
       const phPrev = this.prevOf(it, "phase"), changed = phPrev != null && phPrev !== ph.now;
@@ -2175,19 +2190,20 @@
           <td class="theatre-cell"><button class="wl-expand" data-wl-toggle="${esc(it.id)}" aria-expanded="${open}" title="${open ? "Collapse" : "Expand"}">${open ? "▾" : "▸"}</button> ${esc(it.name)}</td>
           <td>${this.stateChip(it.state, this.moveGlyph(it))}</td>
           ${this.statusCell(it)}
-          <td class="wl-topic" title="${esc(this.colDesc("topic"))}">${esc(it.topic || "—")}</td>
-          <td class="wl-why" title="${esc(this.colDesc("whyMatters"))}">${esc(it.whyMatters || "—")}</td>
+          ${this.topicsCell(it)}
+          ${this.whyCell(it)}
+          ${this.watchCell(it)}
           ${this.feedCell(it)}
-          <td class="wl-next">${nd ? `<span class="wl-due wl-due-${ds.cls}">${nd.due ? esc(this.fmtDate(nd.due)) : "undated"}</span> <span class="wl-next-t">${esc(nd.text)}</span>` : "—"}</td>
+          <td class="wl-next">${nd ? `<span class="wl-due wl-due-${ds.cls}">${nd.due ? esc(this.fmtDate(nd.due)) : "undated"}</span> ${this.topicRef(it, nd.topic)}<span class="wl-next-t">${esc(nd.text)}</span>${this.topicOf(it, nd.topic) ? `<span class="wl-next-w">${this.watchTag(this.topicOf(it, nd.topic).watch.status)} ${esc(this.topicOf(it, nd.topic).watch.text)}</span>` : ""}` : "—"}</td>
           <td>${this.confChip(it.confidence)}</td>
           <td>${this.scoreChip(it)}</td>
-        </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="11">${this.detail(it)}</td></tr>` : ""}`;
+        </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="12">${this.detail(it)}</td></tr>` : ""}`;
       }).join("");
       return `<div class="section"><div class="section-head"><h2>What materially changed?</h2><span class="hint">Register ordered by attention · hover a column header for how it is defined · expand a row for the latest open-source reporting and the timeline so far</span>
           <div class="head-actions"><button class="btn" data-wl-expand-all>Expand all</button><button class="btn" data-wl-collapse-all>Collapse all</button></div></div>
         <div class="card matrix-wrap"><table class="matrix wl-register" id="wl-register"><thead><tr>
-          <th>#</th>${th("tier", "Tier")}<th>Conflict</th>${th("state", "State")}${th("status", "Current status")}${th("topic", "Topic of interest")}${th("whyMatters", "Why it matters")}${th("coverage", "Coverage")}${th("nextIndicator", "Next indicator")}${th("confidence", "Conf.")}${th("attention", "Attn")}
-        </tr></thead><tbody>${rows || `<tr><td colspan="11" class="empty">No items match the current filters.</td></tr>`}</tbody></table></div></div>`;
+          <th>#</th>${th("tier", "Tier")}<th>Conflict</th>${th("state", "State")}${th("status", "Current status")}${th("topic", "Topics of interest")}${th("whyMatters", "Why it matters")}${th("watchAreas", "Watch areas")}${th("coverage", "Coverage")}${th("nextIndicator", "Next indicator")}${th("confidence", "Conf.")}${th("attention", "Attn")}
+        </tr></thead><tbody>${rows || `<tr><td colspan="12" class="empty">No items match the current filters.</td></tr>`}</tbody></table></div></div>`;
     },
 
     indicators(list) {
@@ -2199,10 +2215,10 @@
       const row = x => {
         const ds = this.dueStatus(x.n.due);
         return `<tr class="${x.it.ignore.flag ? "ignored" : ""}"><td class="wl-due-cell"><span class="wl-due wl-due-${ds.cls}">${x.n.due ? esc(this.fmtDate(x.n.due)) : "—"}</span><div class="wl-due-sub">${esc(ds.label)}</div></td>
-          <td>${this.nameBtn(x.it)} ${this.tierTag(x.it.tier)}</td><td><span class="wl-ind-type">${esc(x.n.type)}</span></td><td>${esc(x.n.text)}</td><td class="wl-ifseen">${esc(x.n.ifSeen || "")}</td></tr>`;
+          <td>${this.nameBtn(x.it)} ${this.tierTag(x.it.tier)}</td><td><span class="wl-ind-type">${esc(x.n.type)}</span></td><td>${esc(x.n.text)}<div class="wl-ind-topic">${this.topicRef(x.it, x.n.topic)}${this.topicOf(x.it, x.n.topic) ? ` ${esc(this.topicOf(x.it, x.n.topic).topic)}` : ""}</div></td><td class="wl-ifseen">${esc(x.n.ifSeen || "")}</td></tr>`;
       };
       return `<div class="section"><div class="section-head"><h2>What might happen next?</h2><span class="hint">Named events, thresholds, deadlines, mobilisation signs, force movements, diplomatic decisions and escalation indicators — dated first</span></div>
-        <div class="card matrix-wrap"><table class="matrix wl-indicators" id="wl-indicators"><thead><tr><th>Due</th><th>Conflict</th><th>Type</th><th>Indicator to watch</th><th>If seen →</th></tr></thead>
+        <div class="card matrix-wrap"><table class="matrix wl-indicators" id="wl-indicators"><thead><tr><th>Due</th><th>Conflict</th><th>Type</th><th>Indicator to watch · topic it informs</th><th>If seen →</th></tr></thead>
         <tbody>${dated.map(row).join("")}${undated.length ? `<tr class="wl-sep"><td colspan="5">Undated indicators (trigger-based)</td></tr>${undated.map(row).join("")}` : ""}${!all.length ? `<tr><td colspan="5" class="empty">No indicators for the current filters.</td></tr>` : ""}</tbody></table></div></div>`;
     },
 
@@ -2368,7 +2384,7 @@
     exportRows() {
       return this.rank(this.filtered()).map(it => {
         const nd = this.nextDue(it), mv = this.movement(it), f7 = this.feed(it);
-        return [it.tier, it.name, it.state, mv ? `${mv.from} → ${mv.to}` : "", it.topic || "", it.whyMatters || "",
+        return [it.tier, it.name, it.state, mv ? `${mv.from} → ${mv.to}` : "", (it.topics || []).map((t, k) => `${k + 1}. ${t.topic}`).join(" | "), (it.topics || []).map((t, k) => `${k + 1}. ${t.why}`).join(" | "), (it.topics || []).map((t, k) => `${k + 1}. ${t.watch.status ? t.watch.status + " — " : ""}${t.watch.text}`).join(" | "),
           ...this.DIMS.map(d => it.dims[d].now), this.changedDims(it).map(d => this.defs().dimensions[d].short).join("|"),
           (it.changes || []).join(" | "), nd ? (nd.due || "") : "", nd ? nd.text : "",
           it.ignore.flag ? "yes" : "no", it.ignore.reasons.join("|"),
@@ -2376,7 +2392,7 @@
           f7 ? f7.count7d : "", f7 ? f7.prev7d : "", f7 ? (f7.surge ? "yes" : "no") : ""];
       });
     },
-    exportCols() { return ["tier", "conflict", "state", "stateMove", "topic", "whyMatters", ...this.DIMS, "changedDims", "materialChanges", "nextDue", "nextIndicator", "ignoreForNow", "ignoreReasons", "confidence", "learningValue", "attentionScore", "sources", "coverage7d", "coveragePrev7d", "coverageSurge"]; }
+    exportCols() { return ["tier", "conflict", "state", "stateMove", "topicsOfInterest", "whyItMatters", "watchAreas", ...this.DIMS, "changedDims", "materialChanges", "nextDue", "nextIndicator", "ignoreForNow", "ignoreReasons", "confidence", "learningValue", "attentionScore", "sources", "coverage7d", "coveragePrev7d", "coverageSurge"]; }
   };
 
   const App = {
