@@ -77,6 +77,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   catch (e) { check("watchlist.json parses", false, e.message); process.exit(1); }
   check("register defines criteria and level descriptions for every scaled dimension", ["escalation", "tempo", "adaptation", "sgExposure"].every(d => wl.definitions.dimensions[d].desc && wl.definitions.dimensions[d].scale.every(l => wl.definitions.dimensions[d].levels[l])));
   check("every item carries a researched timeline (4–8 chronological entries, ISO dates, source URLs)", wl.items.every(i => Array.isArray(i.timeline) && i.timeline.length >= 4 && i.timeline.length <= 8 && i.timeline.every(t => /^\d{4}-\d{2}-\d{2}$/.test(t.date) && t.text && t.text.length > 20 && /^https?:/.test(t.url || "")) && i.timeline.every((t, k) => k === 0 || t.date >= i.timeline[k - 1].date)));
+  check("every item carries a 'topic of interest' and a 'why it matters' line", wl.items.every(i => typeof i.topic === "string" && i.topic.length > 40 && typeof i.whyMatters === "string" && i.whyMatters.length > 60));
   check("every item carries a current-status summary with 2+ article links", wl.items.every(i => i.status && i.status.summary.length > 80 && i.status.sources.length >= 2 && i.status.sources.every(s => /^https?:/.test(s.url))));
   check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
   check("register is reviewed daily (cadenceDays = 1)", wl.meta.cadenceDays === 1);
@@ -240,9 +241,9 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const minor = [...card.querySelectorAll(".wl-mv-item.minor")].find(li => li.querySelector(".wl-name").textContent === probe.name);
     const row = v3.querySelector(`tr[data-wl-row="${probe.id}"]`);
     check("rolling window: the snapshot 7 days old is the baseline, yesterday's review is not (move glyph tooltip + row tooltip name the 7-day-old values)",
-      !!row && row.querySelector("td.wl-dim.wl-chg").title.startsWith(`${wl3.meta.compareDays} days ago: Low`) && !v3.querySelector(".wl-moves-card .wl-card-h-note").textContent.includes(`compared with ${fmtD(yesterday)}`));
+      !!row && /dimension/.test(row.querySelector(".wl-score .tip-body").textContent) && !v3.querySelector(".wl-moves-card .wl-card-h-note").textContent.includes(`compared with ${fmtD(yesterday)}`));
     check("rolling window: a state move over the last 7 days is listed as Watch → current state", !!major && major.textContent.includes("Watch") && major.textContent.includes(probe.state));
-    check("rolling window: a dimension changed over the last 7 days is highlighted with the 7-day-old value", !!row && !!row.querySelector("td.wl-dim.wl-chg .wl-prev") && row.querySelector("td.wl-dim.wl-chg .wl-prev").textContent === "Low");
+    check("rolling window: a dimension changed over the last 7 days counts in the attention score (+5) and the state move up (+10)", !!row && /1 dimension changed: \+5/.test(row.querySelector(".wl-score .tip-body").textContent) && /moved up/i.test(row.querySelector(".wl-score .tip-body").textContent));
     check("rolling window: a history move before the window shows under 'Earlier moves', one inside it does not", !!minor && minor.textContent.includes(fmtD(dayBefore)) && !card.textContent.includes("move inside the window"));
     check("rolling window: the moves card note names the earliest baseline as the comparison date", card.querySelector(".wl-card-h-note").textContent.includes(`compared with ${fmtD(cmpDate)}`));
   })();
@@ -252,22 +253,19 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   // Q3/Q4 register
   const reg = wv.querySelector("#wl-register");
   check(`Q3/Q4: register has ${N} rows ordered by attention`, reg.querySelectorAll("tbody tr.wl-row").length === N && reg.querySelector("tbody tr.wl-row").textContent.includes(ranked[0].name));
-  check("Q4: changed level columns highlighted with previous → now (esc. risk / tempo / adaptation)", wl.items.every(i => {
-    const row = reg.querySelector(`tr[data-wl-row="${i.id}"]`);
-    const cells = [...row.querySelectorAll("td.wl-dim.wl-chg")];
-    const exp = ["escalation", "tempo", "adaptation"].filter(d => baseline(i)[d] !== i.dims[d].now);
-    return cells.length === exp.length && exp.every((d, k) => cells[k] && cells[k].textContent.includes(baseline(i)[d]) && cells[k].textContent.includes(i.dims[d].now));
-  }));
-  check("register: SG exposure and Changed columns removed", ![...reg.querySelectorAll("thead th")].some(th => /SG exposure|Changed/i.test(th.textContent)));
+  check("register: no Esc. risk / Tempo / Adaptation / SG exposure / Changed columns", ![...reg.querySelectorAll("thead th")].some(th => /Esc\. risk|Tempo|Adaptation|SG exposure|Changed/i.test(th.textContent)) && !reg.querySelector("td.wl-dim"));
+  check("register: 'Topic of interest' and 'Why it matters' columns carry each item's text", (() => {
+    const ths = [...reg.querySelectorAll("thead th")].map(th => th.textContent.trim());
+    return ths.indexOf("Topic of interest") === ths.indexOf("Current status") + 1 && ths.indexOf("Why it matters") === ths.indexOf("Topic of interest") + 1 &&
+      wl.items.every(i => { const row = reg.querySelector(`tr[data-wl-row="${i.id}"]`); return row.querySelector("td.wl-topic").textContent === i.topic && row.querySelector("td.wl-why").textContent === i.whyMatters; });
+  })());
   check("register: every row carries a plain-language current status with article links and the phase label", wl.items.every(i => {
     const row = reg.querySelector(`tr[data-wl-row="${i.id}"]`);
     return !row.querySelector(".wl-status-latest") && !row.querySelector(".wl-status-news") && row.querySelector(".wl-status-sum").textContent.trim() === i.status.summary && row.querySelectorAll(".wl-status-links a[href^='http']").length === i.status.sources.length && row.querySelector(".wl-phase-line").textContent.includes(i.dims.phase.now);
   }));
   check("register: column headers and level values carry hover definitions", (() => {
     const ths = [...reg.querySelectorAll("thead th.wl-th-help")];
-    const esc = ths.find(th => /Esc\. risk/.test(th.textContent));
-    return ths.length >= 8 && ths.every(th => (th.getAttribute("title") || "").length > 30) && /Severe:/.test(esc.getAttribute("title")) &&
-      [...reg.querySelectorAll("td.wl-dim")].every(td => /:/.test(td.getAttribute("title") || ""));
+    return ths.length >= 8 && ths.every(th => (th.getAttribute("title") || "").length > 30) && [...reg.querySelectorAll("td.wl-topic, td.wl-why")].every(td => (td.getAttribute("title") || "").length > 30);
   })());
   check("register: no brief link tag on any row", reg.querySelectorAll("tr.wl-row .t-chip").length === 0);
   check("register: rows collapsed by default", reg.querySelectorAll("tr.wl-detail-row").length === 0);
@@ -276,18 +274,15 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   reg.querySelector(`[data-wl-toggle="${probe.id}"]`).click(); await sleep(40);
   wv = doc.querySelector("#view-watchlist .view-body");
   const det = wv.querySelector(`tr[data-wl-detail="${probe.id}"]`);
-  check("expanded row shows what changed / what next / ignore verdict / reporting / history (no brief signal)", !!det &&
-    /What materially changed/.test(det.textContent) && /What might happen next/.test(det.textContent) && !/What CSI should do/.test(det.textContent) &&
-    /Ignore for now\?/.test(det.textContent) && !/\bQ[1-7]\b/.test(det.textContent) && !/Brief signal/.test(det.textContent) && !det.querySelector(".wl-brief") && /Timeline so far/.test(det.textContent) && !/State history/.test(det.textContent));
+  check("expanded row shows only the latest open-source reporting and the timeline (no changed / next / ignore cards)", !!det &&
+    /Latest open-source reporting/.test(det.textContent) && /Timeline so far/.test(det.textContent) && det.querySelectorAll(".wl-detail-grid > .wl-d-block").length === 2 &&
+    !/What materially changed/.test(det.textContent) && !/What might happen next/.test(det.textContent) && !/Ignore for now\?/.test(det.textContent) && !/What CSI should do/.test(det.textContent) &&
+    !/\bQ[1-7]\b/.test(det.textContent) && !/Brief signal/.test(det.textContent) && !det.querySelector(".wl-brief") && !/State history/.test(det.textContent));
   check("detail: timeline is a chronological dated recap with no state chips (history notes stand in until the register carries `timeline`)", (() => {
     const exp = (probe.timeline && probe.timeline.length ? probe.timeline : probe.history.map(h => ({ date: h.date, text: h.note.replace(/^Baseline:\s*/i, "") }))).slice().sort((a, b) => a.date.localeCompare(b.date));
     const lis = [...det.querySelectorAll(".wl-hist .wl-tl-list li")];
     return lis.length === exp.length && !det.querySelector(".wl-hist .wl-state") && exp.every((e, k) => lis[k].textContent.includes(fmtD(e.date)) && lis[k].textContent.includes(e.text) && (!e.url || lis[k].querySelector(`a.wl-tl-src[href="${e.url}"]`))) && lis[lis.length - 1].classList.contains("wl-tl-latest");
   })());
-  check("detail: every changed dimension spelled out (7 days ago → now)", det.querySelectorAll(".wl-chg-line .wl-chg-pill").length === changed(probe).length && changed(probe).every(d => det.textContent.includes(baseline(probe)[d])));
-  check("detail: typed indicators with 'If seen →' consequences and rendered dates",
-    det.querySelectorAll(".wl-ind").length === probe.next.length && det.querySelectorAll(".wl-ind .wl-ind-type").length === probe.next.length &&
-    det.querySelectorAll(".wl-ind-if").length === probe.next.filter(n => n.ifSeen).length && probe.next.filter(n => n.due).every(n => det.textContent.includes(fmtD(n.due))));
   check("detail: without a live feed the reporting block explains the daily sync", /Latest open-source reporting/.test(det.textContent) && /No live feed loaded/.test(det.textContent));
   check("register: Coverage column present, empty without a feed", [...reg.querySelectorAll("thead th")].some(th => /Coverage/.test(th.textContent)) && reg.querySelectorAll("td.wl-feed-cell .wl-spark").length === 0);
   check("header: no live-feed status badge without a feed", !wv.querySelector(".wl-feedstat"));

@@ -1782,7 +1782,6 @@
    * -------------------------------------------------------------------- */
   const Watchlist = {
     DIMS: ["phase", "escalation", "tempo", "adaptation", "sgExposure"],
-    TABLE_DIMS: ["escalation", "tempo", "adaptation"],      // dimensions shown as register columns
     colDesc(k) { return ((this.defs().columns || {})[k]) || ""; },
     levelDesc(d, v) { const def = this.defs().dimensions[d]; return def && def.levels && def.levels[v] ? def.levels[v] : ""; },
     TIER_R: { 1: 7, 2: 5.5, 3: 4.5 },          // marker radius by tier (map units at world zoom)
@@ -1949,14 +1948,6 @@
     scoreChip(it) {
       const s = this.score(it);
       return `<span class="wl-score tip" tabindex="0">${s.total}<span class="tip-body"><strong>Attention score</strong><br>${s.parts.map(p => `${esc(p.label)}: +${p.pts}`).join("<br>")}<br><em>Total ${s.total}</em></span></span>`;
-    },
-    dimCell(it, d) {
-      const v = it.dims[d]; if (!v) return `<td>—</td>`;
-      const prev = this.prevOf(it, d), changed = prev != null && prev !== v.now;
-      const lvl = this.levelDesc(d, v.now);
-      const tip = (changed ? `${this.compareDays()} days ago: ${prev} → now: ${v.now}.` : `Unchanged over the last ${this.compareDays()} days (${v.now}).`) + (lvl ? ` ${v.now}: ${lvl}` : "");
-      return `<td class="wl-dim ${changed ? "wl-chg" : ""}" title="${esc(tip)}">` +
-        (changed ? `<span class="wl-prev">${esc(prev)}</span> → ` : "") + `<strong>${esc(v.now)}</strong></td>`;
     },
     // Chronological timeline of what has happened so far: the register's `timeline`
     // when present, else the state-history notes (minus the "Baseline:" prefix).
@@ -2154,27 +2145,14 @@
     },
 
     detail(it) {
-      const chg = this.changedDims(it);
-      const dimsLine = chg.length
-        ? chg.map(d => `<span class="wl-chg-pill">${esc(this.defs().dimensions[d].short)}: ${esc(this.prevOf(it, d))} → <strong>${esc(it.dims[d].now)}</strong></span>`).join(" ")
-        : `<span class="muted-note">No dimension changed in the last ${this.compareDays()} days.</span>`;
-      const next = (it.next || []).map(n => {
-        const ds = this.dueStatus(n.due);
-        return `<li class="wl-ind"><span class="wl-ind-type">${esc(n.type)}</span> <span class="wl-due wl-due-${ds.cls}" title="${esc(n.due || "no date")}">${n.due ? esc(this.fmtDate(n.due)) + " · " : ""}${esc(ds.label)}</span><div class="wl-ind-text">${esc(n.text)}</div>${n.ifSeen ? `<div class="wl-ind-if">If seen → ${esc(n.ifSeen)}</div>` : ""}</li>`;
-      }).join("");
       // "Timeline so far": a short chronological run of what has happened (register
       // `timeline` [{date, text}]; until the review writes one, the state-history
       // notes stand in). No state chips: the intent is a quick recap, not audit.
       const tl = this.timelineOf(it);
       const hist = tl.map((h, i) => `<li class="${i === tl.length - 1 ? "wl-tl-latest" : ""}"><span class="wl-hist-d">${esc(this.fmtDate(h.date))}</span> <span class="wl-tl-text">${esc(h.text)}</span>${h.unverified ? ` <span class="wl-tl-unv" title="Single source; not yet corroborated">unverified</span>` : ""}${h.url ? ` <a class="wl-tl-src" href="${esc(h.url)}" target="_blank" rel="noopener" title="Source">↗</a>` : ""}</li>`).join("");
-      return `<div class="wl-detail-grid">
-        <div class="wl-d-block"><div class="wl-d-h">What materially changed</div>
-          <div class="wl-chg-line">${dimsLine}</div>
-          <ul class="wl-bullets">${(it.changes || []).map(c => `<li>${esc(c)}</li>`).join("")}</ul></div>
-        <div class="wl-d-block"><div class="wl-d-h">What might happen next</div>${next ? `<ul class="wl-ind-list">${next}</ul>` : `<p class="muted-note">No indicators recorded.</p>`}</div>
-        <div class="wl-d-block"><div class="wl-d-h">Ignore for now?</div>
-          <p class="wl-d-p">${it.ignore.flag ? `<strong>Yes</strong> — ${it.ignore.reasons.map(r => `<span class="tag">${esc(r)}</span>`).join(" ")} ${esc(it.ignore.note || "")}` : `<strong>No</strong> — keep on the active watch.${it.ignore.note ? " " + esc(it.ignore.note) : ""}`}</p>
-          <div class="wl-d-meta">Confidence ${this.confChip(it.confidence)} · Army learning value <strong>${esc(it.learningValue || "—")}</strong> · Region ${esc(it.region || "—")}</div></div>
+      // Expanded row: the live reporting and the timeline only (what changed, the
+      // indicators and the ignore verdict live in the page sections below).
+      return `<div class="wl-detail-grid wl-detail-two">
         ${this.feedBlock(it)}
         <div class="wl-d-block wl-hist"><div class="wl-d-h">Timeline so far</div><ul class="wl-hist-list wl-tl-list">${hist || "<li class='muted-note'>—</li>"}</ul>
           ${(it.sources || []).length ? `<div class="wl-d-h sub">Sources (${it.sources.length})</div><ul class="wl-src-list">${it.sources.map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label || s.url)} ↗</a></li>`).join("")}</ul>` : ""}
@@ -2185,8 +2163,6 @@
     register(list) {
       const ranked = this.rank(list);
       const f = State.watchlist;
-      const dimHead = this.TABLE_DIMS.map(d => { const def = this.defs().dimensions[d]; const lv = def.levels ? Object.entries(def.levels).map(([k, v]) => `${k}: ${v}`).join("\n") : "";
-        return `<th class="wl-th-help" title="${esc(`${def.label}. ${def.desc || ""}${lv ? "\n\n" + lv : ""}`)}">${esc(def.short)}</th>`; }).join("");
       const th = (k, label) => `<th class="wl-th-help" title="${esc(this.colDesc(k))}">${label}</th>`;
       const rows = ranked.map((it, i) => {
         const open = f.expanded.has(it.id);
@@ -2199,18 +2175,19 @@
           <td class="theatre-cell"><button class="wl-expand" data-wl-toggle="${esc(it.id)}" aria-expanded="${open}" title="${open ? "Collapse" : "Expand"}">${open ? "▾" : "▸"}</button> ${esc(it.name)}</td>
           <td>${this.stateChip(it.state, this.moveGlyph(it))}</td>
           ${this.statusCell(it)}
-          ${this.TABLE_DIMS.map(d => this.dimCell(it, d)).join("")}
+          <td class="wl-topic" title="${esc(this.colDesc("topic"))}">${esc(it.topic || "—")}</td>
+          <td class="wl-why" title="${esc(this.colDesc("whyMatters"))}">${esc(it.whyMatters || "—")}</td>
           ${this.feedCell(it)}
           <td class="wl-next">${nd ? `<span class="wl-due wl-due-${ds.cls}">${nd.due ? esc(this.fmtDate(nd.due)) : "undated"}</span> <span class="wl-next-t">${esc(nd.text)}</span>` : "—"}</td>
           <td>${this.confChip(it.confidence)}</td>
           <td>${this.scoreChip(it)}</td>
-        </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="${9 + this.TABLE_DIMS.length}">${this.detail(it)}</td></tr>` : ""}`;
+        </tr>${open ? `<tr class="wl-detail-row" data-wl-detail="${esc(it.id)}"><td colspan="11">${this.detail(it)}</td></tr>` : ""}`;
       }).join("");
-      return `<div class="section"><div class="section-head"><h2>What materially changed?</h2><span class="hint">Register ordered by attention · highlighted cells changed since the previous review · hover a column header or a value for how it is defined · expand a row for changes, indicators, the ignore verdict, the latest reporting and the history</span>
+      return `<div class="section"><div class="section-head"><h2>What materially changed?</h2><span class="hint">Register ordered by attention · hover a column header for how it is defined · expand a row for the latest open-source reporting and the timeline so far</span>
           <div class="head-actions"><button class="btn" data-wl-expand-all>Expand all</button><button class="btn" data-wl-collapse-all>Collapse all</button></div></div>
         <div class="card matrix-wrap"><table class="matrix wl-register" id="wl-register"><thead><tr>
-          <th>#</th>${th("tier", "Tier")}<th>Conflict</th>${th("state", "State")}${th("status", "Current status")}${dimHead}${th("coverage", "Coverage")}${th("nextIndicator", "Next indicator")}${th("confidence", "Conf.")}${th("attention", "Attn")}
-        </tr></thead><tbody>${rows || `<tr><td colspan="${9 + this.TABLE_DIMS.length}" class="empty">No items match the current filters.</td></tr>`}</tbody></table></div></div>`;
+          <th>#</th>${th("tier", "Tier")}<th>Conflict</th>${th("state", "State")}${th("status", "Current status")}${th("topic", "Topic of interest")}${th("whyMatters", "Why it matters")}${th("coverage", "Coverage")}${th("nextIndicator", "Next indicator")}${th("confidence", "Conf.")}${th("attention", "Attn")}
+        </tr></thead><tbody>${rows || `<tr><td colspan="11" class="empty">No items match the current filters.</td></tr>`}</tbody></table></div></div>`;
     },
 
     indicators(list) {
@@ -2391,7 +2368,7 @@
     exportRows() {
       return this.rank(this.filtered()).map(it => {
         const nd = this.nextDue(it), mv = this.movement(it), f7 = this.feed(it);
-        return [it.tier, it.name, it.state, mv ? `${mv.from} → ${mv.to}` : "",
+        return [it.tier, it.name, it.state, mv ? `${mv.from} → ${mv.to}` : "", it.topic || "", it.whyMatters || "",
           ...this.DIMS.map(d => it.dims[d].now), this.changedDims(it).map(d => this.defs().dimensions[d].short).join("|"),
           (it.changes || []).join(" | "), nd ? (nd.due || "") : "", nd ? nd.text : "",
           it.ignore.flag ? "yes" : "no", it.ignore.reasons.join("|"),
@@ -2399,7 +2376,7 @@
           f7 ? f7.count7d : "", f7 ? f7.prev7d : "", f7 ? (f7.surge ? "yes" : "no") : ""];
       });
     },
-    exportCols() { return ["tier", "conflict", "state", "stateMove", ...this.DIMS, "changedDims", "materialChanges", "nextDue", "nextIndicator", "ignoreForNow", "ignoreReasons", "confidence", "learningValue", "attentionScore", "sources", "coverage7d", "coveragePrev7d", "coverageSurge"]; }
+    exportCols() { return ["tier", "conflict", "state", "stateMove", "topic", "whyMatters", ...this.DIMS, "changedDims", "materialChanges", "nextDue", "nextIndicator", "ignoreForNow", "ignoreReasons", "confidence", "learningValue", "attentionScore", "sources", "coverage7d", "coveragePrev7d", "coverageSurge"]; }
   };
 
   const App = {
