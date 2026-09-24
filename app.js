@@ -1924,7 +1924,7 @@
     },
     feedBlock(it) {
       const f = this.feed(it), lf = this.feedMeta();
-      if (!f) return `<div class="wl-d-block"><div class="wl-d-h">Latest open-source reporting</div><p class="muted-note">No live feed loaded — the feed syncs once a day (06:30 SGT) from GDELT into <code>watchlist-live.json</code>.</p></div>`;
+      if (!f) return `<div class="wl-d-block"><div class="wl-d-h">Latest open-source reporting</div><p class="muted-note">No live feed loaded — the feed syncs once a day (05:00 SGT) from GDELT into <code>watchlist-live.json</code>.</p></div>`;
       const arts = (f.articles || []).slice(0, 8).map(x => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a><span class="wl-art-meta">${esc(x.domain)}${x.date ? " · " + esc(this.fmtDate(x.date)) : ""}</span></li>`).join("");
       return `<div class="wl-d-block wl-feed-block"><div class="wl-d-h">Latest open-source reporting <span class="briefs-live">● LIVE</span>${lf && lf.syncedAt ? ` · synced ${esc(Time.fmtDateTime(lf.syncedAt))}` : ""}</div>
         <div class="wl-feed-sum">${this.sparkline(f.timeline, 220, 36, f.granularity)}<div><b>${this.feedCount(f)}</b> articles in the last 7 days · <b>${f.prev7d}${f.capped ? "+" : ""}</b> the 7 days before${f.surge ? ` · <span class="wl-surge">coverage surge</span>` : ""}${f.capped ? ` · <span class="muted-note">counts capped at 250 per window</span>` : ""}<div class="muted-note">${esc(this.feedCaption(f))} · source: ${esc(this.feedSourceLabel(f))}${f.fetchedAt ? ` · this item refreshed ${esc(Time.fmtDateTime(f.fetchedAt))}` : ""}</div></div></div>

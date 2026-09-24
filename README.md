@@ -45,13 +45,13 @@ Middle East, South Asia, the Indo-Pacific or the Americas.
 The watchlist is fully automated:
 
 - **Live reporting feed** — `.github/workflows/sync-watchlist-feed.yml` runs
-  `scripts/sync-watchlist-feed.js` once a day (06:30 SGT) against the open GDELT DOC
+  `scripts/sync-watchlist-feed.js` once a day (05:00 SGT) against the open GDELT DOC
   2.0 API and commits `watchlist-live.json`: a 30-day daily coverage
   timeline and the latest title-matched articles per item. The register shows
   a coverage sparkline, a 7-day count with change, a **surge** flag (≥2× the
   previous week and ≥20 articles, +8 attention points) and the headlines in
   each expanded row. Queries live in each item's `feed` block.
-- **Daily automated review** — a scheduled Claude Code session (07:00 SGT)
+- **Daily automated review** — a scheduled Claude Code session (05:30 SGT, published by 07:00)
   follows `docs/WATCHLIST-REVIEW.md`: researches all twelve items from open
   sources, rewrites `watchlist.json` (states, dimensions, a daily snapshot,
   changes, indicators, ignore verdicts, history, sources), runs
