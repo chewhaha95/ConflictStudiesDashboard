@@ -363,8 +363,10 @@ if (require.main !== module) return;
     }
     await sleep(PACE_MS);
   }
-  // drop items no longer in the register
-  Object.keys(out).forEach(id => { if (!items.some(i => i.id === id)) delete out[id]; });
+  // drop items no longer in the register (all register items, not just the
+  // FEED_ONLY subset, so a partial test run never discards the other items)
+  const registered = new Set(reg.items.filter(i => i.feed && i.feed.query).map(i => i.id));
+  Object.keys(out).forEach(id => { if (!registered.has(id)) delete out[id]; });
   if (ok === 0) {
     console.error(`No item could be refreshed — leaving ${path.basename(OUT)} untouched.`);
     process.exit(1);
@@ -373,7 +375,7 @@ if (require.main !== module) return;
     __live: true,
     syncedAt: new Date().toISOString(),
     source: "GDELT DOC 2.0 API (api.gdeltproject.org) with Google News RSS fallback",
-    refreshed: ok, total: items.length, present: Object.keys(out).length,
+    refreshed: ok, total: registered.size, present: Object.keys(out).length,
     items: out
   }, null, 2) + "\n");
   console.log(`Wrote ${path.basename(OUT)}: ${ok}/${items.length} items refreshed this run, ${Object.keys(out).length} present.`);
