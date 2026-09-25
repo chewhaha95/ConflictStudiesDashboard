@@ -56,7 +56,12 @@ The watchlist is fully automated:
   `query` (GDELT syntax), `terms` (any must appear in the title), optional
   `require` (groups; one term from every group, e.g. one per side of a
   two-party theatre) and `exclude`, plus a global sport/entertainment
-  exclusion list in the script.
+  exclusion list and livestream-spam patterns in the script. After the
+  heuristics, a **model relevance screen** cross-checks the newest
+  candidates against the item's phase, status and topics (Claude, via the
+  `ANTHROPIC_API_KEY` repository secret; verdicts are cached per title in
+  `watchlist-live.json` so each headline is judged once). Without the
+  secret the sync logs "Relevance screen: skipped" and uses heuristics only.
 - **Daily automated review** — a scheduled Claude Code session (05:30 SGT, published by 07:00)
   follows `docs/WATCHLIST-REVIEW.md`: researches all twelve items from open
   sources, rewrites `watchlist.json` (states, dimensions, a daily snapshot,

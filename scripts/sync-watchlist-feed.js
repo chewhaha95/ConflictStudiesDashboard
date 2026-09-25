@@ -138,6 +138,9 @@ const EXCLUDE = ["cricket", "asian games", "olympic", "world cup", "football", "
   "friendlies", "friendly match", "medal", "medals", "afc", "fifa", "esports", "marathon",
   "pageant", "miss universe", "got talent", "box office", "k-pop", "concert", "celebrity", "recipe", "horoscope", "premier league",
   "documentary", "film festival", "mooncake", "cultural harmony", "habitat for humanity", "tourism", "travel guide"];
+// Title patterns that are never reporting: livestream spam (often in maths-bold
+// or fullwidth Unicode), "way to watch" pages, score pages.
+const EXCLUDE_RE = [/[\u{1D400}-\u{1D7FF}\uFF00-\uFFEF]/u, /\b(live ?streams?|live ?streaming|watch ?live|tv channel|free on tv|way to watch|live score|match live)\b/i];
 const wordRe = t => new RegExp(`(^|[^a-z0-9])${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^a-z0-9]|$)`);
 const titleMatch = (a, feed) => {
   const lower = String(a.title || "").toLowerCase();
@@ -145,12 +148,64 @@ const titleMatch = (a, feed) => {
   if (terms.length && !terms.some(t => lower.includes(t))) return false;
   if ((feed.require || []).some(group => !group.some(t => lower.includes(t)))) return false;
   if ([...EXCLUDE, ...(feed.exclude || [])].some(t => wordRe(t).test(lower))) return false;
+  if (EXCLUDE_RE.some(re => re.test(String(a.title || "")))) return false;
   return true;
 };
 
+// ---- Relevance screen (Claude) ------------------------------------------------
+// Title keywords cannot tell "Japan beats China for basketball gold" from
+// "China urges Japan to earn trust", so after the heuristics the newest
+// candidates are cross-checked by a model against the item's phase, status and
+// topics. Verdicts are cached per title in watchlist-live.json (`screen`), so a
+// title is judged once, and the screen is skipped (heuristics only, logged)
+// when ANTHROPIC_API_KEY is not set or the API fails.
+const SCREEN_MODEL = process.env.FEED_SCREEN_MODEL || "claude-opus-5";
+const SCREEN_MAX = 30;            // newest candidates sent per item
+const SCREEN_KEEP = 300;          // cached verdicts kept per item
+const titleKey = t => String(t || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 60);
+const SCREEN_SCHEMA = { type: "object", properties: { keep: { type: "array", items: { type: "integer" } } }, required: ["keep"], additionalProperties: false };
+function screenClient() {
+  if (!process.env.ANTHROPIC_API_KEY) return null;
+  const Anthropic = require("@anthropic-ai/sdk").default || require("@anthropic-ai/sdk");
+  return new Anthropic({ maxRetries: 2, timeout: 60000 });
+}
+function screenPrompt(it, cands) {
+  const topics = (it.topics || []).map((t, i) => `${i + 1}. ${t.topic} — watch: ${t.watch && t.watch.text}`).join("\n");
+  const list = cands.map((a, i) => `${i}. [${a.domain || "?"}] ${a.title}`).join("\n");
+  return `Conflict watchlist item: ${it.name}\nCurrent phase: ${(it.dims && it.dims.phase && it.dims.phase.now) || ""}\nStatus: ${(it.status && it.status.summary) || ""}\nTopics of interest:\n${topics}\n\nCandidate headlines (index. [source] title):\n${list}\n\nReturn the indices to KEEP.`;
+}
+const SCREEN_SYSTEM = "You screen news headlines for a military conflict-studies watchlist. Keep a headline only if it reports on the security, military, political-military, diplomatic or humanitarian dimension of the named conflict or theatre. Drop sport, entertainment, livestream and score pages, business or technology stories with no security angle, cultural or lifestyle pieces, homonyms (places or people with the same name elsewhere), and stories about a different conflict that merely mention a party. When unsure, drop it.";
+async function screenArticles(it, cands, prevScreen, client) {
+  const screen = Object.assign({}, prevScreen || {});
+  const unjudged = cands.filter(a => !(titleKey(a.title) in screen));
+  let screened = true;
+  if (unjudged.length && client) {
+    try {
+      const res = await client.beta.messages.create({
+        model: SCREEN_MODEL, max_tokens: 1024,
+        betas: ["server-side-fallback-2026-07-01"], fallbacks: "default",
+        output_config: { effort: "low", format: { type: "json_schema", schema: SCREEN_SCHEMA } },
+        system: SCREEN_SYSTEM,
+        messages: [{ role: "user", content: screenPrompt(it, unjudged) }],
+      });
+      if (res.stop_reason === "refusal") throw new Error("screen refused");
+      const text = (res.content || []).filter(b => b.type === "text").map(b => b.text).join("");
+      const keep = new Set((JSON.parse(text).keep || []).map(Number));
+      const at = new Date().toISOString();
+      unjudged.forEach((a, i) => { screen[titleKey(a.title)] = { ok: keep.has(i), at }; });
+    } catch (e) { screened = false; console.error(`  screen ${it.id}: ${e.message} — keeping heuristic list`); }
+  } else if (unjudged.length) screened = false;
+  const kept = cands.filter(a => { const v = screen[titleKey(a.title)]; return !v || v.ok; });
+  // keep the cache small: verdicts for current candidates first, then the newest others
+  const keys = new Set(cands.map(a => titleKey(a.title)));
+  const rest = Object.entries(screen).filter(([k]) => !keys.has(k)).sort((x, y) => String(y[1].at).localeCompare(String(x[1].at))).slice(0, SCREEN_KEEP - keys.size);
+  const pruned = {}; for (const k of keys) if (screen[k]) pruned[k] = screen[k]; for (const [k, v] of rest) pruned[k] = v;
+  return { kept, screen: pruned, screened, judged: unjudged.length };
+}
+
 // Merge article lists from several sources: dedupe by URL and by normalised
 // title, newest first by timestamp (date when no time is known), cap at MAX_ARTICLES.
-function mergeArticles(lists) {
+function mergeArticles(lists, cap = MAX_ARTICLES) {
   const seen = new Set(), out = [];
   for (const a of [].concat(...lists)) {
     const key = a.title.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 60);
@@ -159,7 +214,7 @@ function mergeArticles(lists) {
     out.push(a);
   }
   out.sort((x, y) => String(y.ts || y.date || "").localeCompare(String(x.ts || x.date || "")));
-  return out.slice(0, MAX_ARTICLES);
+  return out.slice(0, cap);
 }
 
 function windows(timeline, granularity, capped) {
@@ -193,7 +248,7 @@ async function weeklyWindows(q) {
   return { timeline: out, capped };
 }
 
-async function fetchItem(it) {
+async function fetchItem(it, prevItem, client) {
   const q = `${it.feed.query} sourcelang:english`;
   const feed = it.feed;
   let timeline = [], granularity = "day", capped = false, articles = [], src = [];
@@ -220,21 +275,25 @@ async function fetchItem(it) {
   }
   try { lists.push((await rssSearch(rssQuery(it.feed.query), 3)).filter(a => titleMatch(a, feed))); src.push("rss-articles"); }
   catch (e) { /* RSS unavailable this run */ }
-  articles = mergeArticles(lists);
-  if (articles.length < 6) {
-    try { lists.push((await rssSearch(rssQuery(it.feed.query), 7)).filter(a => titleMatch(a, feed))); articles = mergeArticles(lists); }
+  let cands = mergeArticles(lists, SCREEN_MAX);
+  if (cands.length < 6) {
+    try { lists.push((await rssSearch(rssQuery(it.feed.query), 7)).filter(a => titleMatch(a, feed))); cands = mergeArticles(lists, SCREEN_MAX); }
     catch (e) { /* keep what we have */ }
   }
+  // 3. Relevance screen (model cross-check), then the newest MAX_ARTICLES survivors
+  const sc = await screenArticles(it, cands, (prevItem || {}).screen, client);
+  articles = sc.kept.slice(0, MAX_ARTICLES);
+  if (sc.judged) src.push(sc.screened ? "screened" : "unscreened");
   if (timeline.length < 4) {
     const rss = await rssSearch(rssQuery(it.feed.query), 28);
     const w = rssWeekly(rss); timeline = w.timeline; capped = w.capped; granularity = "week"; src.push("rss-counts");
   }
   if (timeline.length < 2) throw new Error("no coverage data from GDELT or RSS");
-  return Object.assign({ query: q, granularity, timeline, articles, source: src.join("+"), fetchedAt: new Date().toISOString() },
+  return Object.assign({ query: q, granularity, timeline, articles, screen: sc.screen, screened: sc.screened, source: src.join("+"), fetchedAt: new Date().toISOString() },
     windows(timeline, granularity, capped));
 }
 
-module.exports = { titleMatch, mergeArticles, parseArticles, rssSearch, rssQuery, EXCLUDE };
+module.exports = { titleMatch, mergeArticles, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, titleKey, EXCLUDE, SCREEN_MODEL };
 if (require.main !== module) return;
 
 (async () => {
@@ -247,13 +306,15 @@ if (require.main !== module) return;
   // refresh the stalest items first so the feed converges across throttled runs
   const order = items.slice().sort((a, b) => String((prev[a.id] || {}).fetchedAt || "").localeCompare(String((prev[b.id] || {}).fetchedAt || "")));
   const out = Object.assign({}, prev);
+  const client = screenClient();
+  console.log(client ? `Relevance screen: ${SCREEN_MODEL}` : "Relevance screen: skipped (ANTHROPIC_API_KEY not set) — title heuristics only");
   let ok = 0;
   for (const it of order) {
     if (Date.now() - T0 > DEADLINE_MS) { console.error(`⏱ deadline reached — ${it.id} and later items keep previous data`); break; }
     try {
-      out[it.id] = await fetchItem(it);
+      out[it.id] = await fetchItem(it, prev[it.id], client);
       ok++;
-      console.log(`✓ ${it.id.padEnd(9)} [${out[it.id].granularity}, ${out[it.id].source}] 7d=${out[it.id].count7d}${out[it.id].capped ? "+" : ""} prev7d=${out[it.id].prev7d}${out[it.id].surge ? " SURGE" : ""} articles=${out[it.id].articles.length}`);
+      console.log(`✓ ${it.id.padEnd(9)} [${out[it.id].granularity}, ${out[it.id].source}] 7d=${out[it.id].count7d}${out[it.id].capped ? "+" : ""} prev7d=${out[it.id].prev7d}${out[it.id].surge ? " SURGE" : ""} articles=${out[it.id].articles.length}${out[it.id].screened === false ? " (unscreened)" : ""}`);
     } catch (e) {
       console.error(`✗ ${it.id}: ${e.message}${prev[it.id] ? " (keeping previous data)" : ""}`);
     }
