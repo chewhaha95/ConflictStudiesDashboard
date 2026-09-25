@@ -166,7 +166,10 @@ const SCREEN_MAX = 30;            // newest candidates sent per item
 const SCREEN_KEEP = 300;          // cached verdicts kept per item
 const titleKey = t => String(t || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 60);
 const SCREEN_SCHEMA = { type: "object", properties: { keep: { type: "array", items: { type: "integer" } } }, required: ["keep"], additionalProperties: false };
-const GITHUB_MODELS = "https://models.github.ai/inference/chat/completions";
+// GitHub Models endpoints, tried in order (the newer host first; the original
+// Azure-hosted endpoint as a fallback). A non-JSON body is reported with its
+// status, content-type and first bytes so a routing problem is diagnosable.
+const GITHUB_MODELS = ["https://models.github.ai/inference/chat/completions", "https://models.inference.ai.azure.com/chat/completions"];
 function screenJudge() {
   if ((process.env.FEED_SCREEN || "").toLowerCase() === "off") return null;
   if (process.env.ANTHROPIC_API_KEY) {
@@ -188,17 +191,26 @@ function screenJudge() {
   if (process.env.GITHUB_TOKEN) {
     const model = process.env.FEED_SCREEN_MODEL || "openai/gpt-4o-mini";
     const judge = async (system, user) => {
-      const res = await fetch(GITHUB_MODELS, {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${process.env.GITHUB_TOKEN}`, "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "Content-Type": "application/json" },
-        body: JSON.stringify({ model, temperature: 0, max_tokens: 300, response_format: { type: "json_object" },
-          messages: [{ role: "system", content: system + ' Respond with JSON only: {"keep": [indices]}.' }, { role: "user", content: user }] }),
-        signal: AbortSignal.timeout(60000),
-      });
-      const text = await res.text();
-      if (!res.ok) throw new Error(`GitHub Models HTTP ${res.status}: ${text.slice(0, 160)}`);
-      const j = JSON.parse(text);
-      return j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || "";
+      const body = JSON.stringify({ model, temperature: 0, max_tokens: 300, response_format: { type: "json_object" },
+        messages: [{ role: "system", content: system + ' Respond with JSON only: {"keep": [indices]}.' }, { role: "user", content: user }] });
+      const errors = [];
+      for (const url of GITHUB_MODELS) {
+        try {
+          const res = await fetch(url, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${process.env.GITHUB_TOKEN}`, "Accept": "application/json", "Content-Type": "application/json", "User-Agent": "conflict-studies-dashboard/1.0 (feed relevance screen)" },
+            body, signal: AbortSignal.timeout(60000),
+          });
+          const text = await res.text();
+          const ctype = res.headers.get("content-type") || "";
+          if (!res.ok) throw new Error(`HTTP ${res.status} ${ctype}: ${text.slice(0, 200)}`);
+          let j; try { j = JSON.parse(text); } catch (e) { throw new Error(`non-JSON ${res.status} ${ctype}: ${JSON.stringify(text.slice(0, 120))}`); }
+          const content = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
+          if (!content) throw new Error(`no choices in response: ${text.slice(0, 200)}`);
+          return content;
+        } catch (e) { errors.push(`${new URL(url).host}: ${e.message}`); }
+      }
+      throw new Error(errors.join(" | "));
     };
     return Object.assign(judge, { label: `github-models:${model}` });
   }
