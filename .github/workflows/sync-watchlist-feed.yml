@@ -16,6 +16,11 @@ on:
   schedule:
     - cron: "7 * * * *"      # hourly, off the hour to avoid GDELT peaks
   workflow_dispatch:
+    inputs:
+      only:
+        description: "Comma-separated item ids to refresh (e.g. TW,SCS); empty = all. For quick tests."
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -54,6 +59,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FEED_ONLY: ${{ github.event.inputs.only }}
         run: node scripts/sync-watchlist-feed.js
 
       - name: Commit feed (if changed)
