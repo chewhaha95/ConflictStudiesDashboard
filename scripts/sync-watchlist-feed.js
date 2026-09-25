@@ -324,21 +324,31 @@ function topicWords(it) {
 // whole words so "warehouse", "warm" or "player" do not count.
 const termRe = t => new RegExp(`(^|[^a-z0-9])${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}${t.length <= 4 ? "([^a-z0-9]|$)" : ""}`);
 const MIL_RES = MIL_TERMS.map(termRe);
-function relevanceScore(a, it, now = Date.now()) {
+function relevanceHits(a, it) {
   const lower = String(a.title || "").toLowerCase();
   const mil = MIL_RES.filter(re => re.test(lower)).length;
   const tw = (a._topicWords || topicWords(it)).filter(w => termRe(w).test(lower)).length;
+  return { mil, tw };
+}
+function relevanceScore(a, it, now = Date.now()) {
+  const { mil, tw } = relevanceHits(a, it);
   const rank = a.rank == null ? 0 : Math.max(0, 2 - a.rank / 25);            // top of a relevance list: +2 → 0 after 50
   const age = a.ts ? Math.max(0, (now - Date.parse(a.ts)) / 3600000) : 72;   // hours old (unknown = 3 days)
   const recency = Math.max(0, 1.5 - age / 48);                               // +1.5 fresh → 0 after 2 days
   return Math.min(mil, 4) * 1.5 + Math.min(tw, 3) * 1.5 + rank + recency;
 }
-// Rank candidates by army-learning relevance, most relevant first; cap.
+// Rank candidates by army-learning relevance, most relevant first; cap. A title
+// with no military-vocabulary or topic hit (trade, culture, business) is used
+// only as filler when fewer than MIN_HITS real hits exist, so a thin theatre
+// still shows something but a busy one never leads with a supply-chain story.
+const MIN_HITS = 4;
 function rankArticles(arts, it, cap = MAX_ARTICLES, now = Date.now()) {
   const tw = topicWords(it);
-  return arts.map(a => ({ a, s: relevanceScore(Object.assign({ _topicWords: tw }, a), it, now) }))
-    .sort((x, y) => y.s - x.s || String(y.a.ts || y.a.date || "").localeCompare(String(x.a.ts || x.a.date || "")))
-    .slice(0, cap).map(x => Object.assign({}, x.a, { rel: Math.round(x.s * 10) / 10 }));
+  const scored = arts.map(a => { const b = Object.assign({ _topicWords: tw }, a); const h = relevanceHits(b, it); return { a, s: relevanceScore(b, it, now), hit: h.mil + h.tw > 0 }; })
+    .sort((x, y) => y.s - x.s || String(y.a.ts || y.a.date || "").localeCompare(String(x.a.ts || x.a.date || "")));
+  const hits = scored.filter(x => x.hit), rest = scored.filter(x => !x.hit);
+  const out = hits.length >= MIN_HITS ? hits : hits.concat(rest.slice(0, MIN_HITS - hits.length));
+  return out.slice(0, cap).map(x => Object.assign({}, x.a, { rel: Math.round(x.s * 10) / 10 }));
 }
 
 function windows(timeline, granularity, capped) {

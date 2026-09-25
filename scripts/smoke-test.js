@@ -727,6 +727,20 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       const r = feed.rankArticles(arts, ruua, 3, now);
       check("feed rank: the EW / counter-UAS front-line report and the drone attack outrank the newer talks and warehouse headlines; capped at 3 with a `rel` score",
         r.length === 3 && r[0].url === "a2" && r[1].url === "a3" && !r.some(a => a.url === "a1") && r.every(a => typeof a.rel === "number") && r[0].rel > r[2].rel);
+      const cnjp2 = wl.items.find(i => i.id === "CN_JP");
+      const filler = [
+        { title: "Japan herbal remedy makers seek to reduce China from supply chain", url: "f1", ts: "2026-09-25T21:48:00Z", rank: 0 },
+        { title: "China Coast Guard ships enter Japanese waters near Senkaku islands", url: "f2", ts: "2026-09-25T09:00:00Z", rank: 5 },
+        { title: "Japan scrambles jets as Chinese drones cross near Yonaguni", url: "f3", ts: "2026-09-25T08:00:00Z", rank: 6 },
+        { title: "Chinese and Japanese warships shadow each other in East China Sea", url: "f4", ts: "2026-09-24T08:00:00Z", rank: 7 },
+        { title: "Japan and China trade ministers meet on rare earths", url: "f5", ts: "2026-09-25T20:00:00Z", rank: 1 },
+        { title: "China warns Japan over military exercises with the US", url: "f6", ts: "2026-09-23T08:00:00Z", rank: 9 },
+      ];
+      const rf = feed.rankArticles(filler, cnjp2, 12, now);
+      check("feed rank: titles with no military or topic hit (supply chain, trade talks) are dropped when four or more real hits exist",
+        rf.length === 4 && !rf.some(a => a.url === "f1" || a.url === "f5") && rf[0].url !== "f1");
+      const rf2 = feed.rankArticles(filler.slice(0, 3).concat(filler[4]), cnjp2, 12, now);
+      check("feed rank: a thin theatre still fills to four with the best of the rest", rf2.length === 4 && rf2[0].url !== "f1" && rf2.some(a => a.url === "f1"));
       check("feed rank: short terms are whole words (\"warm welcome\" is not \"war\"), longer terms match at a word start (\"attacks\", \"escalation\")",
         feed.relevanceScore({ title: "Warm welcome for Xi", ts: "2026-09-25T20:00:00Z" }, ruua, now) < 2 &&
         feed.relevanceScore({ title: "Attacks raise escalation fears", ts: "2026-09-25T20:00:00Z" }, ruua, now) >= 4 &&
