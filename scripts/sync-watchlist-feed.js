@@ -291,6 +291,11 @@ function mergeArticles(lists, cap = MAX_ARTICLES) {
   return out.slice(0, cap);
 }
 
+// Drop articles older than the window (Google News sometimes ignores `when:`
+// and GDELT's seendate can lag), so a 3-day pull never carries last month's
+// pieces. Articles without a timestamp are kept (dated by the sync).
+const withinDays = (arts, days, now = Date.now()) => arts.filter(a => !a.ts || Date.parse(a.ts) >= now - days * 86400000);
+
 // ---- Army-learning relevance ranking ------------------------------------------
 // Title vocabulary that marks reporting an army can learn from: operations,
 // weapons and effects, force posture, command, sustainment, adaptation. A
@@ -411,10 +416,10 @@ async function fetchItem(it, prevItem, judge, spamDomains) {
   }
   try { lists.push((await rssSearch(rssQuery(it.feed.query), 3)).filter(a => titleMatch(a, feed))); src.push("rss-articles"); }
   catch (e) { /* RSS unavailable this run */ }
-  const pool = () => rankArticles(mergeArticles(lists, 500).filter(notSpam), it, SCREEN_MAX);
-  let cands = pool();
+  const pool = days => rankArticles(withinDays(mergeArticles(lists, 500).filter(notSpam), days), it, SCREEN_MAX);
+  let cands = pool(3);
   if (cands.length < 6) {
-    try { lists.push((await rssSearch(rssQuery(it.feed.query), 7)).filter(a => titleMatch(a, feed))); cands = pool(); }
+    try { lists.push((await rssSearch(rssQuery(it.feed.query), 7)).filter(a => titleMatch(a, feed))); cands = pool(7); }
     catch (e) { /* keep what we have */ }
   }
   // 3. Relevance screen (model cross-check), then the MAX_ARTICLES most relevant
@@ -442,15 +447,16 @@ async function fetchItem(it, prevItem, judge, spamDomains) {
       await sleep(PACE_MS);
     }
     try { ioLists.push((await rssSearch(rssQuery(io.feed.query), 3)).filter(a => titleMatch(a, io.feed))); } catch (e) { /* RSS unavailable */ }
-    let ioCands = mergeArticles(ioLists, SCREEN_MAX).filter(notSpam);
-    if (ioCands.length < 6) { try { ioLists.push((await rssSearch(rssQuery(io.feed.query), 7)).filter(a => titleMatch(a, io.feed))); ioCands = mergeArticles(ioLists, SCREEN_MAX).filter(notSpam); } catch (e) { /* keep */ } }
+    const ioPool = days => mergeArticles(withinDays(mergeArticles(ioLists, 500), days), SCREEN_MAX).filter(notSpam);
+    let ioCands = ioPool(3);
+    if (ioCands.length < 6) { try { ioLists.push((await rssSearch(rssQuery(io.feed.query), 7)).filter(a => titleMatch(a, io.feed))); ioCands = ioPool(7); } catch (e) { /* keep */ } }
     const ioSc = await screenArticles(it, ioCands, ((prevItem || {}).infoOps || {}).screen, judge, { system: INFOOPS_SYSTEM, prompt: infoOpsPrompt });
     out.infoOps = { since: io.since || null, candidates: ioCands.length, articles: ioSc.kept.slice(0, MAX_ARTICLES), screen: ioSc.screen, screened: ioSc.screened, fetchedAt: new Date().toISOString() };
   }
   return out;
 }
 
-module.exports = { titleMatch, mergeArticles, rankArticles, relevanceScore, topicWords, MIL_TERMS, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, infoOpsPrompt, INFOOPS_SYSTEM, screenJudge, titleKey, EXCLUDE };
+module.exports = { titleMatch, mergeArticles, withinDays, rankArticles, relevanceScore, topicWords, MIL_TERMS, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, infoOpsPrompt, INFOOPS_SYSTEM, screenJudge, titleKey, EXCLUDE };
 if (require.main !== module) return;
 
 (async () => {
