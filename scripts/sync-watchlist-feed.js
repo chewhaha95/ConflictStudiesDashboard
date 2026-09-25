@@ -243,13 +243,23 @@ function screenPrompt(it, cands) {
   return `Conflict watchlist item: ${it.name}\nCurrent phase: ${(it.dims && it.dims.phase && it.dims.phase.now) || ""}\nStatus: ${(it.status && it.status.summary) || ""}\nTopics of interest:\n${topics}\n\nCandidate headlines (index. [source] title):\n${list}\n\nReturn the indices to KEEP.`;
 }
 const SCREEN_SYSTEM = "You screen news headlines for a military conflict-studies watchlist. Keep a headline only if it reports on the security, military, political-military, diplomatic or humanitarian dimension of the named conflict or theatre. Drop sport, entertainment, livestream and score pages, business or technology stories with no security angle, cultural or lifestyle pieces, homonyms (places or people with the same name elsewhere), and stories about a different conflict that merely mention a party. When unsure, drop it.";
-async function screenArticles(it, cands, prevScreen, judge) {
+// Info-ops watch: a stricter screen for the item's information-operations /
+// strategic-communications sub-feed (register `infoOps`).
+const INFOOPS_SYSTEM = "You screen news headlines for a military conflict-studies watchlist's information-operations watch. Keep a headline only if it reports on information operations, disinformation, cognitive or psychological warfare, propaganda or state-media narratives, official strategic communications (government, foreign-ministry, military or party statements aimed at an audience), influence campaigns, censorship, lawfare narratives or sanctions used as messaging, in the named theatre. Drop ordinary military, economic, sport or entertainment news, and anything not about messaging or influence. When unsure, drop it.";
+function infoOpsPrompt(it, cands) {
+  const io = it.infoOps || {};
+  const list = cands.map((a, i) => `${i}. [${a.domain || "?"}] ${a.title}`).join("\n");
+  return `Conflict watchlist item: ${it.name}\nInformation-operations watch since ${io.since || "?"} (${io.trigger || ""})\nQuestion: ${io.question || ""}\n\nCandidate headlines (index. [source] title):\n${list}\n\nReturn the indices to KEEP.`;
+}
+async function screenArticles(it, cands, prevScreen, judge, opts) {
+  const system = (opts && opts.system) || SCREEN_SYSTEM;
+  const prompt = (opts && opts.prompt) || screenPrompt;
   const screen = Object.assign({}, prevScreen || {});
   const unjudged = cands.filter(a => !(titleKey(a.title) in screen));
   let screened = true;
   if (unjudged.length && judge) {
     try {
-      const text = await judge(SCREEN_SYSTEM, screenPrompt(it, unjudged));
+      const text = await judge(system, prompt(it, unjudged));
       const raw = String(text).replace(/^```(?:json)?\s*|\s*```$/g, "").trim();
       const m = raw.match(/\{[\s\S]*\}/);                    // tolerate prose around the JSON
       const parsed = JSON.parse(m ? m[0] : raw);
@@ -407,11 +417,30 @@ async function fetchItem(it, prevItem, judge, spamDomains) {
     const w = rssWeekly(rss); timeline = w.timeline; capped = w.capped; granularity = "week"; src.push("rss-counts");
   }
   if (timeline.length < 2) throw new Error("no coverage data from GDELT or RSS");
-  return Object.assign({ query: q, granularity, timeline, articles, screen: sc.screen, screened: sc.screened, source: src.join("+"), fetchedAt: new Date().toISOString() },
+  const out = Object.assign({ query: q, granularity, timeline, articles, screen: sc.screen, screened: sc.screened, source: src.join("+"), fetchedAt: new Date().toISOString() },
     windows(timeline, granularity, capped));
+
+  // 4. Information-operations / strategic-communications watch (register
+  //    `infoOps`, e.g. Taiwan after the Trump–Xi summit): a second, narrower
+  //    query, newest first, screened with the info-ops prompt.
+  const io = it.infoOps;
+  if (io && io.enabled && io.feed && io.feed.query) {
+    const ioLists = [];
+    if (!throttled) {
+      try { ioLists.push(parseArticles(await gdelt({ query: `${io.feed.query} sourcelang:english`, mode: "ArtList", format: "json", timespan: "3d", maxrecords: 250, sort: "DateDesc" }), io.feed)); }
+      catch (e) { if (e instanceof Throttled) throttled = true; }
+      await sleep(PACE_MS);
+    }
+    try { ioLists.push((await rssSearch(rssQuery(io.feed.query), 3)).filter(a => titleMatch(a, io.feed))); } catch (e) { /* RSS unavailable */ }
+    let ioCands = mergeArticles(ioLists, SCREEN_MAX).filter(notSpam);
+    if (ioCands.length < 6) { try { ioLists.push((await rssSearch(rssQuery(io.feed.query), 7)).filter(a => titleMatch(a, io.feed))); ioCands = mergeArticles(ioLists, SCREEN_MAX).filter(notSpam); } catch (e) { /* keep */ } }
+    const ioSc = await screenArticles(it, ioCands, ((prevItem || {}).infoOps || {}).screen, judge, { system: INFOOPS_SYSTEM, prompt: infoOpsPrompt });
+    out.infoOps = { since: io.since || null, candidates: ioCands.length, articles: ioSc.kept.slice(0, MAX_ARTICLES), screen: ioSc.screen, screened: ioSc.screened, fetchedAt: new Date().toISOString() };
+  }
+  return out;
 }
 
-module.exports = { titleMatch, mergeArticles, rankArticles, relevanceScore, topicWords, MIL_TERMS, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, screenJudge, titleKey, EXCLUDE };
+module.exports = { titleMatch, mergeArticles, rankArticles, relevanceScore, topicWords, MIL_TERMS, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, infoOpsPrompt, INFOOPS_SYSTEM, screenJudge, titleKey, EXCLUDE };
 if (require.main !== module) return;
 
 (async () => {
@@ -433,7 +462,7 @@ if (require.main !== module) return;
     try {
       out[it.id] = await fetchItem(it, prev[it.id], judge, spamDomains);
       ok++;
-      console.log(`✓ ${it.id.padEnd(9)} [${out[it.id].granularity}, ${out[it.id].source}] 7d=${out[it.id].count7d}${out[it.id].capped ? "+" : ""} prev7d=${out[it.id].prev7d}${out[it.id].surge ? " SURGE" : ""} articles=${out[it.id].articles.length}${out[it.id].screened === false ? " (unscreened)" : ""}`);
+      console.log(`✓ ${it.id.padEnd(9)} [${out[it.id].granularity}, ${out[it.id].source}] 7d=${out[it.id].count7d}${out[it.id].capped ? "+" : ""} prev7d=${out[it.id].prev7d}${out[it.id].surge ? " SURGE" : ""} articles=${out[it.id].articles.length}${out[it.id].screened === false ? " (unscreened)" : ""}${out[it.id].infoOps ? ` infoOps=${out[it.id].infoOps.articles.length}/${out[it.id].infoOps.candidates}` : ""}`);
     } catch (e) {
       console.error(`✗ ${it.id}: ${e.message}${prev[it.id] ? " (keeping previous data)" : ""}`);
     }

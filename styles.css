@@ -961,6 +961,20 @@ ul.wf-list li { margin-bottom: 8px; font-size: 13px; line-height: 1.5; }
 .wl-as-w { font-weight: 400; }
 .wl-as-p { font-size: 12.5px; line-height: 1.55; max-width: 100%; overflow-wrap: anywhere; -webkit-text-size-adjust: 100%; }
 .wl-as-p + .wl-as-p { margin-top: 8px; }
+/* Information ops & strategic communications watch */
+.wl-io-badge { display: inline-block; margin-left: 6px; font-size: 10px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; color: var(--tone-research-fg); background: var(--tone-research-bg); border: 1px solid color-mix(in srgb, var(--tone-research-fg) 35%, transparent); padding: 1px 6px; border-radius: 999px; white-space: nowrap; cursor: help; vertical-align: middle; }
+.wl-io { grid-column: 1 / -1; border-color: color-mix(in srgb, var(--tone-research-fg) 45%, var(--border)); }
+.wl-io-q { margin: 0 0 8px; font-size: 12.5px; line-height: 1.5; font-weight: 600; }
+.wl-io-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; }
+.wl-io-list li { line-height: 1.45; }
+.wl-io-actor { font-weight: 700; }
+.wl-io-type { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; padding: 1px 6px; border-radius: 4px; margin-right: 4px; color: var(--tone-neutral-fg); background: var(--tone-neutral-bg); cursor: help; }
+.wl-io-type-official-statement { color: var(--tone-research-fg); background: var(--tone-research-bg); }
+.wl-io-type-state-media-narrative { color: var(--tone-warn-fg); background: var(--tone-warn-bg); }
+.wl-io-type-covert-information-operation { color: var(--tone-bad-fg); background: var(--tone-bad-bg); }
+.wl-io-type-coercive-signalling, .wl-io-type-sanctions-lawfare { color: var(--tone-bad-fg); background: var(--tone-bad-bg); }
+.wl-io-type-counter-messaging, .wl-io-type-debunked-claim { color: var(--tone-good-fg, var(--tone-neutral-fg)); background: var(--tone-good-bg, var(--tone-neutral-bg)); }
+@media (max-width: 900px) { .wl-io-grid { grid-template-columns: 1fr; } }
 .wl-status-news { font-size: 12.5px; line-height: 1.45; margin-bottom: 5px; padding: 5px 8px; border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--accent) 7%, transparent); border-radius: 0 6px 6px 0; }
 .wl-news-tag { font-size: 10.5px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
 .wl-status-news a { color: var(--text); text-decoration: none; }

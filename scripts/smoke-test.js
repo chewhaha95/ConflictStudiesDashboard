@@ -84,6 +84,12 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const words = a.text.join(" ").split(/\s+/).filter(Boolean).length;
     return words >= 120 && words <= 260 && Array.isArray(a.sources) && a.sources.length >= 3 && a.sources.length <= 5 && a.sources.every(x => x.label && /^https?:/.test(x.url)) && !/CSI Flash|weekly awareness|should publish/i.test(a.text.join(" "));
   }));
+  check("info-ops watch: Taiwan Strait carries an enabled infoOps block (since, trigger, question, feed, dated findings, assessment)", (() => {
+    const tw = wl.items.find(i => i.id === "TW"); const io = tw && tw.infoOps;
+    return !!io && io.enabled === true && /^\d{4}-\d{2}-\d{2}$/.test(io.since) && io.trigger && io.question && io.feed && io.feed.query && Array.isArray(io.feed.require) &&
+      Array.isArray(io.findings) && io.findings.length >= 5 && io.findings.every(f => /^\d{4}-\d{2}-\d{2}$/.test(f.date) && f.text && f.type && /^https?:/.test(f.url || "") && f.type in wl.definitions.infoOps.types) &&
+      io.assessment && io.assessment.text.length > 200 && /^\d{4}-\d{2}-\d{2}$/.test(io.assessment.date) && io.assessment.sources.length >= 3 && !/CSI Flash|should publish/i.test(io.assessment.text);
+  })());
   check("every item carries a current-status summary with 2+ article links", wl.items.every(i => i.status && i.status.summary.length > 80 && i.status.sources.length >= 2 && i.status.sources.every(s => /^https?:/.test(s.url))));
   check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
   check("register is reviewed daily (cadenceDays = 1)", wl.meta.cadenceDays === 1);
@@ -312,6 +318,18 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       card.querySelectorAll(".wl-src-list a[href^='http']").length === a.sources.length && !/CSI Flash|should publish|Priority|Archive/.test(card.textContent);
   })());
   check("page names the GitHub Pages data origin for mirrors (Cloudflare Pages / custom domain)", /<meta name="data-origin" content="https:\/\/chewhaha95\.github\.io\/ConflictStudiesDashboard\/"/.test(html));
+  {
+    const tw = wl.items.find(i => i.id === "TW");
+    const row = reg.querySelector(`tr[data-wl-row="TW"]`);
+    check("info-ops watch: the Taiwan row carries the badge and no other row does", !!row.querySelector(".wl-io-badge") && reg.querySelectorAll(".wl-io-badge").length === wl.items.filter(i => i.infoOps && i.infoOps.enabled).length);
+    if (!doc.querySelector(`tr[data-wl-detail="TW"]`)) { reg.querySelector(`[data-wl-toggle="TW"]`).click(); await sleep(40); }
+    const detTW = doc.querySelector(`tr[data-wl-detail="TW"]`);
+    const card = detTW && detTW.querySelector(".wl-io");
+    check("info-ops watch: the expanded Taiwan row shows the watch card with the question, typed findings, assessment and read-more links", !!card &&
+      card.textContent.includes(tw.infoOps.question) && card.querySelectorAll(".wl-io-list li").length === tw.infoOps.findings.length && card.querySelectorAll(".wl-io-list .wl-io-type").length === tw.infoOps.findings.length &&
+      card.querySelector(".wl-as-p").textContent === tw.infoOps.assessment.text && card.querySelectorAll(".wl-src-list a[href^='http']").length === tw.infoOps.assessment.sources.length && /Latest messaging/.test(card.textContent));
+    reg.querySelector(`[data-wl-toggle="TW"]`).click(); await sleep(40);
+  }
   check("detail: without a live feed the reporting block explains the daily sync", /Latest open-source reporting/.test(det.textContent) && /No live feed loaded/.test(det.textContent));
   check("register: Coverage column present, empty without a feed", [...reg.querySelectorAll("thead th")].some(th => /Coverage/.test(th.textContent)) && reg.querySelectorAll("td.wl-feed-cell .wl-spark").length === 0);
   check("header: no live-feed status badge without a feed", !wv.querySelector(".wl-feedstat"));
@@ -742,6 +760,11 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const prosey = Object.assign(async () => "Sure, here is the result:\n{\"keep\": [2]}\nHope this helps.", { label: "prosey" });
     const r5 = await feed.screenArticles(cnjp, cands, {}, prosey);
     check("feed screen: JSON wrapped in prose is still parsed", r5.screened && r5.kept.length === 1 && r5.kept[0].url === "u3");
+    const tw = wl.items.find(i => i.id === "TW"); const seen = [];
+    const ioJudge = Object.assign(async (system, user) => { seen.push({ system, user }); return JSON.stringify({ keep: [0] }); }, { label: "io" });
+    const r6 = await feed.screenArticles(tw, [{ title: "Beijing state media pushes 'abandonment' narrative on Taiwan after summit", url: "i1", domain: "x" }, { title: "Taiwan stocks rise", url: "i2", domain: "y" }], {}, ioJudge, { system: feed.INFOOPS_SYSTEM, prompt: feed.infoOpsPrompt });
+    check("info-ops screen: uses the info-ops system prompt and the item's question", r6.kept.length === 1 && /information-operations watch/.test(seen[0].system) && seen[0].user.includes(tw.infoOps.question) && /Trump/.test(seen[0].user));
+    check("info-ops feed filter: keeps messaging headlines and drops plain economic news", feed.titleMatch({ title: "China's Taiwan Affairs Office warns Taipei after Trump–Xi summit" }, tw.infoOps.feed) && !feed.titleMatch({ title: "Taiwan stocks rise on chip export hopes" }, tw.infoOps.feed));
     if (saved.A != null) process.env.ANTHROPIC_API_KEY = saved.A; if (saved.G != null) process.env.GITHUB_TOKEN = saved.G; else delete process.env.GITHUB_TOKEN; if (saved.F != null) process.env.FEED_SCREEN = saved.F; else delete process.env.FEED_SCREEN;
     check("register: definitions.feed.spamDomains lists article sources dropped outright", Array.isArray(wl.definitions.feed.spamDomains) && wl.definitions.feed.spamDomains.includes("czechinvest.gov.cz"));
   }

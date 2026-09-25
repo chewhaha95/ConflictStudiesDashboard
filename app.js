@@ -2135,7 +2135,7 @@
       const rows = top.map((it, i) => `<li class="wl-rank-item">
           <span class="wl-rank-n">${i + 1}</span>
           <div class="wl-rank-body">
-            <div class="wl-rank-head">${this.nameBtn(it, "wl-name-lg")} ${this.tierTag(it.tier)} ${this.stateChip(it.state, this.moveGlyph(it))} ${this.scoreChip(it)}</div>
+            <div class="wl-rank-head">${this.nameBtn(it, "wl-name-lg")} ${this.tierTag(it.tier)} ${this.stateChip(it.state, this.moveGlyph(it))} ${this.infoOpsBadge(it)} ${this.scoreChip(it)}</div>
             <div class="wl-rank-why">${esc(it.whyNow || "")}</div>
           </div></li>`).join("");
       return `<div class="section"><div class="section-head"><h2>What deserves attention now?</h2><span class="hint">Ranked by the explainable attention score — hover a score for its breakdown</span></div>
@@ -2198,6 +2198,47 @@
           ${(it.sources || []).length ? `<div class="wl-d-h sub">Sources (${it.sources.length})</div><ul class="wl-src-list">${it.sources.map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label || s.url)} ↗</a></li>`).join("")}</ul>` : ""}
           <button class="btn wl-show-map" data-wl-map="${esc(it.id)}">📍 Show on map</button></div>
         ${this.assessmentBlock(it)}
+        ${this.infoOpsBlock(it)}
+      </div>`;
+    },
+
+    // ---- Information operations / strategic communications watch --------
+    // Register `infoOps` {enabled, since, trigger, question, feed, findings[],
+    // assessment}: switched on for an item when a trigger event makes messaging
+    // and influence activity worth tracking on its own. The hourly feed adds a
+    // narrower sub-feed (live `infoOps.articles`); the daily review keeps the
+    // dated, typed findings and the assessment current.
+    infoOpsBadge(it) {
+      const io = it.infoOps;
+      if (!io || !io.enabled) return "";
+      return ` <span class="wl-io-badge" title="${esc(`Information ops & strategic communications watch since ${this.fmtDate(io.since)} (${io.trigger || ""}). ${io.question || ""}`)}">Info-ops watch</span>`;
+    },
+    infoOpsBlock(it) {
+      const io = it.infoOps;
+      if (!io || !io.enabled) return "";
+      const types = (this.defs().infoOps || {}).types || {};
+      const typeChip = t => t ? `<span class="wl-io-type wl-io-type-${esc(String(t).replace(/[^a-z]+/gi, "-").toLowerCase())}" title="${esc(types[t] || "")}">${esc(t)}</span>` : "";
+      const finds = (io.findings || []).slice().sort((a, b) => String(b.date || "").localeCompare(String(a.date || ""))).map(f =>
+        `<li><span class="wl-hist-d">${esc(this.fmtDate(f.date))}</span> ${f.actor ? `<b class="wl-io-actor">${esc(f.actor)}</b> ` : ""}${typeChip(f.type)} <span class="wl-io-text">${esc(f.text)}</span>${f.unverified ? ` <span class="wl-tl-unv" title="Single source; not yet corroborated">unverified</span>` : ""}${f.url ? ` <a class="wl-tl-src" href="${esc(f.url)}" target="_blank" rel="noopener" title="Source">↗</a>` : ""}</li>`).join("");
+      const a = io.assessment || {};
+      const live = (this.feed(it) || {}).infoOps;
+      const arts = live ? this.feedArticles(live).slice(0, 6).map(x => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a><span class="wl-art-meta">${esc(x.domain)}${x.date ? " · " + esc(this.fmtDate(x.date)) : ""}</span></li>`).join("") : "";
+      return `<div class="wl-d-block wl-io" title="${esc((this.defs().infoOps || {}).desc || "")}">
+        <div class="wl-d-h">Information ops &amp; strategic communications watch <span class="wl-as-date">since ${esc(this.fmtDate(io.since))}${io.trigger ? ` · ${esc(io.trigger)}` : ""}</span></div>
+        <p class="wl-io-q">${esc(io.question || "")}</p>
+        <div class="wl-io-grid">
+          <div>
+            <div class="wl-d-h sub">Findings${finds ? ` (${(io.findings || []).length})` : ""}</div>
+            ${finds ? `<ul class="wl-hist-list wl-io-list">${finds}</ul>` : "<p class='muted-note'>No findings yet — the daily review adds dated, sourced findings.</p>"}
+          </div>
+          <div>
+            <div class="wl-d-h sub">Assessment${a.date ? ` <span class="wl-as-date">as of ${esc(this.fmtDate(a.date))}</span>` : ""}</div>
+            ${a.text ? `<p class="wl-d-p wl-as-p">${esc(a.text)}</p>` : "<p class='muted-note'>No assessment yet.</p>"}
+            ${(a.sources || []).length ? `<div class="wl-d-h sub">Read more (${a.sources.length})</div><ul class="wl-src-list">${a.sources.map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label || s.url)} ↗</a></li>`).join("")}</ul>` : ""}
+            <div class="wl-d-h sub">Latest messaging &amp; influence reporting${live ? ` <span class="briefs-live">● LIVE</span>` : ""}</div>
+            ${arts ? `<ul class="wl-art-list">${arts}</ul>` : `<p class="muted-note">${live ? "No title-matched articles in the last 3 days." : "The hourly feed adds a live sub-feed for this watch once it has run."}</p>`}
+          </div>
+        </div>
       </div>`;
     },
 
@@ -2231,7 +2272,7 @@
           <td class="wl-n">${i + 1}</td>
           <td>${this.tierTag(it.tier)}</td>
           <td class="theatre-cell"><button class="wl-expand" data-wl-toggle="${esc(it.id)}" aria-expanded="${open}" title="${open ? "Collapse" : "Expand"}">${open ? "▾" : "▸"}</button> ${esc(it.name)}</td>
-          <td>${this.stateChip(it.state, this.moveGlyph(it))}</td>
+          <td>${this.stateChip(it.state, this.moveGlyph(it))}${this.infoOpsBadge(it)}</td>
           ${this.statusCell(it)}
           ${this.topicsCell(it)}
           ${this.whyCell(it)}

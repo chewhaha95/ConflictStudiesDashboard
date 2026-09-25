@@ -77,6 +77,19 @@ The watchlist is fully automated:
   changes, indicators, ignore verdicts, history, sources), runs
   `npm test` and pushes to `main`. Pages deploys on push.
 
+### Information ops & strategic communications watch
+
+An item can carry `infoOps` (see `definitions.infoOps`): switched on when a
+trigger event makes messaging and influence activity worth tracking on its
+own (currently the Taiwan Strait after the 23–24 Sep 2026 Trump–Xi summit).
+The register row shows an **Info-ops watch** badge; the expanded row shows a
+card with the question, dated and typed findings (official statement,
+state-media narrative, covert information operation, coercive signalling,
+counter-messaging, debunked claim, third-party assessment…), an assessment
+with sources, and a live sub-feed of messaging and influence reporting from
+a narrower hourly query. The daily review keeps the findings and assessment
+current; the team sets the trigger, question and query.
+
 ### Topics of interest
 
 Each item carries three team-set topics (`topics`: topic, why it matters here,
