@@ -718,6 +718,12 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     delete process.env.ANTHROPIC_API_KEY; process.env.GITHUB_TOKEN = "ghs_test"; delete process.env.FEED_SCREEN;
     const jg = feed.screenJudge(); process.env.FEED_SCREEN = "off"; const joff = feed.screenJudge();
     check("feed screen: with only GITHUB_TOKEN the judge is GitHub Models; FEED_SCREEN=off disables it", !!jg && /^github-models:/.test(jg.label) && joff === null);
+    delete process.env.FEED_SCREEN; process.env.FEED_SCREEN_URL = "https://csi-feed-trigger.example.workers.dev/"; process.env.FEED_SCREEN_KEY = "k";
+    const jcf = feed.screenJudge(); delete process.env.FEED_SCREEN_URL; delete process.env.FEED_SCREEN_KEY;
+    check("feed screen: with FEED_SCREEN_URL + FEED_SCREEN_KEY the Worker (Workers AI) is preferred over GitHub Models", !!jcf && /^workers-ai:/.test(jcf.label));
+    const prosey = Object.assign(async () => "Sure, here is the result:\n{\"keep\": [2]}\nHope this helps.", { label: "prosey" });
+    const r5 = await feed.screenArticles(cnjp, cands, {}, prosey);
+    check("feed screen: JSON wrapped in prose is still parsed", r5.screened && r5.kept.length === 1 && r5.kept[0].url === "u3");
     if (saved.A != null) process.env.ANTHROPIC_API_KEY = saved.A; if (saved.G != null) process.env.GITHUB_TOKEN = saved.G; else delete process.env.GITHUB_TOKEN; if (saved.F != null) process.env.FEED_SCREEN = saved.F; else delete process.env.FEED_SCREEN;
     check("register: definitions.feed.spamDomains lists article sources dropped outright", Array.isArray(wl.definitions.feed.spamDomains) && wl.definitions.feed.spamDomains.includes("czechinvest.gov.cz"));
   }

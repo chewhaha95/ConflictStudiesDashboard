@@ -160,7 +160,9 @@ const titleMatch = (a, feed) => {
 // title is judged once, and the screen is skipped (heuristics only, logged)
 // when ANTHROPIC_API_KEY is not set or the API fails.
 // Providers, first available wins: ANTHROPIC_API_KEY → Claude (claude-opus-5);
-// else GITHUB_TOKEN → GitHub Models (free for Actions, `permissions: models: read`);
+// else FEED_SCREEN_URL + FEED_SCREEN_KEY → the Cloudflare Worker's /screen route
+// (Workers AI, free daily allowance); else GITHUB_TOKEN → GitHub Models (kept as
+// a fallback; its endpoint answered "OK" text instead of an API in Sep 2026);
 // else no screen. FEED_SCREEN=off disables it; FEED_SCREEN_MODEL overrides the model.
 const SCREEN_MAX = 30;            // newest candidates sent per item
 const SCREEN_KEEP = 300;          // cached verdicts kept per item
@@ -187,6 +189,22 @@ function screenJudge() {
       return (res.content || []).filter(b => b.type === "text").map(b => b.text).join("");
     };
     return Object.assign(judge, { label: `claude:${model}` });
+  }
+  if (process.env.FEED_SCREEN_URL && process.env.FEED_SCREEN_KEY) {
+    const url = process.env.FEED_SCREEN_URL.replace(/\/+$/, "") + "/screen";
+    const judge = async (system, user) => {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${process.env.FEED_SCREEN_KEY}`, "Content-Type": "application/json", "User-Agent": "conflict-studies-dashboard/1.0 (feed relevance screen)" },
+        body: JSON.stringify({ system, user }), signal: AbortSignal.timeout(60000),
+      });
+      const text = await res.text();
+      if (!res.ok) throw new Error(`Worker /screen HTTP ${res.status}: ${text.slice(0, 200)}`);
+      const j = JSON.parse(text);
+      if (j.error) throw new Error(`Worker /screen: ${j.error}`);
+      return j.text || "";
+    };
+    return Object.assign(judge, { label: `workers-ai:${new URL(url).host}` });
   }
   if (process.env.GITHUB_TOKEN) {
     const model = process.env.FEED_SCREEN_MODEL || "openai/gpt-4o-mini";
@@ -229,7 +247,9 @@ async function screenArticles(it, cands, prevScreen, judge) {
   if (unjudged.length && judge) {
     try {
       const text = await judge(SCREEN_SYSTEM, screenPrompt(it, unjudged));
-      const parsed = JSON.parse(String(text).replace(/^```(?:json)?\s*|\s*```$/g, ""));
+      const raw = String(text).replace(/^```(?:json)?\s*|\s*```$/g, "").trim();
+      const m = raw.match(/\{[\s\S]*\}/);                    // tolerate prose around the JSON
+      const parsed = JSON.parse(m ? m[0] : raw);
       if (!Array.isArray(parsed.keep)) throw new Error("no keep[] in verdict");
       const keep = new Set(parsed.keep.map(Number));
       const at = new Date().toISOString(), by = judge.label || "judge";
@@ -350,7 +370,7 @@ if (require.main !== module) return;
   const out = Object.assign({}, prev);
   const judge = screenJudge();
   const spamDomains = ((reg.definitions || {}).feed || {}).spamDomains || [];
-  console.log(judge ? `Relevance screen: ${judge.label}` : "Relevance screen: skipped (no ANTHROPIC_API_KEY or GITHUB_TOKEN) — title heuristics only");
+  console.log(judge ? `Relevance screen: ${judge.label}` : "Relevance screen: skipped (no ANTHROPIC_API_KEY, FEED_SCREEN_URL/KEY or GITHUB_TOKEN) — title heuristics only");
   let ok = 0;
   for (const it of order) {
     if (Date.now() - T0 > DEADLINE_MS) { console.error(`⏱ deadline reached — ${it.id} and later items keep previous data`); break; }
