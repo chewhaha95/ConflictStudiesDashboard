@@ -68,6 +68,9 @@
 /* ----- Reset / base --------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { height: 100%; }
+/* iOS Safari "font boosting" inflates long paragraphs inside wide tables (the
+   register's expanded row); pin the text size so cards render as designed. */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body {
   margin: 0;
   font-family: var(--font-sans);
@@ -956,7 +959,7 @@ ul.wf-list li { margin-bottom: 8px; font-size: 13px; line-height: 1.5; }
 .wl-as-topics { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; line-height: 1.35; }
 .wl-as-topics li { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
 .wl-as-w { font-weight: 400; }
-.wl-as-p { font-size: 12.5px; line-height: 1.55; }
+.wl-as-p { font-size: 12.5px; line-height: 1.55; max-width: 100%; overflow-wrap: anywhere; -webkit-text-size-adjust: 100%; }
 .wl-as-p + .wl-as-p { margin-top: 8px; }
 .wl-status-news { font-size: 12.5px; line-height: 1.45; margin-bottom: 5px; padding: 5px 8px; border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--accent) 7%, transparent); border-radius: 0 6px 6px 0; }
 .wl-news-tag { font-size: 10.5px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
@@ -1078,6 +1081,9 @@ table.wl-indicators tr.ignored td { opacity: .7; }
   .wl-board { grid-template-columns: repeat(2, 1fr); }
   .wl-act-grid { grid-template-columns: repeat(2, 1fr); }
   .wl-detail-grid, .wl-detail-three { grid-template-columns: repeat(2, 1fr); }
+  /* The register scrolls sideways on small screens, but its expanded row should
+     not: pin the cards to the visible width and keep them at the left edge. */
+  .wl-detail-grid { position: sticky; left: 0; width: min(100%, calc(100vw - 44px)); box-sizing: border-box; }
 }
 @media (max-width: 640px) {
   .wl-zoom-hint { display: none; }
