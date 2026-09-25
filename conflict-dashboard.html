@@ -62,7 +62,7 @@
   assumption is declared in sample-data.json and surfaced as UI helper text.
   =========================================================================
 -->
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -73,6 +73,9 @@
        are read from when this page is served from another host (a Cloudflare Pages
        mirror or a custom domain). Same-origin and local previews ignore it. -->
   <meta name="data-origin" content="https://chewhaha95.github.io/ConflictStudiesDashboard/" />
+  <!-- Theme: dark by default; a viewer's choice (🌙/☀️ button) is remembered in this
+       browser and applied before first paint so there is no flash of the other theme. -->
+  <script>try{var t=localStorage.getItem("csi-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
   <link rel="stylesheet" href="styles.css?v=20260924a" />
 </head>
 <body>
@@ -94,7 +97,7 @@
         <div class="label">Last updated</div>
         <div class="value" id="meta-updated">—</div>
       </div>
-      <button id="theme-toggle" class="icon-btn no-print" title="Toggle light / dark theme" aria-label="Toggle theme">🌙</button>
+      <button id="theme-toggle" class="icon-btn no-print" title="Toggle light / dark theme" aria-label="Toggle theme">☀️</button>
     </div>
   </header>
 

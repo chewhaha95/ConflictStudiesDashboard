@@ -31,7 +31,7 @@
     formationGroup: "ALL",    // monthly tab: 'ALL' | formation-group id
     monthlyEchelon: "ALL",    // monthly group panel: 'ALL' | Brigade | Battalion | Company
     capEvidencedOnly: true,   // capabilities: default to brief-evidenced contests/caps only (lean, trustworthy default)
-    theme: "light",
+    theme: "dark",             // dark by default; the viewer's choice is remembered (localStorage csi-theme)
     watchlist: {              // watchlist tab: filters + map focus + open rows
       tiers: new Set(), states: new Set(), hideIgnored: false,
       selected: null, region: "world", view: null, expanded: new Set()
@@ -2564,11 +2564,17 @@
         ft.querySelector(".ft-caret").textContent = open ? "▴" : "▾";
       });
 
-      // theme toggle
+      // theme: dark by default; the page's early script applied a remembered choice
+      // before first paint, so read the attribute rather than assuming.
+      const applied = document.documentElement.getAttribute("data-theme");
+      State.theme = applied === "light" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", State.theme);
+      el("#theme-toggle").textContent = State.theme === "light" ? "🌙" : "☀️";
       el("#theme-toggle").addEventListener("click", () => {
         State.theme = State.theme === "light" ? "dark" : "light";
         document.documentElement.setAttribute("data-theme", State.theme);
         el("#theme-toggle").textContent = State.theme === "light" ? "🌙" : "☀️";
+        try { localStorage.setItem("csi-theme", State.theme); } catch (e) { /* private mode */ }
         Render.renderActiveView(); // re-theme charts
       });
 

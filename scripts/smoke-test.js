@@ -121,7 +121,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     world.countries.length > 150 && wl.items.every(i => i.geo.countries.every(c => world.countries.some(w => w.id === c))));
 
   // --- 1. Boot the app in a DOM -------------------------------------------
-  const dom = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true });
+  const dom = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true, url: "http://localhost/conflict-dashboard.html" });   // a real origin so localStorage works
   const { window } = dom;
   global.window = window; global.document = window.document;
   // Seed-only fetch: weekly-live.json returns 404 so the main harness exercises
@@ -681,6 +681,13 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       };
     })()
   };
+  // --- 1b1. Theme: dark by default, viewer's choice remembered
+  check("theme: the page defaults to dark and the toggle offers light", doc.documentElement.getAttribute("data-theme") === "dark" && doc.querySelector("#theme-toggle").textContent.trim() === "☀️" && /data-theme="dark"/.test(html) && /localStorage\.getItem\("csi-theme"\)/.test(html));
+  doc.querySelector("#theme-toggle").click(); await sleep(30);
+  check("theme: clicking the toggle switches to light and remembers it", doc.documentElement.getAttribute("data-theme") === "light" && window.localStorage.getItem("csi-theme") === "light" && doc.querySelector("#theme-toggle").textContent.trim() === "🌙");
+  doc.querySelector("#theme-toggle").click(); await sleep(30);
+  check("theme: toggling back restores dark", doc.documentElement.getAttribute("data-theme") === "dark" && window.localStorage.getItem("csi-theme") === "dark");
+
   // --- 1b2. Feed sync helpers: title heuristics and the model relevance screen (fake client)
   {
     const feed = require("../scripts/sync-watchlist-feed.js");
