@@ -157,6 +157,20 @@
       "whyMatters": "Why it matters here: for each numbered topic, what the theatre tests (the capability, behaviour or mechanism under study).",
       "watchAreas": "Watch areas: for each numbered topic, its watch status and what to monitor. Status tags: Rising (activity increasing), Established (steady pattern), Contested (the outcome is still open), Watch for trigger (review only on a named event), Background monitor, Declining.",
       "adaptability": "Adaptability: how transferable the topic's lessons are to the Army — High, Medium or Low, set by the team."
+    },
+    "infoOps": {
+      "desc": "Information operations and strategic communications watch. Switched on for an item when a trigger event (a summit, a crisis) makes messaging and influence activity worth tracking on its own: a narrower hourly feed of reporting on official messaging, state-media narratives and documented influence campaigns, plus dated findings and an assessment researched daily from open sources.",
+      "types": {
+        "official statement": "Government, foreign-ministry, military or party statement aimed at an audience (strategic communications).",
+        "state-media narrative": "Framing pushed by state or party media, including English-language outlets aimed abroad.",
+        "covert information operation": "Documented coordinated inauthentic behaviour, disinformation or cognitive-warfare activity, attributed by a credible reporter.",
+        "coercive signalling": "Military, coast-guard or legal action whose purpose is the message it sends.",
+        "sanctions/lawfare": "Sanctions, lists or legal framing used to pressure or delegitimise.",
+        "counter-messaging": "The targeted side's official response or rebuttal.",
+        "domestic narrative": "Narratives inside the targeted polity (parties, polls, viral claims).",
+        "debunked claim": "A specific false claim identified by a fact-checker.",
+        "third-party assessment": "Analysis by a think-tank, researcher or major outlet."
+      }
     }
   },
   "items": [
@@ -2833,7 +2847,212 @@
             "text": "track resilience measures, cyber/information disruption and civil-defence readiness."
           }
         }
-      ]
+      ],
+      "infoOps": {
+        "enabled": true,
+        "since": "2026-09-23",
+        "trigger": "Trump–Xi summit, Washington, 23–24 Sep 2026",
+        "question": "Is Beijing, or Washington, using information operations or strategic communications to pressure Taiwan in the wake of the Trump–Xi summit; through which channels; and how is Taipei responding?",
+        "feed": {
+          "query": "(Taiwan OR Taipei) (\"cognitive warfare\" OR disinformation OR \"information operations\" OR \"information warfare\" OR propaganda OR \"united front\" OR \"Taiwan Affairs Office\" OR \"state media\" OR \"Global Times\" OR Xinhua OR \"influence operation\" OR \"fact check\" OR narrative OR \"psychological warfare\" OR \"strategic communication\" OR \"oppose Taiwan independence\")",
+          "terms": [
+            "taiwan",
+            "taipei"
+          ],
+          "require": [
+            [
+              "taiwan",
+              "taipei"
+            ],
+            [
+              "disinformation",
+              "cognitive",
+              "information operation",
+              "information warfare",
+              "propaganda",
+              "narrative",
+              "united front",
+              "taiwan affairs office",
+              "state media",
+              "global times",
+              "xinhua",
+              "cgtn",
+              "psychological",
+              "influence",
+              "fact check",
+              "fact-check",
+              "fake",
+              "rumor",
+              "rumour",
+              "deepfake",
+              "bot network",
+              "troll",
+              "messaging",
+              "strategic communication",
+              "independence",
+              "reunification",
+              "spokesperson",
+              "foreign ministry",
+              "readout",
+              "warns",
+              "urges",
+              "opposes"
+            ]
+          ],
+          "exclude": [
+            "stock",
+            "shares",
+            "chip export",
+            "earnings"
+          ]
+        },
+        "findings": [
+          {
+            "date": "2026-09-25",
+            "actor": "Global Times",
+            "type": "state-media narrative",
+            "text": "A Global Times English editorial on 25 Sep 2026, closing out coverage of Xi's state visit, called Taiwan 'the most important and sensitive core issue in China-US relations' and repeated Xi's hope that the US will 'uphold the correct stance of opposing Taiwan independence'. It aimed Beijing's summit line at foreign readers.",
+            "url": "https://www.globaltimes.cn/page/202609/1371340.shtml"
+          },
+          {
+            "date": "2026-09-25",
+            "actor": "PLA (per ROC Ministry of National Defense)",
+            "type": "coercive signalling",
+            "text": "In the 24 hours to 06:00 on 25 Sep 2026, covering summit day, Taiwan's MND reported only 2 PLA aircraft sorties, 6 PLAN ships and 5 official ships, down from 10 sorties a day earlier. Air pressure dropped sharply while Xi was at the White House, though naval presence continued. An independent tracker also recorded 2 sorties and 11 vessels on 25 Sep.",
+            "url": "https://www.globalsecurity.org/wmd/library/news/taiwan/2026/taiwan-260925-roc-mnd01.htm"
+          },
+          {
+            "date": "2026-09-25",
+            "actor": "Taiwan MOFA",
+            "type": "counter-messaging",
+            "text": "On 25 Sep 2026 Taiwan's Foreign Ministry rejected Xi's White House remarks as Beijing's 'consistent approach of distorting facts', said the ROC and PRC 'are not subordinate to each other', and called China the 'true disruptor' of regional peace. This was a same-day rebuttal of the Chinese readout in which Xi urged the US to 'uphold the correct position of opposing Taiwan independence'.",
+            "url": "https://focustaiwan.tw/politics/202609250011"
+          },
+          {
+            "date": "2026-09-25",
+            "actor": "Taiwan Mainland Affairs Council",
+            "type": "counter-messaging",
+            "text": "On 25 Sep 2026 the MAC said the CCP 'repeatedly propagates its Taiwan position through US-China dialogue' to link Taiwan to 'constructive strategic stability', and that such stability cannot be a pretext for annexation. It also rebutted Xi's WWII 'fought side by side' framing, saying the PRC did not exist until 1949 and that the ROC was America's wartime ally.",
+            "url": "https://www.cna.com.tw/news/acn/202609250156.aspx"
+          },
+          {
+            "date": "2026-09-25",
+            "actor": "KMT",
+            "type": "domestic narrative",
+            "text": "On 25 Sep 2026 KMT chair Cheng Li-wun said Taiwan 'does not need to choose' between being pro-US or pro-China while Washington and Beijing pursue their own interests. She urged President Lai to present concrete proposals to lower Strait risk and restore cross-strait communication.",
+            "url": "https://udn.com/news/story/125030/9777414"
+          },
+          {
+            "date": "2026-09-25",
+            "actor": "Atlantic Council",
+            "type": "third-party assessment",
+            "text": "On 25 Sep 2026 Atlantic Council's Markus Garlauskas said no public Taiwan bargain emerged, but Taiwan is not 'unaffected' because the arms package is still pending. Josh Lipsky judged the summit an optics win for Beijing because its near-equal 'G2' framing showed Washington standing 'toe to toe with China' rather than leading a coalition.",
+            "url": "https://www.atlanticcouncil.org/content-series/fastthinking/what-did-and-didnt-happen-at-the-trump-xi-summit/"
+          },
+          {
+            "date": "2026-09-25",
+            "actor": "Wall Street Journal (as reported by China Times)",
+            "type": "third-party assessment",
+            "text": "On 25 Sep 2026 China Times reported a WSJ editorial warning that a US shift from 'not support' to 'oppose' Taiwan independence would let Beijing weaken Taiwan's confidence in US support and justify more pressure. The editorial reportedly argued that Trump's May 'negotiating chip' remark encouraged Xi's demand. (single source; WSJ original not opened)",
+            "url": "https://www.chinatimes.com/realtimenews/20260925001345-260408",
+            "unverified": true
+          },
+          {
+            "date": "2026-09-24",
+            "actor": "PRC MFA / Xi Jinping",
+            "type": "official statement",
+            "text": "According to the PRC MFA readout of the 24 Sep 2026 White House talks, Xi told Trump that China's position on reunification is 'clear-cut' and that the US should 'adhere to the correct position of opposing Taiwan independence' and 'handle the Taiwan question with caution'. This goes beyond the long-standing US 'do not support' wording. On 25 Sep, Taiwan's MOFA rejected it as 'distorting facts and unilaterally conveying its own positions'.",
+            "url": "https://www.fmprc.gov.cn/eng/xw/zyxw/202609/t20260925_12031181.html"
+          },
+          {
+            "date": "2026-09-24",
+            "actor": "Xinhua",
+            "type": "state-media narrative",
+            "text": "On 24 Sep 2026, Xinhua English ran an 'Urgent' flash saying Xi hopes the US will oppose 'Taiwan independence' and handle Taiwan 'with prudence'. Trump and Xi would not tell reporters whether Taiwan came up, and the White House had issued no readout by that night, so Beijing's version was the only public account of the Taiwan exchange.",
+            "url": "https://english.news.cn/20260925/d1290cce92fe4973b84624927e651379/c.html"
+          },
+          {
+            "date": "2026-09-24",
+            "actor": "China Daily",
+            "type": "state-media narrative",
+            "text": "A China Daily editorial on 24 Sep 2026 said the US 'must handle the Taiwan question ... with extra prudence and caution'. It called the one-China principle, the three communiques and 'commitments made by previous US administrations' 'international obligations', framing US arms support for Taiwan as a breach of those commitments.",
+            "url": "https://www.chinadaily.com.cn/a/202609/24/WS6ab4cc38e4b06d4aa0560059.html"
+          },
+          {
+            "date": "2026-09-24",
+            "actor": "PLA (per ROC Ministry of National Defense)",
+            "type": "coercive signalling",
+            "text": "In the 24 hours to 06:00 on 24 Sep 2026, as Xi arrived in Washington, Taiwan's MND detected 10 PLA sorties, 6 PLAN ships and 6 official ships. Five of the sorties crossed the median line into Taiwan's northern and central ADIZ.",
+            "url": "https://www.globalsecurity.org/wmd/library/news/taiwan/2026/taiwan-260924-roc-mnd01.htm"
+          },
+          {
+            "date": "2026-09-24",
+            "actor": "White House",
+            "type": "official statement",
+            "text": "On 24 Sep 2026 Trump called the talks a 'great meeting' but declined reporters' questions on Taiwan, and Xi also did not answer. The White House had issued no readout as of that evening, leaving Xinhua's account of Xi's Taiwan demands as the only official version.",
+            "url": "https://www.taipeitimes.com/News/taiwan/archives/2026/09/25/2003864887"
+          },
+          {
+            "date": "2026-09-24",
+            "actor": "Taiwan Executive Yuan",
+            "type": "counter-messaging",
+            "text": "On 24 Sep 2026 Cabinet spokesperson Michelle Lee said the government 'maintains close communication with the US' at all levels. She pointed to the existing Taiwan-US trade and investment frameworks as the government's answer to talk of trade-offs over arms and tariffs. (single source)",
+            "url": "https://www.taisounds.com/news/content/70/290453"
+          },
+          {
+            "date": "2026-09-24",
+            "actor": "Taiwan NSB",
+            "type": "counter-messaging",
+            "text": "On 24 Sep 2026 UDN reported that Taiwan's national-security team had war-gamed the summit. Unnamed NSB officials said the US had stressed 'publicly and through private channels' that its Taiwan policy is unchanged, and that Beijing views delaying arms sales as the 'first brick' of a US retreat from the first island chain. (single source)",
+            "url": "https://udn.com/news/story/125030/9774310"
+          },
+          {
+            "date": "2026-09-23",
+            "actor": "Global Times",
+            "type": "state-media narrative",
+            "text": "A Global Times editorial on 23 Sep 2026, published as Xi's visit began, put 'the Taiwan question' first among Beijing's 'four red lines' that 'must not be challenged'. It said the US must 'handle the Taiwan question with utmost prudence'.",
+            "url": "https://www.globaltimes.cn/page/202609/1371230.shtml"
+          },
+          {
+            "date": "2026-09-23",
+            "actor": "PRC think-tank/academic channels (per Taiwan official)",
+            "type": "covert information operation",
+            "text": "On 23 Sep 2026 an unnamed Taiwanese national security official said Beijing uses think-tank reports and academic papers to push the narrative that the first island chain is a burden and that the US should 'abandon Taiwan'. The official also said Beijing labels Taiwan, Japan and the Philippines as regional 'troublemakers' and offers 'empty promises' such as soybean and LNG purchases and delayed arms sales. (single source)",
+            "url": "https://www.taipeitimes.com/News/taiwan/archives/2026/09/23/2003864772",
+            "unverified": true
+          }
+        ],
+        "assessment": {
+          "date": "2026-09-25",
+          "text": "Sources for 21 to 26 Sep 2026 show a Beijing-led strategic-communications effort that uses the summit itself as its main channel. The White House issued no readout by 24 to 25 Sep and Trump declined Taiwan questions, so Xinhua's account of Xi urging Washington to 'oppose Taiwan independence' stood as the only official record (Taipei Times, Focus Taiwan, 25 Sep). US messaging was divided, not coordinated with Beijing. On 23 Sep Rubio kept the arms package 'under review', while Republican senators and House members from both parties publicly objected. No September count of coordinated inauthentic activity was found. The NSB's May baseline (about 100 account groups, more than 9,000 posts; Taipei Times, 26 May) is the latest quantified reference, so any post-summit campaign is unmeasured. Taipei answered quickly across agencies. On 25 Sep MOFA and the MAC rejected Xi's framing and his WWII 'ally' narrative, and the Cabinet, MND and NSB stressed continuing US contact. At home, the 21 Sep poll (47% doubtful) and the KMT's 25 Sep call for cross-strait talks show that abandonment narratives already find receptive ground.",
+          "sources": [
+            {
+              "label": "Taipei Times · Taipei denounces Xi remarks to Trump · 26 Sep 2026",
+              "url": "https://www.taipeitimes.com/News/front/archives/2026/09/26/2003864912"
+            },
+            {
+              "label": "Focus Taiwan · MOFA rejects Xi remarks on Taiwan during U.S. visit · 25 Sep 2026",
+              "url": "https://focustaiwan.tw/politics/202609250011"
+            },
+            {
+              "label": "CNA · MAC: ROC, not PRC, was America's WWII ally · 25 Sep 2026",
+              "url": "https://www.cna.com.tw/news/acn/202609250156.aspx"
+            },
+            {
+              "label": "Atlantic Council · What did and didn't happen at the Trump-Xi summit · 25 Sep 2026",
+              "url": "https://www.atlanticcouncil.org/content-series/fastthinking/what-did-and-didnt-happen-at-the-trump-xi-summit/"
+            },
+            {
+              "label": "Taipei Times · US lawmakers urge Trump to maintain arms sales · 25 Sep 2026",
+              "url": "https://www.taipeitimes.com/News/front/archives/2026/09/25/2003864858"
+            },
+            {
+              "label": "Focus Taiwan · Arms sales a complex issue, still under review: Rubio · 24 Sep 2026",
+              "url": "https://focustaiwan.tw/politics/202609240005"
+            }
+          ]
+        }
+      }
     },
     {
       "id": "CN_JP",

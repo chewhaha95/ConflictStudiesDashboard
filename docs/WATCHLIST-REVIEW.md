@@ -81,6 +81,19 @@ same way.
      does not repeat `status` or `timeline`. Sources are the articles the
      paragraphs rest on, newest first; mark single-source claims
      "(single source)";
+   - **information-ops watch** (items with `infoOps.enabled`, see
+     `definitions.infoOps`): research the item's `infoOps.question` for the
+     window (official statements, state-media narratives, documented
+     influence or disinformation activity, coercive signalling used as
+     messaging, the targeted side's counter-messaging, fact-checks and
+     third-party assessments). Append dated `findings`
+     `{date, actor, type, text, url, unverified?}` with `type` from
+     `definitions.infoOps.types`, newest first; keep entries from the last
+     14 days, at most 12; do not rewrite earlier entries without cause.
+     Rewrite `infoOps.assessment` `{date, text, sources}`: one paragraph of
+     120–180 words answering the question with dated evidence, 3–6 sources
+     newest first, no recommendations. Never change `enabled`, `since`,
+     `trigger`, `question` or `feed`; the team sets them;
    - append today's snapshot to `snapshots`:
      `{date: <today>, state, phase, escalation, tempo, adaptation, sgExposure}`
      with the values just set (one snapshot per review date; replace the
