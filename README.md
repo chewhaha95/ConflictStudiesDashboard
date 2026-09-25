@@ -47,9 +47,13 @@ The watchlist is fully automated:
 - **Live reporting feed** — `.github/workflows/sync-watchlist-feed.yml` runs
   `scripts/sync-watchlist-feed.js` hourly against the open GDELT DOC
   2.0 API and commits `watchlist-live.json`: a 30-day daily coverage
-  timeline and the newest title-matched articles per item (GDELT newest-first
-  over the last 3 days merged with a Google News pull, so the "Newest
-  reporting" line is the latest article, not the most relevant one). The
+  timeline and the most relevant recent articles per item: GDELT
+  relevance-ranked over the last 3 days merged with a Google News pull,
+  title-filtered, then ranked by an **army-learning relevance score**
+  (military vocabulary in the title, words from the item's topics of
+  interest, source rank, a small recency bonus) and the twelve best kept;
+  the "Newest reporting" line is the newest of those, so it is both recent
+  and relevant rather than merely the latest mention. The
   register shows a coverage sparkline, a 7-day count with change, a **surge**
   flag (≥2× the previous week and ≥20 articles, +8 attention points) and the
   headlines in each expanded row. Queries live in each item's `feed` block:
@@ -58,7 +62,7 @@ The watchlist is fully automated:
   two-party theatre) and `exclude`, plus a global sport/entertainment
   exclusion list, livestream-spam patterns and `definitions.feed.spamDomains`
   in the register. After the heuristics, a **model relevance screen**
-  cross-checks the newest candidates against the item's phase, status and
+  cross-checks the top candidates against the item's phase, status and
   topics: the Cloudflare Worker's Workers AI route (free daily allowance;
   secrets `FEED_SCREEN_URL` / `FEED_SCREEN_KEY`, see
   `cloudflare/feed-trigger/README.md`), or Claude when an
