@@ -8,6 +8,9 @@ compatibility_date = "2026-09-01"
 [triggers]
 crons = ["7 * * * *"]     # hourly at :07 UTC, matching the workflow's own schedule
 
+[ai]
+binding = "AI"            # Workers AI for the headline relevance screen (free daily allowance)
+
 [vars]
 GH_OWNER = "chewhaha95"
 GH_REPO = "ConflictStudiesDashboard"

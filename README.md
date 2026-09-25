@@ -59,8 +59,10 @@ The watchlist is fully automated:
   exclusion list, livestream-spam patterns and `definitions.feed.spamDomains`
   in the register. After the heuristics, a **model relevance screen**
   cross-checks the newest candidates against the item's phase, status and
-  topics: GitHub Models (free for Actions, using the workflow's own token)
-  by default, or Claude when an `ANTHROPIC_API_KEY` repository secret is set.
+  topics: the Cloudflare Worker's Workers AI route (free daily allowance;
+  secrets `FEED_SCREEN_URL` / `FEED_SCREEN_KEY`, see
+  `cloudflare/feed-trigger/README.md`), or Claude when an
+  `ANTHROPIC_API_KEY` repository secret is set.
   Verdicts are cached per title in `watchlist-live.json` so each headline is
   judged once. If neither is reachable the sync logs it and uses heuristics
   only. The daily review also reads the last day's feed headlines and adds

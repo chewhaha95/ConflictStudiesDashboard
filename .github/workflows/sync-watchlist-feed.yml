@@ -53,11 +53,13 @@ jobs:
         run: npm ci --omit=dev --no-fund --no-audit
 
       - name: Sync open-source feed (GDELT + Google News, model relevance screen)
-        # Headline relevance cross-check: Claude if ANTHROPIC_API_KEY is set as a
-        # repository secret, else GitHub Models (free for Actions) with GITHUB_TOKEN,
-        # else title heuristics only.
+        # Headline relevance cross-check: Claude if ANTHROPIC_API_KEY is set, else
+        # the Cloudflare Worker's Workers AI screen (FEED_SCREEN_URL/KEY, free daily
+        # allowance), else GitHub Models with GITHUB_TOKEN, else title heuristics only.
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FEED_SCREEN_URL: ${{ secrets.FEED_SCREEN_URL }}      # Cloudflare Worker URL (Workers AI screen)
+          FEED_SCREEN_KEY: ${{ secrets.FEED_SCREEN_KEY }}      # = the Worker's TRIGGER_KEY secret
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FEED_ONLY: ${{ github.event.inputs.only }}
         run: node scripts/sync-watchlist-feed.js

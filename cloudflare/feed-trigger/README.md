@@ -29,6 +29,26 @@ the sync's concurrency group absorbs any overlap).
 Cloudflare's free plan includes cron triggers and far more than the 720
 requests a month this uses.
 
+## Headline relevance screen (Workers AI, free)
+
+The same Worker also judges headline relevance for the hourly feed on
+Cloudflare's Workers AI free daily allowance. One-time setup:
+
+1. Worker → Settings → **Bindings** → Add → **Workers AI** → variable name
+   `AI` → Deploy. (Optional var `SCREEN_MODEL`; default
+   `@cf/meta/llama-3.1-8b-instruct`.)
+2. Worker → Settings → Variables and Secrets → make sure `TRIGGER_KEY`
+   (type Secret) exists; any long random string.
+3. GitHub → repository → Settings → Secrets and variables → Actions → add
+   - `FEED_SCREEN_URL` = the Worker URL, e.g.
+     `https://csi-feed-trigger.<your-subdomain>.workers.dev`
+   - `FEED_SCREEN_KEY` = the same value as `TRIGGER_KEY`.
+4. Re-paste `worker.js` into the Worker (Edit code → Deploy) whenever this
+   folder changes.
+
+The feed workflow logs `Relevance screen: workers-ai:<host>` when it is in
+use; without the secrets it falls back to title heuristics.
+
 ## Verify
 
 - Worker → Logs (or *Begin log stream*) shows `dispatched sync-watchlist-feed.yml`

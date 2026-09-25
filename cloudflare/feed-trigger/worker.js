@@ -13,8 +13,13 @@
  *   GH_REPO        var    — ConflictStudiesDashboard
  *   WORKFLOW_FILE  var    — sync-watchlist-feed.yml
  *   GH_REF         var    — main
- *   TRIGGER_KEY    secret — optional; enables a manual `POST /run` with
- *                  header `Authorization: Bearer <TRIGGER_KEY>` for testing.
+ *   TRIGGER_KEY    secret — enables a manual `POST /run` and the `POST /screen`
+ *                  relevance screen, both with header
+ *                  `Authorization: Bearer <TRIGGER_KEY>`.
+ *   AI             binding — Workers AI (Settings → Bindings → Workers AI), used
+ *                  by `POST /screen` to judge headline relevance on the free
+ *                  daily allowance. SCREEN_MODEL (var, optional) overrides the
+ *                  model, default @cf/meta/llama-3.1-8b-instruct.
  */
 
 const API = "https://api.github.com";
@@ -42,6 +47,20 @@ async function dispatch(env) {
   return `dispatched ${env.WORKFLOW_FILE} on ${env.GH_REF || "main"} at ${new Date().toISOString()}`;
 }
 
+// Headline relevance screen on Workers AI. Body: {system, user}; returns the
+// model's text (expected to be JSON {"keep": [...]}); the feed script parses it.
+async function screen(request, env) {
+  if (!env.AI) return new Response(JSON.stringify({ error: "no AI binding on this Worker" }), { status: 501, headers: { "Content-Type": "application/json" } });
+  let body; try { body = await request.json(); } catch (e) { return new Response('{"error":"bad json"}', { status: 400 }); }
+  const model = env.SCREEN_MODEL || "@cf/meta/llama-3.1-8b-instruct";
+  const out = await env.AI.run(model, {
+    messages: [{ role: "system", content: String(body.system || "") + ' Respond with JSON only, exactly of the form {"keep": [indices]}.' }, { role: "user", content: String(body.user || "") }],
+    max_tokens: 300, temperature: 0,
+  });
+  const text = typeof out === "string" ? out : (out && (out.response || (out.choices && out.choices[0] && out.choices[0].message && out.choices[0].message.content))) || "";
+  return new Response(JSON.stringify({ model, text }), { headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
+}
+
 export default {
   // Cron trigger (wrangler.toml [triggers] / Worker → Settings → Triggers).
   async scheduled(event, env, ctx) {
@@ -51,11 +70,17 @@ export default {
   // GET / → status line. POST /run with the TRIGGER_KEY → dispatch now (for testing).
   async fetch(request, env) {
     const url = new URL(request.url);
+    const auth = request.headers.get("Authorization") || "";
+    const authed = !!env.TRIGGER_KEY && auth === `Bearer ${env.TRIGGER_KEY}`;
     if (request.method === "POST" && url.pathname === "/run") {
-      const auth = request.headers.get("Authorization") || "";
-      if (!env.TRIGGER_KEY || auth !== `Bearer ${env.TRIGGER_KEY}`) return new Response("forbidden", { status: 403 });
+      if (!authed) return new Response("forbidden", { status: 403 });
       try { return new Response(await dispatch(env) + "\n"); }
       catch (e) { return new Response(e.message + "\n", { status: 502 }); }
+    }
+    if (request.method === "POST" && url.pathname === "/screen") {
+      if (!authed) return new Response("forbidden", { status: 403 });
+      try { return await screen(request, env); }
+      catch (e) { return new Response(JSON.stringify({ error: e.message }), { status: 502, headers: { "Content-Type": "application/json" } }); }
     }
     return new Response(
       `csi-feed-trigger: dispatches ${env.WORKFLOW_FILE || "sync-watchlist-feed.yml"} in ` +
