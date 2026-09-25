@@ -120,10 +120,19 @@ same way.
 4. Update `meta.reviewer` to "Automated open-source review, <date>".
 5. Validate: `npm test` must pass (it checks scales, dates, snapshots,
    history consistency, ranking and rendering).
-6. Publish: commit `watchlist.json` with message
-   `chore: automated watchlist review <date>` and push to `main`. The Pages
-   workflow deploys it; the feed workflow keeps `watchlist-live.json` current
-   separately.
+6. Publish through the review branch (never push to `main` directly):
+   ```
+   git checkout -B claude/watchlist-review
+   git add watchlist.json
+   git commit -m "chore: automated watchlist review <date>"
+   git push --force origin claude/watchlist-review
+   ```
+   The `Publish automated watchlist review` workflow checks that only
+   `watchlist.json` changed, runs `npm test` on the merged tree, merges into
+   `main` and deploys to Pages, all without a human. If the push is refused,
+   retry with exponential backoff; if it still fails, say so in the final
+   message. The run is complete only when the push has succeeded. The feed
+   workflow keeps `watchlist-live.json` current separately.
 
 ## Criteria for the levels
 

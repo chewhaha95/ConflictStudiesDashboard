@@ -1,0 +1,107 @@
+name: Publish automated watchlist review
+
+# The daily automated open-source review (a scheduled Claude session, see
+# docs/WATCHLIST-REVIEW.md) commits watchlist.json on the branch
+# claude/watchlist-review and force-pushes it. This workflow is the no-human
+# publication gate the owner asked for: it checks that the branch changes
+# nothing but watchlist.json, runs the smoke test, merges into main and
+# deploys to Pages. A review that fails the checks is not published and the
+# run goes red, so the failure is visible.
+
+on:
+  push:
+    branches: [claude/watchlist-review]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  validate-and-merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: watchlist-review-publish
+      cancel-in-progress: false
+    outputs:
+      merged: ${{ steps.merge.outputs.merged }}
+    steps:
+      - name: Checkout main with the review branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Only watchlist.json may change
+        run: |
+          git fetch origin claude/watchlist-review
+          changed="$(git diff --name-only origin/main...origin/claude/watchlist-review)"
+          echo "Changed files:"; echo "$changed"
+          if [ -z "$changed" ]; then echo "Nothing to publish."; exit 0; fi
+          bad="$(echo "$changed" | grep -vx 'watchlist.json' || true)"
+          if [ -n "$bad" ]; then echo "::error::The review branch changes files other than watchlist.json:"; echo "$bad"; exit 1; fi
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Merge the review into a working copy of main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git merge --no-ff origin/claude/watchlist-review -m "chore: publish automated watchlist review"
+
+      - name: Install dependencies and run the smoke test on the merged tree
+        run: |
+          npm ci --no-fund --no-audit
+          npm test
+
+      - name: Push to main
+        id: merge
+        run: |
+          if git diff --quiet origin/main HEAD -- watchlist.json; then
+            echo "watchlist.json unchanged; nothing to publish."; echo "merged=false" >> "$GITHUB_OUTPUT"
+          else
+            git push origin HEAD:main
+            echo "merged=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy:
+    needs: validate-and-merge
+    if: needs.validate-and-merge.outputs.merged == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Stamp asset versions (cache busting)
+        run: |
+          v="$(git rev-parse --short=10 HEAD)"
+          sed -i -E "s/(app\.js|styles\.css)\?v=[A-Za-z0-9]+/\1?v=$v/g" conflict-dashboard.html
+          grep -o '(app\.js|styles\.css)?v=[A-Za-z0-9]*' -E conflict-dashboard.html
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
