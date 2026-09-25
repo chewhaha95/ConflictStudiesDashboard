@@ -1,6 +1,6 @@
 {
   "__live": true,
-  "syncedAt": "2026-09-25T21:38:47.774Z",
+  "syncedAt": "2026-09-25T22:30:14.657Z",
   "source": "GDELT DOC 2.0 API (api.gdeltproject.org) with Google News RSS fallback",
   "refreshed": 12,
   "total": 12,
@@ -8,23 +8,103 @@
   "items": {
     "RU_UA": {
       "query": "(Ukraine OR Ukrainian OR Zelensky OR Kyiv) (Russia OR Russian OR Kremlin OR Putin) sourcelang:english",
-      "granularity": "week",
+      "granularity": "day",
       "timeline": [
         {
+          "date": "2026-08-27",
+          "value": 772
+        },
+        {
           "date": "2026-08-28",
-          "value": 17
+          "value": 498
+        },
+        {
+          "date": "2026-08-29",
+          "value": 488
+        },
+        {
+          "date": "2026-08-30",
+          "value": 360
+        },
+        {
+          "date": "2026-08-31",
+          "value": 613
+        },
+        {
+          "date": "2026-09-01",
+          "value": 900
+        },
+        {
+          "date": "2026-09-02",
+          "value": 632
+        },
+        {
+          "date": "2026-09-03",
+          "value": 708
         },
         {
           "date": "2026-09-04",
-          "value": 41
+          "value": 885
+        },
+        {
+          "date": "2026-09-05",
+          "value": 796
+        },
+        {
+          "date": "2026-09-06",
+          "value": 1015
+        },
+        {
+          "date": "2026-09-07",
+          "value": 867
+        },
+        {
+          "date": "2026-09-08",
+          "value": 486
+        },
+        {
+          "date": "2026-09-09",
+          "value": 727
+        },
+        {
+          "date": "2026-09-10",
+          "value": 562
         },
         {
           "date": "2026-09-11",
-          "value": 13
+          "value": 863
         },
         {
-          "date": "2026-09-18",
-          "value": 29
+          "date": "2026-09-12",
+          "value": 935
+        },
+        {
+          "date": "2026-09-13",
+          "value": 169
+        },
+        {
+          "date": "2026-09-20",
+          "value": 757
+        },
+        {
+          "date": "2026-09-21",
+          "value": 988
+        },
+        {
+          "date": "2026-09-22",
+          "value": 1022
+        },
+        {
+          "date": "2026-09-23",
+          "value": 1221
+        },
+        {
+          "date": "2026-09-24",
+          "value": 957
+        },
+        {
+          "date": "2026-09-25",
+          "value": 230
         }
       ],
       "articles": [
@@ -37,12 +117,20 @@
           "ts": "2026-09-25T20:52:46.000Z"
         },
         {
-          "title": "Putin casts doubt on resuming Ukraine talks, citing mass drone attack during Russian election",
-          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOWEtkbF9MZ1dTMWV0a1RpQnlWTHNsMFJYX2dORDNNbjRERWN3Rlo3ZWp1dUxFempvR3dNZzE4RW9BUGhHRktYXzdPdnFUWlhoZmdGY3N1NFpQNDVFc2x2aEhXcFpFOUNZMnZ4NDh0V0toV2dmNU0tY3JpUW5salU1b3ppb01pVWtILVladXRrOUd4UEJkb1BTdGdTNE1PV0RsTDQ5TUtoQUxiRzREUVpBdTdkT0JRY0FyYnBfbkxR?oc=5",
-          "domain": "The Kyiv Independent",
+          "title": "Russia-Ukraine war: Moscow targeting 'ordinary life' with attacks on data centres, Zelensky says",
+          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE1ZWVRaRFJ0bE53RDI2YlNCRnRxMXZQNXVqMDZ0LU9IeVNlbUdGNVllTWhIZE9wZHJrZnFvVVBuZHAycFhlRHc5eWVnUFI0MmVNUW5RbHFiTHVQSmM?oc=5",
+          "domain": "bbc.com",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T20:46:15.000Z"
+          "ts": "2026-09-25T20:47:49.000Z"
+        },
+        {
+          "title": "Daytime Russian attacks kill seven in Kyiv",
+          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQU0hiVjZpUVAwajNISmpHNk5RR3ZIQzdWU3Z1RjFBcWNsdlN0MlFtZXM1ZkoyeWtVY3VkdlE0Rl9hY0E1Y1k2NHBvMS0wMzRjbGRkeXlBSnpkWjRSMS1DYjh5TG1ZV21ZZjN4Wk45LW1IWHVocGJBelFIZFhPbFhEUDI4QnVPMFlfVEJmVg?oc=5",
+          "domain": "Bangkok Post",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T20:40:00.000Z"
         },
         {
           "title": "4th Russian Fuel Plant Shut Down in One Week Following Drone Attacks",
@@ -54,7 +142,7 @@
         },
         {
           "title": "Russian drone falls on kindergarten in Kyiv — Klitschko",
-          "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPZjlLakJ5MTBtMnFheE5VTTRsUXlLR25fVGZPLXNmR0NEazlTaHlYSkEwTjhuOVNCNjd1enphM1FXdzYwQkhfWmhLYkhQN3Zha09HYXlPN2V5dEwzRTF0YVdPZTBoaWtwZ2JaNllZZFBsbk1YMGFlVUdSOVNZR1BfQWNLX1hQZDBMcEVnU01GbE5HOC1WbVA1V3dUN2JUWGNpbFlUb3hyUlh4Rk3SAasBQVVfeXFMT2Y5S2pCeTEwbTJxYXhOVU00bFF5S0duX1RmTy1zZkdDRGs5U2h5WEpBME44bjlTQjY3dXp6YTNRV3c2MEJIX1poS2JIUDd2YWtPR2F5TzdleXRMM0UxdGFXT2UwaGlrcGdiWjZZWWRQbG5NWDBhZVVHUjlTWUdQX0FjS19YUGQwTHBFZ1NNRmxORzgtVm1QNVd3VDdiVFhjaWxZVG94clJYeEZN?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxObk1BdTZWT2VEWmVZSVRiQmRNcUhOdGFXQ3pUQ3RhUEYzT1V3aktmeWVGSl8wUU5WRmJaTlhRVEdpcThCVGk4ZjV3cUowVWFzelNRc3FfQk1JYmM4dHNtVnRLR2czSEt6WHBPeUtTbk9BbE9KZmNpc0EzNzU2dFRaUEh5UHRnVmd0aF9zMEQ0NnRTZWhmT3RXRW8xRHBPMmpmcjU3Vl9R0gGrAUFVX3lxTE9mOUtqQnkxMG0ycWF4TlVNNGxReUtHbl9UZk8tc2ZHQ0RrOVNoeVhKQTBOOG45U0I2N3V6emEzUVd3NjBCSF9aaEtiSFA3dmFrT0dheU83ZXl0TDNFMXRhV09lMGhpa3BnYlo2WVlkUGxuTVgwYWVVR1I5U1lHUF9BY0tfWFBkMExwRWdTTUZsTkc4LVZtUDVXd1Q3YlRYY2lsWVRveHJSWHhGTQ?oc=5",
           "domain": "Ukrinform",
           "country": "",
           "date": "2026-09-25",
@@ -77,6 +165,30 @@
           "ts": "2026-09-25T20:08:00.000Z"
         },
         {
+          "title": "Putin casts doubt on resuming Ukraine talks, citing mass drone attack during Russian election",
+          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOWEtkbF9MZ1dTMWV0a1RpQnlWTHNsMFJYX2dORDNNbjRERWN3Rlo3ZWp1dUxFempvR3dNZzE4RW9BUGhHRktYXzdPdnFUWlhoZmdGY3N1NFpQNDVFc2x2aEhXcFpFOUNZMnZ4NDh0V0toV2dmNU0tY3JpUW5salU1b3ppb01pVWtILVladXRrOUd4UEJkb1BTdGdTNE1PV0RsTDQ5TUtoQUxiRzREUVpBdTdkT0JRY0FyYnBfbkxR?oc=5",
+          "domain": "The Kyiv Independent",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T19:58:00.000Z"
+        },
+        {
+          "title": "Putin said Russia is ready to return to the negotiating table",
+          "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxNSHNmcDNhZzJiZkdXRU10ZldqdXhOMTNMSnFvV2pQVzdwdEQ2amxscF9iYXBtTC01MTNSRGs3MFBWTDFROUJWVVBreG02c1JOZUxrSVZvbGthMXJnMURnZVJ1V3lSQmhTLWJ2UTNVN2hGSGV0cmdUeUpNZEFQXy1tVWFSemNyZmpTZUhsQy1oSl8?oc=5",
+          "domain": "UA.NEWS",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T19:34:12.000Z"
+        },
+        {
+          "title": "Russian attacks damage McDonald's warehouse in Kyiv region",
+          "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPYWhvOHI0ZWpMR1BMaFh3TUhoXzNlYTJPU2d1cDd1Zkl5bEc1Yl9NUnJheVg1Q09XMnlyTUxfcXhoa3ZxTUM1NXc0WkRiNUNjd1ctV2Q2R1NuT1pBbXdsVXlLb2dpb1hlZ251LVQza0pjcDVCQVd3TVY0bFJBVlRSVkpETTlpN3FIS09PeVhKRzkwVnFYbHBYSG9VRVNDQjBkWjg1TUxBMlpPdHfSAbABQVVfeXFMTUtEemlocDh3WmxnNklUT3Vnb1JlRlh3bEhKRnBuamEwMFhYX1dDWTFmTkNXOFh1MlZBS29lSTA1eFI2ZzJiTzhoQnU3UUp0WGFibGZxaTdRQWFKTUtpWThpLVFhVmpQaW9TQU5mem9kbFBfQldlODFPNzh4V1MyaHpzRVMyUnZDSWoxYk9MZklOTm5jc1hvM0M1RVBETjZrVUliaUxBWF9RLTFiMnJQUF8?oc=5",
+          "domain": "Ukrinform",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T19:22:00.000Z"
+        },
+        {
           "title": "Injury toll after Russian attacks on Kyiv rises to 57, seven killed",
           "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPQXZ3b1otWG9ZblV3cjZNLXNBS0VYUDhON0V3ZHNQNC0tMGlGN3E0YTM0YS12NUdNdE55RTF5N2t3TEhsYVJSUTVUVUVrSE9GWENoYU1yekZBV1JzbFN4dG9TUFctOGg5TTFUSy1Vckt2bHozQVQtbUQzcnVSbHI3a3h4OXJTdy1pbklkZXJ4V0p0OW5fYjdPMkx1MHJMUUYyeXdRck5UXzAxR25rcExpaTZPV3BZRlXSAbwBQVVfeXFMUHlyQmZxUTgxY0VxUTJBOUhBTFp1V1hwcGJLWC02TEVCcmZsZC1QWElrRHJnOEVmUTR0c1JFcXVUUDN6dWVwZW96emFwUkdpdjlnT09iVzRwUXZkTWtWb1FQUThPUjhCd3N2eGdNQmVXNFlBeDdXQlNoWnZPY0Z5NkRFSFpkQWFHX1Foa3JXTDI2UTZmcEtla0FiQ0NRT3FKNlNnczJKcGVjNVpDbTVRLWd3eXF5cDJiSk1NOGY?oc=5",
           "domain": "Ukrinform",
@@ -91,47 +203,15 @@
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T18:52:10.000Z"
-        },
-        {
-          "title": "President's Office denies Bloomberg report on Trump offering Zelenskyy meeting with Putin in Moscow",
-          "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFBSM2lhWHYxbXc1bmc2bW5seDBHZF9vb0k0SDJGb0pkcGNIZGNwZmR1ajlUOEZhcWlHdkNZajB4NjhPb1ZpVGFvcDVaeXpkM3hHSVgtdXp6QnNMVGFUUXNKRUZYWEfSAXBBVV95cUxNUk5scUxjallwWnBZc2k2N3RVTzJhN1pPUzZXNnJQM3hUdmtqZm1ad3hfZC00RDRGQjRDUmhCcHQ1R2hLYnVVMlBpXzBJN1NFWWtfNXJfX0k3WHdYSEV6Tnlpa0UxaFpWTXJnVno3YzNo?oc=5",
-          "domain": "Українська правда",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T18:51:00.000Z"
-        },
-        {
-          "title": "Putin says Russia was Ready for Talks with Kyiv but Ukraine Launched Attacks",
-          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNeVdkYThuZW9XdjdxamNXXzVyT3Fzbmp2MWNrWVo3SkdSaElqYmc5TUxxMk1TeWVzM21sdXdJeFVXR3pyOHdBVFp2WVVoSlhVY1czZWZYak9DeTR0ODNQSEdKWnlEWWp0VGpVaE9OT2g4TllYckRFelVuZEstV1hEMXNLYUlvU29WV1JuWEozWnlxNmN0R3NkeTdfQWczcTU1RTE1MnA4TkJPaFFvd1RFR1hQZEd6VnBxVjRPLQ?oc=5",
-          "domain": "Kurdistan24",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T18:48:00.000Z"
-        },
-        {
-          "title": "Trump Asked Zelenskyy to Meet Putin in Moscow for Talks",
-          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxONlRkSXBINHFwNHZGWVNSSW1EcC1CTkhqX0ZTa3hiUWdpcTVWakN2SGpEbC1nUURRM2xMLWlFSXJxRjFqM3dfRlB0QlQ2TFlBbWtpOG5uQ3JjalQxcmdsczhQeFVKRVdrZDdZRjRQQllsS3o5UXBIamQtTThkU1pLeWM0U1lnbmRfcE4ta0Q4M2FHTmkzTFZwbjFnNWF5Sk1TNTlEcEdBYngwV2dyYXZNUnln?oc=5",
-          "domain": "Bloomberg.com",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T18:45:40.000Z"
-        },
-        {
-          "title": "Trump Offered Zelenskyy a Moscow Meeting with Putin, but Ukraine’s President Rejected It",
-          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTFBCMVBXQ1k1Szg0S1RHNE1nT0pXUkUwQ0hWbjVMVGprMTFYWFU4Q1EwcnNBeHBGSjEtRjRiYnRSM1o0SVpZdnFkQmlpZlF6VnJfQ2hvQjUxMXd2Q2RyU0x5bTRGRG8wbGNvVi05d083dw?oc=5",
-          "domain": "Межа. Новини України.",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T18:42:53.000Z"
         }
       ],
       "screen": {},
       "screened": false,
-      "source": "rss-articles+unscreened+rss-counts",
-      "fetchedAt": "2026-09-25T21:09:13.879Z",
-      "count7d": 29,
-      "prev7d": 13,
-      "capped": true,
+      "source": "gdelt-timeline+rss-articles+unscreened",
+      "fetchedAt": "2026-09-25T22:09:34.495Z",
+      "count7d": 5344,
+      "prev7d": 5455,
+      "capped": false,
       "surge": false
     },
     "IL_GZ": {
@@ -144,11 +224,11 @@
         },
         {
           "date": "2026-09-04",
-          "value": 27
+          "value": 28
         },
         {
           "date": "2026-09-11",
-          "value": 23
+          "value": 22
         },
         {
           "date": "2026-09-18",
@@ -157,12 +237,36 @@
       ],
       "articles": [
         {
+          "title": "Five Great Reads: A week in Gaza, the queen of toddler TV, and bunkering down",
+          "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxQcXNHdlRiUElMcFhITE5FcTRPazZlSDNuejRDQ2FjOTlyTFpDREEzUXh0a1R2MXVuWGtWTjA0WUk2S1lQb1RKUnBBTmY4amJyUDN2TlBGRUhpYy1DeEZFZElkRzZQMVBEUDJhVWJhUFRCOU5YMHVkdEVvUXYxSmdNYmhlLWItNzR0TDlJT2lLaU5HS3paSnRnWFIxTDB6blE1ZVFEY2V1UkdOckRrR1o0LV9WcFRPR3JvMHlGekZSc2hCRnc?oc=5",
+          "domain": "The Guardian",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T22:07:00.000Z"
+        },
+        {
+          "title": "If Gaza governance group began now, it’d be ‘eaten alive,’ Board of Peace rep says",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOaDA1cm9SLWZsN29UZ0xWUXpkbVZLZ203aVJkSngtSno0QnY4RGxNVlNycnRQMDUzUUxFS3NUejdyQU9UQUJoWjVnem5BR3hJNkxjRTBWS1gxWmNmTnB0a2c5UFFOWHJjMzFOcWFISklvTk5NeU1PVEFXazAyNUo4QUJJLVlFYlY4aWlZOEt0N1JRTGZDbTBWcUQ5X2dsNzEtZGRraGFxWjZlN2Vu?oc=5",
+          "domain": "JNS.org",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T21:23:05.000Z"
+        },
+        {
+          "title": "NY Jewish Democrats defend Mamdani after Netanyahu calls him a Hamas supporter",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOZUdSVUphMy12ZzAwSllUaFRhZDJEc3A0ckZWQ1J2Vkc3Zm54UmdvYUZoeDloUUt2T1A2dU92ZlNRYThsWGJDUDZXOWVTa3BHLURld1Y3ejJNX3hDbnJHaW9IMG5jN3VxTkVILWxqV3kzYlhETzBZRUJodmdRbE5rZ0gxYUxVTWpQOG9GTU1TQUIzSnBITnFLQkRwT3NVNkhJZWhMSUoySTVDNGpzNlU3dmhB?oc=5",
+          "domain": "Jewish Telegraphic Agency",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T21:13:31.000Z"
+        },
+        {
           "title": "Despite pre-Oct. 7 warning, PM reportedly feared Gaza strikes would undermine Saudi talks",
           "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOV2xQRDduN3otY1dTLURiZXE1YmtXM09keno5Z3VTZW16UXFkQjZkZTlTNVpmRUlyR09ZM3pIcnNVc2xqVGt4OU5uREJfWVVmd2FrZEFDX1RIQzh3OV9na05OdnZGOFdIN1hkUmZfUXUzOEpSWDBtOWQtbW1MNGZncERvOV9xMmtvNFhCR1o2TUI4MFd2VWotWjY2aHJPVGd5WDhOanFwSVFMTFpzQzk4cTd5cm5aNFc2OHfSAb8BQVVfeXFMUDg5Zzdtb05GVkRaV1dBWUFReXJvcEo4SXJod0dPWkdPOUt5dGxLSkQyWVFxdmhyU193S0xUdkNTS2VGa1RyOHhHRXNRZUp2NzdtbnVGbG9sTTJMU3BHZWNIa3J4LVRHVmxSSWFtT0duOHo5TVZlOEs1b1FsN1FLR1hjTGxyLTdQbkZFNWtrNkFBX2ZjRnNCakpCWEN0emhNdWtPOXJXdnVnVjg3SnFKSUppREl6Q1hPWm52ekpUNmc?oc=5",
           "domain": "The Times of Israel",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T20:58:34.000Z"
+          "ts": "2026-09-25T20:53:00.000Z"
         },
         {
           "title": "Israeli drone strike kills Palestinian visiting brother’s grave in central Gaza",
@@ -207,7 +311,7 @@
         {
           "title": "An ambulance children in Gaza don’t have to fear",
           "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNbVVJRjBkTEtKRjhTcEVzNHN2ZEpjX1VhcXd6bFdOcXRiVXBCbEFENUlxVzBGdXdOdWJEaVNUVDN5a3M5Vkd5SmF3ellORy05RFFsUjVsNHFCY3QzVC1QWjE1ZDJyTThEYWNmYkhMNzFpSmRfejNWMldrU2JBdm9XZnYtbFFqenB2ZEEydXhuVXd2YnRE?oc=5",
-          "domain": "edition.cnn.com",
+          "domain": "CNN",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T19:48:00.000Z"
@@ -227,38 +331,14 @@
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T19:41:41.000Z"
-        },
-        {
-          "title": "‘My job is just to exist’: The Palestinian reporter on surviving Gaza, media fatigue and starting fresh",
-          "url": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxOVVlJcVl4M2RLRTlFVkpYU0hmVzE4V1V0VDk0clFzeDI3RHl1aVVKd1o3TFlLNWh1cGZLMmgtNHFUTjFLZkFmRTFBeTNSdmxQaTdiLVRhc0VKb01CNU9sVHAtQWFiU1Z4dXNvV1BPeTVGUDJJZWFoWlRITW4tcU55dHlRT1VjMDhvWmQ4ZlVsY1pxM1VQcXRuWE4yTXNGLTliUTU2Z2JjUHJNaWpVVlV0Y2lQN1Z4TE5iUXVnLXdOMXZCMDhNOEdQMmZUQmJvbFQ0SEwzOU10SkN4S19DMGRQZVlzRElYMDlqSndSS1M4Yno2V2c?oc=5",
-          "domain": "SMH.com.au",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T19:30:00.000Z"
-        },
-        {
-          "title": "Two reservists killed in IDF drone explosion accident during operations in Gaza",
-          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxOMExBRmZ1VDU5LUw4ZzRSSElPZ1NldUF4bVViYzJfWWtGblVsTWt0YmQwdG9BcGl3cFpHdzhuRXVDUm1BTk1HaENrU3NVUjFTREozdmlsU21qeDBQeW1lekxkbmRVTG1xUDlrS2pFSGFIRFZva3pFTTg3cF90V3BSUkZQbzhFcEFlVDlYQ0VyYUE2VlNiUzdhYlBWMW8wb1hKTk9Fc3RZbkM1TVVXRVBr0gG0AUFVX3lxTE1pLXRYUWh1QTFiTWdMS2lrdDhiQ0J2ODNYSmtjOFZlS1JNek5DaGVHMWhhT3JZZ2FCVVFUcFZVY2dvZDRuX3gtM2VWUml0UkZZSDZfNmtqVU9iYnh0TXdRU1ZCdE9LbTFfMGtVa24wN2VqX0VGMWNUX3NiNFpHcTZXbi0xZWhIZzVIN2tsaEQ1d3ZlVlhJcmlIeWtyeE16d0V6RUpxdUxYNGJJZDdPQXRzMFJJag?oc=5",
-          "domain": "The Times of Israel",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T19:16:05.000Z"
-        },
-        {
-          "title": "Israeli strike kills Palestinian in Khan Younis",
-          "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPdVB1T05CMmc0V3BmT01oTHNGSEo3cXFpVG1pb1BHWHZFa1lyYTBENlEwYXB1NFpFQmVOTElyd2VORExEdnBueWRHT3NLSlh5cWVWZWlKckNRY3ZQUXozdENUT2lQa09VSWVkelU4SUFoYXB3VE93OUJOME9MeHlnc1R4eWxRYm1ESC03Rktpc1dYM0hGVjRV?oc=5",
-          "domain": "Arab News",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T18:49:29.000Z"
         }
       ],
       "screen": {},
       "screened": false,
       "source": "rss-articles+unscreened+rss-counts",
-      "fetchedAt": "2026-09-25T21:15:01.787Z",
+      "fetchedAt": "2026-09-25T22:12:14.149Z",
       "count7d": 30,
-      "prev7d": 23,
+      "prev7d": 22,
       "capped": true,
       "surge": false
     },
@@ -268,11 +348,11 @@
       "timeline": [
         {
           "date": "2026-08-28",
-          "value": 23
+          "value": 24
         },
         {
           "date": "2026-09-04",
-          "value": 36
+          "value": 34
         },
         {
           "date": "2026-09-11",
@@ -280,17 +360,41 @@
         },
         {
           "date": "2026-09-18",
-          "value": 29
+          "value": 30
         }
       ],
       "articles": [
+        {
+          "title": "Iran offers US deal to reopen Strait of Hormuz in seven days",
+          "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE1odjBDSXdkeWhjVXkyWHlIQWJoTWNLOVJvbEJkUV9VblI4NEhXQVNBVVMzVDc4NGVQMzFtVllCSDM4a1NyWnh2Xzh4RUxWamlXV2V2TlI3Rk5qWUtMb3c?oc=5",
+          "domain": "BBC",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T21:57:23.000Z"
+        },
+        {
+          "title": "US, Iran Explore Phased Deal to Reopen the Strait of Hormuz",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxObjhvVmd4dDgxX3YyWXk2dHRYM2N2M0pKRHlZU1pzOHRCNjRmUDNIYWxvajdBTzZRb2tzZDlPTnVPdlFyV0NwZ0JYbDljakNtMVVTQ2xXLWtPbjE1SXhRdi1tYXdqTllxaUZ2RzVmVjhzdzA5WG1Reng2Z1c0cnpOVldGZ01NLURzUjA3eE0wZGxieFUyR1JsaFI5UFN3OWxnb1pPbmNJNEcxN2Rs?oc=5",
+          "domain": "Bloomberg",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T21:37:29.000Z"
+        },
+        {
+          "title": "Iran’s foreign minister details new offer to reopen strait, and other Mideast developments",
+          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQQ3pzZkZqVUUyd3JHN0pYYktoX0VWTjNnTEJ0OVlvMzlMVGVMdlVmYWFZR1ZPTVBfN2w1cmIyTFVGZHVZX2QzTWRab0JtbFZVeUxYaGdvTldWNUdxeXZhd3hDQmF4b0hFNUZvMk5hamxYSG91NXBWMXRWLVdXUS05aU1PUXZqZFdWdFJxR3BacVQ2d2NkRVF5aUw0WWE3VWRXVWNDOGhKcVBhWVlCOXZZcTBRRE4?oc=5",
+          "domain": "apnews.com",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T21:26:00.000Z"
+        },
         {
           "title": "Iran says it has given the US a \"concrete\" seven-day plan to reopen the Strait of Hormuz.",
           "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPMnp5VHlLM3FPdE4zdVVickxaR2dlaS1pSzZlMEFUYmFfdUtqOVZoTDU3eTRkaDNuQjcxaks3b0RBdHZoYm9wTEprcGxVTVk1WXZhLUVIbVR4Z082VVZoVnpXTkt6TmFGZTlKYjMwbV9PNUpPSkU5U0NJcmFVU29aaVZaejBtYndGaWZMUXkwMDJFdmJBZGljQW9PT0g2S1B0RlpEekNsN0pNMlI0d1hPUHB3?oc=5",
           "domain": "Sky News",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T21:11:07.000Z"
+          "ts": "2026-09-25T21:22:18.000Z"
         },
         {
           "title": "Iran Says US and Israel Knew Exactly What They Were Bombing",
@@ -317,36 +421,20 @@
           "ts": "2026-09-25T20:41:46.000Z"
         },
         {
+          "title": "Iran will make no nuclear concessions, Iranian official says",
+          "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxORVpYNWQxeFFCcXEzQTZQdkM1LTJpVWc2RHpwOWtxbzV0OHg2aE12UGV1Y2VOQUN4WHdvOVB4YzBGT0ltckk5d0hDZGZUVXk3YWs0WnA5R2xjNmNBbkhHRzNra2pIQVlLa1pNQ29OV1QxQVdSTWJnaWZEYkVaaXJXa3d4cHVvV1o5VGlpWFRjUG9HVTFoMWw4TFZwNlI4aHJwQjU0UVRuZzJISFp0ZU9YQUw4VQ?oc=5",
+          "domain": "Reuters",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T20:39:45.000Z"
+        },
+        {
           "title": "Iran's Araqchi says now up to US to accept 7-day plan",
           "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9Pd2xQVmdIQ25meWpUWnYzcmFjVzYxMHNIUXEzMVZsVGV0OGUxbzV3eks5X3R5Rnd5UnRhVDNLM094RWFWbEJFY2VYb0l3Wm5EZEpCM2JWVGc5c3FBVFc5eVJHUmNKU21UVGd2ckJjMlpoSlJN?oc=5",
           "domain": "Yahoo News Singapore",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T20:35:28.000Z"
-        },
-        {
-          "title": "Energy briefs–resumed talks with Iran while Hormuz Strait remains a key subject",
-          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNaThfX25XRlNwZUwyZm44aDhwUGk1THdjelhmZU9aSzhlNDdQZl95TmtEcGpLQnVWYUxoQjVwZ0hnV1ZKS0pzTnF4YUI1S0tiOXRaMUFpdFhYa1p0WDZrZUUxTWVJZDVMRm5zcndDc3J3MFZVbHNiVkRaLUt0OENEREJTRGlrUW9aem1tdzNnbFg0SnlQMnFkeDlpcnl0OTlIMkpUSmZZRnZEbjFIWGdMMGVLZ20?oc=5",
-          "domain": "Oklahoma Energy Today",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T20:28:08.000Z"
-        },
-        {
-          "title": "US Equity Markets End Higher Amid Falling Oil Prices Following Iran's Proposal to Reopen Strait of Hormuz",
-          "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxNX3htUmVtWFNBZTBySXh6YkNSYkVLNzVSZW45RTRncG0tRk51ZWV2ZlFUUVNZTXl4S3I3RThMbWJyemhCQ051cFlmRUY2QXdoX2hjU3I3dkVnUkhIaktBOWpHR1ZUdEswS3JUTHpCUHRlRlBnQXllTGUxVzgzX0p2Mmx2SURzZGdBVGFvaVY5UHFWQmFhOWU4ZVhVZjhvX2I0T3pHWkt1Wm5MRFp5MjAxMUUtOGd0ZWhBTDRTVkVfVXVoNzYyRzQweFNFRDk5aEcxbzR1bzNWZnhJRnVXMkFwLWZKanFsdVNT?oc=5",
-          "domain": "marketscreener.com",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T20:16:58.000Z"
-        },
-        {
-          "title": "US, Iran Explore Phased Deal to Reopen the Strait of Hormuz",
-          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxObjhvVmd4dDgxX3YyWXk2dHRYM2N2M0pKRHlZU1pzOHRCNjRmUDNIYWxvajdBTzZRb2tzZDlPTnVPdlFyV0NwZ0JYbDljakNtMVVTQ2xXLWtPbjE1SXhRdi1tYXdqTllxaUZ2RzVmVjhzdzA5WG1Reng2Z1c0cnpOVldGZ01NLURzUjA3eE0wZGxieFUyR1JsaFI5UFN3OWxnb1pPbmNJNEcxN2Rs?oc=5",
-          "domain": "Bloomberg.com",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T20:07:27.000Z"
         },
         {
           "title": "Oil Prices Fall as U.S.-Iran Diplomacy, Regional Tensions Remain in Focus",
@@ -365,14 +453,6 @@
           "ts": "2026-09-25T19:11:25.000Z"
         },
         {
-          "title": "Iran’s foreign minister details new offer to reopen strait, and other Mideast developments",
-          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQQ3pzZkZqVUUyd3JHN0pYYktoX0VWTjNnTEJ0OVlvMzlMVGVMdlVmYWFZR1ZPTVBfN2w1cmIyTFVGZHVZX2QzTWRab0JtbFZVeUxYaGdvTldWNUdxeXZhd3hDQmF4b0hFNUZvMk5hamxYSG91NXBWMXRWLVdXUS05aU1PUXZqZFdWdFJxR3BacVQ2d2NkRVF5aUw0WWE3VWRXVWNDOGhKcVBhWVlCOXZZcTBRRE4?oc=5",
-          "domain": "AP News",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T19:07:00.000Z"
-        },
-        {
           "title": "Iran says no nuclear concessions even if US accepts Strait of Hormuz proposal",
           "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOU1BHUEdSRWFuM0MxWkU2LU5sN3Bmc1c3N2UyaFVGNUxldkZRQmVqV2VzekdMNktLajktUmxHYXhOcmxFRDBMVzhmVl93STV4eEpqNXA3YjYtX2VHQTZkOFFxTUpvR3dxZ0RlT0h0T1hXekNUMDNLTHRHbEFVSHdONk9xZEVjUkV6VkZlRFJUVFlSWWJiMHJlODhWMEFPNG8tdHZuZEIwNXVXT2VkZndjYVlNRWhnSVpvenRmcnVHbGfSAcYBQVVfeXFMTnpXRFF0dzJuQXQtZ2NZd3hsZTVBN3N1ekNhZXdLYXlpNnFhUzQ2Vlg4ZFVObE9uTVVXYy1oWmpkSTUyRDdvRG5XVDFidVc3MGdDTnBQdnpfVVRtUzJFSEdUR2ZsWFRWLU9PSExTcmo0eVdvMHhhOU53ZDlzRlllZWl2RG9mTzAzQjJiUUZRVXQtLXQ1NzJhcHZLYWx5NnU2OTFKRE15VEFRdlRGQkNZSnNyczRsU1U1M2ZSVnlmajdpT0RDamZ3?oc=5",
           "domain": "Firstpost",
@@ -384,41 +464,129 @@
       "screen": {},
       "screened": false,
       "source": "rss-articles+unscreened+rss-counts",
-      "fetchedAt": "2026-09-25T21:19:06.521Z",
-      "count7d": 29,
+      "fetchedAt": "2026-09-25T22:13:38.678Z",
+      "count7d": 30,
       "prev7d": 12,
       "capped": true,
       "surge": false
     },
     "IL_LB": {
       "query": "(Hezbollah OR Lebanon OR Lebanese OR Litani OR Nabatieh) sourcelang:english",
-      "granularity": "week",
+      "granularity": "day",
       "timeline": [
         {
+          "date": "2026-08-27",
+          "value": 281
+        },
+        {
           "date": "2026-08-28",
-          "value": 20
+          "value": 200
+        },
+        {
+          "date": "2026-08-29",
+          "value": 112
+        },
+        {
+          "date": "2026-08-30",
+          "value": 181
+        },
+        {
+          "date": "2026-08-31",
+          "value": 181
+        },
+        {
+          "date": "2026-09-01",
+          "value": 189
+        },
+        {
+          "date": "2026-09-02",
+          "value": 186
+        },
+        {
+          "date": "2026-09-03",
+          "value": 240
         },
         {
           "date": "2026-09-04",
-          "value": 29
+          "value": 218
+        },
+        {
+          "date": "2026-09-05",
+          "value": 136
+        },
+        {
+          "date": "2026-09-06",
+          "value": 212
+        },
+        {
+          "date": "2026-09-07",
+          "value": 314
+        },
+        {
+          "date": "2026-09-08",
+          "value": 145
+        },
+        {
+          "date": "2026-09-09",
+          "value": 241
+        },
+        {
+          "date": "2026-09-10",
+          "value": 241
         },
         {
           "date": "2026-09-11",
-          "value": 25
+          "value": 428
         },
         {
-          "date": "2026-09-18",
-          "value": 26
+          "date": "2026-09-12",
+          "value": 323
+        },
+        {
+          "date": "2026-09-13",
+          "value": 36
+        },
+        {
+          "date": "2026-09-20",
+          "value": 183
+        },
+        {
+          "date": "2026-09-21",
+          "value": 116
+        },
+        {
+          "date": "2026-09-22",
+          "value": 143
+        },
+        {
+          "date": "2026-09-23",
+          "value": 214
+        },
+        {
+          "date": "2026-09-24",
+          "value": 505
+        },
+        {
+          "date": "2026-09-25",
+          "value": 166
         }
       ],
       "articles": [
         {
-          "title": "Ambassador Shea on AI risks, US-China ties and Lebanon | Global Stage",
-          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOcTE3WG05V1JPMHVBaXk4LWJnczQteFpRUFZ6NElXWXlPMmZXbHVleVpXcFNZZ2ZOWXhKNEhGaWtxdWhZOTdmUE5uVzRfamVtOGF2TDkxQl9rNkFaMy10aDRHREpMaDR0cldkYW11R1Y1ZFNacHYtYThNR0tpOFJEZ213?oc=5",
-          "domain": "yahoo.com",
+          "title": "Lebanon treads water as diplomatic efforts continue to prevent an expanded war - L'Orient-Le Jour",
+          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNM2xmZDdFbURPSDJUUGQwRGdzUG1jNjlfbUQ5SlhBY0xnMURKa3NlVWRRQll1VXJCbElUNjBFOUZSTHA1bVN0RWNnMmt5ZER2dWpzRmRaTjJOY1NMVHYzNFhwYnNNa2FOV0d3UVZQX1RCV3VEdjRJa3lMUjBwWlBxbDh1eTlDNkhkREF0SzlyaG9jTEl6akhrSmh0ckt6V3R2dEdIX0hPTENFWUcwOHVFVTNoRU1YN0VoOFJHNDd1b3hwdzVXbUlhWQ?oc=5",
+          "domain": "L'Orient-Le Jour",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T20:23:32.000Z"
+          "ts": "2026-09-25T21:33:01.000Z"
+        },
+        {
+          "title": "Israeli army drops white phosphorous over Lebanon’s Zawtar al-Sharqiyah, report says",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxPT3FIVHdXMV9BQ3dCTjJLb3pCV2JnRzE0MnVGSmJLOGN3X2o4SEJPa1hjWFhsUlRNM2QtSHF3VnVEb0ZOZXNUVzRIdTAxQmlPY3I3aHd0THQxeGozamoySkY1Sm1YS0ZucW4zQ2hmU0lQWnRKRVoycTM3QnY5eWd6NXExbEpvbEQ2VGF1YXVZNllZdEM2SDN5bW1VSmFlaVo5UXRiemdVVDU2VTlVX2lud3lYUDhrVDVhWHBKNXA4STJrRlpMOGc?oc=5",
+          "domain": "Middle East Eye",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T20:16:00.000Z"
         },
         {
           "title": "IDF says ‘false identification’ triggered launch of interceptor in southern Lebanon",
@@ -426,23 +594,15 @@
           "domain": "The Times of Israel",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T20:11:14.000Z"
+          "ts": "2026-09-25T20:09:00.000Z"
         },
         {
-          "title": "UAE and Lebanon launch AI training for one million people — The National",
-          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNOEdfQnNNakI2N1c5Z2xHclR1N2FjRjFiQmNKWWUzbjZ6VkNIQ3hzTmk1c0h3Z3AzUVZNd0FOR2syMnpGd1dWZVZMU3dqZ3F5cGtSX1BWMzVjMUFlRGxoRi1mN3Z2SzlZZm5jQUJORVJIbmJqUU9xcTNhc3JlUmhad3ktWHhncWJoQXNJNEVfRGo4eXlqRG8xUi1GZw?oc=5",
-          "domain": "UA.NEWS",
+          "title": "Lebanon Death Toll From Israeli Attacks Reaches 8,953, Health Ministry Says - Fana News -",
+          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPZHhWNzB4aXNQbFlqdDFrdXdOUHNPOHVGUWhjcEdlMmxKSDE5dDktbnFGSkpLWXRRUnpadk84bmtYTW5QZ291R2FONjYyXzZ2VnpsTzl5bUFMeGI1cGxBelRvdjhSSG54dDF5Q3FXV1lHamxWZ2pGTlB1VzhBMURkWWFELWtlNXVYY0YtY3ZXazJkZGhTX3NETVRpcHltUGw0Q1ctdzdMa2RJazNBQzI2Uw?oc=5",
+          "domain": "Fana News -",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T19:34:15.000Z"
-        },
-        {
-          "title": "Ambassador Shea on AI risks, US-China ties and Lebanon",
-          "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQUk0wZUd1dEprZlZXVnVGamQyUzVfc3F0cW13SlpITjN1NE51TVJWbEpoaThRODBvbUhmbk9tUnl5SVo3ZmRyN0hRbzJmVG9Fc2NzUFdjc3dDaGVtdnRBU3pfTWRXc2R5M0p2Tkl4a0VFdzItRnRQZGxyU1VKa2xVSl9SamtUblBnX0d2MlRPUWc?oc=5",
-          "domain": "yahoo.com",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T19:30:02.000Z"
+          "ts": "2026-09-25T19:23:11.000Z"
         },
         {
           "title": "UAE and Lebanon launch AI training initiative",
@@ -469,20 +629,12 @@
           "ts": "2026-09-25T18:50:28.000Z"
         },
         {
-          "title": "EU-Funded Program Boosts Entrepreneurship in Lebanon",
-          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQV3RWa3ZjOTkwX3JXT0FYYXdGeVNGREFGQ2c1Y0FQMkhKVzlYTF85WEFDekQ2SDE4ZDA1QW9RZjZlcHQ3V1NMLTJDbUxWdWVQaG0xN3NHVi1YMDFwN2oyOHlNV0F1cjBBZU9QSGh3VVU1VTlRV2Zvc3F5X2daeFNBeUpic1o1b1E?oc=5",
-          "domain": "Mirage News",
+          "title": "Nawaf Salam: No Sustainable Stability in Lebanon Without Regional Stability",
+          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPSDBIOHRrZDdxRC1TbHcxcllKdDJGUjRKd0pBczNTT3d2ZFl1UFZ4d09LOEhubEtvY3NPQ3VsYTRBSGlpdjZ1UHJjajRrRWZKU1VKMU9WTGFkQVhDOWRBbGxGcEFObERabjdTRlVsRXRPdGc0STV0cmJWSkp1NGt4RkVqZGVWVk1KTm5FSXk2ZmNmZkVKeFJrdDVrYlQ1WUFsWXAzNmRRV09kakRTejRKaExycHc3U0lLeTBod3kxaUQ4OUZY?oc=5",
+          "domain": "صوت الإمارات",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T18:26:00.000Z"
-        },
-        {
-          "title": "Lebanon Death Toll From Israeli Attacks Reaches 8,953, Health Ministry Says",
-          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQTVZLSGRBTkVNLThmb3BLS3B4UjVucVdaTTd5N21adG1TSlIweFNvenNrRlFzcFNXZnZQbWNrV3BEcGoxOXlQRDRRRjY3SFJCdkVBOFBDNEp6bmx0QmhkdG5xV3c0azRENTZZSlk1MWJUQjJSR1ZvQXFSOTRpeEEyak8zZGNCSmlXRE9makhaUDhPeUhGLVEyMWdKc0lmTnNCcnJ4NGpiWm5lMk5rQnprQXFLdkYwMkNzMU1seQ?oc=5",
-          "domain": "qna.org.qa",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T18:14:02.000Z"
+          "ts": "2026-09-25T18:17:07.000Z"
         },
         {
           "title": "Lebanese PM Demands Israeli Withdrawal, Calling for State Control Over Weapons",
@@ -493,29 +645,37 @@
           "ts": "2026-09-25T18:00:00.000Z"
         },
         {
-          "title": "Lebanese in Brazil, Brazilian in Lebanon",
-          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOanlYYW1IaklEbjFJN0pEbTdGZ2VNdzBIMV9sV1F3Z2dJMk1haVg0cE1rcjNIbmZ0REJMTGRPUUo5YnhqbGxUQTZsblFYakRTWEUxUTdmNU1uN2FMX2FBZUFDdzZ2UE0zRXhEZmNEUTdvaE1Lek1kczZPZTI4NXZqUzlOcU5wNndNbm1aa3lXMEc2VXJNaEFyWdIBngFBVV95cUxOTWUySkRCWnlSUTBvQ1lKZ0VwVnpWcG0tRVo0a1RWNGVNM0F5OEZobnN4Q19NeXljWUVZazFHRG5KTWJNb3FmSGcyc0xYQTJ6MFZYcl9qMnh3UVRZZzA1TWg1TV9zQnpXbExKRHJ5SmNWdzZGcnR5dHBxN0RJTEJtcUZVVkxNZ2pHZEJ4ZFRXZC1WVElkQl9fdjg5alE3UQ?oc=5",
-          "domain": "Al Jazeera",
+          "title": "Lebanese PM at UNGA: Lebanon Seeks End to War and Full Israeli Withdrawal - Fana News -",
+          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxOQTlhS1hhRzZGbU03U2R0U3B5RlBZbnp5TUp1aGhNT0t0dzNsWGxnNWFBdFcwWWlQbUlNWTBxMUhjUjBqNmVMMjBVYWVrWC1keEgtaVV6UDVTSjJaQWZIcC0td2xNNFN1RGxTVDFLc1FrTVFUajIzM3ZmYklnUG5wTjJCY2ttTzdvc184aGpDQ3ByWVpsX21jdWhqbXJXRTdLaEdiSnZvSmkySFFldVZV?oc=5",
+          "domain": "Fana News -",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T17:55:07.000Z"
+          "ts": "2026-09-25T17:48:43.000Z"
         },
         {
-          "title": "Nawaf Salam: No Sustainable Stability in Lebanon Without Regional Stability",
-          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPSDBIOHRrZDdxRC1TbHcxcllKdDJGUjRKd0pBczNTT3d2ZFl1UFZ4d09LOEhubEtvY3NPQ3VsYTRBSGlpdjZ1UHJjajRrRWZKU1VKMU9WTGFkQVhDOWRBbGxGcEFObERabjdTRlVsRXRPdGc0STV0cmJWSkp1NGt4RkVqZGVWVk1KTm5FSXk2ZmNmZkVKeFJrdDVrYlQ1WUFsWXAzNmRRV09kakRTejRKaExycHc3U0lLeTBod3kxaUQ4OUZY?oc=5",
-          "domain": "صوت الإمارات",
+          "title": "Lebanese PM demands Israel withdraw from all Lebanese territory",
+          "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5xT1VKQ244ZVpiVFM3c3hVMnJiV3JucFEtYm1sdnVsTFVrRkhlWHZBR21leWJxanpGRUV4SHhvTV9wWDc4U3YwRUQyZVZBeWRZd2dNb0NCZnY0Zw?oc=5",
+          "domain": "Israel National News",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T17:49:38.000Z"
+          "ts": "2026-09-25T17:42:04.000Z"
+        },
+        {
+          "title": "Lebanon PM stresses need to avert 'vacuum' if UN force leaves",
+          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxPLUNubFZLYTFMdlJ2Vk1nSVBfdzFiQTZaVkpLUTNfb3VheGxIZzhHa0doUS1mY3ZjbVlnVlAweGlEbEtBc3NSTDAtdkpSbnVGMW9Ycm5kRE92a1ZMb1ZDZXhlTmh2Q3lRRTZyb1BzY2lFR1lnN3VyaUVueFpvTjRiX2lMdVljSUh0eVNHR0RKUDkwcUnSAZMBQVVfeXFMTy1DbmxWS2ExTHZSdlZNZ0lQX3cxYkE2WlZKS1EzX291YXhsSGc4R2tHaFEtZmN2Y21ZZ1ZQMHhpRGxLQXNzUkwwLXZKUm51RjFvWHJuZERPdmtWTG9WQ2V4ZU5odkN5UUU2cm9Qc2NpRUdZZzd1cmlFbnhab040Yl9pTHVZY0lIdHlTR0dESlA5MHFJ?oc=5",
+          "domain": "The New Arab",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T17:24:28.000Z"
         }
       ],
       "screen": {},
       "screened": false,
-      "source": "rss-articles+unscreened+rss-counts",
-      "fetchedAt": "2026-09-25T21:20:34.244Z",
-      "count7d": 26,
-      "prev7d": 25,
-      "capped": true,
+      "source": "gdelt-timeline+rss-articles+unscreened",
+      "fetchedAt": "2026-09-25T22:15:14.234Z",
+      "count7d": 1363,
+      "prev7d": 1904,
+      "capped": false,
       "surge": false
     },
     "TH_KH": {
@@ -583,7 +743,7 @@
         {
           "title": "​Thailand and Cambodia Don’t Need a Culture War on Top of Their Border War",
           "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPdVQxNjk4Z0FuWFg3bElKaHhsZE1VNjhxYTBNSHZXUlU3T1B0VzRJQmdUTVJxc3pNcmVhSU5xclFXVjhIY1E4WW83WW5CWVNOTG9iX29HbllFYnVYbjhqMzIzOE92Y1pvcnl3MzlQZTMtV1ljeFdSSHhBa3dvWTVUVXM3akppSVlwRXNiWHBPellJRDJQZE1WSFVOTE8zaDNWWmhFQTc2SWVSM0Z1VGtDRDNiVWVwQ2s2UlVmeU9IRFI?oc=5",
-          "domain": "Khaosod English",
+          "domain": "khaosodenglish.com",
           "country": "",
           "date": "2026-09-24",
           "ts": "2026-09-24T12:14:23.000Z"
@@ -640,7 +800,7 @@
       "screen": {},
       "screened": false,
       "source": "rss-articles+unscreened+rss-counts",
-      "fetchedAt": "2026-09-25T21:22:00.078Z",
+      "fetchedAt": "2026-09-25T22:16:43.581Z",
       "count7d": 37,
       "prev7d": 63,
       "capped": true,
@@ -749,6 +909,30 @@
       ],
       "articles": [
         {
+          "title": "Venezuela's promised elections face long delays, sources say",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQSno2dllRaVRFSktDMmw2MVJpeGk0NTBJQW5ZcDBCVTBnQVFuYnBaUmpJQzJQMExSdDFuRG5aaGJ1UnhDZnJWZDVwYUZ2Q2txMUk5NTAwX2lNNXVScmx2RUJaU1dZRnBLM1Z0OW1oaS1uZ0hMMlhyV1JDbHN0T0Q3eDhiQzJvV19oTEtSV293dk1nQjRjQmgtYg?oc=5",
+          "domain": "The Straits Times",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T22:07:00.000Z"
+        },
+        {
+          "title": "Protest against Venezuelan interim President Delcy Rodriguez's visit to New York, in Caracas",
+          "url": "https://news.google.com/rss/articles/CBMilwJBVV95cUxPTFJIMFpFLXVpY1UwM2MyQXpLWXptbFB2am5qQ0M4UkxIXzc1YkR6bXQ0OWtPR0hwc3R3T3N6ckRJR2xlR3RWXzNxb1VHRDJrMExiVE9YSmxpNDhYWXRUTTBUaVVXb0o2LW5TTkNYdUxKUTdnbmJhTWdkU21vbjZWNEJuUUx2UXpiVWhmLUJjVmlycjVWS3hVRDhyQU9Xb3h5VGtocVU4ZEJoX1NwRDdiVlYzaVhJUFROR3dGNmdyc1VRMVJoUmdRYjE4dXVyT2x3MlI4bzNUZWkzWnBBUUoyTUVwVFQxTmkxdmxnN0RHOVgwUkdRTFY0MWpidHlSS2ZGQkpzQXlERVMyckxINjRzbHVpMzEtdzg?oc=5",
+          "domain": "The Lufkin Daily News",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T22:03:33.000Z"
+        },
+        {
+          "title": "'TUF 34' finalist Valesca Machado explains 'Tina Black' name",
+          "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxOMGVqSzhhMHNqOHliVGllM1g0TnFRZWtjS2plTHhweUpjTUVKeVVTVDkwNTZyYThNR1BLM3lmSkJWdVVPb2thZ09JbWFiMmlZWnUzcUlCS2M5ZXlVRzE3bnRCQVUybDRkbFlSOXQ0X3o2S1NQMUNpYmxoUC1OLWFlbjAtOFEzWUdHcWstN3lIeTUzSkMyN0htTHA1YVRPVEk0TEhodDhJcUtBdk1JRDRsSEZpQ2hQV19wT3l0TldTMmpia0g5N2FuSUJGLWFJcVM4cjRTNmtBMnNTT3JkUDFoRjZWXzYxZVRTU1Y5QjRqWm5DeTNHMHc?oc=5",
+          "domain": "MMA Junkie",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T22:02:00.000Z"
+        },
+        {
           "title": "Pentagon-Backed Venezuelan Oil Company Poised to Challenge Chevron",
           "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQTUczZ0wyUGRQM09EOFh6VFpsSHJ5NmlsWUVsS2p6cU5WWmhLWVd0M3Y3b1U3bGN5cVRid3lHQ0pjdHVUNFZRMHJuY25mQnpvX1I1cl80aGtIZUEzYjJaY0pramVEMW1ScTgwUXN4YXJRam41LXBYUFBveThzX2NGeThEeEs1LTVNMGJZOUlscUxRU0ZCeVNLQTByUlF6NTNucE9RUjFSc1A5clE?oc=5",
           "domain": "WSJ",
@@ -773,82 +957,58 @@
           "ts": "2026-09-25T20:38:58.000Z"
         },
         {
-          "title": "Venezuela (Bolivarian Republic of): Earthquake Response Situation Report #30 (17 to 23 September 2026)",
-          "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxOR3JEUzBhd1NndWVDcHFKX3hub2l4VjUzMGZWaTdOWFdRWXlsT0hjb2ZpS0xLd1N1ZlNhQWxPcy1FT212R2hhNHNFeDZPazVFcnJ5ZTBvYkNhOVBhZTFvTlV5dFBldGpGU1NPOWREbm1jNmxUMnhNRDZCNHJ2R0dHYU1wZllzYWRhUW96ckI3bXk2ZTlteGltY0tlU3ptWnJMMGNURjN0WWozQVhnSjE0ZWJEbnpUWFRLSlpTY2hCZHYtX3U4X0hPVHRkanc4c2RmOU4tSVpIelJyT2Jua2ItbmlKQQ?oc=5",
-          "domain": "ReliefWeb",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T20:15:12.000Z"
-        },
-        {
-          "title": "Zero to hero: Ex-shelter dog for LA County Fire wins award for rescue efforts in Venezuela",
-          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQTlZFOHpqQUJzeE9mbEFndllCcGRILTdEdHhoVHFXTmNmX2J6WkttcWdsNGhOcnFFc3ZLejNacEd3N0dpcGZ5S0RwdTlEX3I1R08xaXkyNUpqb0VuVi11eTFtSWU5SFlsc3BSbFVGbDFSVFhTWlhWcWI4Mlp1M2I3V1BRMlpQTFFYc3V5UlpxeTgweEo2aUHSAZ4BQVVfeXFMTU94LXE1dmQydHFIOXpieTFLZEUwX1RGMjU4MkdITi1QVGFHejlNQVVrWEZ6bXE0cXRYb1VOUG9DdmxlVEZid21mT2I1RTJRM2xMUG45eFU2RDE4R0N0OW9iUmJjeG9uZWk4eVZTRjdINWxzRGtyU3FpVTd5Z1FXZ1BqWlNEMWt1dC1YM1ZRemVNc1JmSDBfbHlaVGlJeVE?oc=5",
-          "domain": "NBC Los Angeles",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T19:29:42.000Z"
-        },
-        {
-          "title": "Appeals court appears divided in case over Venezuelan migrants deported to El Salvador prison",
-          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPbWl6OTRNUWRLYjRjaElMekhSLXZXYzFrM2tGczJicXFUWWoxMUVWOVFaNzNnWW0wVDZMSUpPOXMwTjBQY1hLOXUyN2lXQnFhVmZpeHhDZVpKUTdETG5BYUtGbU5VWmhwbE4zT0Y1SnhxZ2dVY2xUN0ROR0FEWF9id3hXZ1E3WTVmZGlDUG5uMF9aYV9YSmU1RVQ1NDI2azlhenBqOGFlY200ZVdSQmc?oc=5",
-          "domain": "AP News",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T18:22:00.000Z"
-        },
-        {
           "title": "Former Venezuelan first lady Cilia Flores would pose danger if released, feds say",
           "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNaFhyLVVIVE1IQTN5dWhxdWpROFQwekp5blRTMXZ6OTVIZ2RqOXQ0VzM0M3VfQVlxbjBsMDU1UDBKempxUTd0aXJtX1NDRGsyX1h5T1l5X0lZdWRVWlhud1o5YmNPR0w4SjlMeDkzZl9XSy0tTlFESlo4aDloMzUyUDVVbDFDSmphZ3FGUUY0NkFONW5iY3Qw0gGXAUFVX3lxTE1WVUZraTVUOUc1RDJYd1lCM21ITG9mOVFNMG90MklVYXQxc21JNzNtdFMwUnNlcmZfX2VhTFNxd09OY3NvSGFJSXVWNHJ5ZktJTTdMTFRVYUdVWkh2aVNyVXUyTGV6NmJqSzlKLU96YTg3ekc5Rk9rYnhsWXlVQVpWT08yREtkLURtX2R0cVl0c0taTmNvTms?oc=5",
-          "domain": "miamiherald.com",
+          "domain": "Miami Herald",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T18:20:49.000Z"
         },
         {
-          "title": "Venezuela Oil Output Could Hit 1.8 Million Bpd By 2030, Rystad Says",
-          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNcW9lSTB5VjV6cUdneTd5YVg2WVZyR0E1SkNNQkJIQk9SSnVLc0dqUENwb2hHTGRtVDdjSTZpUXpoY0xuQmo4OWM5RVlMT0dSY0ZLX0w2cmlzV1JmVlc3SVNEekFXcHJueWx6UkZ3RGZzOU5XeE1YLWNJd1p4R0VpbW5YSEFWLWh4bVNfNXRUNUJ6aTRFOGU0U3BvS2VXRWZZQVgwbGhCMEpfMFZqeXgyZktn0gGyAUFVX3lxTE1xb2VJMHlWNXpxR2d5N3lhWDZZVnJHQTVKQ01CQkhCT1JKdUtzR2pQQ3BvaEdMZG1UN2NJNmlRemhjTG5Cajg5YzlFWUxPR1JjRktfTDZyaXNXUmZWVzdJU0R6QVdwcm55bHpSRndEZnM5Tld4TVgtY0l3WnhHRWltblhIQVYtaHhtU181dFQ1QnppNEU4ZTRTcG9LZVdFZllBWDBsaEIwSl8wVmp5eDJmS2c?oc=5",
-          "domain": "Crude Oil Prices Today | OilPrice.com",
+          "title": "Venezuela's Delcy Rodriguez Promised Elections at the UN. South Florida's Exiles Aren't Buying It.",
+          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNWGtoT2xrV1FOTUdsUmwwaEd0anpYN0ZOU1NKOGF1RmxsUVQxenZKTDhPc3lXdkZvaUVrRnBHSkxBRTB5cTNTX2dDbGNmVkdtbGN5Sl9MaWZ1Mm91bDFvUGxoejlQUENPcjczNDJ2TUY0WDZFblRlZ3dzc0ozZnFRNENrYXMtX25vZVR6LVAtcE40RlBnOGV2NUhfUzk0NkdKMFZ0UEx2M3Nqa2lldjZWOFhjeDEyOUg1WFJ6dQ?oc=5",
+          "domain": "latintimes.com",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T18:00:00.000Z"
+          "ts": "2026-09-25T16:06:55.000Z"
         },
         {
-          "title": "ICE Shoots 28-year-old Venezuelan doordasher",
-          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQZjZkNUV4czRBUFRldm85VGlyVWNWZHg4aUNtZWFicGgwWDFMN1htdVhQSUdfLXN1LXZpeTBCeE4ySkNkNk1YcHhDU0JvRldWSW9xYjRwUWItTnNnMUpBYlZoS0thMGVVelgtWkFiUG0yeDhfa1Z4LW5NYm5laVp3dzl0d3Q1cXRHQUQ0?oc=5",
-          "domain": "The Paisano",
+          "title": "Venezuela’s Acting Leader Makes Her U.N. Debut",
+          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQWjRORTZCOEpSelN1TWxsbEx6TXZ5RGotVnI2eF9FeTAtazJjbVMtM0o2eEUzbVR6QUdrTUd0dFZwX1RwRVJKNm82NFYzVERDaXp0ZHZtOVRocnBuWDZCSzg2bmk5QVNLcnRRQVBwSVBXMkdhaDVPUXdqZ2dJMjBjMzhBaEFMZkliNUJMWnVpUk1NVnZRWWc?oc=5",
+          "domain": "Foreign Policy",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T17:56:53.000Z"
+          "ts": "2026-09-25T15:47:36.000Z"
         },
         {
-          "title": "Venezuela declares Persad-Bissessar persona grata as leaders agree to deepen ties",
-          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQWTExWWROY2stdUVrZ1ZRdnVxY2Z0UldyRks3V0h4N2ZlYkFLc0pNdFQ2VmQ5UmxVdElGaVVfZjJyWlk5Y3BGR1pOYlVxeDlXSUJuSEpURjVhMmNxR1NaVDlHMDVFWVI0UmlLbFpPT1RORWZXVDJKVXVCVDhpbFVTYkRRLUcxR1BTeGZqclhEUFB2N09OMjVNT0tjYlhoNThwRFpwRmlxM3FHZkxGZnpJVnAtNmJHcDhjY3FodGs1QdIBvwFBVV95cUxQWTExWWROY2stdUVrZ1ZRdnVxY2Z0UldyRks3V0h4N2ZlYkFLc0pNdFQ2VmQ5UmxVdElGaVVfZjJyWlk5Y3BGR1pOYlVxeDlXSUJuSEpURjVhMmNxR1NaVDlHMDVFWVI0UmlLbFpPT1RORWZXVDJKVXVCVDhpbFVTYkRRLUcxR1BTeGZqclhEUFB2N09OMjVNT0tjYlhoNThwRFpwRmlxM3FHZkxGZnpJVnAtNmJHcDhjY3FodGs1QQ?oc=5",
-          "domain": "Barbados Today",
+          "title": "Suriname-Venezuela Pact Opens New Regional Dimension for Energy Cooperation",
+          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNaTQ0NlFuUjVuZkp0MEhfTWdndjlfWTNmSWcwMEx5OWRkakZrc0hIaGRickhoQVkxSm5yTXFJMy1NZEt0YXZZMFlHS2tBdVFCRFdqQnplTkZBQlQ1SFZqc0VVNkhOM2kxNEVvcFhEUVB5X0FfTmtaUERUS0Vkcl95VFdtV29WdHg5YktDNTAtMTFCbkhPbHNWZzNJNmZtMXo5ZzgzQ21qWnRlMDVIMW1fSmc0Smh1X0ZoZGo4UDE2NA?oc=5",
+          "domain": "EIN Presswire",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T17:50:45.000Z"
+          "ts": "2026-09-25T14:53:00.000Z"
         },
         {
-          "title": "Venezuelan men shipped to brutal prison under Alien Enemies Act ask court for due process",
-          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNR01NaVhWRDhJeWF2NXNiUXNjYnl0cmFkclJ1Ukk1MW53MmVONWRCOUNwU0kwSVJIbl9VWTRIeGR0SC03WGsyc1F3WXp1cmYzZUpiTnZUQXJKbGFXMl9lNHRXMWUzaHhDYzRMZGNvOWc0cl93TV95STFNSVJjMF9UZU9LMVE3RmFtV0I3V3NCbEszN1p4TWVPVUc0YU0tOENzaG56ZWVsX0ZZa29xYUtWakdZQkRjNFdTeXh2ak9WSmpSQQ?oc=5",
-          "domain": "News From The States",
+          "title": "Delcy Rodriguez grins at the UN while Venezuela’s democracy dream withers | Opinion",
+          "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQbVA3UFVVZHZNbUlpNXlIY0prZktfa2plZHZmUGxxUnlnRkR5UWdfa0lXSkluVXJxZG5WbW5vRE4tOFBtQkZUXzYzamYxLWc0MFdWRG5adWlMTDBTek11djdHQmN2bnBocWJud3lBajRyVjMyZ1laQl9yMVdaSm04R0hpd0tfS3pLMEFzbTZHY1ctS1ZK?oc=5",
+          "domain": "yahoo.com",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T17:33:00.000Z"
+          "ts": "2026-09-25T14:48:22.000Z"
         },
         {
-          "title": "Global Energy Firms Target Venezuela as Trinidad LNG Opportunity Grows",
-          "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQTlRTU2VuV3FJZHZ1WmJ4ZDQ5bVVkbmkxWVVaTGxnN2g0RHZtZ3BXTUNtOEFCUmQ0OGVWVGJzeEI5U29iNXAyRVNBTUo4ZEsyY1NpZDRZSzRtZmJNT2tjSlNKbmNMeklsMGtKeEFHUGk2bzdyR3NYOTNtNFVDMXBXeHluaGRLN1hMV3J6RDIwOUc5QktSQU0yUF9SaVZnU1M1Mm1YZ3U1SQ?oc=5",
-          "domain": "Natural Gas Intelligence",
+          "title": "Dealership rallies around employee after Venezuela earthquake tragedy",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNSVhBMzFrWE82VU9rRTZySlg3R0ZocGhlX05lT0lWVjIzN05HTkVCMnhXT05GUTlsV3hJTkl4dmxnX2RDbmJRQVZTYnNFWGZKb0lyX0hUQVJJOTVweUlmTXp6c1BlZHdtNmliSlRKeWhMQTJrelJRV3liUXY3blhLaTM0QXJBd0JqWEQzZHdUaGw1QWRMM0ZIMUJBUXh6U2Z2RU9UcHg3cllCZXl3?oc=5",
+          "domain": "Canadian Auto Dealer",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T17:29:41.000Z"
+          "ts": "2026-09-25T14:17:17.000Z"
         }
       ],
       "screen": {},
       "screened": false,
       "source": "gdelt-timeline+gdelt-articles+rss-articles+unscreened",
-      "fetchedAt": "2026-09-25T21:24:44.689Z",
+      "fetchedAt": "2026-09-25T22:18:10.084Z",
       "count7d": 1992,
       "prev7d": 1317,
       "capped": false,
@@ -1023,7 +1183,7 @@
         {
           "title": "China urges Japan to stop sowing discord in South China Sea",
           "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOUEtpSjB1MHgwYXkxeFpSV2kzYUtCVnc1X1l4Znl6OGtoYWpmcWdJT2Y1QXh3Z3JfeFB6ejd3NnpSSE1JSjJpaGJqTmtoZVk1UnNWUGN6OHA4VTFTZkpYcW53aXFuWUVDRE5XSEJOUjdfdUpzUWlMVm5GSjEyRXpZZE1vTXhYVWhoQ0tmYnBSRzkxOHJQTG9fYUNJZmdxb0NjNmlyUmdkcUtpZjg4Q3pTMg?oc=5",
-          "domain": "bastillepost.com",
+          "domain": "巴士的報",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T09:45:00.000Z"
@@ -1056,7 +1216,7 @@
       "screen": {},
       "screened": false,
       "source": "gdelt-timeline+rss-articles+unscreened",
-      "fetchedAt": "2026-09-25T21:27:33.578Z",
+      "fetchedAt": "2026-09-25T22:20:12.631Z",
       "count7d": 291,
       "prev7d": 314,
       "capped": false,
@@ -1064,113 +1224,41 @@
     },
     "TW": {
       "query": "(Taiwan OR \"Taiwan Strait\" OR \"Han Kuang\") (China OR Chinese OR PLA OR Beijing OR \"coast guard\") sourcelang:english",
-      "granularity": "day",
+      "granularity": "week",
       "timeline": [
         {
-          "date": "2026-08-27",
-          "value": 183
-        },
-        {
           "date": "2026-08-28",
-          "value": 93
-        },
-        {
-          "date": "2026-08-29",
-          "value": 71
-        },
-        {
-          "date": "2026-08-30",
-          "value": 95
-        },
-        {
-          "date": "2026-08-31",
-          "value": 222
-        },
-        {
-          "date": "2026-09-01",
-          "value": 175
-        },
-        {
-          "date": "2026-09-02",
-          "value": 160
-        },
-        {
-          "date": "2026-09-03",
-          "value": 201
+          "value": 7
         },
         {
           "date": "2026-09-04",
-          "value": 207
-        },
-        {
-          "date": "2026-09-05",
-          "value": 60
-        },
-        {
-          "date": "2026-09-06",
-          "value": 70
-        },
-        {
-          "date": "2026-09-07",
-          "value": 139
-        },
-        {
-          "date": "2026-09-08",
-          "value": 126
-        },
-        {
-          "date": "2026-09-09",
-          "value": 244
-        },
-        {
-          "date": "2026-09-10",
-          "value": 120
+          "value": 2
         },
         {
           "date": "2026-09-11",
-          "value": 185
+          "value": 7
         },
         {
-          "date": "2026-09-12",
-          "value": 69
-        },
-        {
-          "date": "2026-09-13",
-          "value": 18
-        },
-        {
-          "date": "2026-09-20",
-          "value": 104
-        },
-        {
-          "date": "2026-09-21",
-          "value": 257
-        },
-        {
-          "date": "2026-09-22",
-          "value": 263
-        },
-        {
-          "date": "2026-09-23",
-          "value": 463
-        },
-        {
-          "date": "2026-09-24",
-          "value": 723
-        },
-        {
-          "date": "2026-09-25",
-          "value": 510
+          "date": "2026-09-18",
+          "value": 84
         }
       ],
       "articles": [
         {
           "title": "If tension between China and Taiwan erupts, will the U.S. step in?",
           "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE16Q2lkM1V1emxhVW1jU3l5eXJIRS1qQmpzdGw3N18xenlWaF93dnFxdmRxYl9LZWpQV2pwTm45cUhzQVVwWnpwakJCVE9rUkJVTTZDQU0yaUdhVzFNVmgwYmRYMU9EbG1XWGxVamMxTlM?oc=5",
-          "domain": "WBUR",
+          "domain": "wbur.org",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T19:46:42.000Z"
+        },
+        {
+          "title": "China & Taiwan Update, September 25, 2026",
+          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQMjJmOThFTGFvQlRHTkVWQUt2dVQ2Xy15U2ZPQnFkWjRUNWk4UUZWUG4wajNYNnFmNFlWRTdLcVdZZGFMbjY5R2tETjVRRWNsVVgwUjJwS3NwakVySDhNMXFkbXFOZGs0VTQzell4U1o2M2dKeHhfdXRmRjE3RjJOdW05c1k3M1NhU0NURjRLY3Y3WVU?oc=5",
+          "domain": "understandingwar.org",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T19:38:02.000Z"
         },
         {
           "title": "Taiwan rejects Chinese statements after Trump-Xi meeting",
@@ -1183,7 +1271,7 @@
         {
           "title": "Xi Seizes Trump Detente to Seek Lasting Gains on Trade, Taiwan",
           "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPYzRnSVBpejU4LXZhakg2Rlh3WFNvNU5yUnA4UzRIRk43TUlSNXVROGRjLXlzajk0SEJzZ1d0UlczZDdHQWszcDZZOVh6cDdqenZyZS1kU3RJdHR3eE9hZlVFclhnenJVNTZuNmNIMnpxNmU4TS12MTRwZVl1bU5hd2U2WXhlTHZsbjBsV1JXbU9tTWFnUU5Hd0dnLXFaRHNJdXlId0g4VU03WjE1aWJ4MGZn?oc=5",
-          "domain": "Bloomberg.com",
+          "domain": "Bloomberg",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T17:54:23.000Z"
@@ -1199,7 +1287,7 @@
         {
           "title": "What would happen in a China–Taiwan war",
           "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxOYktuSTBIZzd2SjB4R05LLU5DQ25PSlpCZHp4SUdMVktPM1B2cWtReDZFVU55OE9pVk9kLXRZZnQtWmFJeFJISjE3LUpYNl9WUDM3a1hMMGkwMmV5c3F1Mk16MUpGZjZnbXZEVzc1OUcwWkQxb0NvYW1ISzFNSTNOU3VENmxINFV1RmZ1WUtTaWJ2QWNTY04tZHQ4WFJZazZwcDZ5SlozMA?oc=5",
-          "domain": "thesaturdaypaper.com.au",
+          "domain": "The Saturday Paper",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T14:00:00.000Z"
@@ -1207,7 +1295,7 @@
         {
           "title": "Xi calls for U.S. to ‘oppose’ Taiwan independence as Trump hails China as WWII ally",
           "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNYlJQQmQzYkgxYjlpd21QUEc4UWtzSU9WU2RtdFFUWUVNS2ttZWYwRUNSQmliRE9zS0JZZ1liNHhvN1R2SEhBb050UVZLQjIxR1h4SkgxYkkwNzdHaXdVbGs4S1daUEhOM2RsYVRYV0RWMWJpRWF5TTlsUXl4UFk1QXBNRlV1QUFfZkZ1WFYwb1M4UXFFYzJsWkwyQjQ?oc=5",
-          "domain": "The Japan Times",
+          "domain": "japantimes.co.jp",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T13:17:47.000Z"
@@ -1223,7 +1311,7 @@
         {
           "title": "Xi presses Trump to take the next step on Taiwan: oppose independence",
           "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOWFE0NlBDWVgtTWZFSEx3WEs3NEh6bmUzdjFfTGVWNE1KWlh2YnVzV1hNLWFpVkwtR3pOcm9PUnNDaHJsVjhlUzRDTXByOXl1NkJCcUVoLWx3c1FObWVNOEU4RDNnNzBBb2d3SVB0akdlNWtwaDhnTXpPWjNxNE94VVEwSS0zLXdMRnFDSmxOaWVYZUJ0ZVJkeTRQQXJvNHJpM25WN1VrV1JQTGw0dEtrbEI2a0g1QdIBtgFBVV95cUxPT01LbkRIQy1CU3NXRG5ZY1YzZnA5Y3V0eVIyTEhYV056cWYwOFYzZmdqOUE1Z1I0bTdlOF9tNlhFYUNlMUo1WDRYSVo3NkpBQllNdUc3LWNoV3VjMlVUNDBpX0VNQ0VNVHR2a09GalNVSTlCb09hV2YyRkV0Q19HSDk5U3YtMVl3eU0yMnR6QUJCcGFWRjVsNmlqb3JrYTZtNnI4am9jeWk4b1BSWVM4WjhVcllxQQ?oc=5",
-          "domain": "South China Morning Post",
+          "domain": "SCMP",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T12:00:06.000Z"
@@ -1231,7 +1319,7 @@
         {
           "title": "Trump’s warm welcome for Xi met with caution and uncertainty in Taiwan",
           "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPYkdMamttMDd3YkdaUHVQT2xVdWg0R1VxamJuNnBKWFlsVnlfMzY1ekNZZ09UWF9uVzhQbU92ZWZuQjlRazlCclk3eXdoTVl2b25OVmV5Z0ltdnlnVjdnaHduOFRpbGhBX1F3cXpCWXVpb3BJQTUza3RqTXVicWdaUXEwbXRTQkpxRXgxNEZlZ0RjM1RMcnJleHpFOVFhQ1Y4Nl9ySmZ2SURiempSejBSYm1mWVHSAbQBQVVfeXFMT2JHTGprbTA3d2JHWlB1UE9sVXVoNEdVcWpibjZwSlhZbFZ5XzM2NXpDWWdPVFhfblc4UG1PdmVmbkI5UWs5QnJZN3l3aE1Zdm9uTlZleWdJbXZ5Z1Y3Z2h3bjhUaWxoQV9Rd3F6Qll1aW9wSUE1M2t0ak11YnFnWlFxMG10U0JKcUV4MTRGZWdEYzNUTHJyZXh6RTlRYUNWODZfckpmdklEYnpqUnowUmJtZllR?oc=5",
-          "domain": "South China Morning Post",
+          "domain": "SCMP",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T11:26:13.000Z"
@@ -1251,62 +1339,126 @@
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T10:24:00.000Z"
-        },
-        {
-          "title": "As Chinese President Xi visits, why has Taiwan deepened ties with TN?",
-          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOOGlKbThGUnFEdTJDa2JBWjM0QWpMRVN5UFdBQ0RMS1RZd3AxVGd3N19ScUFfaDdJU3Z5aU5BTktVbHFidEJyZ2t3anJFeWdocDZYN1lVVnMtYks4RzU2ZWNjbkFUZkFLdXJYQXNfcUhfckVrOTAtOWdtcG1CWFZCYjJMTFo1S0hPZmRBbzBuQXM3bzMzR0g1S3RjSnlIcUV6ZVBv?oc=5",
-          "domain": "The Tennessean",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T10:01:00.000Z"
         }
       ],
       "screen": {},
       "screened": false,
-      "source": "gdelt-timeline+rss-articles+unscreened",
-      "fetchedAt": "2026-09-25T21:29:34.303Z",
-      "count7d": 2338,
-      "prev7d": 953,
-      "capped": false,
-      "surge": true
+      "source": "rss-articles+unscreened+rss-counts",
+      "fetchedAt": "2026-09-25T22:23:18.725Z",
+      "count7d": 84,
+      "prev7d": 7,
+      "capped": true,
+      "surge": false
     },
     "CN_JP": {
       "query": "(Japan OR Japanese OR Senkaku OR Takaichi) (China OR Chinese OR Beijing OR PLA) sourcelang:english",
-      "granularity": "week",
+      "granularity": "day",
       "timeline": [
         {
+          "date": "2026-08-27",
+          "value": 466
+        },
+        {
           "date": "2026-08-28",
-          "value": 1
+          "value": 334
+        },
+        {
+          "date": "2026-08-29",
+          "value": 202
+        },
+        {
+          "date": "2026-08-30",
+          "value": 154
+        },
+        {
+          "date": "2026-08-31",
+          "value": 303
+        },
+        {
+          "date": "2026-09-01",
+          "value": 220
+        },
+        {
+          "date": "2026-09-02",
+          "value": 249
+        },
+        {
+          "date": "2026-09-03",
+          "value": 325
         },
         {
           "date": "2026-09-04",
-          "value": 0
+          "value": 367
+        },
+        {
+          "date": "2026-09-05",
+          "value": 160
+        },
+        {
+          "date": "2026-09-06",
+          "value": 184
+        },
+        {
+          "date": "2026-09-07",
+          "value": 316
+        },
+        {
+          "date": "2026-09-08",
+          "value": 240
+        },
+        {
+          "date": "2026-09-09",
+          "value": 408
+        },
+        {
+          "date": "2026-09-10",
+          "value": 288
         },
         {
           "date": "2026-09-11",
-          "value": 6
+          "value": 346
         },
         {
-          "date": "2026-09-18",
-          "value": 93
+          "date": "2026-09-12",
+          "value": 243
+        },
+        {
+          "date": "2026-09-13",
+          "value": 29
+        },
+        {
+          "date": "2026-09-20",
+          "value": 327
+        },
+        {
+          "date": "2026-09-21",
+          "value": 349
+        },
+        {
+          "date": "2026-09-22",
+          "value": 367
+        },
+        {
+          "date": "2026-09-23",
+          "value": 478
+        },
+        {
+          "date": "2026-09-24",
+          "value": 464
+        },
+        {
+          "date": "2026-09-25",
+          "value": 234
         }
       ],
       "articles": [
         {
-          "title": "Surge in Chinese chemical imports puts Japan's industry on alert",
-          "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQZ3ZMbkJiS0NKZ2s0T3lxa1RpeUkzVzRJTk93Z3BiT19jMTFQSXZyZ25DWHcyRG5YQzN2RVVKbFRRY09zSldqUlpmTTlBY3VONVFoUGVyZHJjSC1BMjYzbnJYTWdRWkdWYWtfdjNwcEQ2MDBsdm9YN245RUVscGFidkxUNTVZWDBjX3kzRGlUaDVLMTVlRmxaSVJaVGhhN0s5ZEhXRE0xbWdBMzg?oc=5",
+          "title": "Japan herbal remedy makers seek to reduce China from supply chain",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNM09CSVNyMjQzb19aODFTclJpQjBOZUw1TFFROHhrejgtR3M1dFViMHF0MWRYSVV5NHpqczZib1hUcjI2RHdsUk4yZ3FCZ1ZqNjg2b1BhQVg1VTd1SEk0UXBaN0t4X3ZqMGhVTWRzRnZPelFQNlZPUjZHQV9qSE5tcmFBdE05M3NJWUI3Um8xaDQwTW5hcWFNQWk2UHFNU05mdDdQR2ZJZFdjTW5pWUhodDhn?oc=5",
           "domain": "Nikkei Asia",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T17:03:00.000Z"
-        },
-        {
-          "title": "Toyota's China EV push leaves Japanese suppliers in the cold",
-          "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPbktlVi0wMGJCZzkyZXY0eUFoaWhmb0NocHlmRjc1dHRpd0g3WGJ3M3JLcnh6cDhQQlBScnV3S3RwcU4xaHU1WlVld0dFZjBLc0E5S01DMXVBTjZCUzUwUVRaX3B6Y0JIRDNlWlJFTmhmZjFXVUg1aU12QWJtd2VMUDY2bEFFbksxajdvWkRYS25PdHEwaTR4Y1liVUdxUGIzUEhoclAzT3hNdHZqS09QbmFhS0VsUWdSRlh1cHJYRFc?oc=5",
-          "domain": "Nikkei Asia",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T16:07:00.000Z"
+          "ts": "2026-09-25T21:48:00.000Z"
         },
         {
           "title": "Trump remarks on China as WWII 'ally' raise eyebrows in Japan",
@@ -1319,7 +1471,7 @@
         {
           "title": "BREAKING NEWS: Japan PM Takaichi says \"no comment\" on U.S.-China summit",
           "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFBTS01XckJIc25jVlJkNExVRWNWZlhkbnlSaFQ0RWhfQm0xZ2lQMlRiX0RVUE9ObnFlekpBYWlTdVI2M3J3eVlhWEJYRXNvUm5vcHlUNkV4enFqdw?oc=5",
-          "domain": "english.kyodonews.net",
+          "domain": "Japan Wire by Kyodo News",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T09:12:00.000Z"
@@ -1341,14 +1493,6 @@
           "ts": "2026-09-25T07:04:14.000Z"
         },
         {
-          "title": "Asia week ahead: RBA decision, key data on China, Japan, Korea, Indonesia",
-          "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE0tSXhVbXdnYlpYNlhCZ09mN2JvV3Y0aXFKeUtDeGFBaS1ULXkxaHFmR0JfQzFFQldrekxTOVBYWjg2c2JQZzlzdHNjQ3dOaHVWY0VpeURSenRQd2VnRlRTTlgyTnA?oc=5",
-          "domain": "ING Think",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T06:54:10.000Z"
-        },
-        {
           "title": "US, Japanese officials discussed China's yttrium curbs ahead of Trump-Xi meeting, document shows",
           "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQc1hVbnl6bFJES19xdzFIaFgxQ1ZkTnY5dFlxaDVKUUpFNWNVczRUa0hZZEItbk9TOTU4aEZQNDhIeVJvMTZOZzhMbFRvSlpMNV91Y1FEVEJKbmV4WElzb2U5V3ZNcERzQ3dmbXEtUXkxMGlneWRkNExobmplTU9RRUQwUWxNT19PODY4LTN2WkdxUDFGbE1WeV91SXFGUEhuT1U3VnloX1RfTjVTY0V5emdFNkFlWUFGZy1qSFBQalg?oc=5",
           "domain": "Reuters",
@@ -1359,7 +1503,7 @@
         {
           "title": "China pushes back against Takaichi’s call to remove ‘enemy state’ wartime label",
           "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxPYk5ibThUaUs3cmU3eUVCOEo5NlhvaERiT1VZaHNMU0ItNjhzVVRVaXkzQ0h4N0tqb0JDcmE0d0pkSXBBWnNSR0dwdzViZE14azc0bGY1ZDB6YV9ZejJQM3NxRWpJLXhxOV9LRnBSLVk3TGxCQ0stbk9kLWJGdUpaQkluaVNzUQ?oc=5",
-          "domain": "The Japan Times",
+          "domain": "japantimes.co.jp",
           "country": "",
           "date": "2026-09-24",
           "ts": "2026-09-24T09:06:00.000Z"
@@ -1383,19 +1527,35 @@
         {
           "title": "Takaichi and Trump discuss China ahead of Xi’s visit to U.S.",
           "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNNlF5M0NkTXBHUXdjTVNRRC1DVEpMZHNzVlRlLUY4LWtYY0JoLWQ5d2Y3U09mMDNIZlp0V1pvQnZrV1lEb0ROVmJBd1lrUXpQZVNwZjNDSUpTcFB4YjFoaThEOU0yVjh0aW9VV3VqUFBvVFdseGRmdElfNE9qOFVtMmFMSllDbVUzQ3hsSWF6bnUyMktkS2c0bXBoMA?oc=5",
-          "domain": "The Japan Times",
+          "domain": "japantimes.co.jp",
           "country": "",
           "date": "2026-09-23",
           "ts": "2026-09-23T15:50:25.000Z"
+        },
+        {
+          "title": "Takaichi raises China concerns but Trump may still cut deal with Xi",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNRG8xaGhEcF9vNlZhTkN3NHNWTmJYVnBzbzd0WEpad3NnOFM0ZjlRanJ3V0tUa1VaT1ROdFFaMXVSRDdfVHhaU2pWNEd0LUlnRTkwZ3o5Y1BZR0RSRW5sYnZ2aUZBQlZnN0Z6N1NaTTQwcUxYdWJGQy1tVWxWZW9pTGFEdGdWSGlIRnFDa2hVU2hIMnFfOWg4bkYxZ0w3Y0pmd0M0VmowdVBKZU52NmZleDRaR1FZUW5TandhcmJ0MHByQQ?oc=5",
+          "domain": "Nikkei Asia",
+          "country": "",
+          "date": "2026-09-23",
+          "ts": "2026-09-23T15:36:00.000Z"
+        },
+        {
+          "title": "Enemy state clauses in UN Charter remain extremely relevant today: Chinese FM refutes Takaichi's remarks at UN",
+          "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE42Z1VXQUJkcEpud21aTDR3UXBwUWdQUTJld0RPWnVhNFdaaEREZGxiTzIwSWJTaVc0OUJkaFVmVWtwOXFUVEhKUkZaWG9jRU0xN1MzSm5EOTVSWG1LQzhZR2p3?oc=5",
+          "domain": "Global Times",
+          "country": "",
+          "date": "2026-09-23",
+          "ts": "2026-09-23T11:05:00.000Z"
         }
       ],
       "screen": {},
       "screened": false,
-      "source": "gdelt-articles+rss-articles+unscreened+rss-counts",
-      "fetchedAt": "2026-09-25T21:32:28.074Z",
-      "count7d": 93,
-      "prev7d": 6,
-      "capped": true,
+      "source": "gdelt-timeline+gdelt-articles+rss-articles+unscreened",
+      "fetchedAt": "2026-09-25T22:25:05.506Z",
+      "count7d": 2248,
+      "prev7d": 2025,
+      "capped": false,
       "surge": false
     },
     "IN_PK": {
@@ -1501,17 +1661,25 @@
       ],
       "articles": [
         {
-          "title": "Pakistan PM Shehbaz Sharif says Kashmir dispute requires 'just and fair solution\" at UNGA",
-          "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxPXzBadDlYdmF5aWVXUkhBSER3dnNxdVdDQ0VlcFlZSXpLRVNRSEhYeVNTOWo5RFZqY3lHQm1yczNpWkViTjV3U1JndS1XcmpxRTNNUjRBWDh1RElUblRZMXMtQVBHQUtCY2VJejM3cXVrWGZia2dNT0ZJV3NMNHJndDNaMHl3UV9oVGNVRzFObmdjUDVIYVUyT0FMc2V0QVVVUDZmT3dXRTZlMGtoODNtemQ3cWI0WFZGem9JbjJvanI4ek00Ni1kaENMQkx2QXU3Z1hMMg?oc=5",
-          "domain": "ANI News",
+          "title": "India’s Jaishankar rebuts Pakistan allegation at UN as India signs cybercrime treaty",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNbHJub29FZ1pwbmp2czVCQnpNTjhLNzF4dTEwV3o4RzBjRVN4UnVKY29wSl95YVJWV052UlVXUjAydHhIZjJDcGhxQ1hWZEd1VHh1bDA0TmxRU1V0c084UW41UjFJVWwzZTY3dUVZeFFieXltWVFSUWdsNUtxNFZoSTV0SjBhNGlDWV85RWx3ODEtZzhJVmNzN3JwM3FWSnByd1RRV1Y2R2k5QQ?oc=5",
+          "domain": "Diya TV",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T21:14:00.000Z"
+          "ts": "2026-09-25T21:42:00.000Z"
+        },
+        {
+          "title": "Pakistan PM Shehbaz Sharif says Kashmir dispute requires just and fair solution at UNGA",
+          "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxPXzN5VlM5SFpkNGZybzJMYU5IX0hhY3lkQ3NRZmNjek9HZXd0X0g0S21OWmVHOVJmSXJVb3AzS3RDVnc3SHYySE1ORGY1U0pYWTJNNV9pVHVaNjVNRVNGZGpCYWs1S1A5cHJaQk1UbzRBYWRRMFdSV2JjaVNWLUNnYXo3VHFrcm1ZbU11c2xKdDg0Z3dLbUI0VXUydGpMNFJROW9BcVR5R3VTQWNTMjctRzBjdHl6ZXpzYjFRMmZqbm1zaVR3UEhyOE9hU3RzUDjSAc8BQVVfeXFMT18zeVZTOUhaZDRmcm8yTGFOSF9IYWN5ZENzUWZjY3pPR2V3dF9INEttTlplRzlSZklyVW9wM0t0Q1Z3N0h2MkhNTkRmNVNKWFkyTTVfaVR1WjY1TUVTRmRqQmFrNUtQOXByWkJNVG80QWFkUTBXUldiY2lTVi1DZ2F6N1Rxa3JtWW1NdXNsSnQ4NGd3S21CNFV1MnRqTDRSUTlvQXFUeUd1U0FjUzI3LUcwY3R5emV6c2IxUTJmam5tc2lUd1BIcjhPYVN0c1A4?oc=5",
+          "domain": "tribuneindia.com",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T21:17:07.000Z"
         },
         {
           "title": "Pakistan PM Shehbaz Sharif recalls India-Pakistan conflict, says Trump timely intervention prevented escalation",
           "url": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxNZUh2eEhKYXBWUE13ZkNWVTIzUzN0b0FBQ2x3eWpyck1oN3ltZ3dYSG5IdXRyNFdaQ0pzZ0JkeXRHMC0xN04zWjRGQ2hFOGVwZEttV1kzYS1fZTRrRkc3X05McDZnNXJhZGFzOEJRejlQaVlsLWdmSXZtaU1MbEV1NFptSnNidWlueG5ENWJFTEhqTEF5TkROaTczQjNzeXp5QmtXaVFfRnNWN20wYTVJQlFUSS1wSG9VOTZXTWY4TFFvLVFTekxRUDd0TWNYX3NIZWJlWERYZ0J3aFZmdGZHWHFHOGVOMWxzTkHSAe4BQVVfeXFMTW5udkgxcUZtTmk0R3ZvcmdfYW51U0hwU1pUVWdRVHpCZGJEZThnTlBKRWNvMkQzbm1KRGF6bG9kYVZvTHFOZTkySTFlM01WZnZVdXFhWFFiaTZueUdKa05sOFB0WkJSVmd1UzRFWVFoNHBMbngxRW9xanU4S3pCT18xel9zaUZVU3pHcG1XTWM4MUU2a2ktajM2UV9BUzNmZThmMkhkbER5LWxPYUZ6bmNwNU1yYjlFWk9XY3Z2U0ZTa3BNUXUwdEh6QWpRSWVycG9NOEM4SFFvU2t1a1JBZ1N6TE9vdGVEVllmWjFXdw?oc=5",
-          "domain": "The Tribune",
+          "domain": "tribuneindia.com",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T21:02:07.000Z"
@@ -1519,7 +1687,7 @@
         {
           "title": "'Any Violation An Act Of War': Shehbaz Sharif Issues Indus Treaty Threat At UNGA, Indian Govt Sources Punct",
           "url": "https://news.google.com/rss/articles/CBMiggJBVV95cUxOaHlmRWp1RVFjemhSR1RQRV9LRXdlMTVHR0ZqRzk3VWotX1Y5QUplTFZqbjI0VmhKU3gyRkNYWTVPdkNGR2hQZldmTW5DM213NEdnZlNDYkZsUy1nVkczVTZrOFBOZ1dyZWhEd1h6ZjNMbjdEdFc1eHhEZ0xaOUhoeURmQ2JVaUE5UmEwU3FvbnpVcEhZc2NlQktYOHd0MW5qaHQ3dklHNUFPWnd3R2dHOWwwNjJFXy01bHdJSVhHQkpGZXU2VDRMTHJfZ2hhbzZ5LUExNzZreHNBN25pYzVYRUdzSENyZ1RRUGFpWVhWTXl4QjJvLWN2SVJPMEIzczRHUXfSAYcCQVVfeXFMTVk4NFh2SmlaR3l0SGlhYTdsdnNYUDh3WHM5eHllX21VQmhrZFFZak1FOW4tcUdYbzc3NjhsOUZnR3FtS0ZJN2puRWhPREJ4WC1nbl92ZmtyalV3LTBZV1ZTa0dNeTU0RDZRdmk1WXNIcFRZaXBFZ1lLZHhKTWsya3VoUVRXMTJLdldzSWpnVzhyNVZSMWVfeWNERDF2cjVQYnVEVERfRkM0YVBTbzdLNDRONjBhZGxaR19tR3pFTG1FSm4zWGVTUk1CTV90Si1tSjJHME1XcWNsT3dIeW1pYVRlOXZ3aVluUEdVWHFDOEJzM19BRGtwQ1ZvVTZVc1RzWHgzS0tyQzg?oc=5",
-          "domain": "News18",
+          "domain": "news18.com",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T20:54:31.000Z"
@@ -1527,7 +1695,7 @@
         {
           "title": "'Diverting Indus Waters Will Be Treated As Act Of War': Pakistan PM Warns India At UN",
           "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxON2F1dUpMTE4xQXhNUzJDUHB2OHJfOEJ2YVFDSGJfaFl2bjFYeUtZUEM2cHRWMjIxcjlTa1ozX2Etam56eUY5R3dnNXg2R2w3WTFJYUlQNFQtVHZlckU3eHhUS3JsMm9hVWxBODE4dUdmcnFqc0czbjVxaDFCZ01JMmxHZEM1Nlo2XzVubXFWRXViVGV5c2VXbUNtM3RUWVVZSVQ0dXJXa3NDMnUyR1N4WVc3cktocDRnNERCTlVoYWtLZWtzRE1mTDR30gHPAUFVX3lxTE9oWWhUTGdLaE1jVFBxVXpuWHBYUXJ5TlNlN191TFp2LVZtRFcwOUtUUnVPREVZTnN6UC02OE5mendkcktEc1FXRzl1Y3BnMWR2ZUdEaW1CT2R4bzdFazVKeGdxVENSeXdHY1FTT19wMTFBdVpLck9yaW9tUGh5N1BaOV9KUFgzQVdGT3hQVThkbjdyc1lHTUVoczVzb21aVVIxSi04QWpIZ2hfc0FuakdFMXpQVjBlUlhBOUtzQWFqWWVpdFd4MmRyUDg1bWhadw?oc=5",
-          "domain": "News18",
+          "domain": "news18.com",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T20:32:55.000Z"
@@ -1543,7 +1711,7 @@
         {
           "title": "Shehbaz Sharif Uses UNGA To Claim Sindoor Win, Raise Kashmir & Thank Trump",
           "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxNeUdxNlhRakRTMVh5ak0zZlhTMDU2R3YzTmJQOGRha25lR2I2MVNJOVBLSTRFd0dkR2NzZlo0d0lzNm0tR1hXd2IwODE0ay0ycDdyMTBaLTFsUkVHWGNoTkRldDFIYVdaQWN6aFluQXNVNE0zdzY5RU1PUkxqcFlPVTBlU0thc0E1a2F5bVZyZ055Q0tyM1Rvb3E0ZWdCNnB5R0x5WUlXTVJpY1k5OWdDREpXalhQWGRMMXpUeXAySVZmZ19pMTU3NUxTRm5IczB3VWxVdG5uZUQ1c1BORUlwU2J4UDBtR00y0gHoAUFVX3lxTE15R3E2WFFqRFMxWHlqTTNmWFMwNTZHdjNOYlA4ZGFrbmVHYjYxU0k5UEtJNEV3R2RHY3NmWjR3SXM2bS1HWFd3YjA4MTRrLTJwN3IxMFotMWxSRUdYY2hORGV0MUhhV1pBY3poWW5Bc1U0TTN3NjlFTU9STGpwWU9VMGVTS2FzQTVrYXltVnJnTnlDS3IzVG9vcTRlZ0I2cHlHTHlZSVdNUmljWTk5Z0NESldqWFBYZEwxelR5cDJJVmZnX2kxNTc1TFNGbkhzMHdVbFV0bm5lRDVzUE5FSXBTYnhQMG1HTTI?oc=5",
-          "domain": "timesofindia.indiatimes.com",
+          "domain": "The Times of India",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T20:05:13.000Z"
@@ -1565,42 +1733,34 @@
           "ts": "2026-09-25T19:29:43.000Z"
         },
         {
-          "title": "Pakistan PM Shebaz Sharif raises Kashmir issue at UNGA, credits Trump for 'timely intervention' during India's Op Sindoor",
-          "url": "https://news.google.com/rss/articles/CBMi_gFBVV95cUxQTFVEODl3VVZWZlhqXzNqM0hfY2hCRGVkSzVpZkc4RkxFbUZNYUZfb25Ua2pEdEVBdHVkb3QtZEpxX3FHOEgxWldJYTBaUWpaRUJGS1JzX2dDeHdHQUhEa3R6T0JDdkxkSjhLaXFFVWJwWEJGdmk4NGZra3ZDMTBHOHpxUEdzS2ZEOF9GZkFZejVBZTl2b1hiaHBiLXNEUHlqQzRVQnJ3bzRmUzQ4Y255V2JGeE5lMVNNZEFSZjRQcm83MmJWeEJ6WGJhSXI1blM5VnAxMHhZM3UtVHJfTEVLYU1JeVlXTEVfcDY1cVI1djdzeG1JNGlhaXZVendwdw?oc=5",
-          "domain": "Deccan Herald",
+          "title": "Sharif Credits Trump's 'Timely Intervention' For Averting India-Pakistan Conflict At UNGA",
+          "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxOVWtyc2JwelRUcnkwaXNQS1BoVkZULWRWazJkZ2N0MXhvR29FMEt2YU16YWdKTUJDeVlyaVp4dFJCWEk3VnRvclZ0Slp4S0FJbmx3ZUJyQ0tWQzJOS0hfc0RsdmtOelo0RmhxRVJsMEdKRGt2YnNMLWhOUWFyaHhjaVZJanJ4bVNvNzB5M21ZMGJFWXBuaThsbk53R3hHYU1CSDNuYjl0dEpmTkRvZS03LXFSY1BHTlBNR2xtS0JUZDZRQzF4cGhTanFDdzI1anfSAdQBQVVfeXFMT25rQWw4QkdzRXc5R01oTEtLeGc4VWZXcFVVZzlWQkRVRkY5Q0dZTlZRRFg3Wk9aWS1kd3VOMkpfdUtnMmhET3BfTG1UR1NUMHdkMndRVFJ3VXR5TDhVeHotWHZBSktiQ21PdXlNN045elZETGhQanVZTHlqbmFaTzBKeno0N0MwNmxqQXcxZWVoeE01amQ3eEh3aXhKRHpoejZxZEI2bzhpUW8yS3hMS2RqR0RjOUstWERuVEU4OUpuZGpLaUNIS29aZUZWdkt4VjF5RmI?oc=5",
+          "domain": "news18.com",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T18:59:11.000Z"
+          "ts": "2026-09-25T18:55:14.000Z"
         },
         {
           "title": "Pakistan warns India: diverting waters of the Indus will be taken as an act of war",
           "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOa0FmY1hMMzVNa3EtdTlEWUNXYU9fdVpvdDRoOFFvSlJJQm5zY0E5bHFRcG5BbkdDaTlyQVp2aXlDa2xUeHdJaUxEeDFsM3RDOE5NekNDVWRNYjJOSW5ITlVkZWx3OVRaWFN3OVllMDJ2TWpsSTVRbFBBYkpQemF2VzdFVlp5M0ViVHBvNE1hbkNaaFNfWTlDSFRvU2ZBZUZxV2dyU1BocjAwOG9mcGFNck1mQjJTa2c1aE0xeXVuQjZRQdIBxwFBVV95cUxObHJYOThKUV9NRFZqSWhtOGxWZ2NZMTE2V0Y2bzdkT3pMVXJMMFN2V0VDdWJ3c09YLXZ3dGNSaV9LdU5TYkdVQ0NxUnVMdFJhWnRlM1JEdWVJeldHTmczWUstOGRrU1lpQnBJRG5BSmpJUGk5U3hxYU83Wl9TU2ZndEFaN0YyM0dPRnZua1RBc1FabHp2czZSUVB1SVVfc2dKVFYwRmpvVG9FU3lVV2FwVjNRNjFQU2FtQWZfOWE3azgxZ2lQU3g0?oc=5",
-          "domain": "democrata.es",
+          "domain": "Demócrata",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T18:50:48.000Z"
         },
         {
-          "title": "Shehbaz at UNGA: Pakistan praises Munir over India conflict, credits Trump and raises Kashmir, cries foul...",
-          "url": "https://news.google.com/rss/articles/CBMiiAJBVV95cUxNY0ktSDNvWUh6c2FHM254VmJwdVBZQ0JlS2pTTWl6c0s1Y1NOb1k5bnZTM0VqTm1yaXNRVHdUNzlGNDg4NEc0WUtmUE4wWlVZOS1JdHp1djd4YTBHV2tQNzZZNHpsNHFpUkFOdl9PRGVVSDBnMXJQNGxCcERmNWdMbjBlcXBTZ2hDek9RcElFVGdzM0xoUmpCckVyS2FiNTJaaDREVWlKZE5oa21NampXdnBnQ1Uwd1FwdVVYTGx2ZnR5NHhYalhyZVlDOXpMNno4dUlTTzlxOElDX0FxOWJUN3RzdldiYzdnTk56VkdzREpYM216bHliRno0Q3IteDVEcFRCay1GQTPSAY4CQVVfeXFMTnByT0cyYVltZ0trak5FMUZXMW1oMU5qcktJTnByanEtajdCeDF1NWE1NFdTeW5FRGdJdkdrTS1jTVpfSDI1bFBCSGtEZmIzZGRQNXRjY0RsRFZLMGNTR3A4Y2ZWR1hrMTRzalZkZ1dWWGhtb041ZElWUUJVV0tvZGJUVlpoanZiazlWT2pEeEhhbnJ5VFZRWURMekExQ1BzbXJrY2F4eG5odGxIbUxuUS1PNjhTWWpTR28ycU9UTGgtRzllRlVGc2JpMlZ5NGZtRXFWMlA0QW9aV2lUS1p0UG50cldOOGRXejhmekRHZ1dlT1Vwc2NSbjdUd1BXY0g4UzhRaUpfbTZ4NDVRZW53?oc=5",
-          "domain": "Moneycontrol.com",
+          "title": "At UN, Shehbaz Sharif credits Trump for intervening in India-Pakistan conflict",
+          "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxNV0NwREkyN1Z4MTRhUERlbHpaTFQyTEdSUHNsYWRDWmVDYjhqd0w4aGUtdjFwZXNEY3FkcElJQ3B0V3JxMWNwWXljMjFxcGhQQno4aFVGZ2pmVjYwc01iNFpHcVprZGJRcUNSQ0VJbjVVeUt0LW5mczVFLUtmNGxPRjdLVU5kRnl6MU8yUGFlZkNNZUtnRHBURmRCQXAtRURMS2J5aUh1OXVMeTBmNlpzcGxrOS1aWmRVZ1Y4YXhZNllOQ3NUa1ZBdzlyOEfSAdIBQVVfeXFMTW1BRWt6RHdYWWJ0OTdWRW1sdXlSeWdxY3lCYURadDlTZXhLQkNiOENyVm80elA1cjhQWVVWWVhvczgtbTAzbFAxTi1GRlRoRFo1aDRNSWxPbndIT3ptRV9FVUIxbmFWSWdJXzNtbFFUSDRjc2xQU1ZmVUZzUFBQZXh3V3lDM0NPUGoxZHdCc2x5Z3FkSm9YQXJBMVlvUzhPQjBlOG05S3lxdVZ0YThZbmozYnBFR0ctOXZZcmZOeXdyem84R2Q4V3otZjk4ZWFpS3FB?oc=5",
+          "domain": "India Today",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T18:46:56.000Z"
-        },
-        {
-          "title": "Indus Water Must Not Be Weaponised, Says Pakistan PM Shehbaz Sharif At UNGA |India Pakistan Tensions",
-          "url": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxNR083d3g5dHAxd3N0S2dFeVhwa09oZld2UUNMb1FNaFZobXNUTlRKTUU5RzRaYU8yOW5qREVSSlRjR2JVVmw2QXpqbDFXcUJuTldPNGVGanlUOHFFR04ybnI3WUhwbGM3TElLQW1WVVpYZ2JtZjRkTEk3aG93c3V6SnVBSmUwdXJVSEFFZ0huUHpZUkpIMGYwaHkwLXEwWGlLZlNiUG9hdHd4dVJGT2JsRHVvTTVDMkVrWHJ3MHE0VGh5UVRaMjdqc0dTMjRMdm1VNmVqa0hOTzFLdVVuMFJtUzFR0gHnAUFVX3lxTE9iYkhaM2RxM0liRENVYzRLNGZnck5MdVhsUGZYNzRVTElOSWZxSXdOb29lVFl1TklZbFZGdzROeUphR2lWMFo4eENGV093ejJTcHQtdFNLWGhScVBOc3JQWFlPZmJsVHM1VjBoVUpfR1NRWDFudVJBOC1kSTVTSUlrOGJBRVp5Qk81QXRueE4wcEZOX05YcGN2amF0Z21qVlRONU5YRHgzYzhvT3pFOF9XdHBIOURacm9zeXZOX3BLLWZhQldKYjA3c1ZscWtWQWVUbWU0aThRUVdpcVVMOFY2eWNHNHRWUQ?oc=5",
-          "domain": "News18",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T18:38:00.000Z"
+          "ts": "2026-09-25T18:48:37.000Z"
         }
       ],
       "screen": {},
       "screened": false,
       "source": "gdelt-timeline+rss-articles+unscreened",
-      "fetchedAt": "2026-09-25T21:35:13.666Z",
+      "fetchedAt": "2026-09-25T22:27:06.676Z",
       "count7d": 836,
       "prev7d": 1130,
       "capped": false,
@@ -1608,23 +1768,103 @@
     },
     "MM": {
       "query": "(Myanmar OR Burma OR \"Arakan Army\" OR Rakhine OR \"Min Aung Hlaing\") sourcelang:english",
-      "granularity": "week",
+      "granularity": "day",
       "timeline": [
         {
+          "date": "2026-08-27",
+          "value": 58
+        },
+        {
           "date": "2026-08-28",
-          "value": 5
+          "value": 44
+        },
+        {
+          "date": "2026-08-29",
+          "value": 43
+        },
+        {
+          "date": "2026-08-30",
+          "value": 59
+        },
+        {
+          "date": "2026-08-31",
+          "value": 55
+        },
+        {
+          "date": "2026-09-01",
+          "value": 48
+        },
+        {
+          "date": "2026-09-02",
+          "value": 44
+        },
+        {
+          "date": "2026-09-03",
+          "value": 34
         },
         {
           "date": "2026-09-04",
-          "value": 4
+          "value": 83
+        },
+        {
+          "date": "2026-09-05",
+          "value": 40
+        },
+        {
+          "date": "2026-09-06",
+          "value": 29
+        },
+        {
+          "date": "2026-09-07",
+          "value": 47
+        },
+        {
+          "date": "2026-09-08",
+          "value": 36
+        },
+        {
+          "date": "2026-09-09",
+          "value": 71
+        },
+        {
+          "date": "2026-09-10",
+          "value": 52
         },
         {
           "date": "2026-09-11",
-          "value": 42
+          "value": 62
         },
         {
-          "date": "2026-09-18",
-          "value": 49
+          "date": "2026-09-12",
+          "value": 63
+        },
+        {
+          "date": "2026-09-13",
+          "value": 35
+        },
+        {
+          "date": "2026-09-20",
+          "value": 63
+        },
+        {
+          "date": "2026-09-21",
+          "value": 63
+        },
+        {
+          "date": "2026-09-22",
+          "value": 108
+        },
+        {
+          "date": "2026-09-23",
+          "value": 140
+        },
+        {
+          "date": "2026-09-24",
+          "value": 104
+        },
+        {
+          "date": "2026-09-25",
+          "value": 28
         }
       ],
       "articles": [
@@ -1685,14 +1925,6 @@
           "ts": "2026-09-25T15:26:37.000Z"
         },
         {
-          "title": "Asia-Pacific Community: Chinese EVs expand footprint in Myanmar with smart features, stronger industrial partnerships",
-          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBSbkNOeFRZRmtqNURNXzlHWEx0RUFtRkxtNWd5Smhza0NnLVVhWWtqT3hUMUw4MnRaY0xJaXNnLWJTVmc5ZmE4WjdEMm9nUzBadTFVU2xJNHMxOEdwcnRlRXR0TW1WamluaEFCeDlyZ2lvVDhrRDZkVFBKLXY?oc=5",
-          "domain": "Xinhua",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T14:46:30.000Z"
-        },
-        {
           "title": "Myanmar keen to improve ties with Bangladesh",
           "url": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE02V0huQkpkbUNteV9oMHBpcmhmRDhZWkhJWWx2YzZRMkZBM1BrUlQ3TnRTM3d4WmMtcm44SFRTLU95N2ctVWo3VDFn?oc=5",
           "domain": "Daily Observer",
@@ -1701,17 +1933,9 @@
           "ts": "2026-09-25T14:18:37.000Z"
         },
         {
-          "title": "Telenor (OB:TEL) Could Be 18% Undervalued Following Myanmar Related Charges",
-          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOTGd4akxKSGRpTENLdElIUVFpd19Fdjhmbm5pa3ZrZFlzcEd4YVVQSTd5ZzFMZVE1QS1qRmU2bmZSNlY5dDVCdWI5VkVlSjZYbGpMOXFfUnJhM1Rrajh4X0FuUGd6LURFeWpOeEhERGhZYnZVbWRrWG5ySkJLVi14ZHMyVzh5aXhYN24wUl9DLUtLekgyNVl5SWVuczMwQ2R3bm5VcThqR0FDQ0lyd0ZISHdielpONlVhRV9Qamk3NW5BXzBSdHfSAcsBQVVfeXFMTWEtaXhkdVVvVDRkeldnQnR2dEhfcEl3bEtFYVM2bFIyd3I0ekZneDUxV3lNMzdpbTVlRDBta0hrU3UweU5wMkF2dG9nOWNzaWM0MFdxbmR1WjI4LWJHUC1ycW5YbzNZX0ZTb095TzJncHVEWWl0bWFNbVVpYzBhaXhiX3hrNW82ZlRVMkdqT2p2eFFLSzROWEh6VjBjbjlqTzBMcENQT2tVR0JUSDFYZXFiaE1Wek52T1dmaGVzT1lFS29ZbThQaDluUDg?oc=5",
-          "domain": "simplywall.st",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T13:50:51.000Z"
-        },
-        {
           "title": "Myanmar politics: Military takes steps to control narrative on country's development",
           "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPVW1NT2V2NEh0ZXR3SFA5MURyNENTR2VQNUh0SzdLNUdzUzZKdzJTbC0zdjRFZ0xJV0tLd1hVS240S1VUSnhCblNGQUpyOU5WbWRMcWtuMXFKLWZDOF9icGFELU5jcWdJbFJ3MjV4U2d1WUtLTzdWOU5Va2s2TkZzcDJuZVUzd0hxVGdtRVB3VEpOM0lsanp1NjAxSzdpWHpXb2NzaFlKeHhyVjdTWEozWnJGNVJQR3VUVFhQTmZETQ?oc=5",
-          "domain": "CNA",
+          "domain": "channelnewsasia.com",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T13:33:59.000Z"
@@ -1723,119 +1947,71 @@
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T12:26:52.000Z"
+        },
+        {
+          "title": "MYANMAR-YANGON-AUTO AND PARTS EXPO",
+          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQV0c0Smx1UnNDSkpGdUNpLXFPcEFzTXo2a2VuZDVWWkE4U21RNlFxRlNUODBiWHozTnlQNDVCMlhLYXgzQU5NTW15UUFDT1F5MkdoYm9JRWVQc3RZQ21CaDhWOHlHaWlURmZQQ25XeGptYlE2ZmhYdEVnbzdTZ0NoVWtR?oc=5",
+          "domain": "malaysiasun.com",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T11:46:00.000Z"
+        },
+        {
+          "title": "Myanmar Regime Boss Downplays China Dependency, Shadow Govt’s Beijing Ties, and More",
+          "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxNSVJYSkxicEVPd2JFNXp6Y1dlUU8weV9oY2F0N2FMVmlSdTVvZ3lyT2hiRjBaRU5URXZERFpYaUpiUG9JcVZZQUdJSUFzekxPaUZUbnpKVzlzdENmOFNVbGxJTHBWWnFvZ0xGaEQxR0pVa1NGVjd2TUJCNnRNTEZfMlVQaFNtbkxNWnRNYXlnWVdncGRqTjRKbEh2MU5ucTNFYzFYRkNKbGwySnljVzVTYVJURTBQQnM0MjBRYUJZT1NLaEQ5X210c29zSEk?oc=5",
+          "domain": "The Irrawaddy",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T11:13:09.000Z"
         }
       ],
       "screen": {},
       "screened": false,
-      "source": "rss-articles+unscreened+rss-counts",
-      "fetchedAt": "2026-09-25T21:36:40.379Z",
-      "count7d": 49,
-      "prev7d": 42,
-      "capped": true,
+      "source": "gdelt-timeline+rss-articles+unscreened",
+      "fetchedAt": "2026-09-25T22:28:44.721Z",
+      "count7d": 541,
+      "prev7d": 360,
+      "capped": false,
       "surge": false
     },
     "ME_SPILL": {
       "query": "(Houthi OR Houthis OR \"Red Sea\" OR \"Bab al-Mandab\" OR \"Bab el-Mandeb\" OR Yemen OR \"Iraqi militia\" OR \"Popular Mobilization\" OR \"Golan\") sourcelang:english",
-      "granularity": "day",
+      "granularity": "week",
       "timeline": [
         {
-          "date": "2026-08-27",
-          "value": 125
-        },
-        {
           "date": "2026-08-28",
-          "value": 100
-        },
-        {
-          "date": "2026-08-29",
-          "value": 67
-        },
-        {
-          "date": "2026-08-30",
-          "value": 89
-        },
-        {
-          "date": "2026-08-31",
-          "value": 75
-        },
-        {
-          "date": "2026-09-01",
-          "value": 149
-        },
-        {
-          "date": "2026-09-02",
-          "value": 100
-        },
-        {
-          "date": "2026-09-03",
-          "value": 122
+          "value": 3
         },
         {
           "date": "2026-09-04",
-          "value": 133
-        },
-        {
-          "date": "2026-09-05",
-          "value": 145
-        },
-        {
-          "date": "2026-09-06",
-          "value": 125
-        },
-        {
-          "date": "2026-09-07",
-          "value": 129
-        },
-        {
-          "date": "2026-09-08",
-          "value": 263
-        },
-        {
-          "date": "2026-09-09",
-          "value": 733
-        },
-        {
-          "date": "2026-09-10",
-          "value": 527
+          "value": 31
         },
         {
           "date": "2026-09-11",
-          "value": 1056
+          "value": 40
         },
         {
-          "date": "2026-09-12",
-          "value": 1091
-        },
-        {
-          "date": "2026-09-13",
-          "value": 205
-        },
-        {
-          "date": "2026-09-20",
-          "value": 645
-        },
-        {
-          "date": "2026-09-21",
-          "value": 659
-        },
-        {
-          "date": "2026-09-22",
-          "value": 670
-        },
-        {
-          "date": "2026-09-23",
-          "value": 504
-        },
-        {
-          "date": "2026-09-24",
-          "value": 485
-        },
-        {
-          "date": "2026-09-25",
-          "value": 216
+          "date": "2026-09-18",
+          "value": 26
         }
       ],
       "articles": [
+        {
+          "title": "Saudi-backed Yemen leader calls for general mobilisation",
+          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQUzNlcm9NcHVyN3NmSElkaGk0SVgwaGpyV0oxMW5PdjdaMGx1Q1lPdHR1M20zUHNmRkRwTTdZY0dlV2l0V1ZnM3h2enlFdm5TdDZwMXBrU3dSY195ZjdWbXN4aTRsOVZTcENhdFpvc2toMkpfWjY2TExFM1V6SUgzMGctUTdHZkliNFdZ?oc=5",
+          "domain": "Macau Business",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T21:56:15.000Z"
+        },
+        {
+          "title": "France to send troops to Yanbu as Houthis pledge not to attack EU ships",
+          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQZzZCQ3Vxc21WMGJuakRJOWs4MXdya01nby04d3o2S2NBUTQxeFZ3Y3hvcTRUdXlYclRtMWN1aWJlSEtaN2x4VkVyNUpUMWNyRjQzUndFVFJsdjFEQTREQWlPdk1xazJNN1AzNU9BOUp6MXMxaGtXZFo0MzlGMGZLbTlnWUNDQkw2emc0Wk4wWlhxSHN2ajFkdUJwREh6aGVYU1lXcnJ4OE1peXJXTmN6bm96TFFGcEZYd3BiTG1nRQ?oc=5",
+          "domain": "TradeWinds News",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T21:42:48.000Z"
+        },
         {
           "title": "Yemeni leader calls for general mobilization against Houthis",
           "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPS2VsR1BrdExEQURSVE1WeS1WS2VHNWJlcjAwekx5cUMyeDY3T0l5NGxFOWZWNkxNMnhPa2VPNTVweENyNzdaVm5JYWp2V0tTYlgycXNCRURLZUxpdTBvLTh3dW5PSXI5ZHBodWM2c0hXTkQtYzlUWm9KSjdrNTc5R0FFVEhjdDQtLXNpVWpXem9HR0FQYUQtdtIBmAFBVV95cUxOV3ZKNEtWZFNpb0xUNFB0ZE1lRXlLVy10UXU1VllETG81X1FHVmFCNjdIdVJDQ0JldGo3dEhYRHNrUEhsMUUzNnA5ak55dnZxTnctM05OOVZwSVA2cks2MWY4amNDbmx4bXhuMnhYSnJsNmRCYW9JQjl2OWlDYkJod1JPRGV5VDJnRFVTN3ktaWR3OTR1WmNmWg?oc=5",
@@ -1874,23 +2050,7 @@
           "domain": "Al Jazeera",
           "country": "",
           "date": "2026-09-25",
-          "ts": "2026-09-25T21:02:23.000Z"
-        },
-        {
-          "title": "Be ready to sacrifice lives to defend nation from Houthis, Saudi Grand Muftis urges troops",
-          "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxOdzNNT2FyS0QxV1UtQjBjY2tJX1NGVzllNEtXODF4LTE4RnJ0TGdmNzNodkpySmZIc0xXNWVmNzRXZFduM2xyX1RuRVdmbjJpWkowQTE2NzVDdkJSMnlENGZpN1dDWk9VTTVUWGhabEI3UkpkT0hvZk00bFNlbi0wYW95bDdudmhVLU16RkxBLW5kemxfN2pDZzZRNVBna0hfQ3NqdHJIaXV5LXVlOE0tVFA3ZVpnMWJzN29ubm9ZSmNYc0hielZFcDdxWTJPeE8t?oc=5",
-          "domain": "Arab News",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T20:49:32.000Z"
-        },
-        {
-          "title": "Yemen's president calls on his people to mobilise against Iran-backed Houthis",
-          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNVGQtUWFQT2p6WXFwU0lIZm9NVW9rZDF0NWlfMTJvTkVNUmUxYjJFMVF2MjVWQ01YOFF1WU5JRVJ3WkR6eVo0RUkwcjRfczEwcTZ5NkhwdnViYkMtWG5aMndqOGE2Q0JXTm9kRlFpWV9jM21ackhTaDlWNnhOR19lSDZqcld5d2laVExHOWhaMkxyM2NKTHQzWG9FN2RCOFhEZE5BeGh0NDJOeTc2cXNCZlJnanIzTThkWmFkNzA3TkZoQQ?oc=5",
-          "domain": "France 24",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T20:41:29.000Z"
+          "ts": "2026-09-25T21:00:03.000Z"
         },
         {
           "title": "Saudi Arabia, Pakistan, Turkiye agree to deepen military, intelligence cooperation amid Houthi attacks",
@@ -1911,10 +2071,18 @@
         {
           "title": "Houthi threat opens new regional doors for Israel, but old limits remain",
           "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE1ienZvWVYwSllkcHBnY245dDRpZjNTZVNoRVVaWTdwQzFoWkJBUDUtTTV5eG5MNmJzbHdlU3ItNE5rbm15aTRkTDdxNUo2TDdJajQ0cmVXSmVDVzdsLU5WZFpQRU9RUmpHQVFRaFF3?oc=5",
-          "domain": "Ynetnews",
+          "domain": "ynetnews.com",
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T20:07:46.000Z"
+        },
+        {
+          "title": "Yemen leader calls on Yemenis to mobilize",
+          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOWmlNY2xqTXFJMzBuaHo3eXpLemRfVy1RUUNhZzJrX3dSaldjWHVyazhhVk9WM0czc3JZcGxGVEZLc0NIcDZfeWZHdzBIcGpkNldVNVEwa1JfMkJRTWhqMV9fVWh4NnFoWkN5RUtaMGlHN0x5T1cwWFR2T040aVFYbTRmZko1VEFHTWk2anYtcw?oc=5",
+          "domain": "Arab News",
+          "country": "",
+          "date": "2026-09-25",
+          "ts": "2026-09-25T20:03:45.000Z"
         },
         {
           "title": "Houthis told EU they have no intention to attack European ships: Report",
@@ -1923,23 +2091,15 @@
           "country": "",
           "date": "2026-09-25",
           "ts": "2026-09-25T19:58:00.000Z"
-        },
-        {
-          "title": "Iran distances itself from Houthis as Saudi Arabia builds new alliance",
-          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQbUc0VzNaTHRLQ05LbnNOdC1oYWpGVzNaSTRsRF9JMGJPcjNTc3QydTNKazh2SHRQWm1FU0lkSTFBLV9fTG1CeEtjc0hjN2pEMTVlX2JIYXBRdzJ1eFZSZWo2OHB4akhYR2FldHJ4NXdpdGduN2o5VERFWmpuMkFYemZoSlRpZjg1ZTRLcXRhZWNtZ2PSAZgBQVVfeXFMTlNKVDdmd2NrZk1pQWpMeVhET2FGWnpRbWluLXk0RmZEeF9nQmFOZWh6UkRVQUJTNGc5Rk9XQjlKZTNySXVkWDRvN0w2dHpfODRqdTQ1NURpUml2MDdmVzdqbzdNb0RmSk54blkzdTVhUTh0WjI4LUUydktLTkgyX25nUE5Pbms0bEZEWmVLZm5ETHVQb3l6bkw?oc=5",
-          "domain": "NewsNation",
-          "country": "",
-          "date": "2026-09-25",
-          "ts": "2026-09-25T19:46:25.000Z"
         }
       ],
       "screen": {},
       "screened": false,
-      "source": "gdelt-timeline+rss-articles+unscreened",
-      "fetchedAt": "2026-09-25T21:38:42.272Z",
-      "count7d": 3384,
-      "prev7d": 3924,
-      "capped": false,
+      "source": "rss-articles+unscreened+rss-counts",
+      "fetchedAt": "2026-09-25T22:30:09.156Z",
+      "count7d": 26,
+      "prev7d": 40,
+      "capped": true,
       "surge": false
     }
   }
