@@ -681,6 +681,34 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       };
     })()
   };
+  // --- 1b2. Feed sync helpers: title heuristics and the model relevance screen (fake client)
+  {
+    const feed = require("../scripts/sync-watchlist-feed.js");
+    const cnjp = wl.items.find(i => i.id === "CN_JP");
+    check("feed: livestream spam and fullwidth/maths-bold titles are dropped by the heuristics",
+      !feed.titleMatch({ title: "(LIVESTREAMs!)tv* Chinese Taipei W vs. Japan W Match Live free stream 24 september 2026" }, cnjp.feed) &&
+      !feed.titleMatch({ title: "!+[Here's Way To Watch] Chinese Taipei vs Japan 𝙻𝚒𝚟𝚎 𝚂𝚝𝚛𝚎𝚊𝚖𝚒𝚗𝚐 𝙾𝚗𝚕𝚒𝚗𝚎" }, cnjp.feed) &&
+      feed.titleMatch({ title: "China urges Japan to earn trust through concrete actions" }, cnjp.feed));
+    const cands = [
+      { title: "Japan Ends 60-Year Gold Drought, Beats China", url: "u1", domain: "chosun.com", ts: "2026-09-25T00:17:00Z" },
+      { title: "China urges Japan to earn trust through concrete actions", url: "u2", domain: "ecns.cn", ts: "2026-09-24T14:23:00Z" },
+      { title: "China pushes back against Takaichi's call to remove 'enemy state' wartime label", url: "u3", domain: "japantimes.co.jp", ts: "2026-09-24T09:06:00Z" },
+    ];
+    const calls = [];
+    const fake = { beta: { messages: { create: async req => { calls.push(req); return { stop_reason: "end_turn", content: [{ type: "text", text: JSON.stringify({ keep: [1, 2] }) }] }; } } } };
+    const r1 = await feed.screenArticles(cnjp, cands, {}, fake);
+    check("feed screen: the model's verdict drops the basketball result and keeps the two security headlines, newest first",
+      calls.length === 1 && r1.screened && r1.judged === 3 && r1.kept.map(a => a.url).join(",") === "u2,u3" && calls[0].model === feed.SCREEN_MODEL &&
+      /Conflict watchlist item: China/.test(calls[0].messages[0].content) && /Topics of interest/.test(calls[0].messages[0].content) && calls[0].output_config.format.type === "json_schema");
+    const r2 = await feed.screenArticles(cnjp, cands, r1.screen, fake);
+    check("feed screen: cached verdicts are reused (no second API call) and still drop the basketball result", calls.length === 1 && r2.judged === 0 && r2.kept.length === 2 && Object.keys(r2.screen).length === 3);
+    const r3 = await feed.screenArticles(cnjp, cands, {}, null);
+    check("feed screen: without a client the heuristic list is kept and the item is marked unscreened", r3.screened === false && r3.kept.length === 3);
+    const failing = { beta: { messages: { create: async () => { throw new Error("HTTP 529"); } } } };
+    const r4 = await feed.screenArticles(cnjp, cands, {}, failing);
+    check("feed screen: an API error keeps the heuristic list, marks unscreened and caches nothing", r4.screened === false && r4.kept.length === 3 && Object.keys(r4.screen).length === 0);
+  }
+
   // --- 1c. A mirror host (pages.dev) reads the live data files from the data origin
   {
     const domM = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true, url: "https://conflict-watchlist.pages.dev/conflict-dashboard.html" });

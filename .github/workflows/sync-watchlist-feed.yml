@@ -43,7 +43,14 @@ jobs:
         with:
           node-version: 20
 
-      - name: Sync open-source feed (GDELT)
+      - name: Install dependencies (Anthropic SDK for the relevance screen)
+        run: npm ci --omit=dev --no-fund --no-audit
+
+      - name: Sync open-source feed (GDELT + Google News, model relevance screen)
+        # ANTHROPIC_API_KEY (repository secret) enables the Claude cross-check of
+        # headline relevance; without it the sync runs on title heuristics only.
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: node scripts/sync-watchlist-feed.js
 
       - name: Commit feed (if changed)
