@@ -107,7 +107,16 @@ same way.
      and replace `sources` with the run's citations (label + URL);
    - adjust `feed.query` / `feed.terms` / `feed.require` / `feed.exclude`
      (see `definitions.feed`) only if the item's vocabulary
-     changed (new place names, operations, actors).
+     changed (new place names, operations, actors);
+   - **feed noise check**: read the item's `articles` in `watchlist-live.json`
+     (the live feed, committed hourly). For any headline that is not
+     reporting on the conflict's security, military, diplomatic or
+     humanitarian dimension (sport, entertainment, livestream pages,
+     business-only stories, homonyms such as Lebanon, Pennsylvania), add a
+     short, specific lowercase substring to that item's `feed.exclude`, or a
+     `feed.require` group when one side of a two-party theatre is missing,
+     and add spam sources to `definitions.feed.spamDomains`. Keep entries
+     specific; never add a term that would drop genuine reporting.
 4. Update `meta.reviewer` to "Automated open-source review, <date>".
 5. Validate: `npm test` must pass (it checks scales, dates, snapshots,
    history consistency, ranking and rendering).

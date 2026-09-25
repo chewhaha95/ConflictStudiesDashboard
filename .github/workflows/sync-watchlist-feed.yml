@@ -21,6 +21,7 @@ permissions:
   contents: write
   pages: write
   id-token: write
+  models: read          # GitHub Models: free headline relevance screen with GITHUB_TOKEN
 
 jobs:
   # The sync runs in its own concurrency group so a Pages deploy from a merge
@@ -47,10 +48,12 @@ jobs:
         run: npm ci --omit=dev --no-fund --no-audit
 
       - name: Sync open-source feed (GDELT + Google News, model relevance screen)
-        # ANTHROPIC_API_KEY (repository secret) enables the Claude cross-check of
-        # headline relevance; without it the sync runs on title heuristics only.
+        # Headline relevance cross-check: Claude if ANTHROPIC_API_KEY is set as a
+        # repository secret, else GitHub Models (free for Actions) with GITHUB_TOKEN,
+        # else title heuristics only.
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/sync-watchlist-feed.js
 
       - name: Commit feed (if changed)
