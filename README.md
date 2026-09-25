@@ -104,6 +104,19 @@ flags, staleness and surges:
 The Watchlist stands entirely on open sources: it neither displays nor uses
 the weekly brief shown on the Weekly tab.
 
+## What refreshes when
+
+| Part of the dashboard | Source | Refresh |
+|---|---|---|
+| Watchlist: coverage sparklines, counts, surge flags, "Newest reporting", latest headlines | `watchlist-live.json` (GDELT + Google News, model relevance screen) | Hourly at :07 UTC (Cloudflare Worker cron → feed workflow) |
+| Watchlist: state, dimensions, status summary, changes, indicators, timeline, topic assessment | `watchlist.json` (daily automated open-source review) | Daily, 05:30 SGT, published by about 07:00 |
+| Weekly tab and Capabilities tab (brief-evidenced mode) | `weekly-live.json`, synced from the weekly brief site | Checked hourly in the same feed run (changes when a new brief edition is published, normally weekly); the daily `sync-weekly.yml` schedule remains as a fallback |
+| Monthly tab | `sample-data.json` (seed weekly reports rolled up) | Only when the seed file is updated in the repository; not synced automatically |
+| Theme | Dark by default; the 🌙/☀️ choice is remembered per browser | — |
+
+Every data change deploys to GitHub Pages within a few minutes and is read
+live by the Cloudflare mirror.
+
 ## Hosting and sharing
 
 The site is static. GitHub Pages (`.github/workflows/pages.yml`) is the primary
