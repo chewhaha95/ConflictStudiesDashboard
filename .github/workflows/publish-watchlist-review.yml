@@ -5,8 +5,14 @@ name: Publish automated watchlist review
 # claude/watchlist-review and force-pushes it. This workflow is the no-human
 # publication gate the owner asked for: it checks that the branch changes
 # nothing but watchlist.json, runs the smoke test, merges into main and
-# deploys to Pages. A review that fails the checks is not published and the
-# run goes red, so the failure is visible.
+# dispatches the Pages deploy workflow on main. A review that fails the checks
+# is not published and the run goes red, so the failure is visible.
+#
+# The deploy is dispatched rather than run here: the github-pages environment
+# only accepts deployments from main, and this workflow runs on the review
+# branch, so an in-workflow deploy job is refused before its first step. A push
+# made with GITHUB_TOKEN does not fire the Pages workflow's push trigger either,
+# hence the explicit dispatch (permissions: actions: write).
 
 on:
   push:
@@ -15,8 +21,7 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
+  actions: write
 
 jobs:
   validate-and-merge:
@@ -73,35 +78,9 @@ jobs:
     needs: validate-and-merge
     if: needs.validate-and-merge.outputs.merged == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    concurrency:
-      group: pages
-      cancel-in-progress: false
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    timeout-minutes: 5
     steps:
-      - name: Checkout main
-        uses: actions/checkout@v4
-        with:
-          ref: main
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Stamp asset versions (cache busting)
-        run: |
-          v="$(git rev-parse --short=10 HEAD)"
-          sed -i -E "s/(app\.js|styles\.css)\?v=[A-Za-z0-9]+/\1?v=$v/g" conflict-dashboard.html
-          grep -o '(app\.js|styles\.css)?v=[A-Za-z0-9]*' -E conflict-dashboard.html
-
-      - name: Upload site artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Dispatch the Pages deploy on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main --repo "$GITHUB_REPOSITORY"
