@@ -741,6 +741,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
         rf.length === 4 && !rf.some(a => a.url === "f1" || a.url === "f5") && rf[0].url !== "f1");
       const rf2 = feed.rankArticles(filler.slice(0, 3).concat(filler[4]), cnjp2, 12, now);
       check("feed rank: a thin theatre still fills to four with the best of the rest", rf2.length === 4 && rf2[0].url !== "f1" && rf2.some(a => a.url === "f1"));
+      check("feed: withinDays drops articles older than the window and keeps undated ones",
+        feed.withinDays([{ ts: "2026-08-29T07:00:00Z", url: "o" }, { ts: "2026-09-24T07:00:00Z", url: "n" }, { url: "u" }], 3, now).map(a => a.url).join(",") === "n,u");
       check("feed rank: short terms are whole words (\"warm welcome\" is not \"war\"), longer terms match at a word start (\"attacks\", \"escalation\")",
         feed.relevanceScore({ title: "Warm welcome for Xi", ts: "2026-09-25T20:00:00Z" }, ruua, now) < 2 &&
         feed.relevanceScore({ title: "Attacks raise escalation fears", ts: "2026-09-25T20:00:00Z" }, ruua, now) >= 4 &&
