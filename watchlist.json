@@ -138,7 +138,11 @@
       "titleFilter": "Articles are kept only when the title contains one of the item's terms, to cut GDELT's full-text noise.",
       "terms": "Title filter: at least one of these substrings must appear in an article title for it to count as reporting on the item.",
       "require": "Optional groups of substrings; a title must contain at least one term from every group (two-party theatres: one term per side).",
-      "exclude": "Optional substrings that drop a title (sport, entertainment and other noise), in addition to the sync's global list."
+      "exclude": "Optional substrings that drop a title (sport, entertainment and other noise), in addition to the sync's global list.",
+      "spamDomains": [
+        "czechinvest.gov.cz"
+      ],
+      "spamDomainsNote": "Article sources dropped outright (livestream/score spam). The daily review adds domains seen producing noise."
     },
     "columns": {
       "tier": "Standing relevance to the Army: T1 Priority Conflicts, T2 Active Regional & Escalation Watches, T3 Baseline Regional Research Reserve. Tiers do not change week to week.",

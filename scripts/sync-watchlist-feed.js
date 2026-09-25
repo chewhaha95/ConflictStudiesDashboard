@@ -159,15 +159,50 @@ const titleMatch = (a, feed) => {
 // topics. Verdicts are cached per title in watchlist-live.json (`screen`), so a
 // title is judged once, and the screen is skipped (heuristics only, logged)
 // when ANTHROPIC_API_KEY is not set or the API fails.
-const SCREEN_MODEL = process.env.FEED_SCREEN_MODEL || "claude-opus-5";
+// Providers, first available wins: ANTHROPIC_API_KEY → Claude (claude-opus-5);
+// else GITHUB_TOKEN → GitHub Models (free for Actions, `permissions: models: read`);
+// else no screen. FEED_SCREEN=off disables it; FEED_SCREEN_MODEL overrides the model.
 const SCREEN_MAX = 30;            // newest candidates sent per item
 const SCREEN_KEEP = 300;          // cached verdicts kept per item
 const titleKey = t => String(t || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 60);
 const SCREEN_SCHEMA = { type: "object", properties: { keep: { type: "array", items: { type: "integer" } } }, required: ["keep"], additionalProperties: false };
-function screenClient() {
-  if (!process.env.ANTHROPIC_API_KEY) return null;
-  const Anthropic = require("@anthropic-ai/sdk").default || require("@anthropic-ai/sdk");
-  return new Anthropic({ maxRetries: 2, timeout: 60000 });
+const GITHUB_MODELS = "https://models.github.ai/inference/chat/completions";
+function screenJudge() {
+  if ((process.env.FEED_SCREEN || "").toLowerCase() === "off") return null;
+  if (process.env.ANTHROPIC_API_KEY) {
+    const model = process.env.FEED_SCREEN_MODEL || "claude-opus-5";
+    const Anthropic = require("@anthropic-ai/sdk").default || require("@anthropic-ai/sdk");
+    const client = new Anthropic({ maxRetries: 2, timeout: 60000 });
+    const judge = async (system, user) => {
+      const res = await client.beta.messages.create({
+        model, max_tokens: 1024,
+        betas: ["server-side-fallback-2026-07-01"], fallbacks: "default",
+        output_config: { effort: "low", format: { type: "json_schema", schema: SCREEN_SCHEMA } },
+        system, messages: [{ role: "user", content: user }],
+      });
+      if (res.stop_reason === "refusal") throw new Error("screen refused");
+      return (res.content || []).filter(b => b.type === "text").map(b => b.text).join("");
+    };
+    return Object.assign(judge, { label: `claude:${model}` });
+  }
+  if (process.env.GITHUB_TOKEN) {
+    const model = process.env.FEED_SCREEN_MODEL || "openai/gpt-4o-mini";
+    const judge = async (system, user) => {
+      const res = await fetch(GITHUB_MODELS, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${process.env.GITHUB_TOKEN}`, "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "Content-Type": "application/json" },
+        body: JSON.stringify({ model, temperature: 0, max_tokens: 300, response_format: { type: "json_object" },
+          messages: [{ role: "system", content: system + ' Respond with JSON only: {"keep": [indices]}.' }, { role: "user", content: user }] }),
+        signal: AbortSignal.timeout(60000),
+      });
+      const text = await res.text();
+      if (!res.ok) throw new Error(`GitHub Models HTTP ${res.status}: ${text.slice(0, 160)}`);
+      const j = JSON.parse(text);
+      return j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || "";
+    };
+    return Object.assign(judge, { label: `github-models:${model}` });
+  }
+  return null;
 }
 function screenPrompt(it, cands) {
   const topics = (it.topics || []).map((t, i) => `${i + 1}. ${t.topic} — watch: ${t.watch && t.watch.text}`).join("\n");
@@ -175,24 +210,18 @@ function screenPrompt(it, cands) {
   return `Conflict watchlist item: ${it.name}\nCurrent phase: ${(it.dims && it.dims.phase && it.dims.phase.now) || ""}\nStatus: ${(it.status && it.status.summary) || ""}\nTopics of interest:\n${topics}\n\nCandidate headlines (index. [source] title):\n${list}\n\nReturn the indices to KEEP.`;
 }
 const SCREEN_SYSTEM = "You screen news headlines for a military conflict-studies watchlist. Keep a headline only if it reports on the security, military, political-military, diplomatic or humanitarian dimension of the named conflict or theatre. Drop sport, entertainment, livestream and score pages, business or technology stories with no security angle, cultural or lifestyle pieces, homonyms (places or people with the same name elsewhere), and stories about a different conflict that merely mention a party. When unsure, drop it.";
-async function screenArticles(it, cands, prevScreen, client) {
+async function screenArticles(it, cands, prevScreen, judge) {
   const screen = Object.assign({}, prevScreen || {});
   const unjudged = cands.filter(a => !(titleKey(a.title) in screen));
   let screened = true;
-  if (unjudged.length && client) {
+  if (unjudged.length && judge) {
     try {
-      const res = await client.beta.messages.create({
-        model: SCREEN_MODEL, max_tokens: 1024,
-        betas: ["server-side-fallback-2026-07-01"], fallbacks: "default",
-        output_config: { effort: "low", format: { type: "json_schema", schema: SCREEN_SCHEMA } },
-        system: SCREEN_SYSTEM,
-        messages: [{ role: "user", content: screenPrompt(it, unjudged) }],
-      });
-      if (res.stop_reason === "refusal") throw new Error("screen refused");
-      const text = (res.content || []).filter(b => b.type === "text").map(b => b.text).join("");
-      const keep = new Set((JSON.parse(text).keep || []).map(Number));
-      const at = new Date().toISOString();
-      unjudged.forEach((a, i) => { screen[titleKey(a.title)] = { ok: keep.has(i), at }; });
+      const text = await judge(SCREEN_SYSTEM, screenPrompt(it, unjudged));
+      const parsed = JSON.parse(String(text).replace(/^```(?:json)?\s*|\s*```$/g, ""));
+      if (!Array.isArray(parsed.keep)) throw new Error("no keep[] in verdict");
+      const keep = new Set(parsed.keep.map(Number));
+      const at = new Date().toISOString(), by = judge.label || "judge";
+      unjudged.forEach((a, i) => { screen[titleKey(a.title)] = { ok: keep.has(i), at, by }; });
     } catch (e) { screened = false; console.error(`  screen ${it.id}: ${e.message} — keeping heuristic list`); }
   } else if (unjudged.length) screened = false;
   const kept = cands.filter(a => { const v = screen[titleKey(a.title)]; return !v || v.ok; });
@@ -248,9 +277,10 @@ async function weeklyWindows(q) {
   return { timeline: out, capped };
 }
 
-async function fetchItem(it, prevItem, client) {
+async function fetchItem(it, prevItem, judge, spamDomains) {
   const q = `${it.feed.query} sourcelang:english`;
   const feed = it.feed;
+  const notSpam = a => !(spamDomains || []).some(d => String(a.domain || "").toLowerCase().endsWith(d));
   let timeline = [], granularity = "day", capped = false, articles = [], src = [];
   let throttled = false;
 
@@ -275,13 +305,13 @@ async function fetchItem(it, prevItem, client) {
   }
   try { lists.push((await rssSearch(rssQuery(it.feed.query), 3)).filter(a => titleMatch(a, feed))); src.push("rss-articles"); }
   catch (e) { /* RSS unavailable this run */ }
-  let cands = mergeArticles(lists, SCREEN_MAX);
+  let cands = mergeArticles(lists, SCREEN_MAX).filter(notSpam);
   if (cands.length < 6) {
-    try { lists.push((await rssSearch(rssQuery(it.feed.query), 7)).filter(a => titleMatch(a, feed))); cands = mergeArticles(lists, SCREEN_MAX); }
+    try { lists.push((await rssSearch(rssQuery(it.feed.query), 7)).filter(a => titleMatch(a, feed))); cands = mergeArticles(lists, SCREEN_MAX).filter(notSpam); }
     catch (e) { /* keep what we have */ }
   }
   // 3. Relevance screen (model cross-check), then the newest MAX_ARTICLES survivors
-  const sc = await screenArticles(it, cands, (prevItem || {}).screen, client);
+  const sc = await screenArticles(it, cands, (prevItem || {}).screen, judge);
   articles = sc.kept.slice(0, MAX_ARTICLES);
   if (sc.judged) src.push(sc.screened ? "screened" : "unscreened");
   if (timeline.length < 4) {
@@ -293,7 +323,7 @@ async function fetchItem(it, prevItem, client) {
     windows(timeline, granularity, capped));
 }
 
-module.exports = { titleMatch, mergeArticles, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, titleKey, EXCLUDE, SCREEN_MODEL };
+module.exports = { titleMatch, mergeArticles, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, screenJudge, titleKey, EXCLUDE };
 if (require.main !== module) return;
 
 (async () => {
@@ -306,13 +336,14 @@ if (require.main !== module) return;
   // refresh the stalest items first so the feed converges across throttled runs
   const order = items.slice().sort((a, b) => String((prev[a.id] || {}).fetchedAt || "").localeCompare(String((prev[b.id] || {}).fetchedAt || "")));
   const out = Object.assign({}, prev);
-  const client = screenClient();
-  console.log(client ? `Relevance screen: ${SCREEN_MODEL}` : "Relevance screen: skipped (ANTHROPIC_API_KEY not set) — title heuristics only");
+  const judge = screenJudge();
+  const spamDomains = ((reg.definitions || {}).feed || {}).spamDomains || [];
+  console.log(judge ? `Relevance screen: ${judge.label}` : "Relevance screen: skipped (no ANTHROPIC_API_KEY or GITHUB_TOKEN) — title heuristics only");
   let ok = 0;
   for (const it of order) {
     if (Date.now() - T0 > DEADLINE_MS) { console.error(`⏱ deadline reached — ${it.id} and later items keep previous data`); break; }
     try {
-      out[it.id] = await fetchItem(it, prev[it.id], client);
+      out[it.id] = await fetchItem(it, prev[it.id], judge, spamDomains);
       ok++;
       console.log(`✓ ${it.id.padEnd(9)} [${out[it.id].granularity}, ${out[it.id].source}] 7d=${out[it.id].count7d}${out[it.id].capped ? "+" : ""} prev7d=${out[it.id].prev7d}${out[it.id].surge ? " SURGE" : ""} articles=${out[it.id].articles.length}${out[it.id].screened === false ? " (unscreened)" : ""}`);
     } catch (e) {

@@ -695,18 +695,24 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       { title: "China pushes back against Takaichi's call to remove 'enemy state' wartime label", url: "u3", domain: "japantimes.co.jp", ts: "2026-09-24T09:06:00Z" },
     ];
     const calls = [];
-    const fake = { beta: { messages: { create: async req => { calls.push(req); return { stop_reason: "end_turn", content: [{ type: "text", text: JSON.stringify({ keep: [1, 2] }) }] }; } } } };
+    const fake = Object.assign(async (system, user) => { calls.push({ system, user }); return "```json\n" + JSON.stringify({ keep: [1, 2] }) + "\n```"; }, { label: "fake" });
     const r1 = await feed.screenArticles(cnjp, cands, {}, fake);
-    check("feed screen: the model's verdict drops the basketball result and keeps the two security headlines, newest first",
-      calls.length === 1 && r1.screened && r1.judged === 3 && r1.kept.map(a => a.url).join(",") === "u2,u3" && calls[0].model === feed.SCREEN_MODEL &&
-      /Conflict watchlist item: China/.test(calls[0].messages[0].content) && /Topics of interest/.test(calls[0].messages[0].content) && calls[0].output_config.format.type === "json_schema");
+    check("feed screen: the judge's verdict drops the basketball result and keeps the two security headlines, newest first",
+      calls.length === 1 && r1.screened && r1.judged === 3 && r1.kept.map(a => a.url).join(",") === "u2,u3" && /screen news headlines/.test(calls[0].system) &&
+      /Conflict watchlist item: China/.test(calls[0].user) && /Topics of interest/.test(calls[0].user) && r1.screen[feed.titleKey(cands[0].title)].by === "fake");
     const r2 = await feed.screenArticles(cnjp, cands, r1.screen, fake);
-    check("feed screen: cached verdicts are reused (no second API call) and still drop the basketball result", calls.length === 1 && r2.judged === 0 && r2.kept.length === 2 && Object.keys(r2.screen).length === 3);
+    check("feed screen: cached verdicts are reused (no second call) and still drop the basketball result", calls.length === 1 && r2.judged === 0 && r2.kept.length === 2 && Object.keys(r2.screen).length === 3);
     const r3 = await feed.screenArticles(cnjp, cands, {}, null);
-    check("feed screen: without a client the heuristic list is kept and the item is marked unscreened", r3.screened === false && r3.kept.length === 3);
-    const failing = { beta: { messages: { create: async () => { throw new Error("HTTP 529"); } } } };
+    check("feed screen: without a judge the heuristic list is kept and the item is marked unscreened", r3.screened === false && r3.kept.length === 3);
+    const failing = Object.assign(async () => { throw new Error("HTTP 529"); }, { label: "failing" });
     const r4 = await feed.screenArticles(cnjp, cands, {}, failing);
-    check("feed screen: an API error keeps the heuristic list, marks unscreened and caches nothing", r4.screened === false && r4.kept.length === 3 && Object.keys(r4.screen).length === 0);
+    check("feed screen: a provider error keeps the heuristic list, marks unscreened and caches nothing", r4.screened === false && r4.kept.length === 3 && Object.keys(r4.screen).length === 0);
+    const saved = { A: process.env.ANTHROPIC_API_KEY, G: process.env.GITHUB_TOKEN, F: process.env.FEED_SCREEN };
+    delete process.env.ANTHROPIC_API_KEY; process.env.GITHUB_TOKEN = "ghs_test"; delete process.env.FEED_SCREEN;
+    const jg = feed.screenJudge(); process.env.FEED_SCREEN = "off"; const joff = feed.screenJudge();
+    check("feed screen: with only GITHUB_TOKEN the judge is GitHub Models; FEED_SCREEN=off disables it", !!jg && /^github-models:/.test(jg.label) && joff === null);
+    if (saved.A != null) process.env.ANTHROPIC_API_KEY = saved.A; if (saved.G != null) process.env.GITHUB_TOKEN = saved.G; else delete process.env.GITHUB_TOKEN; if (saved.F != null) process.env.FEED_SCREEN = saved.F; else delete process.env.FEED_SCREEN;
+    check("register: definitions.feed.spamDomains lists article sources dropped outright", Array.isArray(wl.definitions.feed.spamDomains) && wl.definitions.feed.spamDomains.includes("czechinvest.gov.cz"));
   }
 
   // --- 1c. A mirror host (pages.dev) reads the live data files from the data origin
