@@ -696,6 +696,24 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       !feed.titleMatch({ title: "(LIVESTREAMs!)tv* Chinese Taipei W vs. Japan W Match Live free stream 24 september 2026" }, cnjp.feed) &&
       !feed.titleMatch({ title: "!+[Here's Way To Watch] Chinese Taipei vs Japan 𝙻𝚒𝚟𝚎 𝚂𝚝𝚛𝚎𝚊𝚖𝚒𝚗𝚐 𝙾𝚗𝚕𝚒𝚗𝚎" }, cnjp.feed) &&
       feed.titleMatch({ title: "China urges Japan to earn trust through concrete actions" }, cnjp.feed));
+    // army-learning relevance ranking: military vocabulary + the item's topics outrank a newer generic headline
+    {
+      const ruua = wl.items.find(i => i.id === "RU_UA");
+      const now = Date.parse("2026-09-25T22:00:00Z");
+      const arts = [
+        { title: "Trump asked Zelensky to meet Putin in the Russian capital for peace talks", url: "a1", ts: "2026-09-25T21:00:00Z", rank: 40 },
+        { title: "Ukrainian EW units blunt Russian FPV drones as counter-UAS layers thicken on the front line", url: "a2", ts: "2026-09-24T09:00:00Z", rank: 3 },
+        { title: "Massive Russian drone attack on Kyiv: seven people killed", url: "a3", ts: "2026-09-25T18:52:00Z", rank: 0 },
+        { title: "Russian attacks damage McDonald's warehouse in Kyiv region", url: "a4", ts: "2026-09-25T19:22:00Z", rank: 1 },
+      ];
+      const r = feed.rankArticles(arts, ruua, 3, now);
+      check("feed rank: the EW / counter-UAS front-line report and the drone attack outrank the newer talks and warehouse headlines; capped at 3 with a `rel` score",
+        r.length === 3 && r[0].url === "a2" && r[1].url === "a3" && !r.some(a => a.url === "a1") && r.every(a => typeof a.rel === "number") && r[0].rel > r[2].rel);
+      check("feed rank: short terms are whole words (\"warm welcome\" is not \"war\"), longer terms match at a word start (\"attacks\", \"escalation\")",
+        feed.relevanceScore({ title: "Warm welcome for Xi", ts: "2026-09-25T20:00:00Z" }, ruua, now) < 2 &&
+        feed.relevanceScore({ title: "Attacks raise escalation fears", ts: "2026-09-25T20:00:00Z" }, ruua, now) >= 4 &&
+        feed.topicWords(ruua).includes("counter-uas") && feed.topicWords(ruua).includes("deception") && !feed.topicWords(ruua).includes("the"));
+    }
     const cands = [
       { title: "Japan Ends 60-Year Gold Drought, Beats China", url: "u1", domain: "chosun.com", ts: "2026-09-25T00:17:00Z" },
       { title: "China urges Japan to earn trust through concrete actions", url: "u2", domain: "ecns.cn", ts: "2026-09-24T14:23:00Z" },
@@ -752,7 +770,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       const tl = []; for (let d = 29; d >= 0; d--) { const dt = new Date(Date.now() - d * 86400000).toISOString().slice(0, 10); tl.push({ date: dt, value: k === 0 && d < 7 ? 40 : 5 }); }
       const vals = tl.map(p => p.value), c7 = vals.slice(-7).reduce((a, b) => a + b, 0), p7 = vals.slice(-14, -7).reduce((a, b) => a + b, 0);
       items[i.id] = { query: i.feed.query, granularity: "day", timeline: tl, count7d: c7, prev7d: p7, capped: false, surge: c7 >= 20 && c7 >= 2 * Math.max(p7, 1),
-        // relevance order from the sync: an older article first, the newest second
+        // the sync stores the most relevant recent articles in relevance order (an older one first, the newest second); the app shows the newest of them
         articles: [{ title: "OLDER-HEADLINE " + i.id, url: "https://example.org/old/" + i.id, domain: "example.org", country: "X", date: tl[tl.length - 4].date },
                    { title: "FEED-HEADLINE " + i.id, url: "https://example.org/feed/" + i.id, domain: "example.org", country: "X", date: tl[tl.length - 1].date }] };
     });
@@ -796,7 +814,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const det2 = d2.querySelector(`#view-watchlist tr[data-wl-detail="${liveProbe.id}"]`);
     return !!det2 && /Latest open-source reporting/.test(det2.textContent) && !!det2.querySelector(".wl-art-list a[href='https://example.org/feed/" + liveProbe.id + "']") && /FEED-HEADLINE/.test(det2.textContent) && det2.querySelector(".wl-art-list li a").textContent === "FEED-HEADLINE " + liveProbe.id;
   })());
-  check("feed: every status cell opens with the newest feed headline (newest first, not relevance order); no 'Latest' line", (() => {
+  check("feed: every status cell opens with the newest of the stored relevant headlines (not the first in relevance order); no 'Latest' line", (() => {
     return wl.items.every(i => { const cell = wv2.querySelector(`tr[data-wl-row="${i.id}"] td.wl-status`), n = cell && cell.firstElementChild; return !!n && n.classList.contains("wl-status-news") && !cell.querySelector(".wl-status-latest") && n.querySelector("a").textContent === "FEED-HEADLINE " + i.id && n.querySelector("a").href === "https://example.org/feed/" + i.id; });
   })());
   d2.querySelector('.tab-btn[data-horizon="weekly"]').click(); await sleep(60);

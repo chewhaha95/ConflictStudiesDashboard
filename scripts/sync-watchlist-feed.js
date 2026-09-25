@@ -8,9 +8,12 @@
  *     serves it, otherwise four weekly article counts from date-windowed
  *     mode=ArtList queries (GDELT refuses the timeline modes from some
  *     networks; ArtList is capped at 250 records per window, flagged `capped`)
- *   • the most relevant English-language articles of the last 7 days
- *     (mode=ArtList, sort=DateDesc, newest first) merged with a Google News
- *     RSS pull, title-filtered by the item's terms, newest first
+ *   • the most relevant recent English-language articles (mode=ArtList,
+ *     sort=HybridRel over the last 3 days) merged with a Google News RSS pull,
+ *     title-filtered by the item's terms and ranked by an army-learning
+ *     relevance score (military vocabulary + the item's topics of interest,
+ *     source rank, small recency bonus); the app shows the newest of the kept
+ *     twelve as "Newest reporting"
  * and writes watchlist-live.json:
  *   { __live, syncedAt, source, items: { <id>: { query, granularity,
  *     timeline, count7d, prev7d, capped, surge, articles } } }
@@ -86,7 +89,7 @@ async function rssSearch(q, days) {
     const d = pub ? new Date(pub) : null;
     if (!title || !link) continue;
     const iso = d && !isNaN(d) ? d.toISOString() : null;
-    items.push({ title: title.replace(/\s+-\s+[^-]+$/, ""), url: link, domain: source || "news.google.com", country: "", date: iso ? iso.slice(0, 10) : null, ts: iso });
+    items.push({ title: title.replace(/\s+-\s+[^-]+$/, ""), url: link, domain: source || "news.google.com", country: "", date: iso ? iso.slice(0, 10) : null, ts: iso, rank: items.length });
   }
   return items;
 }
@@ -124,7 +127,7 @@ function parseArticles(j, feed) {
     const d = String(a.seendate || "");                       // 20260924T133000Z
     const date = d.length >= 8 ? `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}` : null;
     const ts = d.length >= 15 ? `${date}T${d.slice(9, 11)}:${d.slice(11, 13)}:${d.slice(13, 15)}Z` : (date ? `${date}T00:00:00Z` : null);
-    out.push({ title, url: a.url, domain: a.domain || "", country: a.sourcecountry || "", date, ts });
+    out.push({ title, url: a.url, domain: a.domain || "", country: a.sourcecountry || "", date, ts, rank: out.length });
   }
   return out;
 }
@@ -164,7 +167,7 @@ const titleMatch = (a, feed) => {
 // (Workers AI, free daily allowance); else GITHUB_TOKEN → GitHub Models (kept as
 // a fallback; its endpoint answered "OK" text instead of an API in Sep 2026);
 // else no screen. FEED_SCREEN=off disables it; FEED_SCREEN_MODEL overrides the model.
-const SCREEN_MAX = 30;            // newest candidates sent per item
+const SCREEN_MAX = 30;            // most relevant candidates sent per item
 const SCREEN_KEEP = 300;          // cached verdicts kept per item
 const titleKey = t => String(t || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 60);
 const SCREEN_SCHEMA = { type: "object", properties: { keep: { type: "array", items: { type: "integer" } } }, required: ["keep"], additionalProperties: false };
@@ -278,6 +281,56 @@ function mergeArticles(lists, cap = MAX_ARTICLES) {
   return out.slice(0, cap);
 }
 
+// ---- Army-learning relevance ranking ------------------------------------------
+// Title vocabulary that marks reporting an army can learn from: operations,
+// weapons and effects, force posture, command, sustainment, adaptation. A
+// headline earns a point per distinct hit (capped), plus points for words from
+// the item's own topics of interest (topic / why / watch text), plus a rank
+// bonus from the source (GDELT lists by relevance, Google News by relevance),
+// plus a small recency bonus so, at equal relevance, the newer piece wins.
+const MIL_TERMS = ["military", "army", "armed forces", "troops", "soldiers", "brigade", "battalion", "division", "regiment", "corps", "commander",
+  "offensive", "counteroffensive", "counter-offensive", "assault", "attack", "strike", "strikes", "airstrike", "air strike", "raid", "shelling", "bombard",
+  "frontline", "front line", "front-line", "battlefield", "battle", "combat", "fighting", "clashes", "clash", "firefight", "ambush", "incursion", "advance", "captured", "seized", "recaptur", "liberat", "withdraw", "retreat",
+  "drone", "drones", "uav", "uas", "fpv", "loitering", "kamikaze", "missile", "missiles", "rocket", "artillery", "howitzer", "himars", "atacms", "mortar", "tank", "tanks", "armour", "armor", "armoured", "armored", "ifv", "apc",
+  "air defence", "air defense", "patriot", "s-400", "interceptor", "intercepted", "shot down", "downed", "jamming", "electronic warfare", "ew", "gps", "spoofing", "radar", "isr", "reconnaissance", "surveillance", "satellite", "starlink",
+  "mine", "mines", "minefield", "ied", "explosive", "sabotage", "special forces", "commando", "sniper", "infantry", "mechanised", "mechanized", "cavalry", "airborne", "marines", "navy", "naval", "warship", "frigate", "destroyer", "submarine", "coast guard", "coastguard", "fighter jet", "jets", "bomber", "helicopter", "warplane",
+  "mobilis", "mobiliz", "conscript", "recruit", "reservist", "casualt", "killed", "wounded", "losses", "pow", "prisoner",
+  "logistic", "supply line", "supply route", "ammunition", "ammo", "shells", "resupply", "sustainment", "repair", "depot", "arms", "weapons", "weapon", "munition", "procure", "defence industry", "defense industry", "production",
+  "exercise", "drill", "drills", "wargame", "war game", "deploy", "deployment", "deployed", "posture", "buildup", "build-up", "reinforce", "garrison", "base", "airbase", "air base", "border", "blockade", "quarantine", "grey zone", "gray zone", "grey-zone", "gray-zone", "adiz", "median line", "incursion",
+  "ceasefire", "cease-fire", "truce", "escalat", "de-escalat", "deterren", "peacekeep", "occupation", "occupied", "insurgen", "militant", "militia", "guerrilla", "terror",
+  "doctrine", "tactic", "tactics", "lessons", "adapt", "innovation", "training", "command and control", "c2", "cyber", "cyberattack", "hack", "information operations", "disinformation", "propaganda", "cognitive warfare", "psychological",
+  "pla", "idf", "hezbollah", "hamas", "houthi", "wagner", "junta", "rebel", "rebels", "resistance", "war", "warfare"];
+const STOP = new Set(["the", "and", "for", "with", "that", "this", "from", "into", "over", "under", "than", "then", "their", "what", "when", "where", "which", "while", "whether", "will", "would", "could", "should", "have", "has", "had", "are", "was", "were", "been", "being", "its", "not", "but", "also", "more", "most", "less", "very", "such", "each", "other", "against", "versus", "between", "across", "through", "toward", "towards", "about", "after", "before", "during", "without", "within", "along", "among", "both", "either", "only", "same", "some", "any", "all", "own", "off", "out", "how", "who", "whose", "why", "can", "may", "might", "must", "shall", "one", "two", "three", "new", "old", "first", "last", "next", "still", "yet", "ever", "never", "often", "rarely", "increasingly", "whether", "track", "watch", "assess", "observe", "monitor", "note", "does", "did", "make", "makes", "made", "come", "comes", "became", "become", "becomes", "remain", "remains", "local", "wider", "costs", "costly", "cost", "role", "roles", "case", "cases", "level", "levels", "way", "ways", "use", "used", "uses", "using", "versus", "per", "via", "etc"]);
+// Distinct content words (≥4 letters, not a stop word) from the item's topics, so
+// "counter-UAS", "signature", "sustainment" count towards the item's own learning themes.
+function topicWords(it) {
+  const text = (it.topics || []).map(t => [t.topic, t.why, t.watch && t.watch.text].join(" ")).join(" ").toLowerCase();
+  const words = new Set();
+  for (const w of text.split(/[^a-z0-9-]+/)) { const x = w.replace(/^-+|-+$/g, ""); if (x.length >= 4 && !STOP.has(x)) words.add(x); }
+  return [...words];
+}
+// Terms match at a word start (so "drone" counts "drones", "escalat" counts
+// "escalation"); short terms (≤4 letters: war, arms, base, pla, ew…) must be
+// whole words so "warehouse", "warm" or "player" do not count.
+const termRe = t => new RegExp(`(^|[^a-z0-9])${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}${t.length <= 4 ? "([^a-z0-9]|$)" : ""}`);
+const MIL_RES = MIL_TERMS.map(termRe);
+function relevanceScore(a, it, now = Date.now()) {
+  const lower = String(a.title || "").toLowerCase();
+  const mil = MIL_RES.filter(re => re.test(lower)).length;
+  const tw = (a._topicWords || topicWords(it)).filter(w => termRe(w).test(lower)).length;
+  const rank = a.rank == null ? 0 : Math.max(0, 2 - a.rank / 25);            // top of a relevance list: +2 → 0 after 50
+  const age = a.ts ? Math.max(0, (now - Date.parse(a.ts)) / 3600000) : 72;   // hours old (unknown = 3 days)
+  const recency = Math.max(0, 1.5 - age / 48);                               // +1.5 fresh → 0 after 2 days
+  return Math.min(mil, 4) * 1.5 + Math.min(tw, 3) * 1.5 + rank + recency;
+}
+// Rank candidates by army-learning relevance, most relevant first; cap.
+function rankArticles(arts, it, cap = MAX_ARTICLES, now = Date.now()) {
+  const tw = topicWords(it);
+  return arts.map(a => ({ a, s: relevanceScore(Object.assign({ _topicWords: tw }, a), it, now) }))
+    .sort((x, y) => y.s - x.s || String(y.a.ts || y.a.date || "").localeCompare(String(x.a.ts || x.a.date || "")))
+    .slice(0, cap).map(x => Object.assign({}, x.a, { rel: Math.round(x.s * 10) / 10 }));
+}
+
 function windows(timeline, granularity, capped) {
   const vals = timeline.map(p => p.value);
   const n = granularity === "day" ? 7 : 1;
@@ -326,23 +379,26 @@ async function fetchItem(it, prevItem, judge, spamDomains) {
     catch (e) { if (e instanceof Throttled) throttled = true; }
   }
 
-  // 2. Newest title-matched articles: GDELT newest-first over the last 3 days
-  //    (unless throttled) merged with a Google News pull over the same window,
-  //    so the "Newest reporting" line is the latest article, not the most
-  //    relevant one. Widened to 7 days when the 3-day window is thin.
+  // 2. Most relevant recent articles: GDELT relevance-ranked (HybridRel) over
+  //    the last 3 days (unless throttled) merged with a Google News pull over
+  //    the same window, title-filtered, then ranked by army-learning relevance
+  //    (military vocabulary + the item's topics, source rank, recency bonus).
+  //    Widened to 7 days when the 3-day window is thin.
   const lists = [];
   if (!throttled) {
-    try { lists.push(parseArticles(await gdelt({ query: q, mode: "ArtList", format: "json", timespan: "3d", maxrecords: 250, sort: "DateDesc" }), feed)); src.push("gdelt-articles"); }
+    try { lists.push(parseArticles(await gdelt({ query: q, mode: "ArtList", format: "json", timespan: "3d", maxrecords: 100, sort: "HybridRel" }), feed)); src.push("gdelt-articles"); }
     catch (e) { if (e instanceof Throttled) throttled = true; }
   }
   try { lists.push((await rssSearch(rssQuery(it.feed.query), 3)).filter(a => titleMatch(a, feed))); src.push("rss-articles"); }
   catch (e) { /* RSS unavailable this run */ }
-  let cands = mergeArticles(lists, SCREEN_MAX).filter(notSpam);
+  const pool = () => rankArticles(mergeArticles(lists, 500).filter(notSpam), it, SCREEN_MAX);
+  let cands = pool();
   if (cands.length < 6) {
-    try { lists.push((await rssSearch(rssQuery(it.feed.query), 7)).filter(a => titleMatch(a, feed))); cands = mergeArticles(lists, SCREEN_MAX).filter(notSpam); }
+    try { lists.push((await rssSearch(rssQuery(it.feed.query), 7)).filter(a => titleMatch(a, feed))); cands = pool(); }
     catch (e) { /* keep what we have */ }
   }
-  // 3. Relevance screen (model cross-check), then the newest MAX_ARTICLES survivors
+  // 3. Relevance screen (model cross-check), then the MAX_ARTICLES most relevant
+  //    survivors; the app shows the newest of them as "Newest reporting".
   const sc = await screenArticles(it, cands, (prevItem || {}).screen, judge);
   articles = sc.kept.slice(0, MAX_ARTICLES);
   if (sc.judged) src.push(sc.screened ? "screened" : "unscreened");
@@ -355,7 +411,7 @@ async function fetchItem(it, prevItem, judge, spamDomains) {
     windows(timeline, granularity, capped));
 }
 
-module.exports = { titleMatch, mergeArticles, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, screenJudge, titleKey, EXCLUDE };
+module.exports = { titleMatch, mergeArticles, rankArticles, relevanceScore, topicWords, MIL_TERMS, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, screenJudge, titleKey, EXCLUDE };
 if (require.main !== module) return;
 
 (async () => {
