@@ -1821,7 +1821,10 @@
     stateOrder() { return Object.keys(this.defs().states).sort((a, b) => this.stateDef(a).order - this.stateDef(b).order); },
     tone(t) { return `tone-${t || "neutral"}`; },
     fmtDate(s) { return s ? new Date(s).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : "—"; },
-    today() { return Time.iso(new Date()); },
+    // Today's date in Singapore time: the register is reviewed and dated in SGT
+    // (05:30 SGT is 21:30 UTC the previous day), so due-date and review-age
+    // labels compare against the Singapore calendar date, not UTC.
+    today() { try { return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Singapore" }); } catch (e) { return Time.iso(new Date()); } },
     daysBetween(a, b) { return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86400000); },
 
     // ---- comparison baseline (rolling window over per-review snapshots) ----
