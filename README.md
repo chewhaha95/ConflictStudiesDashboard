@@ -128,7 +128,7 @@ the weekly brief shown on the Weekly tab.
 | Part of the dashboard | Source | Refresh |
 |---|---|---|
 | Watchlist: coverage sparklines, counts, surge flags, "Newest reporting", latest headlines | `watchlist-live.json` (GDELT + Google News, model relevance screen) | Hourly at :07 UTC (Cloudflare Worker cron → feed workflow) |
-| Watchlist: state, dimensions, status summary, changes, indicators, timeline, topic assessment | `watchlist.json` (daily automated open-source review) | Daily, 05:30 SGT, published by about 07:00 |
+| Watchlist: state, dimensions, status summary, changes, indicators, timeline, topic assessment, info-ops watch | `watchlist.json` (daily automated open-source review) | Daily, 05:30 SGT, published by about 06:00; the review is dated in Singapore time |
 | Weekly tab and Capabilities tab (brief-evidenced mode) | `weekly-live.json`, synced from the weekly brief site | Daily `sync-weekly.yml` schedule (22:00 UTC), unchanged; outside the scope of the Watchlist automation |
 | Monthly tab | `sample-data.json` (seed weekly reports rolled up) | Only when the seed file is updated in the repository; not synced automatically |
 | Theme | Dark by default; the 🌙/☀️ choice is remembered per browser | — |

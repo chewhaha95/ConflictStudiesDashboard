@@ -43,7 +43,12 @@ same way.
 ## Procedure
 
 1. Read `watchlist.json`. Note `meta.reviewDate` — that becomes
-   `meta.previousReviewDate`. The new `meta.reviewDate` is today (UTC date).
+   `meta.previousReviewDate`. The new `meta.reviewDate` is today's date in
+   **Singapore time** (Asia/Singapore, UTC+8; `TZ=Asia/Singapore date +%F`),
+   never the UTC date: the 05:30 SGT run is 21:30 UTC the previous day, so a
+   run at 21:30 UTC on 26 Sep is dated 27 Sep. "Today" throughout this runbook
+   means that Singapore date — the snapshot, assessment dates, the `changes`
+   prefix and the commit message all use it.
 2. Research every item for the window `previousReviewDate` → today (normally
    the last 24 hours; longer if a run was missed). Use
    parallel research agents (one per two or three items) with the structure:
