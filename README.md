@@ -45,7 +45,8 @@ Middle East, South Asia, the Indo-Pacific or the Americas.
 The watchlist is fully automated:
 
 - **Live reporting feed** — `.github/workflows/sync-watchlist-feed.yml` runs
-  `scripts/sync-watchlist-feed.js` hourly against the open GDELT DOC
+  `scripts/sync-watchlist-feed.js` once a day (05:07 SGT, just before the
+  daily review) against the open GDELT DOC
   2.0 API and commits `watchlist-live.json`: a 30-day daily coverage
   timeline and the most relevant recent articles per item: GDELT
   relevance-ranked over the last 3 days merged with a Google News pull,
@@ -87,7 +88,7 @@ card with the question, dated and typed findings (official statement,
 state-media narrative, covert information operation, coercive signalling,
 counter-messaging, debunked claim, third-party assessment…), an assessment
 with sources, and a live sub-feed of messaging and influence reporting from
-a narrower hourly query. The daily review keeps the findings and assessment
+a narrower daily query. The daily review keeps the findings and assessment
 current; the team sets the trigger, question and query.
 
 ### Topics of interest
@@ -127,7 +128,7 @@ the weekly brief shown on the Weekly tab.
 
 | Part of the dashboard | Source | Refresh |
 |---|---|---|
-| Watchlist: coverage sparklines, counts, surge flags, "Newest reporting", latest headlines | `watchlist-live.json` (GDELT + Google News, model relevance screen) | Hourly at :07 UTC (Cloudflare Worker cron → feed workflow) |
+| Watchlist: coverage sparklines, counts, surge flags, "Newest reporting", latest headlines | `watchlist-live.json` (GDELT + Google News, model relevance screen) | Daily at 05:07 SGT (21:07 UTC; Cloudflare Worker cron → feed workflow). Hourly refresh switched off to save usage; run the workflow by hand for an ad-hoc refresh |
 | Watchlist: state, dimensions, status summary, changes, indicators, timeline, topic assessment, info-ops watch | `watchlist.json` (daily automated open-source review) | Daily, 05:30 SGT, published by about 06:00; the review is dated in Singapore time |
 | Weekly tab and Capabilities tab (brief-evidenced mode) | `weekly-live.json`, synced from the weekly brief site | Daily `sync-weekly.yml` schedule (22:00 UTC), unchanged; outside the scope of the Watchlist automation |
 | Monthly tab | `sample-data.json` (seed weekly reports rolled up) | Only when the seed file is updated in the repository; not synced automatically |
@@ -155,13 +156,13 @@ data commit. Same-origin, localhost and `file://` previews ignore the meta tag.
 Pages → Connect to Git → this repository, production branch `main`, no build command, output
 directory `/`. Under the project's Settings → Builds → *Build watch paths*,
 exclude `watchlist-live.json`, `watchlist.json` and `weekly-live.json` so the
-hourly feed commits do not consume the free build quota; code merges still
+daily feed commits do not consume the free build quota; code merges still
 deploy. `_headers` sets `Cache-Control: no-cache` there so a deploy is never
 hidden behind a cached `app.js`. A custom domain can be attached to either
 host.
 
-**Hourly feed trigger.** GitHub runs this repository's `schedule:` workflows
-hours late, so the feed sync is fired every hour by a Cloudflare Worker cron
+**Daily feed trigger.** GitHub runs this repository's `schedule:` workflows
+hours late, so the feed sync is fired once a day (21:07 UTC) by a Cloudflare Worker cron
 that calls GitHub's workflow-dispatch API; see
 [`cloudflare/feed-trigger/README.md`](cloudflare/feed-trigger/README.md) for
 the five-minute setup (a fine-grained token with Actions write on this repo).

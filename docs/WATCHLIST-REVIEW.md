@@ -110,7 +110,7 @@ same way.
      least one from the last 48 hours whenever such reporting exists; never
      older than 7 days unless nothing newer exists). Do not write a
      `status.latest` field (remove it if present): the dashboard shows the
-     newest headline from the hourly live feed above the summary;
+     newest headline from the daily live feed above the summary;
    - do not edit `topics` (three per item: `topic`, `why`, `adaptability`,
      `watch.status`, `watch.text`); the team sets them from the watchlist
      workbook. Every `next` entry must carry `topic`: the 0-based index of
@@ -127,7 +127,7 @@ same way.
      (see `definitions.feed`) only if the item's vocabulary
      changed (new place names, operations, actors);
    - **feed noise check**: read the item's `articles` in `watchlist-live.json`
-     (the live feed, committed hourly). For any headline that is not
+     (the live feed, committed daily at 05:07 SGT). For any headline that is not
      reporting on the conflict's security, military, diplomatic or
      humanitarian dimension (sport, entertainment, livestream pages,
      business-only stories, homonyms such as Lebanon, Pennsylvania), add a

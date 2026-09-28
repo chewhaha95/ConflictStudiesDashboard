@@ -1,7 +1,7 @@
-# Hourly feed trigger (Cloudflare Worker)
+# Daily feed trigger (Cloudflare Worker)
 
 GitHub runs this repository's `schedule:` workflows hours late or skips them,
-so the hourly feed sync is fired from a Cloudflare Worker cron instead. The
+so the daily feed sync is fired from a Cloudflare Worker cron instead. The
 Worker calls GitHub's *create a workflow dispatch event* API once an hour;
 the workflow itself is unchanged (its own `schedule:` stays as a fallback and
 the sync's concurrency group absorbs any overlap).
@@ -24,14 +24,18 @@ the sync's concurrency group absorbs any overlap).
    - `WORKFLOW_FILE` = `sync-watchlist-feed.yml`
    - `GH_REF` = `main`
    - optional `TRIGGER_KEY` (Secret) = any long random string, for manual tests
-4. **Cron.** Worker → Settings → Triggers → Cron Triggers → Add → `7 * * * *`.
+4. **Cron.** Worker → Settings → Triggers → Cron Triggers → Add → `7 21 * * *`
+   (daily at 21:07 UTC = 05:07 SGT, just before the 05:30 SGT review). If an
+   older hourly trigger (`7 * * * *`) is still there, edit it to this value;
+   the Worker also ignores fires outside the 21:xx UTC hour (`FEED_HOUR_UTC`
+   variable, default 21) so a forgotten hourly trigger only logs a skip.
 
 Cloudflare's free plan includes cron triggers and far more than the 720
 requests a month this uses.
 
 ## Headline relevance screen (Workers AI, free)
 
-The same Worker also judges headline relevance for the hourly feed on
+The same Worker also judges headline relevance for the daily feed on
 Cloudflare's Workers AI free daily allowance. One-time setup:
 
 1. Worker → Settings → **Bindings** → Add → **Workers AI** → variable name
@@ -52,9 +56,9 @@ use; without the secrets it falls back to title heuristics.
 ## Verify
 
 - Worker → Logs (or *Begin log stream*) shows `dispatched sync-watchlist-feed.yml`
-  after the next :07 UTC.
+  after 21:07 UTC (05:07 SGT).
 - GitHub → Actions → *Sync watchlist open-source feed* shows a run with event
-  `workflow_dispatch` each hour.
+  `workflow_dispatch` once a day.
 - Manual test, if `TRIGGER_KEY` is set:
   `curl -X POST https://csi-feed-trigger.<your-subdomain>.workers.dev/run -H "Authorization: Bearer <TRIGGER_KEY>"`
 

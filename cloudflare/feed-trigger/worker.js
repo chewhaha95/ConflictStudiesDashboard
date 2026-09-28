@@ -1,5 +1,5 @@
 /**
- * Hourly trigger for the watchlist feed sync.
+ * Daily trigger for the watchlist feed sync (21:07 UTC = 05:07 SGT).
  *
  * GitHub's own `schedule:` trigger runs this repository's workflows hours late
  * (or not at all), so a Cloudflare Worker cron fires the workflow instead by
@@ -63,7 +63,13 @@ async function screen(request, env) {
 
 export default {
   // Cron trigger (wrangler.toml [triggers] / Worker → Settings → Triggers).
+  // Daily: the owner chose one refresh a day over hourly to save usage. If the
+  // dashboard's Cron Trigger is still the old hourly one, only the run in the
+  // FEED_HOUR_UTC hour (default 21 = 05:07 SGT) dispatches; the rest are skipped.
   async scheduled(event, env, ctx) {
+    const hour = new Date(event.scheduledTime || Date.now()).getUTCHours();
+    const want = Number(env.FEED_HOUR_UTC ?? 21);
+    if (hour !== want) { console.log(`skipped: daily feed runs at ${want}:07 UTC, this fire was ${hour}:xx`); return; }
     ctx.waitUntil(dispatch(env).then(m => console.log(m), e => { console.error(e.message); throw e; }));
   },
 
