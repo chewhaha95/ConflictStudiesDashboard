@@ -6,15 +6,17 @@ name: Sync watchlist open-source feed
 # Watchlist tab's coverage sparklines, surge flags and "latest reporting"
 # lists stay current without anyone touching the repo.
 #
-# Runs hourly (fired by the Cloudflare Worker cron in cloudflare/feed-trigger;
-# GitHub's own schedule below is a late-running fallback) and on demand. GDELT
+# Runs once a day at 21:07 UTC (05:07 SGT, shortly before the 05:30 SGT daily
+# review; fired by the Cloudflare Worker cron in cloudflare/feed-trigger, with
+# GitHub's own schedule below as a late-running fallback) and on demand. The
+# owner chose a daily refresh over hourly to save usage. GDELT
 # throttles shared runner IPs, so the script retries with backoff, falls back to Google News RSS, refreshes the
 # stalest items first and keeps previous data for the rest — the feed converges
 # across runs. It exits non-zero only when nothing at all could be refreshed.
 
 on:
   schedule:
-    - cron: "7 * * * *"      # hourly, off the hour to avoid GDELT peaks
+    - cron: "7 21 * * *"     # daily at 21:07 UTC = 05:07 SGT, off the hour to avoid GDELT peaks
   workflow_dispatch:
     inputs:
       only:
