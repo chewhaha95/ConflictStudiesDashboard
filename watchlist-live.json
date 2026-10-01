@@ -1,8 +1,8 @@
 {
   "__live": true,
-  "syncedAt": "2026-10-01T19:28:32.205Z",
+  "syncedAt": "2026-10-01T20:37:59.432Z",
   "source": "GDELT DOC 2.0 API (api.gdeltproject.org) with Google News RSS fallback",
-  "refreshed": 12,
+  "refreshed": 3,
   "total": 12,
   "present": 12,
   "items": {
@@ -692,134 +692,109 @@
     },
     "TH_KH": {
       "query": "(Thailand OR Thai) (Cambodia OR Cambodian OR \"Preah Vihear\") sourcelang:english",
-      "granularity": "week",
+      "granularity": "day",
       "timeline": [
         {
+          "date": "2026-09-02",
+          "value": 17
+        },
+        {
           "date": "2026-09-03",
-          "value": 0
+          "value": 14
+        },
+        {
+          "date": "2026-09-04",
+          "value": 28
+        },
+        {
+          "date": "2026-09-05",
+          "value": 6
+        },
+        {
+          "date": "2026-09-06",
+          "value": 17
+        },
+        {
+          "date": "2026-09-07",
+          "value": 4
+        },
+        {
+          "date": "2026-09-08",
+          "value": 13
+        },
+        {
+          "date": "2026-09-09",
+          "value": 39
         },
         {
           "date": "2026-09-10",
-          "value": 54
+          "value": 14
         },
         {
-          "date": "2026-09-17",
-          "value": 23
+          "date": "2026-09-11",
+          "value": 17
+        },
+        {
+          "date": "2026-09-12",
+          "value": 10
+        },
+        {
+          "date": "2026-09-13",
+          "value": 3
+        },
+        {
+          "date": "2026-09-20",
+          "value": 5
+        },
+        {
+          "date": "2026-09-21",
+          "value": 39
+        },
+        {
+          "date": "2026-09-22",
+          "value": 31
+        },
+        {
+          "date": "2026-09-23",
+          "value": 134
         },
         {
           "date": "2026-09-24",
-          "value": 23
+          "value": 43
+        },
+        {
+          "date": "2026-09-25",
+          "value": 12
+        },
+        {
+          "date": "2026-09-27",
+          "value": 5
+        },
+        {
+          "date": "2026-09-28",
+          "value": 35
+        },
+        {
+          "date": "2026-09-29",
+          "value": 90
+        },
+        {
+          "date": "2026-09-30",
+          "value": 20
+        },
+        {
+          "date": "2026-10-01",
+          "value": 29
         }
       ],
-      "articles": [
-        {
-          "title": "Thai envoy urges Cambodia to honour ceasefire, stop border provocations",
-          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE1taXlxZXpzbUNZTjItWldxd1JMNW5iWk8xbmNOdGg5NWlqNEl1X0UxLXBZbUZxbkxXcWZtQkxiM2JmTEpjaDUyV2U1cUJRUWd6Zm5pU1Q4RWt5b0p5ZWxBQWN3YTdSWlF3S0stNDZadw?oc=5",
-          "domain": "Thai PBS World",
-          "country": "",
-          "date": "2026-10-01",
-          "ts": "2026-10-01T04:28:15.000Z",
-          "rank": 0,
-          "rel": 9.2
-        },
-        {
-          "title": "The Thailand-Cambodia Border Conflict: Fact vs. Fiction at the UN",
-          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQYUhaMWFJTjFUQ2t5aGZ6V0tGR2pFMUJjcUh5S3kzaURQaG0wVS1JcnkxMU13SVFreFMwY1hnUHZ6VlNhalpEWVl2d3JqLTBXd3dVZTlHVFZRM1pRQjY0R1FVZDRpUmlxb1ROSEs2YTBYenVsZzZjUjdmeHoycG9kS2ZYRUFxNGF5TWZiM25pa1BsWVFIZ1d3SmdYN3hUUWs?oc=5",
-          "domain": "Phnom Penh Post",
-          "country": "",
-          "date": "2026-10-01",
-          "ts": "2026-10-01T03:08:16.000Z",
-          "rank": 5,
-          "rel": 6
-        },
-        {
-          "title": "AOT Conducts Field Visit to Cambodia-Thailand Border at Boundary Pillar No. 27",
-          "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE5tNG9EU0htQVlON3BkSlFJbkVOUDRBekFzZ0NtazF0ZkpseWlHa1dGbFplbld4di1vOE1OVFpUVkM5cXNNU2hQVEF4dmozbFpuZU9ZWg?oc=5",
-          "domain": "pressocm.gov.kh",
-          "country": "",
-          "date": "2026-10-01",
-          "ts": "2026-10-01T09:24:13.000Z",
-          "rank": 10,
-          "rel": 5.9
-        },
-        {
-          "title": "ICC-Preah Vihear seeks Thai strike data to aid explosive clearance",
-          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQd2taLWd2UlF5eW1GcVRCUUw4bVdIaHlOaENRczhZeFcyeENpNjB0RndwWkswRXlPcWFGaWZmclVadV9RVmEyUUZCT0xucVc3aXBFYUhCYlpfNTl5ek4zLTJxLXQ1ZGw4RHdSZFdTY2VMTjZpdWxobTY3c3FPMlVqckdHTE8tTy1xU2RNdDhMTEdIa0Q2dFR0UGF5d3A0c2hmUXJTZg?oc=5",
-          "domain": "Phnom Penh Post",
-          "country": "",
-          "date": "2026-10-01",
-          "ts": "2026-10-01T03:05:10.000Z",
-          "rank": 12,
-          "rel": 5.7
-        },
-        {
-          "title": "Cambodia Pushes Back Against Thai Border Claims at UN",
-          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPMzAtRnNoM3IzRC01WkIxOGZlZHhqel9OeTRVV01JcURwZTJyZHllOUhIdzNYMV84UW85WV90MTY0aUVNbW5GVzZjNWdjVWNMX0ZQcnlMaFRtYVRSalUySXB2cVFCZmc4RmJLSWpQZVJkTWdZTktXdFVRZnlPcUtHazNHXzNRQmJJMkJCdFpURQ?oc=5",
-          "domain": "Cambodianess",
-          "country": "",
-          "date": "2026-09-30",
-          "ts": "2026-09-30T12:47:05.000Z",
-          "rank": 17,
-          "rel": 5.2
-        },
-        {
-          "title": "VIDEO: ICC-Preah Vihear seeks Thai attack data to aid mine clearance at Preah Vihear Temple",
-          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPbGNXejNoZkhSY1l1ZTc4Z1EzYnpXQTlyMFlWSDRwMl8tbXI4d1U4ZnF4RmdoN09KYUdaOHBUZGh2TWhMV2xsTDFwSDB3bHJ6WTBjdFk4Q1A5MlZKclVxN3JYYlpPeThKaE42aGtMTktXY1V0VFp5LWZwakYwMEJLYmtZUUU5RmFBN1NqZ0dNWFJzWjZURUpyNnllWTE0X0xUeVZUcDhpM0lteTRDVmszaDZ0aVlkSUZQQWFjSmdNVk9yZkFPTXVicGxR?oc=5",
-          "domain": "Khmer Times",
-          "country": "",
-          "date": "2026-09-30",
-          "ts": "2026-09-30T17:04:41.000Z",
-          "rank": 28,
-          "rel": 4.8
-        },
-        {
-          "title": "Ministry rejects Thai envoy’s UN claims over Cambodian residents along border",
-          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPZGozTExJbk8xX3ZwaXg3UnRraXlLal9mZ3BJaWFUbVlDSEcwSmUwOUdmUGw4dHZSV3J0SjFLa1BFdGZ1cDN0RkRQemJZMXkxeTBtdjdmTm9NaURmYWZmbmtqOTRkd0tpc0JZcHNqRDA0dDNFT1hhbzVsWlZpd3ZPNk9SR3hRUFJ5YnB1aHotd2t0X05iWl85THRmVG5KdVJ3UXJrWnlPbDJOUnBYU2dTQjB3?oc=5",
-          "domain": "Phnom Penh Post",
-          "country": "",
-          "date": "2026-09-30",
-          "ts": "2026-09-30T07:24:20.000Z",
-          "rank": 27,
-          "rel": 4.7
-        },
-        {
-          "title": "ICC-Preah Vihear seeks Thailand firing data to support mine clearance",
-          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPaExRZExrb1JjQndrcHJ2SE01c2x5eWliakNONWVzT2VPOFNiUVlVbnZkY1A3cy1aM1o1Tk5zTG1iNGc4VGw1N1RyWV9xemdfb2Q3U2RZbHZubFBtbVNXdTJFaVg0N3NOOVZBOVpfZnNEN0NxYzNOZkdHN0ktUG1fa1hmMWhSU3FxVXZSTW96U1VNNFpwYWNtek1NZGNIUjJDUWdoUDQtY183ZXdJQXc?oc=5",
-          "domain": "Khmer Times",
-          "country": "",
-          "date": "2026-10-01",
-          "ts": "2026-10-01T17:35:35.000Z",
-          "rank": 13,
-          "rel": 4.4
-        },
-        {
-          "title": "Thais call for Cambodia to remain silent on border issues at international forums",
-          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQTmpJclZmZ3pUUjBoS1BOa1d2ejk0aUtsUF9OMnd5MEVaUEdITGg0enBQQmkwSzZzVW91ekQzWElxdE9MMFFTejdZVWF5WGIyd2tfS1lVSWpucVBFOEtPcFNlNVVCblFsUVRHel91WHpEMjhTV1VnMVE4VVZXa3NBLVViRXZVcWZ5UmN0R0tqeW92eURJbEgwdGl1eVZlWkstWjhxUG13Q0NVcGFUcmZ6cXUyMENBTlkx?oc=5",
-          "domain": "Phnom Penh Post",
-          "country": "",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T10:16:49.000Z",
-          "rank": 30,
-          "rel": 4.1
-        },
-        {
-          "title": "Cambodia, Thailand RBC Secretariats hold informal meeting under ASEAN Observation",
-          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPNk9YQVRVT2RjVnNIZ2JSZmlUWF9FX2FiMWVXRG1rOUcwVk5wNFF6eFk0SXlLNlBheUoxVHRMSFBOUFpMSUtTUElmSmhKSFgyU0d0bFZTbTQwbW9FdVVaamtfSVZaeDBqWE5NaXZCeng1cmw4ZllyVE9ZTUdZSE91VGVjUldNZ2xicHJoakdTRVR2cFhxcWx5QVk5QU1kSkVTUVlEdzNfd2ZROUs3Rk1lTzB4eEVfNGN3ZUg5bg?oc=5",
-          "domain": "Khmer Times",
-          "country": "",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T07:45:43.000Z",
-          "rank": 23,
-          "rel": 2.8
-        }
-      ],
+      "articles": [],
       "screen": {},
-      "screened": false,
-      "source": "rss-articles+unscreened+rss-counts",
-      "fetchedAt": "2026-10-01T19:14:55.409Z",
-      "count7d": 23,
-      "prev7d": 23,
-      "capped": true,
+      "screened": true,
+      "source": "gdelt-timeline",
+      "fetchedAt": "2026-10-01T20:20:09.059Z",
+      "count7d": 234,
+      "prev7d": 239,
+      "capped": false,
       "surge": false
     },
     "US_VE": {
@@ -1374,144 +1349,109 @@
     },
     "CN_JP": {
       "query": "(Japan OR Japanese OR Senkaku OR Takaichi) (China OR Chinese OR Beijing OR PLA) sourcelang:english",
-      "granularity": "week",
+      "granularity": "day",
       "timeline": [
         {
+          "date": "2026-09-02",
+          "value": 249
+        },
+        {
           "date": "2026-09-03",
-          "value": 1
+          "value": 325
+        },
+        {
+          "date": "2026-09-04",
+          "value": 367
+        },
+        {
+          "date": "2026-09-05",
+          "value": 160
+        },
+        {
+          "date": "2026-09-06",
+          "value": 184
+        },
+        {
+          "date": "2026-09-07",
+          "value": 316
+        },
+        {
+          "date": "2026-09-08",
+          "value": 240
+        },
+        {
+          "date": "2026-09-09",
+          "value": 408
         },
         {
           "date": "2026-09-10",
-          "value": 4
+          "value": 288
         },
         {
-          "date": "2026-09-17",
-          "value": 14
+          "date": "2026-09-11",
+          "value": 346
+        },
+        {
+          "date": "2026-09-12",
+          "value": 243
+        },
+        {
+          "date": "2026-09-13",
+          "value": 29
+        },
+        {
+          "date": "2026-09-20",
+          "value": 327
+        },
+        {
+          "date": "2026-09-21",
+          "value": 349
+        },
+        {
+          "date": "2026-09-22",
+          "value": 367
+        },
+        {
+          "date": "2026-09-23",
+          "value": 478
         },
         {
           "date": "2026-09-24",
-          "value": 81
-        }
-      ],
-      "articles": [
-        {
-          "title": "China Open and Japan Open: Carlos Alcaraz, Harriet Dart, Sonay Kartal victorious, but Brits Cam Norrie, Arthur Fery knocked out",
-          "url": "https://news.google.com/rss/articles/CBMi_gFBVV95cUxPMmRQN3NIemVpT3RhUlNlSFRSdU81dXY5Q29wbGZJR1BJVy13eHVENWpEdXRXazB1aGpqNHJyT0FoTGlZVE9sazdTMWhaSGYyZlNXQTA5MmtVLUpNdWZvOEdEV0NtR0VTN0Z6dW9wbGxudXNwdnJPeEs5bUEtMjV1MlNLU1U5SU5DaGd6WnVBT1BBOVVaMGg3QUdhT0JQOEJXVTlzdW1DUXJhUUkzbjByZ1VGNVRqbnZUV2NSVjZvU2xXZnB1dHhxTVA1X3pqaWxxNkNpODFDRjdESVdyclI2aTdsSzBvbXBRSWNzX0VrV3lPSkNPaWs4R0JGOGVMUQ?oc=5",
-          "domain": "skysports.com",
-          "country": "",
-          "date": "2026-10-01",
-          "ts": "2026-10-01T12:34:31.000Z",
-          "rank": 5,
-          "rel": 4.7
+          "value": 464
         },
         {
-          "title": "China urges Japan to correct erroneous claims and deeds related to Taiwan question, on 54th anniversary of normalization of ties",
-          "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE42SjdrajBaOVJVYmxtaXVwSG92UFJqWVlGemM3UmtmTnF4VU0yTEVjRGZlWXdqRGdDckpFbjkyQ3BEN2NpR3FGTTNLX2dEbWNIY0NNZVItN0hIMkxpajNjeVl3?oc=5",
-          "domain": "Global Times",
-          "country": "",
+          "date": "2026-09-25",
+          "value": 234
+        },
+        {
+          "date": "2026-09-27",
+          "value": 204
+        },
+        {
+          "date": "2026-09-28",
+          "value": 304
+        },
+        {
           "date": "2026-09-29",
-          "ts": "2026-09-29T10:22:00.000Z",
-          "rank": 17,
-          "rel": 3.1
+          "value": 374
         },
         {
-          "title": "Japan's China derisking has lessons for Southeast Asia",
-          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNNHJvbXVMNDVnVDYwS0VqY3ZoU1NWdkp2S1piREhVakp4RXA0LU9odkZzNWlWOHVDQWpXeEU1eWtTeE5kZllVSTB5djVhR3U3ZkY2WUsyUWctZk05d1dvbUlDV3pzdWc3eE9EUUtabUFkZEZqTngxakVpWlNWejlUWkJyckNJY2hNRjBQcWh1SQ?oc=5",
-          "domain": "Nikkei Asia",
-          "country": "",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T20:05:00.000Z",
-          "rank": 23,
-          "rel": 3.1
-        },
-        {
-          "title": "Zheng Zhihua: Why China Opposes the Japan–Philippines Maritime Boundary Process",
-          "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBBamdFVUhHVHdHOHhaTU55b2JneTZKSVR3WUZrYXJzMHRnTl8zMjhfdkpIdTVHemEtRkhhaVFzdnhLT29BbmFzUFpiZUhLRXBDaWtVR0JJSDZDdTNIVktNSzFycFN2enl0TkxlYWYwRDE?oc=5",
-          "domain": "The East is Read",
-          "country": "",
           "date": "2026-09-30",
-          "ts": "2026-09-30T13:49:22.000Z",
-          "rank": 36,
-          "rel": 2.9
+          "value": 238
         },
         {
-          "title": "Japanese business presence in China down nearly 30% from peak in 2012: survey",
-          "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxQa25rVDRKQ0ctRHNOemViSDNUSURoMWNMNU1Sb1c3cEpsSGdobVJKMFdJQXFBU2Rwd3hmMFdaMkZMdl9lZEJqdzdmY1lLbVBSUFJHWEVYZzZBaGMyb285VFpYc2ZGMHJQeE9nYVQ1WTJSeVNWUEd6NVFyQmVTc2JCWTMxQTZVd3pIU3k1UFFBNDg1UnJ4RGlnc1BtRDZvLWVIM2hvNFJxWWJtS3FhNzVLRmNLSTZvMkxMclFLU3NXRmJ3bmsyN2xpY0dGelRDeURxaGwtQThIdTQ3VHc2TlAyMmx4aw?oc=5",
-          "domain": "South China Morning Post",
-          "country": "",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T07:00:13.000Z",
-          "rank": 24,
-          "rel": 2.8
-        },
-        {
-          "title": "China’s Wang Yi delivers high-level warning to Japanese business delegation",
-          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNRUdDbkllRjlLVlBwT0hSanphVkMycGVmSTZ1X05FYVphc0FuM0dOUUtEanRydVlxTE82aWhrVi1rdHdZT3o5TVBIZTQyRllFYXUwWWoxQjVvNkttUGdUZ2w3TVR5cmVHanhRRnZ1U1ZXVmM0aVNSYldTWEFzOU5jY1JkRDBTaGswX01pbzNBeUhmaE5pVkNIZVdhUXNzQUN3Rm1iYVFHdEEwYU1aNlZPWFVMUGdZeko4cTFURXV1dVRaWTBBWE4w0gHHAUFVX3lxTFBwMUdFMzJLM3B3MGl1ZU92dEFxdlhMb2l6RzdkUW56Rzl1ZHoyUUY2djlNMjBPalFkbWc3SF9QSzFJWjFBb0NFRUhvOEFtdDhrS3BldFg0QmhmX2dzSEMzbEp2NVN5RVQ2aWNwWVQ1cFAzOEh2MTZBUGwwV1Y5OTV1Z29zNXFvYXhacHVnV0cydmlIdVF2cEh6V05iZ1FfTUo4Z2Z6TFJ5emx1R29RT2lKaTFlVG5uNGpKNHB1MTFwUUJhYXloLW8?oc=5",
-          "domain": "South China Morning Post",
-          "country": "",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T06:00:10.000Z",
-          "rank": 26,
-          "rel": 2.7
-        },
-        {
-          "title": "China courts Japan ex-foreign minister in pressure play against Takaichi",
-          "url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxPemtLd0ZWYUFNLUIzZWo5Wno2YlF4NU9Fei1jbEI5T19oMUlvTm1zZV9SZ0pZNlNJb01Rd0ZrMWZGMnJjSUM3ZGEyLUczZDVfSUtxQXAwWExFVU85dmZvclo0TGdRSnhkakdiTjdaUXlKNlJLVFNJcVdfSHBGVUhxX1A0RVR6ZU14U1ozMlJScmZVRFJvekdtNWJKSFNlWTJYLWo2eW8xaE9oSXJtbDQxLWdfTHRmbTRob3FIYm51MktYT2hIRWpTMEQxUDFLQUFmSWVlQTNZVHpCRnViTUJETWtSd3I?oc=5",
-          "domain": "Nikkei Asia",
-          "country": "",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T17:05:00.000Z",
-          "rank": 37,
-          "rel": 2.5
-        },
-        {
-          "title": "FM Cho calls for stronger Korea-China-Japan cooperation for regional peace",
-          "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxPRVdWNTdmZ2puQTJ5S2hrSC16VlNCb0xyYTRXVGc4SXd3OWpsRnduV3FDUXZVM3d6bkVxN1RiMXhaVDIwU3lETGJocGZHcGdGRFlnbXhjZVFiTFhvdEJxTlEyZ3RZd25HX2R0MzlNVGNQMHU2YzRvZmhyMnpVZ2s2b09HNUNsbXZnc01KVEpjMXVONDlUUm83c0hfamxsN3otSEZxR0ZjSmV1Y0xvSkszZTFoMDJwRkZDaHJHdHdITXdMOG8wS290Rk9Gb9IBywFBVV95cUxPRVdWNTdmZ2puQTJ5S2hrSC16VlNCb0xyYTRXVGc4SXd3OWpsRnduV3FDUXZVM3d6bkVxN1RiMXhaVDIwU3lETGJocGZHcGdGRFlnbXhjZVFiTFhvdEJxTlEyZ3RZd25HX2R0MzlNVGNQMHU2YzRvZmhyMnpVZ2s2b09HNUNsbXZnc01KVEpjMXVONDlUUm83c0hfamxsN3otSEZxR0ZjSmV1Y0xvSkszZTFoMDJwRkZDaHJHdHdITXdMOG8wS290Rk9Gbw?oc=5",
-          "domain": "The Korea Times",
-          "country": "",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T23:56:03.000Z",
-          "rank": 76,
-          "rel": 2.1
-        },
-        {
-          "title": "57% of survey respondents in Japan supported improving ties with China — ECNS",
-          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNckZtd0pWcmJta2FybEx1bm9rSDdfekZoTzdzQlMtcTJtQ2xsaHhyUnFFazlhdjBfbnRxSGpuVHhiQkE4X2dtMWJxRGRncGl3MVRqeXNfM2lQRnpjOXNRR0J1a3JZSHNlYmF1SmlZQkNxVFhQR3pVNWhsMHNKdjByOENHQ0dJNHF6cXpYem1mZDQxdGE4eVN3N19SRndBY3VnTGdPOWR3OEd2QUsyV0x3?oc=5",
-          "domain": "UA.NEWS",
-          "country": "",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T15:55:41.000Z",
-          "rank": 94,
-          "rel": 1.9
-        },
-        {
-          "title": "Tokyo knows what to do to repair relations with Beijing",
-          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPeTFzZTdkNGdqOHpTX3F2OVNfUlNCNzFlX0d6WkFHWmI5SUt6VDVSc25DdEFfUnM1bXdvUXdjZnBkak5QLWMzdmtjYVktQjZzM2l6WHAyNDVFeUN0Vjh2MkEydXF5MWhQTG54YWVFal9EMm5vQ1F0TXNMYklBTmkwM3pn?oc=5",
-          "domain": "China Daily Global Edition",
-          "country": "",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T13:18:38.000Z",
-          "rank": 65,
-          "rel": 1.9
-        },
-        {
-          "title": "Trump–Xi Summit 2.0, China’s Japan Narrative, Xi’s Purge Campaign, and China’s Economic Weakness",
-          "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxNQnFMc1ZfWHlFdXJFbTA3emZkeGlGb0tJbko0YnVtQ1VIZmQ3UkJtLUloc0tNS1BGNzc1TGlxMVZzbTlLbGlmM2pUYl82dkhpR1ZQSHlsN2FRMHFJLWJEaDdTem1WclpYazdST3hlMG8xbnFITWltSFJ4N2djdk02ODFHZzdyaTlwdVpvTHFFNTMwS2xPdFVNRVhrWkFCdUd5UmE5WTNQc3VTTVlyeFBEMDZhdkc0RldIeWRNX0JwZ2I5dm54cW93ZFdLSk1GNjBSS29zdUxGd18?oc=5",
-          "domain": "Hudson Institute",
-          "country": "",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T11:41:23.000Z",
-          "rank": 70,
-          "rel": 1.8
+          "date": "2026-10-01",
+          "value": 273
         }
       ],
+      "articles": [],
       "screen": {},
-      "screened": false,
-      "source": "rss-articles+unscreened+rss-counts",
-      "fetchedAt": "2026-10-01T19:22:12.397Z",
-      "count7d": 81,
-      "prev7d": 14,
-      "capped": true,
+      "screened": true,
+      "source": "gdelt-timeline",
+      "fetchedAt": "2026-10-01T20:31:10.168Z",
+      "count7d": 2091,
+      "prev7d": 2139,
+      "capped": false,
       "surge": false
     },
     "IN_PK": {
@@ -1730,136 +1670,15 @@
         },
         {
           "date": "2026-10-01",
-          "value": 103
+          "value": 107
         }
       ],
-      "articles": [
-        {
-          "title": "Myanmar army air strike kills dozens in Rakhine state",
-          "url": "https://www.aljazeera.com/news/2026/9/28/myanmar-army-air-strike-kills-dozens-in-rakhine-state",
-          "domain": "aljazeera.com",
-          "country": "United States",
-          "date": "2026-09-28",
-          "ts": "2026-09-28T22:00:00Z",
-          "rank": 0,
-          "rel": 9.6
-        },
-        {
-          "title": "49 killed in Myanmar as junta carries out airstrike at rebel - controlled Rakhine region",
-          "url": "https://timesofindia.indiatimes.com/world/rest-of-world/49-killed-in-myanmar-as-junta-carries-out-airstrike-in-rebel-controlled-rakhine-region/articleshow/134554050.cms",
-          "domain": "timesofindia.indiatimes.com",
-          "country": "India",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T04:00:00Z",
-          "rank": 4,
-          "rel": 9.5
-        },
-        {
-          "title": "UN alarmed by reports that Myanmar air strike killed 50",
-          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxOdXNfc0kxMkFDRU1CWGhNZy1DWmF2U2lHTXZJa0RxWTJzU1I2cDcyQ1d3ajg5Zm1xYTdqNEVNamVmX2dVYWdVc0U1UTVOeXFHcHhsVmhTSlN5dDVhM2RlTkNfcGpsQTczdlIyQ0lRcmQtMG5WQ0lUT0NFUUp2RUE3bXNGM0V4dnVNNXV2LWtfY2RjZmo5YUZFeUthcE1FeDhoXzV4aGJJMkFyTXlfSmVn?oc=5",
-          "domain": "Reuters",
-          "country": "",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T19:56:56.000Z",
-          "rank": 12,
-          "rel": 8
-        },
-        {
-          "title": "Assam Rifles jawan killed, four injured in suspected militant attack along Myanmar border in Arunachal Pradesh",
-          "url": "https://timesofindia.indiatimes.com/india/assam-rifles-jawan-killed-four-injured-in-suspected-militant-attack-along-myanmar-border-in-arunachal-pradesh/articleshow/134561299.cms",
-          "domain": "timesofindia.indiatimes.com",
-          "country": "India",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T09:30:00Z",
-          "rank": 46,
-          "rel": 8
-        },
-        {
-          "title": "China Steps Up Patrols Along the Myanmar Border as Fighting Intensifies",
-          "url": "https://www.chiangraitimes.com/china/fighting-intensifies-in-myanmar/",
-          "domain": "chiangraitimes.com",
-          "country": "Thailand",
-          "date": "2026-10-01",
-          "ts": "2026-10-01T18:45:00Z",
-          "rank": 2,
-          "rel": 7.9
-        },
-        {
-          "title": "UN expert urges Malaysian Government to stop repatriation of Myanmar nationals, deplores Myanmar military’s latest airstrikes targeting civilians",
-          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOOUVvR3Awc3l3cFF4WTJEUF9KZk5QZ21ZbmZLc2NYemk5UXV4Unpob25BaVNKQXVGSVVlTEp3bUFma1l0MzVGYjBaQi1STU5rQjV0dGg2bDlFN25tTGhiTFVoZDhXdmZJR3ZoaHVIZng4MGp1SERFZVQzSW5sNzMzT3k3YVJjamJPdV92MGpLaklwaFN4Wm1ZX3dtZml4U211ZHhwLUNKNWlva0RvNlhSdXJnVE5NVmRwNElIRw?oc=5",
-          "domain": "ohchr",
-          "country": "",
-          "date": "2026-10-01",
-          "ts": "2026-10-01T08:58:57.000Z",
-          "rank": 3,
-          "rel": 7.7
-        },
-        {
-          "title": "Captured Junta Soldiers Reveal No Retreat Orders and Officer Abandonment in Arakan Defeat",
-          "url": "https://www.bnionline.net/en/news/captured-junta-soldiers-reveal-no-retreat-orders-and-officer-abandonment-arakan-defeat",
-          "domain": "bnionline.net",
-          "country": "Myanmar",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T06:15:00Z",
-          "rank": 25,
-          "rel": 7.2
-        },
-        {
-          "title": "Myanmar Military Airstrike Damages Historic Taungphu Pagoda in Rakhine State, Killing One Civilian",
-          "url": "https://www.bnionline.net/en/news/myanmar-military-airstrike-damages-historic-taungphu-pagoda-rakhine-state-killing-one-civilian",
-          "domain": "bnionline.net",
-          "country": "Myanmar",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T06:15:00Z",
-          "rank": 26,
-          "rel": 7.2
-        },
-        {
-          "title": "Myanmar Junta Recasts Kyaukphyu SEZ Committee with Frontline Military Officers",
-          "url": "https://www.bnionline.net/en/news/myanmar-junta-recasts-kyaukphyu-sez-committee-frontline-military-officers",
-          "domain": "bnionline.net",
-          "country": "Myanmar",
-          "date": "2026-09-30",
-          "ts": "2026-09-30T18:00:00Z",
-          "rank": 21,
-          "rel": 6.6
-        },
-        {
-          "title": "Assam Rifles jawan killed in ambush near Myanmar border",
-          "url": "https://economictimes.indiatimes.com/news/defence/assam-rifles-jawan-killed-in-ambush-near-myanmar-border/articleshow/134573339.cms",
-          "domain": "economictimes.indiatimes.com",
-          "country": "India",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T19:45:00Z",
-          "rank": 49,
-          "rel": 6.5
-        },
-        {
-          "title": "At Least 49 Killed as Myanmar Military Carries Out Airstrike",
-          "url": "https://kashmirlife.net/at-least-49-killed-as-myanmar-military-carries-out-airstrike-454203/",
-          "domain": "kashmirlife.net",
-          "country": "India",
-          "date": "2026-09-29",
-          "ts": "2026-09-29T08:45:00Z",
-          "rank": 6,
-          "rel": 6.5
-        },
-        {
-          "title": "Myanmar military airstrike hits market, killing at least 33 people in Rakhine state",
-          "url": "https://www.cbc.ca/news/world/myanmar-rakhine-arakan-airstrike-9.7361108",
-          "domain": "cbc.ca",
-          "country": "Canada",
-          "date": "2026-09-28",
-          "ts": "2026-09-28T20:00:00Z",
-          "rank": 3,
-          "rel": 6.4
-        }
-      ],
+      "articles": [],
       "screen": {},
-      "screened": false,
-      "source": "gdelt-timeline+gdelt-articles+rss-articles+unscreened",
-      "fetchedAt": "2026-10-01T19:25:47.053Z",
-      "count7d": 588,
+      "screened": true,
+      "source": "gdelt-timeline",
+      "fetchedAt": "2026-10-01T20:36:07.377Z",
+      "count7d": 592,
       "prev7d": 534,
       "capped": false,
       "surge": false
