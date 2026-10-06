@@ -2207,14 +2207,16 @@
 
     // ---- Information operations / strategic communications watch --------
     // Register `infoOps` {enabled, since, trigger, question, feed, findings[],
-    // assessment}: switched on for an item when a trigger event makes messaging
-    // and influence activity worth tracking on its own. The daily feed adds a
+    // assessment; optional kind, label, title, feedTitle}: switched on for an
+    // item when a trigger event makes messaging and influence activity (kind
+    // "info-ops", the default) or a wider shadow war of sabotage, incursions
+    // and influence (kind "shadow-war") worth tracking on its own. The daily feed adds a
     // narrower sub-feed (live `infoOps.articles`); the daily review keeps the
     // dated, typed findings and the assessment current.
     infoOpsBadge(it) {
       const io = it.infoOps;
       if (!io || !io.enabled) return "";
-      return ` <span class="wl-io-badge" title="${esc(`Information ops & strategic communications watch since ${this.fmtDate(io.since)} (${io.trigger || ""}). ${io.question || ""}`)}">Info-ops watch</span>`;
+      return ` <span class="wl-io-badge" title="${esc(`${io.title || "Information ops & strategic communications watch"} since ${this.fmtDate(io.since)} (${io.trigger || ""}). ${io.question || ""}`)}">${esc(io.label || "Info-ops watch")}</span>`;
     },
     infoOpsBlock(it) {
       const io = it.infoOps;
@@ -2227,7 +2229,7 @@
       const live = (this.feed(it) || {}).infoOps;
       const arts = live ? this.feedArticles(live).slice(0, 6).map(x => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a><span class="wl-art-meta">${esc(x.domain)}${x.date ? " · " + esc(this.fmtDate(x.date)) : ""}</span></li>`).join("") : "";
       return `<div class="wl-d-block wl-io" title="${esc((this.defs().infoOps || {}).desc || "")}">
-        <div class="wl-d-h">Information ops &amp; strategic communications watch <span class="wl-as-date">since ${esc(this.fmtDate(io.since))}${io.trigger ? ` · ${esc(io.trigger)}` : ""}</span></div>
+        <div class="wl-d-h">${esc(io.title || "Information ops & strategic communications watch")} <span class="wl-as-date">since ${esc(this.fmtDate(io.since))}${io.trigger ? ` · ${esc(io.trigger)}` : ""}</span></div>
         <p class="wl-io-q">${esc(io.question || "")}</p>
         <div class="wl-io-grid">
           <div>
@@ -2238,7 +2240,7 @@
             <div class="wl-d-h sub">Assessment${a.date ? ` <span class="wl-as-date">as of ${esc(this.fmtDate(a.date))}</span>` : ""}</div>
             ${a.text ? `<p class="wl-d-p wl-as-p">${esc(a.text)}</p>` : "<p class='muted-note'>No assessment yet.</p>"}
             ${(a.sources || []).length ? `<div class="wl-d-h sub">Read more (${a.sources.length})</div><ul class="wl-src-list">${a.sources.map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label || s.url)} ↗</a></li>`).join("")}</ul>` : ""}
-            <div class="wl-d-h sub">Latest messaging &amp; influence reporting${live ? ` <span class="briefs-live">● LIVE</span>` : ""}</div>
+            <div class="wl-d-h sub">${esc(io.feedTitle || "Latest messaging & influence reporting")}${live ? ` <span class="briefs-live">● LIVE</span>` : ""}</div>
             ${arts ? `<ul class="wl-art-list">${arts}</ul>` : `<p class="muted-note">${live ? "No title-matched articles in the last 3 days." : "The daily feed adds a live sub-feed for this watch once it has run."}</p>`}
           </div>
         </div>

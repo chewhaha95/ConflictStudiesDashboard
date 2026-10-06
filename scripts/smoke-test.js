@@ -90,6 +90,13 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       Array.isArray(io.findings) && io.findings.length >= 5 && io.findings.every(f => /^\d{4}-\d{2}-\d{2}$/.test(f.date) && f.text && f.type && /^https?:/.test(f.url || "") && f.type in wl.definitions.infoOps.types) &&
       io.assessment && io.assessment.text.length > 200 && /^\d{4}-\d{2}-\d{2}$/.test(io.assessment.date) && io.assessment.sources.length >= 3 && !/CSI Flash|should publish/i.test(io.assessment.text);
   })());
+  check("shadow-war watch: Russia–Ukraine carries an enabled shadow-war block (kind, label, since, trigger, question, feed, typed findings, assessment)", (() => {
+    const ru = wl.items.find(i => i.id === "RU_UA"); const io = ru && ru.infoOps;
+    return !!io && io.enabled === true && io.kind === "shadow-war" && io.label && io.title && io.feedTitle && /^\d{4}-\d{2}-\d{2}$/.test(io.since) && io.trigger && io.question && io.feed && io.feed.query && Array.isArray(io.feed.require) &&
+      Array.isArray(io.findings) && io.findings.length >= 5 && io.findings.every(f => /^\d{4}-\d{2}-\d{2}$/.test(f.date) && f.text && f.type && /^https?:/.test(f.url || "") && f.type in wl.definitions.infoOps.types) &&
+      ["hybrid attack", "defensive response"].every(t => t in wl.definitions.infoOps.types) &&
+      io.assessment && io.assessment.text.length > 200 && /^\d{4}-\d{2}-\d{2}$/.test(io.assessment.date) && io.assessment.sources.length >= 3 && !/CSI Flash|should publish/i.test(io.assessment.text);
+  })());
   check("every item carries a current-status summary with 2+ article links", wl.items.every(i => i.status && i.status.summary.length > 80 && i.status.sources.length >= 2 && i.status.sources.every(s => /^https?:/.test(s.url))));
   check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
   check("register is reviewed daily (cadenceDays = 1)", wl.meta.cadenceDays === 1);
@@ -321,7 +328,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   {
     const tw = wl.items.find(i => i.id === "TW");
     const row = reg.querySelector(`tr[data-wl-row="TW"]`);
-    check("info-ops watch: the Taiwan row carries the badge and no other row does", !!row.querySelector(".wl-io-badge") && reg.querySelectorAll(".wl-io-badge").length === wl.items.filter(i => i.infoOps && i.infoOps.enabled).length);
+    check("info-ops watch: the Taiwan row carries the badge, and only rows with an enabled watch do", !!row.querySelector(".wl-io-badge") && reg.querySelectorAll(".wl-io-badge").length === wl.items.filter(i => i.infoOps && i.infoOps.enabled).length);
     if (!doc.querySelector(`tr[data-wl-detail="TW"]`)) { reg.querySelector(`[data-wl-toggle="TW"]`).click(); await sleep(40); }
     const detTW = doc.querySelector(`tr[data-wl-detail="TW"]`);
     const card = detTW && detTW.querySelector(".wl-io");
@@ -329,6 +336,16 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       card.textContent.includes(tw.infoOps.question) && card.querySelectorAll(".wl-io-list li").length === tw.infoOps.findings.length && card.querySelectorAll(".wl-io-list .wl-io-type").length === tw.infoOps.findings.length &&
       card.querySelector(".wl-as-p").textContent === tw.infoOps.assessment.text && card.querySelectorAll(".wl-src-list a[href^='http']").length === tw.infoOps.assessment.sources.length && /Latest messaging/.test(card.textContent));
     reg.querySelector(`[data-wl-toggle="TW"]`).click(); await sleep(40);
+    const ru = wl.items.find(i => i.id === "RU_UA");
+    const ruRow = reg.querySelector(`tr[data-wl-row="RU_UA"]`);
+    check("shadow-war watch: the Russia–Ukraine row shows its own badge label", !!ruRow && !!ruRow.querySelector(".wl-io-badge") && ruRow.querySelector(".wl-io-badge").textContent.trim() === ru.infoOps.label);
+    if (!doc.querySelector(`tr[data-wl-detail="RU_UA"]`)) { reg.querySelector(`[data-wl-toggle="RU_UA"]`).click(); await sleep(40); }
+    const ruCard = doc.querySelector(`tr[data-wl-detail="RU_UA"] .wl-io`);
+    check("shadow-war watch: the expanded Russia–Ukraine row shows the shadow-war card (title, question, typed findings, assessment, feed heading)", !!ruCard &&
+      ruCard.textContent.includes(ru.infoOps.title) && ruCard.textContent.includes(ru.infoOps.question) && ruCard.textContent.includes(ru.infoOps.feedTitle) && !/Latest messaging/.test(ruCard.textContent) &&
+      ruCard.querySelectorAll(".wl-io-list li").length === ru.infoOps.findings.length && ruCard.querySelectorAll(".wl-io-list .wl-io-type").length === ru.infoOps.findings.length &&
+      ruCard.querySelector(".wl-as-p").textContent === ru.infoOps.assessment.text);
+    reg.querySelector(`[data-wl-toggle="RU_UA"]`).click(); await sleep(40);
   }
   check("detail: without a live feed the reporting block explains the daily sync", /Latest open-source reporting/.test(det.textContent) && /No live feed loaded/.test(det.textContent));
   check("register: Coverage column present, empty without a feed", [...reg.querySelectorAll("thead th")].some(th => /Coverage/.test(th.textContent)) && reg.querySelectorAll("td.wl-feed-cell .wl-spark").length === 0);
@@ -781,6 +798,10 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const r6 = await feed.screenArticles(tw, [{ title: "Beijing state media pushes 'abandonment' narrative on Taiwan after summit", url: "i1", domain: "x" }, { title: "Taiwan stocks rise", url: "i2", domain: "y" }], {}, ioJudge, { system: feed.INFOOPS_SYSTEM, prompt: feed.infoOpsPrompt });
     check("info-ops screen: uses the info-ops system prompt and the item's question", r6.kept.length === 1 && /information-operations watch/.test(seen[0].system) && seen[0].user.includes(tw.infoOps.question) && /Trump/.test(seen[0].user));
     check("info-ops feed filter: keeps messaging headlines and drops plain economic news", feed.titleMatch({ title: "China's Taiwan Affairs Office warns Taipei after Trump–Xi summit" }, tw.infoOps.feed) && !feed.titleMatch({ title: "Taiwan stocks rise on chip export hopes" }, tw.infoOps.feed));
+    const ruw = wl.items.find(i => i.id === "RU_UA"); seen.length = 0;
+    await feed.screenArticles(ruw, [{ title: "Poland scrambles jets after Russian drone incursion", url: "s1", domain: "x" }], {}, ioJudge, { system: feed.infoOpsSystem(ruw.infoOps), prompt: feed.infoOpsPrompt });
+    check("shadow-war screen: a shadow-war watch uses the shadow-war system prompt and the item's question; info-ops watches keep theirs", /shadow-war watch/.test(seen[0].system) && seen[0].user.includes(ruw.infoOps.question) && feed.infoOpsSystem(tw.infoOps) === feed.INFOOPS_SYSTEM);
+    check("shadow-war feed filter: keeps sabotage and incursion headlines and drops unrelated Russia news", feed.titleMatch({ title: "Poland scrambles jets after Russian drone incursion" }, ruw.infoOps.feed) && feed.titleMatch({ title: "Germany arrests suspects in Russian sabotage plot" }, ruw.infoOps.feed) && !feed.titleMatch({ title: "Russian ballet company opens European tour" }, ruw.infoOps.feed));
     if (saved.A != null) process.env.ANTHROPIC_API_KEY = saved.A; if (saved.G != null) process.env.GITHUB_TOKEN = saved.G; else delete process.env.GITHUB_TOKEN; if (saved.F != null) process.env.FEED_SCREEN = saved.F; else delete process.env.FEED_SCREEN;
     check("register: definitions.feed.spamDomains lists article sources dropped outright", Array.isArray(wl.definitions.feed.spamDomains) && wl.definitions.feed.spamDomains.includes("czechinvest.gov.cz"));
   }
