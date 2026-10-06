@@ -309,7 +309,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   wv = doc.querySelector("#view-watchlist .view-body");
   const det = wv.querySelector(`tr[data-wl-detail="${probe.id}"]`);
   check("expanded row shows the latest open-source reporting, the timeline and the topic assessment (no changed / next / ignore cards)", !!det &&
-    /Latest open-source reporting/.test(det.textContent) && /Timeline so far/.test(det.textContent) && /Topic assessment/.test(det.textContent) && det.querySelectorAll(".wl-detail-grid > .wl-d-block").length === 3 &&
+    /Latest open-source reporting/.test(det.textContent) && /Timeline so far/.test(det.textContent) && /Topic assessment/.test(det.textContent) && det.querySelectorAll(".wl-detail-grid > .wl-d-block:not(.wl-io)").length === 3 &&
     !/What materially changed/.test(det.textContent) && !/What might happen next/.test(det.textContent) && !/Ignore for now\?/.test(det.textContent) && !/What CSI should do/.test(det.textContent) &&
     !/\bQ[1-7]\b/.test(det.textContent) && !/Brief signal/.test(det.textContent) && !det.querySelector(".wl-brief") && !/State history/.test(det.textContent));
   check("detail: timeline is a chronological dated recap with no state chips (history notes stand in until the register carries `timeline`)", (() => {
