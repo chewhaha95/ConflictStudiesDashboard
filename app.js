@@ -2318,7 +2318,7 @@
       return `<div class="section"><div class="section-head"><h2>What can be ignored for now?</h2><span class="hint">Stable, repetitive, low-confidence, or no current Army learning value — with the trigger that would bring each back</span></div>
         <div class="card card-pad">
           ${rows ? `<ul class="wl-ig-list">${rows}</ul>` : `<p class="muted-note">Nothing is flagged ignore-for-now in the current filter.</p>`}
-          ${quiet.length ? `<div class="wl-quiet"><strong>Quiet over the last ${this.compareDays()} days (not flagged):</strong> ${quiet.map(it => this.nameBtn(it)).join(", ")} — no dimension changed, no state move, Dashboard only.</div>` : ""}
+          ${quiet.length ? `<div class="wl-quiet"><strong>Quiet this review (not flagged):</strong> ${quiet.map(it => this.nameBtn(it)).join(", ")} — no dimension changed and no state move over the last ${this.compareDays()} days.</div>` : ""}
         </div></div>`;
     },
 
