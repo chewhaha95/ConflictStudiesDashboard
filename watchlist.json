@@ -159,7 +159,7 @@
       "adaptability": "Adaptability: how transferable the topic's lessons are to the Army — High, Medium or Low, set by the team."
     },
     "infoOps": {
-      "desc": "Information operations and strategic communications watch. Switched on for an item when a trigger event (a summit, a crisis) makes messaging and influence activity worth tracking on its own: a narrower hourly feed of reporting on official messaging, state-media narratives and documented influence campaigns, plus dated findings and an assessment researched daily from open sources.",
+      "desc": "Information operations and strategic communications watch, or a wider shadow-war watch (kind \"shadow-war\") that also tracks sabotage, incursions and the targeted side's responses. Switched on for an item when a trigger event (a summit, a crisis) makes messaging and influence activity worth tracking on its own: a narrower hourly feed of reporting on official messaging, state-media narratives and documented influence campaigns, plus dated findings and an assessment researched daily from open sources.",
       "types": {
         "official statement": "Government, foreign-ministry, military or party statement aimed at an audience (strategic communications).",
         "state-media narrative": "Framing pushed by state or party media, including English-language outlets aimed abroad.",
@@ -169,7 +169,9 @@
         "counter-messaging": "The targeted side's official response or rebuttal.",
         "domestic narrative": "Narratives inside the targeted polity (parties, polls, viral claims).",
         "debunked claim": "A specific false claim identified by a fact-checker.",
-        "third-party assessment": "Analysis by a think-tank, researcher or major outlet."
+        "third-party assessment": "Analysis by a think-tank, researcher or major outlet.",
+        "hybrid attack": "Physical sabotage, arson, cable or pipeline damage, cyber attacks, GPS jamming, drone or airspace incursions and other deniable attacks below the threshold of war.",
+        "defensive response": "The targeted side's practical countermeasures: arrests, expulsions, airspace closures, deployments, new laws and alliance consultations."
       }
     }
   },
@@ -531,7 +533,196 @@
             "text": "watch whether dispersed support preserves operational tempo under repeated targeting."
           }
         }
-      ]
+      ],
+      "infoOps": {
+        "enabled": true,
+        "kind": "shadow-war",
+        "label": "Shadow-war watch",
+        "title": "Russia–Europe shadow-war watch",
+        "feedTitle": "Latest shadow-war reporting",
+        "since": "2026-09-23",
+        "trigger": "Russian helicopter and drone incursions into Poland, Romania and Moldova, 23–24 Sep 2026",
+        "question": "Is Russia escalating a shadow war against Europe below the threshold of open war (sabotage and arson, cyber attacks, undersea cable and pipeline damage, GPS jamming, drone and airspace incursions, shadow-fleet activity, espionage, assassination plots and influence or disinformation operations), through which channels and against whom, and how are European governments and NATO responding?",
+        "feed": {
+          "query": "(Russia OR Russian OR Kremlin OR GRU) (sabotage OR \"hybrid war\" OR \"hybrid attack\" OR \"hybrid threat\" OR \"shadow war\" OR \"shadow fleet\" OR \"drone incursion\" OR \"airspace violation\" OR \"undersea cable\" OR arson OR \"GPS jamming\" OR cyberattack OR espionage OR disinformation) (Europe OR European OR NATO OR Poland OR Germany OR Baltic OR Romania OR Finland OR Britain OR France OR Denmark OR Moldova)",
+          "terms": [
+            "russia",
+            "russian",
+            "kremlin",
+            "gru",
+            "moscow"
+          ],
+          "require": [
+            [
+              "russia",
+              "russian",
+              "kremlin",
+              "gru",
+              "moscow",
+              "putin"
+            ],
+            [
+              "sabotage",
+              "hybrid",
+              "shadow war",
+              "shadow fleet",
+              "drone",
+              "airspace",
+              "incursion",
+              "violat",
+              "cable",
+              "pipeline",
+              "arson",
+              "explosion",
+              "cyber",
+              "hack",
+              "jamming",
+              "gps",
+              "spoof",
+              "spy",
+              "spies",
+              "espionage",
+              "assassinat",
+              "disinformation",
+              "propaganda",
+              "influence",
+              "interference",
+              "troll",
+              "bot network",
+              "article 4",
+              "expel",
+              "expulsion",
+              "arrest",
+              "sanction"
+            ]
+          ],
+          "exclude": [
+            "stock",
+            "shares",
+            "ballet",
+            "football",
+            "tennis",
+            "olympic"
+          ]
+        },
+        "findings": [
+          {
+            "date": "2026-10-05",
+            "actor": "EU High Representative Kaja Kallas",
+            "type": "official statement",
+            "text": "On 5 Oct 2026 Kallas, speaking alongside Moldovan PM Vasile Tofan, said Russia is putting lives at risk across Europe and that recent weeks had seen a spike in Russian hybrid attacks, sabotage attempts and airspace violations. She called the weekend missile and drone incursions into Moldova completely unacceptable, signalling the EU now frames the campaign as a direct threat to civilians.",
+            "url": "https://www.usnews.com/news/world/articles/2026-10-05/russia-puts-lives-at-risk-across-europe-with-hybrid-attacks-kallas-says"
+          },
+          {
+            "date": "2026-10-03",
+            "actor": "Russian armed forces; Moldovan government",
+            "type": "hybrid attack",
+            "text": "On the morning of 3 Oct 2026 three Banderol-type Russian missiles and two drones crossed Moldovan airspace and exploded on the ground in several districts during a strike on Ukraine, with no casualties reported. President Sandu said Russia's war is dangerously reaching Moldova, and Chisinau summoned Russia's ambassador for the second time in a week. It is the most serious spillover onto a non-NATO EU candidate in the window.",
+            "url": "https://kyivindependent.com/5-russian-missiles-and-drones-exploded-over-moldovas-airspace-sandu-says/"
+          },
+          {
+            "date": "2026-10-02",
+            "actor": "Ukrainian military intelligence (HUR)",
+            "type": "third-party assessment",
+            "text": "On 2 Oct 2026 HUR said Russia's special services have been tasked with increasing hybrid operations in EU and NATO states, including arson, assassinations and sabotage of military sites, critical infrastructure and communications, possibly including Starlink stations. It cited the Leipzig drone plot and the 23 Sep Starlink fire in Poland, but this is an interested party's claim not independently confirmed.",
+            "url": "https://kyivindependent.com/russia-planning-to-increase-hybrid-warfare-activity-in-europe-ukrainian-intelligence-warns/",
+            "unverified": true
+          },
+          {
+            "date": "2026-10-01",
+            "actor": "Vladimir Putin",
+            "type": "coercive signalling",
+            "text": "On 1 Oct 2026 Putin warned Russia was prepared to use all weapons in its arsenal, implicitly including nuclear weapons, if the West threatened the Kaliningrad exclave. The warning followed NATO drills near Kaliningrad and a Russian diplomatic note to NATO in late September threatening a nuclear response to any attempt to isolate the region.",
+            "url": "https://www.abc.net.au/news/2026-10-02/putin-kaliningrad-threat-nuclear-weapons/107219366"
+          },
+          {
+            "date": "2026-09-30",
+            "actor": "NATO Secretary General Mark Rutte",
+            "type": "counter-messaging",
+            "text": "On 30 Sep 2026 Rutte confirmed NATO had replied to Russia's note on Kaliningrad, stressing that NATO is a defensive alliance, and said he did not take the nuclear threat that seriously. He argued Putin's aim was to divide allies and pull focus away from Ukraine.",
+            "url": "https://united24media.com/world/i-dont-take-this-seriously-nato-chief-rutte-dismisses-russias-nuclear-threat-over-kaliningrad-23014"
+          },
+          {
+            "date": "2026-09-29",
+            "actor": "Estonian Foreign Ministry and Internal Security Service",
+            "type": "defensive response",
+            "text": "On 29 Sep 2026 Estonia publicly attributed the 15 Aug arson at defence-robotics firm Milrem Robotics, a Ukraine supplier, to a pre-planned operation commissioned by Russian security services, and summoned Russia's diplomatic representative. Three suspects arrested in Latvia had been handed to Estonia; the Kremlin called the accusation unfounded.",
+            "url": "https://www.nbcnews.com/world/europe/russia-accused-sabotage-estonia-arson-ukraine-supplier-rcna600451"
+          },
+          {
+            "date": "2026-09-25",
+            "actor": "Vladimir Putin",
+            "type": "official statement",
+            "text": "On 25 Sep 2026 at the United Cultures Forum in St Petersburg Putin said Russia is not preparing for military action against Europe and called European threat warnings exaggeration. In the same remarks he claimed Russian speakers' rights are violated in the Baltic states and said Russia was responding on humanitarian grounds, without specifying what that meant, a familiar pretext narrative.",
+            "url": "https://meduza.io/en/feature/2026/09/26/putin-says-russia-will-not-attack-europe-and-blames-ukraine-for-the-breakdown-in-peace-talks"
+          },
+          {
+            "date": "2026-09-25",
+            "actor": "GRU (suspected); German investigators",
+            "type": "hybrid attack",
+            "text": "On 25 Sep 2026 Frankfurter Allgemeine Zeitung reported that German investigators suspect the GRU recruited the two people detained over the 2-3 Sep incendiary attack near the Munich offices of Rohde & Schwarz and drone maker Helsing. Investigators see a possible link to the Leipzig airport drone plot and a simultaneous arson attempt at a drone plant in Slovakia, pointing to coordinated targeting of Ukraine's defence suppliers.",
+            "url": "https://meduza.io/en/news/2026/09/25/german-investigators-suspect-russian-military-intelligence-organized-an-arson-attack-near-defense-firms-in-munich"
+          },
+          {
+            "date": "2026-09-24",
+            "actor": "Danish Defence Intelligence Service (DDIS)",
+            "type": "third-party assessment",
+            "text": "On 24 Sep 2026 DDIS warned of a low but growing risk that Russia could carry out limited strikes on infrastructure supporting Ukraine or a limited attack on one or more NATO countries bordering Russia in the coming months. It expects Russia to intensify hybrid attacks, including damaging cyberattacks and sabotage with a high risk of casualties, while seeing no sign of an outright invasion.",
+            "url": "https://www.cnbc.com/2026/09/25/russia-ukraine-war-nato-denmark-putin.html"
+          },
+          {
+            "date": "2026-09-24",
+            "actor": "Russian armed forces",
+            "type": "hybrid attack",
+            "text": "On 24 Sep 2026 suspected Russian Gerbera-type drones crashed in Romania near Solca in Suceava County after about four minutes in Romanian airspace, and in Moldova's Floresti district, during a mass strike on Ukraine; Romania scrambled two F-16s and no casualties were reported. ISW read these crashes, together with the Polish Starlink fire and a Berlin airport drone stoppage on 23 Sep, as one pattern aimed at normalising airspace violations.",
+            "url": "https://kyivindependent.com/suspected-russian-drones-crash-in-romania-moldova/"
+          },
+          {
+            "date": "2026-09-23",
+            "actor": "Unknown saboteurs; Polish government",
+            "type": "hybrid attack",
+            "text": "On the evening of 23 Sep 2026 a fire hit the power system of a Starlink ground station at Wola Krobowska near Warsaw that supports connectivity used by Ukraine, and a Molotov-style bottle was found nearby. Deputy PM Krzysztof Gawkowski called it sabotage consistent with Russia's new doctrine of attack but said there was no direct evidence of Russian involvement, and service was restored.",
+            "url": "https://meduza.io/en/news/2026/09/24/starlink-ground-station-catches-fire-near-warsaw-polish-security-services-suspect-russian-sabotage"
+          },
+          {
+            "date": "2026-09-23",
+            "actor": "Russian armed forces (Mi-8 helicopter)",
+            "type": "hybrid attack",
+            "text": "At 11:08 on 23 Sep 2026 a Russian Mi-8 helicopter crossed from Kaliningrad about 300 metres into Polish airspace north of Braniewo for 42 seconds, prompting Poland to scramble fighters and put ground air defences on standby. Polish operational command said Russia was again testing the readiness of its air defences; it was the first publicly reported Russian military helicopter crossing of Poland's land border.",
+            "url": "https://notesfrompoland.com/2026/09/23/russian-military-helicopter-violates-polish-airspace/"
+          }
+        ],
+        "assessment": {
+          "date": "2026-10-06",
+          "text": "Russia's below-threshold pressure on Europe intensified between 22 Sep and 6 Oct 2026, mainly through airspace incursions and sabotage of infrastructure that supports Ukraine. A Mi-8 helicopter entered Polish airspace on 23 Sep, Gerbera drones crashed in Romania and Moldova on 24 Sep, and missiles and drones exploded on Moldovan territory on 3 Oct. Sabotage targeted Ukraine's supply chain: the 23 Sep Starlink station fire in Poland, German investigators' 25 Sep suspicion that the GRU recruited the Munich arsonists, and Estonia's 29 Sep attribution of the Milrem arson. Moscow paired this with coercive signalling, including the 1 Oct Kaliningrad 'all weapons' warning and Putin's 25 Sep denial of attack plans alongside claims about Baltic Russian speakers. European responses have so far been calibrated: scrambled jets, summoned envoys, arrests and public attribution, a 24 Sep Danish intelligence warning of possible limited strikes, Rutte's 30 Sep dismissal of nuclear threats, and Kallas's 5 Oct statement that Russia is endangering lives. Evidence on cyber and disinformation activity in this window remains thin.",
+          "sources": [
+            {
+              "label": "US News (Reuters) · Russia Puts Lives at Risk Across Europe With Hybrid Attacks, Kallas Says · 5 Oct 2026",
+              "url": "https://www.usnews.com/news/world/articles/2026-10-05/russia-puts-lives-at-risk-across-europe-with-hybrid-attacks-kallas-says"
+            },
+            {
+              "label": "Kyiv Independent · 5 Russian missiles and drones exploded on Moldova's territory, Sandu says · 3 Oct 2026",
+              "url": "https://kyivindependent.com/5-russian-missiles-and-drones-exploded-over-moldovas-airspace-sandu-says/"
+            },
+            {
+              "label": "ABC News (Australia) · Putin warns Russia will use 'all weapons' if Kaliningrad threatened · 2 Oct 2026",
+              "url": "https://www.abc.net.au/news/2026-10-02/putin-kaliningrad-threat-nuclear-weapons/107219366"
+            },
+            {
+              "label": "NBC News · Russia accused of sabotage by Estonia after arson at Ukraine supplier · 29 Sep 2026",
+              "url": "https://www.nbcnews.com/world/europe/russia-accused-sabotage-estonia-arson-ukraine-supplier-rcna600451"
+            },
+            {
+              "label": "Euromaidan Press · ISW connects drone crashes in Moldova and Romania, a Starlink fire in Poland, and a Berlin airport shutdown into one Russian pattern · 25 Sep 2026",
+              "url": "https://euromaidanpress.com/2026/09/25/isw-connects-drone-crashes-in-moldova-and-romania-a-starlink-fire-in-poland-and-a-berlin-airport-shutdown-into-one-russian-pattern/"
+            },
+            {
+              "label": "CNBC · Russia could attack a NATO country within months, Denmark warns · 25 Sep 2026",
+              "url": "https://www.cnbc.com/2026/09/25/russia-ukraine-war-nato-denmark-putin.html"
+            }
+          ]
+        }
+      }
     },
     {
       "id": "IL_GZ",

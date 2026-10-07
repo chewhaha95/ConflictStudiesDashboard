@@ -91,14 +91,18 @@ same way.
      window (official statements, state-media narratives, documented
      influence or disinformation activity, coercive signalling used as
      messaging, the targeted side's counter-messaging, fact-checks and
-     third-party assessments). Append dated `findings`
+     third-party assessments; for a shadow-war watch, `kind: "shadow-war"`,
+     also hybrid attacks such as sabotage, arson, cable or pipeline damage,
+     cyber attacks, GPS jamming and drone or airspace incursions, and the
+     targeted side's defensive responses). Append dated `findings`
      `{date, actor, type, text, url, unverified?}` with `type` from
      `definitions.infoOps.types`, newest first; keep entries from the last
      14 days, at most 12; do not rewrite earlier entries without cause.
      Rewrite `infoOps.assessment` `{date, text, sources}`: one paragraph of
      120–180 words answering the question with dated evidence, 3–6 sources
-     newest first, no recommendations. Never change `enabled`, `since`,
-     `trigger`, `question` or `feed`; the team sets them;
+     newest first, no recommendations. Never change `enabled`, `kind`,
+     `label`, `title`, `feedTitle`, `since`, `trigger`, `question` or
+     `feed`; the team sets them;
    - append today's snapshot to `snapshots`:
      `{date: <today>, state, phase, escalation, tempo, adaptation, sgExposure}`
      with the values just set (one snapshot per review date; replace the

@@ -82,7 +82,8 @@ The watchlist is fully automated:
 
 An item can carry `infoOps` (see `definitions.infoOps`): switched on when a
 trigger event makes messaging and influence activity worth tracking on its
-own (currently the Taiwan Strait after the 23–24 Sep 2026 Trump–Xi summit).
+own (currently the Taiwan Strait after the 23–24 Sep 2026 Trump–Xi summit,
+and Russia's shadow war on Europe under Russia–Ukraine).
 The register row shows an **Info-ops watch** badge; the expanded row shows a
 card with the question, dated and typed findings (official statement,
 state-media narrative, covert information operation, coercive signalling,
@@ -90,6 +91,15 @@ counter-messaging, debunked claim, third-party assessment…), an assessment
 with sources, and a live sub-feed of messaging and influence reporting from
 a narrower daily query. The daily review keeps the findings and assessment
 current; the team sets the trigger, question and query.
+
+The same block can track a wider **shadow war** (`kind: "shadow-war"`), as on
+Russia–Ukraine for Russia's campaign against Europe: sabotage and arson,
+cable and pipeline damage, cyber attacks, GPS jamming, drone and airspace
+incursions, espionage and influence operations, and the European and NATO
+response. Optional `label`, `title` and `feedTitle` name the badge, card and
+live sub-feed; the sub-feed is screened for hybrid activity rather than
+messaging only, and findings may use the `hybrid attack` and
+`defensive response` types.
 
 ### Topics of interest
 

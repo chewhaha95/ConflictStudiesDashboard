@@ -246,10 +246,14 @@ const SCREEN_SYSTEM = "You screen news headlines for a military conflict-studies
 // Info-ops watch: a stricter screen for the item's information-operations /
 // strategic-communications sub-feed (register `infoOps`).
 const INFOOPS_SYSTEM = "You screen news headlines for a military conflict-studies watchlist's information-operations watch. Keep a headline only if it reports on information operations, disinformation, cognitive or psychological warfare, propaganda or state-media narratives, official strategic communications (government, foreign-ministry, military or party statements aimed at an audience), influence campaigns, censorship, lawfare narratives or sanctions used as messaging, in the named theatre. Drop ordinary military, economic, sport or entertainment news, and anything not about messaging or influence. When unsure, drop it.";
+// Shadow-war watch (infoOps.kind "shadow-war"): keeps hybrid attacks and
+// incursions as well as influence operations.
+const SHADOWWAR_SYSTEM = "You screen news headlines for a military conflict-studies watchlist's shadow-war watch. Keep a headline only if it reports on hybrid or deniable hostile activity below the threshold of open war in the named theatre: sabotage, arson, undersea cable or pipeline damage, cyber attacks, GPS jamming, drone or aircraft airspace incursions, shadow-fleet activity, espionage, assassination plots, influence or disinformation operations, or the targeted governments' and alliance's responses (arrests, expulsions, sanctions, deployments, consultations). Drop ordinary battlefield news from the main war, economic, sport or entertainment news. When unsure, drop it.";
+function infoOpsSystem(io) { return io && io.kind === "shadow-war" ? SHADOWWAR_SYSTEM : INFOOPS_SYSTEM; }
 function infoOpsPrompt(it, cands) {
   const io = it.infoOps || {};
   const list = cands.map((a, i) => `${i}. [${a.domain || "?"}] ${a.title}`).join("\n");
-  return `Conflict watchlist item: ${it.name}\nInformation-operations watch since ${io.since || "?"} (${io.trigger || ""})\nQuestion: ${io.question || ""}\n\nCandidate headlines (index. [source] title):\n${list}\n\nReturn the indices to KEEP.`;
+  return `Conflict watchlist item: ${it.name}\n${io.kind === "shadow-war" ? "Shadow-war watch" : "Information-operations watch"} since ${io.since || "?"} (${io.trigger || ""})\nQuestion: ${io.question || ""}\n\nCandidate headlines (index. [source] title):\n${list}\n\nReturn the indices to KEEP.`;
 }
 async function screenArticles(it, cands, prevScreen, judge, opts) {
   const system = (opts && opts.system) || SCREEN_SYSTEM;
@@ -435,9 +439,10 @@ async function fetchItem(it, prevItem, judge, spamDomains) {
   const out = Object.assign({ query: q, granularity, timeline, articles, screen: sc.screen, screened: sc.screened, source: src.join("+"), fetchedAt: new Date().toISOString() },
     windows(timeline, granularity, capped));
 
-  // 4. Information-operations / strategic-communications watch (register
-  //    `infoOps`, e.g. Taiwan after the Trump–Xi summit): a second, narrower
-  //    query, newest first, screened with the info-ops prompt.
+  // 4. Information-operations / strategic-communications or shadow-war watch
+  //    (register `infoOps`, e.g. Taiwan after the Trump–Xi summit, Russia's
+  //    shadow war on Europe): a second, narrower query, newest first, screened
+  //    with the info-ops or shadow-war prompt.
   const io = it.infoOps;
   if (io && io.enabled && io.feed && io.feed.query) {
     const ioLists = [];
@@ -450,13 +455,13 @@ async function fetchItem(it, prevItem, judge, spamDomains) {
     const ioPool = days => mergeArticles(withinDays(mergeArticles(ioLists, 500), days), SCREEN_MAX).filter(notSpam);
     let ioCands = ioPool(3);
     if (ioCands.length < 6) { try { ioLists.push((await rssSearch(rssQuery(io.feed.query), 7)).filter(a => titleMatch(a, io.feed))); ioCands = ioPool(7); } catch (e) { /* keep */ } }
-    const ioSc = await screenArticles(it, ioCands, ((prevItem || {}).infoOps || {}).screen, judge, { system: INFOOPS_SYSTEM, prompt: infoOpsPrompt });
+    const ioSc = await screenArticles(it, ioCands, ((prevItem || {}).infoOps || {}).screen, judge, { system: infoOpsSystem(io), prompt: infoOpsPrompt });
     out.infoOps = { since: io.since || null, candidates: ioCands.length, articles: ioSc.kept.slice(0, MAX_ARTICLES), screen: ioSc.screen, screened: ioSc.screened, fetchedAt: new Date().toISOString() };
   }
   return out;
 }
 
-module.exports = { titleMatch, mergeArticles, withinDays, rankArticles, relevanceScore, topicWords, MIL_TERMS, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, infoOpsPrompt, INFOOPS_SYSTEM, screenJudge, titleKey, EXCLUDE };
+module.exports = { titleMatch, mergeArticles, withinDays, rankArticles, relevanceScore, topicWords, MIL_TERMS, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, infoOpsPrompt, INFOOPS_SYSTEM, SHADOWWAR_SYSTEM, infoOpsSystem, screenJudge, titleKey, EXCLUDE };
 if (require.main !== module) return;
 
 (async () => {
