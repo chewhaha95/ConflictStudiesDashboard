@@ -745,6 +745,182 @@
               }
             ]
           }
+        },
+        {
+          "id": "vivaldi",
+          "enabled": true,
+          "kind": "operation",
+          "label": "Operation Vivaldi watch",
+          "title": "Operation Vivaldi watch (Lyman counteroffensive)",
+          "feedTitle": "Latest reporting on Operation Vivaldi",
+          "since": "2026-09-15",
+          "trigger": "3rd Army Corps commander Brig. Gen. Andrii Biletskyi reveals Operation Vivaldi counteroffensive north of Lyman, 15 Sep 2026",
+          "question": "Can Ukraine's Operation Vivaldi, the 3rd Army Corps counteroffensive north of Lyman, keep regaining ground and disrupt Russia's planned pincer on the Donbas fortress belt (Lyman–Sviatohirsk in the north, Dobropillia in the south, converging on Barvinkove), how is Russia responding with counterattacks, reserves and narrative, and what does it show about restoring manoeuvre under drone-saturated conditions?",
+          "feed": {
+            "query": "(\"Operation Vivaldi\" OR \"3rd Army Corps\" OR \"Third Army Corps\" OR Biletskyi OR Lyman OR Sviatohirsk OR Svyatohirsk) (Ukraine OR Ukrainian OR Russia OR Russian OR offensive OR counteroffensive)",
+            "terms": [
+              "vivaldi",
+              "lyman",
+              "3rd army corps",
+              "third army corps",
+              "biletskyi",
+              "biletsky",
+              "sviatohirsk",
+              "svyatohirsk"
+            ],
+            "require": [
+              [
+                "ukrain",
+                "russia",
+                "army",
+                "corps",
+                "offensive",
+                "liberat",
+                "front",
+                "isw",
+                "troops",
+                "forces",
+                "settlement",
+                "battle",
+                "fighting",
+                "assault",
+                "attack",
+                "advance",
+                "zelensky",
+                "military",
+                "kamikaze",
+                "drone",
+                "robot",
+                "season",
+                "phase"
+              ]
+            ],
+            "exclude": [
+              "concert",
+              "orchestra",
+              "festival",
+              "violin",
+              "symphony",
+              "four seasons hotel"
+            ]
+          },
+          "findings": [
+            {
+              "date": "2026-10-06",
+              "actor": "ISW",
+              "type": "counterattack",
+              "text": "ISW's 6 Oct assessment reported Russian forces kept attacking around Lyman (northwest, northeast, east, southwest and south) on 5-6 Oct without confirmed advances. Citing a Russian Western Grouping of Forces source, ISW said Russian troops were struggling to repel Ukrainian counterattacks southeast of Borova near Kolodyazi, Myrne, Ivanivka and Novolyubivka, a knock-on effect of Vivaldi. The same source spoke of at least 8,000 desertions in the grouping's Kupyansk-to-Lyman area.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-6-2026"
+            },
+            {
+              "date": "2026-10-05",
+              "actor": "Denis Pushilin (Russian-installed DNR head), as reported by ISW",
+              "type": "official statement",
+              "text": "On 5 Oct, ISW reported that Pushilin said Slovyansk and Kramatorsk would very likely be the last territory Russia takes in Donetsk Oblast. ISW read this as an implicit admission that Vivaldi had curtailed the northern thrust against the Fortress Belt. ISW also found that Russian forces made no gains in the Lyman direction on 4-5 Oct and that Pushilin's claims of fighting inside Druzhkivka were exaggerated.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-5-2026"
+            },
+            {
+              "date": "2026-10-04",
+              "actor": "Kostyantyn Mashovets (Ukrainian military observer), via ISW",
+              "type": "territorial change",
+              "text": "ISW cited Mashovets on 4 Oct: Ukrainian forces had advanced into Zarichne and Myrne northeast of Lyman, reached the west bank of the Zherebets River between Yampolivka and Zarichne, and forced Russian troops out of the Dibrova area southeast of Lyman. Mashovets said Russian TDF and mobilisation-reserve battalions and regiments were active in the Borova and Lyman directions. ISW assessed that the Russian 3rd CAA would likely have to pull forces off its Mykolaivka push to guard its northern flank. No geolocated confirmation was cited.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-4-2026",
+              "unverified": true
+            },
+            {
+              "date": "2026-10-03",
+              "actor": "President Volodymyr Zelensky",
+              "type": "official statement",
+              "text": "On 3 Oct, Zelensky said Operation Vivaldi had been planned about a year earlier but was postponed for lack of preparation, and that the delay meant 'good results and fewer losses.' According to Liga's report, he put the liberated area at about 125-140 km². He also cited Ukrainian ground robots operating behind enemy lines.",
+              "url": "https://news.liga.net/en/war/news/operatsiyu-vivaldi-hoteli-nachat-eshte-god-nazad-zelenskii"
+            },
+            {
+              "date": "2026-10-01",
+              "actor": "ISW",
+              "type": "third-party assessment",
+              "text": "ISW's 1 Oct assessment said the elimination of the Russian salient near Lyman had disrupted Moscow's planned wide encirclement of the Fortress Belt from the Lyman and Dobropillya directions. It said this would likely complicate Russian attacks on Slovyansk from the east. A Kremlin-affiliated milblogger said on 30 Sep that the situation was worsening toward Slovyansk, with Ukrainian forces trying river crossings and counterattacking to block Russian access to Mykolaivka.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-1-2026"
+            },
+            {
+              "date": "2026-09-30",
+              "actor": "President Volodymyr Zelensky",
+              "type": "official statement",
+              "text": "After meeting Biletskyi at a 3rd Army Corps command post on 30 Sep, Zelensky announced plans for a fourth phase ('season') of Vivaldi. He said the operation had disrupted Russia's plan to break into the rear of the Sloviansk-Kramatorsk agglomeration. He cited 176 km² retaken, more than 5,000 Russian casualties and 250 prisoners, and named wider use of unmanned ground vehicles in place of soldiers as a priority.",
+              "url": "https://www.kyivpost.com/post/85781"
+            },
+            {
+              "date": "2026-09-29",
+              "actor": "3rd Army Corps (via Defense Express), reported by UNN",
+              "type": "tactic or capability",
+              "text": "On 29 Sep, the 3rd Army Corps said it had converted Soviet BTR-60 APCs into remote-controlled, uncrewed kamikaze vehicles. It said they were used to deliver explosives against Russia's strongest fortifications during the assaults on Nove, Ridkodub and Katerynivka. ISW's 28 Sep report described the vehicles as BTR-80s turned into VBIEDs, so the vehicle model is inconsistent between sources.",
+              "url": "https://unn.ua/en/news/the-armed-forces-of-ukraine-have-turned-soviet-btr-60s-into-kamikaze-robots-to-breach-russian-defenses"
+            },
+            {
+              "date": "2026-09-28",
+              "actor": "3rd Army Corps (Brig. Gen. Andrii Biletskyi)",
+              "type": "official claim",
+              "text": "On 28 Sep, Biletskyi announced Vivaldi's 'third season.' He said his forces had liberated Ridkodub, Nove and Katerynivka, restored full control of Karpivka and Novomykhailivka, and taken 51 km², for a claimed total of 176 km². He also claimed more than 2,000 Russian losses and over 250 prisoners. He credited a deception on the Shandryholove-Zelena Dolyna axis that drew Russian reserves away from the main blow at Nove. ISW (28 Sep) repeated the figures as Ukrainian claims and cited no geolocated confirmation.",
+              "url": "https://kyivindependent.com/ukraines-operation-vivaldi-liberates-3-more-settlements-inflicts-2-000-russian-losses-3rd-army-corps-announces/"
+            },
+            {
+              "date": "2026-09-23",
+              "actor": "Russian MoD (as reported by Euromaidan Press citing ISW)",
+              "type": "official claim",
+              "text": "On 22 Sep, during the UN General Assembly, the Russian Defence Ministry claimed it had encircled Dobropillia, the southern jaw of the planned pincer on the Fortress Belt. ISW found no evidence of an encirclement. Euromaidan Press reported this alongside the assessment that Vivaldi had broken the northern arm of the pincer, which ran from north of Lyman via Sviatohirsk toward Barvinkove.",
+              "url": "https://euromaidanpress.com/2026/09/23/russia-dobropillia-encirclement-claim-un-isw/"
+            },
+            {
+              "date": "2026-09-20",
+              "actor": "3rd Army Corps (Biletskyi); analyst Clément Molin",
+              "type": "official claim",
+              "text": "On 20 Sep, Biletskyi said phase two had liberated Shandryholove, Derylove and Drobysheve northwest of Lyman. He claimed about 50 km² (125 km² across two phases) and 800 Russian personnel losses, with a third phase underway. The corps said drones and UGVs led assault groups, and that heavy bomber drones dropped kamikaze ground robots more than 10 km behind Russian lines. French analyst Clément Molin called it 'one of the most important victories for Ukraine in 2026', which would delay the offensive on northern Donbas.",
+              "url": "https://euromaidanpress.com/2026/09/20/ukraine-retakes-three-settlements-in-northern-donetsk-vivaldi/"
+            },
+            {
+              "date": "2026-09-15",
+              "actor": "3rd Army Corps, as reported by ISW",
+              "type": "tactic or capability",
+              "text": "ISW's 15 Sep assessment reported Biletskyi's claim that the corps had shaped Vivaldi with intermediate-range strikes at two depths, about 50 km and 120 km behind the front, aimed at Russian fuel supply. The claimed results were a fuel pipeline into occupied Luhansk Oblast shut down and support elements of Russia's 144th Motorized Rifle Division forced to relocate to Voronezh Oblast. ISW assessed that Vivaldi had made the northern arm of the Fortress Belt encirclement unfeasible.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-september-15-2026"
+            },
+            {
+              "date": "2026-09-15",
+              "actor": "3rd Army Corps (Biletskyi); Kyiv Independent",
+              "type": "territorial change",
+              "text": "On 15 Sep, Biletskyi publicly confirmed Operation Vivaldi for the first time. He claimed 85 km² cleared or liberated in phase one, including the liberation of Serednie and the clearing of Novoselivka, Oleksandrivka, Yarova and the outskirts of Korovyi Yar, and said 'Vivaldi has four seasons... this is only the first.' The Kyiv Independent noted that Russian milbloggers had been tracking the attacks since late spring and that Putin had falsely claimed Sviatohirsk on 1 Sep. It cited Clément Molin's estimate of 'likely more than 200 square kilometers' liberated.",
+              "url": "https://kyivindependent.com/analysis-through-the-fog-of-war-ukraine-goes-on-operation-vivaldi-counterattack-near-lyman/"
+            }
+          ],
+          "assessment": {
+            "date": "2026-10-07",
+            "text": "Vivaldi has regained ground in steps. The 3rd Army Corps claimed 85 km² on 15 Sep, then 125 km² on 20 Sep and 176 km² on 28 Sep, and ISW repeated those figures as claims. By 4 Oct, Mashovets reported advances into Zarichne and Myrne. ISW judged on 15 Sep and 1 Oct that removing the Lyman salient made Russia's wide pincer on the Fortress Belt, running via Sviatohirsk and Dobropillia, unfeasible. By 5 Oct even Pushilin implied that Slovyansk and Kramatorsk were Russia's final objectives. Russia has kept attacking around Lyman without confirmed gains (6 Oct), committed reserve and TDF battalions, and countered with narrative: Putin's false Sviatohirsk claim and the MoD's unsupported Dobropillia encirclement claim (22 Sep). The operation shows that limited mechanised manoeuvre came back once Ukraine first won tactical drone overmatch, which ISW noted on 20 and 28 Sep. It rested on strikes on fuel, deception and uncrewed vehicles. Whether phase four can hold that tempo against Russian reserves is still unclear.",
+            "sources": [
+              {
+                "label": "ISW/CTP · Russian Offensive Campaign Assessment · 6 Oct 2026",
+                "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-6-2026"
+              },
+              {
+                "label": "ISW/CTP · Russian Offensive Campaign Assessment · 5 Oct 2026",
+                "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-5-2026"
+              },
+              {
+                "label": "ISW/CTP · Russian Offensive Campaign Assessment · 4 Oct 2026",
+                "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-4-2026"
+              },
+              {
+                "label": "ISW/CTP · Russian Offensive Campaign Assessment · 1 Oct 2026",
+                "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-1-2026"
+              },
+              {
+                "label": "ISW/CTP · Russian Offensive Campaign Assessment · 28 Sep 2026",
+                "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-september-28-2026"
+              },
+              {
+                "label": "Euromaidan Press · Russia fabricates Dobropillia encirclement to strengthen its case for Kyiv's capitulation at UN – ISW · 23 Sep 2026",
+                "url": "https://euromaidanpress.com/2026/09/23/russia-dobropillia-encirclement-claim-un-isw/"
+              }
+            ]
+          }
         }
       ]
     },
