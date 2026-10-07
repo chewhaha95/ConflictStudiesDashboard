@@ -618,118 +618,121 @@
           },
           "findings": [
             {
-              "date": "2026-10-05",
-              "actor": "EU High Representative Kaja Kallas",
-              "type": "official statement",
-              "text": "On 5 Oct 2026 Kallas, speaking alongside Moldovan PM Vasile Tofan, said Russia is putting lives at risk across Europe and that recent weeks had seen a spike in Russian hybrid attacks, sabotage attempts and airspace violations. She called the weekend missile and drone incursions into Moldova completely unacceptable, signalling the EU now frames the campaign as a direct threat to civilians.",
-              "url": "https://www.usnews.com/news/world/articles/2026-10-05/russia-puts-lives-at-risk-across-europe-with-hybrid-attacks-kallas-says"
-            },
-            {
               "date": "2026-10-03",
-              "actor": "Russian armed forces; Moldovan government",
-              "type": "hybrid attack",
-              "text": "On the morning of 3 Oct 2026 three Banderol-type Russian missiles and two drones crossed Moldovan airspace and exploded on the ground in several districts during a strike on Ukraine, with no casualties reported. President Sandu said Russia's war is dangerously reaching Moldova, and Chisinau summoned Russia's ambassador for the second time in a week. It is the most serious spillover onto a non-NATO EU candidate in the window.",
+              "actor": "Russian armed forces",
+              "tactic": "Strike weapons routed over Moldovan territory",
+              "type": "contested",
+              "text": "On the morning of 3 Oct, during an overnight attack on Ukraine involving 157 Shahed and Gerbera drones, three Banderol missiles and two drones crossed into Moldova and exploded near villages in the Hîncești, Anenii Noi and Căușeni districts; one drone set a vineyard on fire and broke windows, and no one was hurt. The weapons met no resistance, but neither source shows whether Moldova was the intended route or the weapons went off course, so the outcome stays contested.",
               "url": "https://kyivindependent.com/5-russian-missiles-and-drones-exploded-over-moldovas-airspace-sandu-says/"
             },
             {
-              "date": "2026-10-02",
-              "actor": "Ukrainian military intelligence (HUR)",
-              "type": "third-party assessment",
-              "text": "On 2 Oct 2026 HUR said Russia's special services have been tasked with increasing hybrid operations in EU and NATO states, including arson, assassinations and sabotage of military sites, critical infrastructure and communications, possibly including Starlink stations. It cited the Leipzig drone plot and the 23 Sep Starlink fire in Poland, but this is an interested party's claim not independently confirmed.",
-              "url": "https://kyivindependent.com/russia-planning-to-increase-hybrid-warfare-activity-in-europe-ukrainian-intelligence-warns/",
-              "unverified": true
-            },
-            {
-              "date": "2026-10-01",
-              "actor": "Vladimir Putin",
-              "type": "coercive signalling",
-              "text": "On 1 Oct 2026 Putin warned Russia was prepared to use all weapons in its arsenal, implicitly including nuclear weapons, if the West threatened the Kaliningrad exclave. The warning followed NATO drills near Kaliningrad and a Russian diplomatic note to NATO in late September threatening a nuclear response to any attempt to isolate the region.",
-              "url": "https://www.abc.net.au/news/2026-10-02/putin-kaliningrad-threat-nuclear-weapons/107219366"
-            },
-            {
-              "date": "2026-09-30",
-              "actor": "NATO Secretary General Mark Rutte",
-              "type": "counter-messaging",
-              "text": "On 30 Sep 2026 Rutte confirmed NATO had replied to Russia's note on Kaliningrad, stressing that NATO is a defensive alliance, and said he did not take the nuclear threat that seriously. He argued Putin's aim was to divide allies and pull focus away from Ukraine.",
-              "url": "https://united24media.com/world/i-dont-take-this-seriously-nato-chief-rutte-dismisses-russias-nuclear-threat-over-kaliningrad-23014"
+              "date": "2026-10-03",
+              "actor": "Moldovan National Army",
+              "tactic": "Legacy MANPADS/EW point defence against drones",
+              "type": "superseded",
+              "text": "On 22 Sep Sandu said Russian drones were 'rapidly improving' and evading Moldova's existing short-range means (MANPADS, anti-aircraft guns, EW), which were placed to protect critical infrastructure, not to cover the whole country. Moldova is buying an EU-funded €120m medium-range system and has logged 39 violations in 2026, against 17 in all of 2025. On 3 Oct the airspace monitoring system tracked all five weapons and none was intercepted. Judgement: the legacy layer has been overtaken and is being replaced.",
+              "url": "https://militarnyi.com/en/news/3-missiles-2-uavs-entered-moldova-exploded/"
             },
             {
               "date": "2026-09-29",
-              "actor": "Estonian Foreign Ministry and Internal Security Service",
-              "type": "defensive response",
-              "text": "On 29 Sep 2026 Estonia publicly attributed the 15 Aug arson at defence-robotics firm Milrem Robotics, a Ukraine supplier, to a pre-planned operation commissioned by Russian security services, and summoned Russia's diplomatic representative. Three suspects arrested in Latvia had been handed to Estonia; the Kremlin called the accusation unfounded.",
+              "actor": "Russian special services (per Estonia's ISS)",
+              "tactic": "Recruited foreign saboteurs burn drone maker",
+              "type": "failed",
+              "text": "On 29 Sep Estonia's Internal Security Service said the 14–15 Aug fire at a Milrem Robotics building in Tallinn was a pre-planned act commissioned by Russian services. Milrem makes the THeMIS ground robots going to Ukraine. The fire was quickly brought under control, no production loss was reported, and all three Latvian suspects were detained by 18 Aug. Judgement: little physical effect, and the cell was rolled up within days.",
               "url": "https://www.nbcnews.com/world/europe/russia-accused-sabotage-estonia-arson-ukraine-supplier-rcna600451"
             },
             {
-              "date": "2026-09-25",
-              "actor": "Vladimir Putin",
-              "type": "official statement",
-              "text": "On 25 Sep 2026 at the United Cultures Forum in St Petersburg Putin said Russia is not preparing for military action against Europe and called European threat warnings exaggeration. In the same remarks he claimed Russian speakers' rights are violated in the Baltic states and said Russia was responding on humanitarian grounds, without specifying what that meant, a familiar pretext narrative.",
-              "url": "https://meduza.io/en/feature/2026/09/26/putin-says-russia-will-not-attack-europe-and-blames-ukraine-for-the-breakdown-in-peace-talks"
+              "date": "2026-09-29",
+              "actor": "Estonian ISS and Latvian police",
+              "tactic": "Fast cross-border arrests, then public attribution",
+              "type": "succeeded",
+              "text": "Latvia detained two suspects on 17 Aug and a third on 18 Aug, two to three days after the Milrem arson, and handed them to Estonia. On 29 Sep, after a six-week investigation, Tallinn publicly attributed the attack to Russia and Foreign Minister Tsahkna promised tighter sanctions and travel limits. The suspects were caught and the attack was formally attributed, although no prosecution outcome has been reported yet.",
+              "url": "https://www.defensenews.com/global/europe/2026/09/29/estonia-blames-russia-in-arson-attack-on-military-robotics-firm-milrem/"
+            },
+            {
+              "date": "2026-09-26",
+              "actor": "GRU (suspected)",
+              "tactic": "Paid one-off agents in drive-by arson",
+              "type": "failed",
+              "text": "Overnight on 2–3 Sep, incendiary devices were thrown from a moving car at a construction site next to Rohde & Schwarz and Helsing in Munich. Only two of the three devices ignited. Police put the fire out on arrival and reported no major damage. A witness called police around midnight and two Bulgarian nationals were arrested; on 25–26 Sep German investigators (per FAZ) tied them to the GRU as low-level paid recruits. Judgement: the attack failed on damage and on keeping its agents free, though it did add to a string of incidents at defence firms.",
+              "url": "https://kyivindependent.com/germany-links-arson-attack-near-ukraine-supplying-drone-maker-helsing-to-russias-gru/"
             },
             {
               "date": "2026-09-25",
-              "actor": "GRU (suspected); German investigators",
-              "type": "hybrid attack",
-              "text": "On 25 Sep 2026 Frankfurter Allgemeine Zeitung reported that German investigators suspect the GRU recruited the two people detained over the 2-3 Sep incendiary attack near the Munich offices of Rohde & Schwarz and drone maker Helsing. Investigators see a possible link to the Leipzig airport drone plot and a simultaneous arson attempt at a drone plant in Slovakia, pointing to coordinated targeting of Ukraine's defence suppliers.",
-              "url": "https://meduza.io/en/news/2026/09/25/german-investigators-suspect-russian-military-intelligence-organized-an-arson-attack-near-defense-firms-in-munich"
+              "actor": "Russian services (suspected by Polish prosecutors)",
+              "tactic": "Incendiary attack on Starlink ground station",
+              "type": "contested",
+              "text": "Late on 23 Sep a fire destroyed the electrical distribution panel that feeds the antennas at the Starlink ground station in Wola Krobowska, about 50 km from Warsaw. A Molotov-type bottle was found nearby, and prosecutors opened a sabotage and terrorism case on the grounds that the perpetrators acted for Russian services to disrupt Starlink connectivity. As of 25 Sep no one had been charged and no service outage had been reported, so whether connectivity was actually disrupted, and whether the perpetrators escaped, is still open.",
+              "url": "https://meduza.io/en/news/2026/09/24/starlink-ground-station-catches-fire-near-warsaw-polish-security-services-suspect-russian-sabotage"
             },
             {
-              "date": "2026-09-24",
-              "actor": "Danish Defence Intelligence Service (DDIS)",
-              "type": "third-party assessment",
-              "text": "On 24 Sep 2026 DDIS warned of a low but growing risk that Russia could carry out limited strikes on infrastructure supporting Ukraine or a limited attack on one or more NATO countries bordering Russia in the coming months. It expects Russia to intensify hybrid attacks, including damaging cyberattacks and sabotage with a high risk of casualties, while seeing no sign of an outright invasion.",
-              "url": "https://www.cnbc.com/2026/09/25/russia-ukraine-war-nato-denmark-putin.html"
+              "date": "2026-09-25",
+              "actor": "Romanian Air Force and Spanish Air Force (NATO air policing)",
+              "tactic": "Fighter scramble under restrictive shoot-down rules",
+              "type": "contested",
+              "text": "On 24 Sep a small drone flew about four minutes in Romanian airspace and crashed in forest near Solca. Two Romanian F-16s, two Spanish F-18s and an IAR-330 helicopter went up, and RO-Alerts and school closures followed. The drone was not engaged. Acting Defence Minister Miruță said the conditions for a shoot-down 'must be met simultaneously' and were not, adding that Romania will shoot drones down 'if it can be done safely'. Nothing was hurt, but no intercept was made either.",
+              "url": "https://migflug.com/afterburner/?p=24639981"
             },
             {
               "date": "2026-09-24",
               "actor": "Russian armed forces",
-              "type": "hybrid attack",
-              "text": "On 24 Sep 2026 suspected Russian Gerbera-type drones crashed in Romania near Solca in Suceava County after about four minutes in Romanian airspace, and in Moldova's Floresti district, during a mass strike on Ukraine; Romania scrambled two F-16s and no casualties were reported. ISW read these crashes, together with the Polish Starlink fire and a Berlin airport drone stoppage on 23 Sep, as one pattern aimed at normalising airspace violations.",
+              "tactic": "Drone spillover during border-area strikes",
+              "type": "succeeded",
+              "text": "On 24 Sep, during a strike campaign on Ukrainian border crossings, drones crashed near Solca in Romania and in Moldova's Florești district. Neither was shot down, and Romania lodged a protest without directly blaming Moscow. Judgement, from Kyiv Independent and Migflug reporting: the incursions forced alerts, school suspensions and five allied aircraft sorties at no reported cost to Russia. United24 cites ISW's assessment that some violations made alongside strikes on Ukraine are intentional.",
               "url": "https://kyivindependent.com/suspected-russian-drones-crash-in-romania-moldova/"
             },
             {
-              "date": "2026-09-23",
-              "actor": "Unknown saboteurs; Polish government",
-              "type": "hybrid attack",
-              "text": "On the evening of 23 Sep 2026 a fire hit the power system of a Starlink ground station at Wola Krobowska near Warsaw that supports connectivity used by Ukraine, and a Molotov-style bottle was found nearby. Deputy PM Krzysztof Gawkowski called it sabotage consistent with Russia's new doctrine of attack but said there was no direct evidence of Russian involvement, and service was restored.",
-              "url": "https://meduza.io/en/news/2026/09/24/starlink-ground-station-catches-fire-near-warsaw-polish-security-services-suspect-russian-sabotage"
+              "date": "2026-09-24",
+              "actor": "Russian Navy",
+              "tactic": "Firing flares at NATO surveillance helicopter",
+              "type": "contested",
+              "text": "On 14 Sep a Russian warship fired two flares at a Danish Fennec helicopter photographing it off Gedser. One flare passed close, and the helicopter was not damaged. Denmark's DDIS called it the most serious recent incident involving Danish forces in its 24 Sep threat assessment, and Copenhagen summoned the Russian ambassador. No source says whether Danish surveillance flights were reduced, so the deterrent effect is unproven.",
+              "url": "https://www.janes.com/defence-intelligence-insights/defence-news/sea/danish-intelligence-highlights-russian-aggression-in-baltic-deniable-uav-tactics"
             },
             {
               "date": "2026-09-23",
-              "actor": "Russian armed forces (Mi-8 helicopter)",
-              "type": "hybrid attack",
-              "text": "At 11:08 on 23 Sep 2026 a Russian Mi-8 helicopter crossed from Kaliningrad about 300 metres into Polish airspace north of Braniewo for 42 seconds, prompting Poland to scramble fighters and put ground air defences on standby. Polish operational command said Russia was again testing the readiness of its air defences; it was the first publicly reported Russian military helicopter crossing of Poland's land border.",
+              "actor": "Russian armed forces",
+              "tactic": "Helicopter probe of Polish airspace",
+              "type": "succeeded",
+              "text": "At 11:08 on 23 Sep a Mi-8 from Kaliningrad crossed about 300 m into Poland near Braniewo and stayed 42 seconds. It is the first publicly reported Russian military helicopter crossing of Poland's land border, and Polish command said Russia was 'once again testing the readiness of our air defences'. Judgement: no interception was reported and the aircraft left before any response could reach it, so the probe drew a scramble and ground standby at no reported cost.",
               "url": "https://notesfrompoland.com/2026/09/23/russian-military-helicopter-violates-polish-airspace/"
+            },
+            {
+              "date": "2026-09-23",
+              "actor": "Polish Armed Forces",
+              "tactic": "Radar tracking and fighter scramble response",
+              "type": "contested",
+              "text": "Polish radar tracked the Mi-8 for the whole 42-second incursion, so detection worked. Fighters were scrambled and ground forces put on standby. Neither Notes from Poland nor Migflug's 24 Sep analysis reports an intercept or gives how long the jets took to respond, and Migflug notes 'nobody fired at anything'. Detection held, but a jet response cannot reach a 42-second incursion in time.",
+              "url": "https://migflug.com/afterburner/?p=24408937"
             }
           ],
           "assessment": {
-            "date": "2026-10-06",
-            "text": "Russia's below-threshold pressure on Europe intensified between 22 Sep and 6 Oct 2026, mainly through airspace incursions and sabotage of infrastructure that supports Ukraine. A Mi-8 helicopter entered Polish airspace on 23 Sep, Gerbera drones crashed in Romania and Moldova on 24 Sep, and missiles and drones exploded on Moldovan territory on 3 Oct. Sabotage targeted Ukraine's supply chain: the 23 Sep Starlink station fire in Poland, German investigators' 25 Sep suspicion that the GRU recruited the Munich arsonists, and Estonia's 29 Sep attribution of the Milrem arson. Moscow paired this with coercive signalling, including the 1 Oct Kaliningrad 'all weapons' warning and Putin's 25 Sep denial of attack plans alongside claims about Baltic Russian speakers. European responses have so far been calibrated: scrambled jets, summoned envoys, arrests and public attribution, a 24 Sep Danish intelligence warning of possible limited strikes, Rutte's 30 Sep dismissal of nuclear threats, and Kallas's 5 Oct statement that Russia is endangering lives. Evidence on cyber and disinformation activity in this window remains thin.",
+            "date": "2026-10-07",
+            "text": "Between 23 Sep and 6 Oct 2026, Russia's most effective tactics were cheap, deniable airspace probes, not ground sabotage. A Mi-8 stayed 42 seconds inside Poland on 23 Sep and left before any reported intercept. On 24 Sep a drone crossed into Romania and drew two F-16s, two Spanish F-18s, RO-Alerts and school closures without being engaged, because Bucharest's shoot-down conditions were not all met. Moldova's legacy point defences have been overtaken: on 3 Oct three Banderol missiles and two drones crossed and exploded, tracked but never intercepted, while Chișinău waits for an EU-funded medium-range system. Paid one-off saboteurs did worse. The Munich drive-by arson on 3 Sep ended in same-night arrests and minimal damage, and the Milrem suspects were detained within three days. The 23 Sep Starlink arson, however, had led to no charges by 25 Sep. Europe has adapted fastest in policing, counter-intelligence and public attribution. Air defences are still slower than short incursions and remain constrained by cautious rules of engagement.",
             "sources": [
               {
-                "label": "US News (Reuters) · Russia Puts Lives at Risk Across Europe With Hybrid Attacks, Kallas Says · 5 Oct 2026",
-                "url": "https://www.usnews.com/news/world/articles/2026-10-05/russia-puts-lives-at-risk-across-europe-with-hybrid-attacks-kallas-says"
+                "label": "Militarnyi · Three Banderol Missiles and Two UAVs Entered Moldova and Exploded · 3 Oct 2026",
+                "url": "https://militarnyi.com/en/news/3-missiles-2-uavs-entered-moldova-exploded/"
               },
               {
-                "label": "Kyiv Independent · 5 Russian missiles and drones exploded on Moldova's territory, Sandu says · 3 Oct 2026",
-                "url": "https://kyivindependent.com/5-russian-missiles-and-drones-exploded-over-moldovas-airspace-sandu-says/"
+                "label": "Defense News · Estonia blames Russia in arson attack on military robotics firm Milrem · 29 Sep 2026",
+                "url": "https://www.defensenews.com/global/europe/2026/09/29/estonia-blames-russia-in-arson-attack-on-military-robotics-firm-milrem/"
               },
               {
-                "label": "ABC News (Australia) · Putin warns Russia will use 'all weapons' if Kaliningrad threatened · 2 Oct 2026",
-                "url": "https://www.abc.net.au/news/2026-10-02/putin-kaliningrad-threat-nuclear-weapons/107219366"
+                "label": "Kyiv Independent · Germany links arson attack near Ukraine-supplying drone maker Helsing to Russia's GRU · 26 Sep 2026",
+                "url": "https://kyivindependent.com/germany-links-arson-attack-near-ukraine-supplying-drone-maker-helsing-to-russias-gru/"
               },
               {
-                "label": "NBC News · Russia accused of sabotage by Estonia after arson at Ukraine supplier · 29 Sep 2026",
-                "url": "https://www.nbcnews.com/world/europe/russia-accused-sabotage-estonia-arson-ukraine-supplier-rcna600451"
+                "label": "Migflug · Solca Drone Crash: Romanian F-16s and Spanish Hornets Scramble · 25 Sep 2026",
+                "url": "https://migflug.com/afterburner/?p=24639981"
               },
               {
-                "label": "Euromaidan Press · ISW connects drone crashes in Moldova and Romania, a Starlink fire in Poland, and a Berlin airport shutdown into one Russian pattern · 25 Sep 2026",
-                "url": "https://euromaidanpress.com/2026/09/25/isw-connects-drone-crashes-in-moldova-and-romania-a-starlink-fire-in-poland-and-a-berlin-airport-shutdown-into-one-russian-pattern/"
+                "label": "Meduza · Starlink ground station catches fire near Warsaw; Polish security services suspect Russian sabotage · 24 Sep 2026",
+                "url": "https://meduza.io/en/news/2026/09/24/starlink-ground-station-catches-fire-near-warsaw-polish-security-services-suspect-russian-sabotage"
               },
               {
-                "label": "CNBC · Russia could attack a NATO country within months, Denmark warns · 25 Sep 2026",
-                "url": "https://www.cnbc.com/2026/09/25/russia-ukraine-war-nato-denmark-putin.html"
+                "label": "Notes from Poland · Russian military helicopter violates Polish airspace · 23 Sep 2026",
+                "url": "https://notesfrompoland.com/2026/09/23/russian-military-helicopter-violates-polish-airspace/"
               }
             ]
           }
@@ -795,93 +798,110 @@
           "findings": [
             {
               "date": "2026-10-06",
-              "actor": "ISW",
-              "type": "counterattack",
-              "text": "ISW's 6 Oct assessment reported Russian forces kept attacking around Lyman (northwest, northeast, east, southwest and south) on 5-6 Oct without confirmed advances. Citing a Russian Western Grouping of Forces source, ISW said Russian troops were struggling to repel Ukrainian counterattacks southeast of Borova near Kolodyazi, Myrne, Ivanivka and Novolyubivka, a knock-on effect of Vivaldi. The same source spoke of at least 8,000 desertions in the grouping's Kupyansk-to-Lyman area.",
+              "actor": "Russian 25th Combined Arms Army / Western Grouping of Forces",
+              "tactic": "Repeated multi-axis assaults around Lyman",
+              "type": "failed",
+              "text": "Russian forces attacked northwest, northeast, east, southwest and south of Lyman on 5-6 Oct. ISW confirmed no advances. A Russian Western Grouping source cited by ISW said troops were instead struggling to repel Ukrainian counterattacks southeast of Borova and claimed at least 8,000 desertions; that figure is a single-source Russian claim. The failure judgement rests on ISW's assessments of no gains on 23-24 Sep, 4-5 Oct and 5-6 Oct.",
               "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-6-2026"
             },
             {
+              "date": "2026-10-06",
+              "actor": "Ukrainian 3rd Army Corps",
+              "tactic": "Infiltration along the Zherebets River line",
+              "type": "contested",
+              "text": "On 6 Oct, ISW cited a source saying Ukrainian troops were trying to infiltrate toward Yampil via Myrne and to advance along the Zherebets using ravines and windbreaks as cover. Mashovets (via ISW, 4 Oct) said Ukrainian forces had entered Zarichne and Myrne but were still fighting residual Russian infantry there. Meduza noted on 18 Sep that no visual evidence showed a Zherebets crossing. ISW has cited no geolocated confirmation of the river-line gains, so the outcome is still open.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-6-2026",
+              "unverified": true
+            },
+            {
               "date": "2026-10-05",
-              "actor": "Denis Pushilin (Russian-installed DNR head), as reported by ISW",
-              "type": "official statement",
-              "text": "On 5 Oct, ISW reported that Pushilin said Slovyansk and Kramatorsk would very likely be the last territory Russia takes in Donetsk Oblast. ISW read this as an implicit admission that Vivaldi had curtailed the northern thrust against the Fortress Belt. ISW also found that Russian forces made no gains in the Lyman direction on 4-5 Oct and that Pushilin's claims of fighting inside Druzhkivka were exaggerated.",
+              "actor": "Russian command (Southern and Western Groupings)",
+              "tactic": "Wide northern pincer around the Fortress Belt",
+              "type": "superseded",
+              "text": "Russia had planned a wide encirclement of the Fortress Belt, with a northern arm from the Lyman salient via Sviatohirsk toward Barvinkove and a southern arm via Dobropillia. ISW judged on 15 Sep and 1 Oct that Vivaldi had disrupted that plan. On 5 Oct, Pushilin said Slovyansk and Kramatorsk would likely be the last territory Russia takes in Donetsk Oblast. ISW read this as an implicit admission that the northern thrust had been curtailed and replaced by a narrower objective. In the same assessment, ISW judged Pushilin's claimed gains near Dobropillia and in Druzhkivka to be false.",
               "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-5-2026"
             },
             {
               "date": "2026-10-04",
-              "actor": "Kostyantyn Mashovets (Ukrainian military observer), via ISW",
-              "type": "territorial change",
-              "text": "ISW cited Mashovets on 4 Oct: Ukrainian forces had advanced into Zarichne and Myrne northeast of Lyman, reached the west bank of the Zherebets River between Yampolivka and Zarichne, and forced Russian troops out of the Dibrova area southeast of Lyman. Mashovets said Russian TDF and mobilisation-reserve battalions and regiments were active in the Borova and Lyman directions. ISW assessed that the Russian 3rd CAA would likely have to pull forces off its Mykolaivka push to guard its northern flank. No geolocated confirmation was cited.",
+              "actor": "Russian 25th CAA and Western Grouping of Forces",
+              "tactic": "Committing TDF and mobilisation-reserve units",
+              "type": "contested",
+              "text": "Mashovets (via ISW, 4 Oct) assessed that three to four battalions and up to four to five regiments of Russia's Territorial Defense Forces and mobilisation reserve were active in the Borova and Lyman directions, with further regiments held in reserve. The same day he reported Ukrainian advances into Zarichne and Myrne and the liberation of Hrekivka near Borova. That suggests the reserves have not restored the line, but whether they will stabilise it is unproven, and the force estimate comes from one analyst.",
               "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-4-2026",
               "unverified": true
             },
             {
-              "date": "2026-10-03",
-              "actor": "President Volodymyr Zelensky",
-              "type": "official statement",
-              "text": "On 3 Oct, Zelensky said Operation Vivaldi had been planned about a year earlier but was postponed for lack of preparation, and that the delay meant 'good results and fewer losses.' According to Liga's report, he put the liberated area at about 125-140 km². He also cited Ukrainian ground robots operating behind enemy lines.",
-              "url": "https://news.liga.net/en/war/news/operatsiyu-vivaldi-hoteli-nachat-eshte-god-nazad-zelenskii"
-            },
-            {
               "date": "2026-10-01",
-              "actor": "ISW",
-              "type": "third-party assessment",
-              "text": "ISW's 1 Oct assessment said the elimination of the Russian salient near Lyman had disrupted Moscow's planned wide encirclement of the Fortress Belt from the Lyman and Dobropillya directions. It said this would likely complicate Russian attacks on Slovyansk from the east. A Kremlin-affiliated milblogger said on 30 Sep that the situation was worsening toward Slovyansk, with Ukrainian forces trying river crossings and counterattacking to block Russian access to Mykolaivka.",
+              "actor": "Russian 3rd Combined Arms Army",
+              "tactic": "Narrow eastern thrust on Slovyansk via Mykolaivka",
+              "type": "contested",
+              "text": "With the wide pincer blocked, Russia's push on Slovyansk from the east through Rai-Oleksandrivka and Mykolaivka became the main route. On 30 Sep, a Kremlin-affiliated milblogger (via ISW, 1 Oct) said Russian forces must reorganise logistics and cut their attack tempo toward Slovyansk and Kramatorsk, as Ukrainian counterattacks blocked access to Mykolaivka. ISW reported no Russian advance toward Mykolaivka on 4-5 Oct, and Mashovets expects the 3rd CAA to divert forces north. The thrust has stalled but has not been defeated.",
               "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-1-2026"
             },
             {
-              "date": "2026-09-30",
-              "actor": "President Volodymyr Zelensky",
-              "type": "official statement",
-              "text": "After meeting Biletskyi at a 3rd Army Corps command post on 30 Sep, Zelensky announced plans for a fourth phase ('season') of Vivaldi. He said the operation had disrupted Russia's plan to break into the rear of the Sloviansk-Kramatorsk agglomeration. He cited 176 km² retaken, more than 5,000 Russian casualties and 250 prisoners, and named wider use of unmanned ground vehicles in place of soldiers as a priority.",
-              "url": "https://www.kyivpost.com/post/85781"
-            },
-            {
               "date": "2026-09-29",
-              "actor": "3rd Army Corps (via Defense Express), reported by UNN",
-              "type": "tactic or capability",
-              "text": "On 29 Sep, the 3rd Army Corps said it had converted Soviet BTR-60 APCs into remote-controlled, uncrewed kamikaze vehicles. It said they were used to deliver explosives against Russia's strongest fortifications during the assaults on Nove, Ridkodub and Katerynivka. ISW's 28 Sep report described the vehicles as BTR-80s turned into VBIEDs, so the vehicle model is inconsistent between sources.",
-              "url": "https://unn.ua/en/news/the-armed-forces-of-ukraine-have-turned-soviet-btr-60s-into-kamikaze-robots-to-breach-russian-defenses"
+              "actor": "Ukrainian 3rd Army Corps",
+              "tactic": "Uncrewed BTR kamikaze vehicles against fortifications",
+              "type": "succeeded",
+              "text": "The corps said on 29 Sep that it had turned Soviet BTR-60s into remote-controlled explosive carriers and used them against the strongest Russian fortifications at Nove, Ridkodub and Katerynivka. ISW (28 Sep) described the vehicles as BTR-80s. It noted that they reached heavy fortifications without being struck by Russian drones, which ISW took as a sign that Ukraine had negated Russian drone defences. Effectiveness rests on corps statements and corps-released footage, and the vehicle model differs between sources.",
+              "url": "https://unn.ua/en/news/the-armed-forces-of-ukraine-have-turned-soviet-btr-60s-into-kamikaze-robots-to-breach-russian-defenses",
+              "unverified": true
             },
             {
               "date": "2026-09-28",
-              "actor": "3rd Army Corps (Brig. Gen. Andrii Biletskyi)",
-              "type": "official claim",
-              "text": "On 28 Sep, Biletskyi announced Vivaldi's 'third season.' He said his forces had liberated Ridkodub, Nove and Katerynivka, restored full control of Karpivka and Novomykhailivka, and taken 51 km², for a claimed total of 176 km². He also claimed more than 2,000 Russian losses and over 250 prisoners. He credited a deception on the Shandryholove-Zelena Dolyna axis that drew Russian reserves away from the main blow at Nove. ISW (28 Sep) repeated the figures as Ukrainian claims and cited no geolocated confirmation.",
-              "url": "https://kyivindependent.com/ukraines-operation-vivaldi-liberates-3-more-settlements-inflicts-2-000-russian-losses-3rd-army-corps-announces/"
+              "actor": "Ukrainian 3rd Army Corps",
+              "tactic": "Feint on the Shandryholove–Zelena Dolyna axis",
+              "type": "succeeded",
+              "text": "Biletskyi said on 28 Sep that a feint from Shandryholove toward Zelena Dolyna drew Russian reserves away from the main blow at Nove. He claimed phase three liberated Nove, Ridkodub and Katerynivka (51 km², 176 km² in total). ISW repeated the account on 28 Sep. The deception's effect is the corps' own claim; no Russian or independent source describes reserves being drawn off.",
+              "url": "https://kyivindependent.com/ukraines-operation-vivaldi-liberates-3-more-settlements-inflicts-2-000-russian-losses-3rd-army-corps-announces/",
+              "unverified": true
             },
             {
-              "date": "2026-09-23",
-              "actor": "Russian MoD (as reported by Euromaidan Press citing ISW)",
-              "type": "official claim",
-              "text": "On 22 Sep, during the UN General Assembly, the Russian Defence Ministry claimed it had encircled Dobropillia, the southern jaw of the planned pincer on the Fortress Belt. ISW found no evidence of an encirclement. Euromaidan Press reported this alongside the assessment that Vivaldi had broken the northern arm of the pincer, which ran from north of Lyman via Sviatohirsk toward Barvinkove.",
-              "url": "https://euromaidanpress.com/2026/09/23/russia-dobropillia-encirclement-claim-un-isw/"
+              "date": "2026-09-28",
+              "actor": "Ukrainian 3rd Army Corps",
+              "tactic": "Limited mechanised manoeuvre after drone overmatch",
+              "type": "succeeded",
+              "text": "ISW assessed on 28 Sep that shaping operations and intermediate-range strikes had suppressed Russian drones and EW enough to give Ukraine tactical drone overmatch, and that this enabled mechanised advances in the Lyman direction. On 20 Sep, ISW described a limited ability to break out of positional warfare and reintroduce elements of tactical mechanised manoeuvre. It also noted that the gains remained geographically limited. The judgement is ISW's own, not just a repetition of Ukrainian claims.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-september-28-2026"
             },
             {
-              "date": "2026-09-20",
-              "actor": "3rd Army Corps (Biletskyi); analyst Clément Molin",
-              "type": "official claim",
-              "text": "On 20 Sep, Biletskyi said phase two had liberated Shandryholove, Derylove and Drobysheve northwest of Lyman. He claimed about 50 km² (125 km² across two phases) and 800 Russian personnel losses, with a third phase underway. The corps said drones and UGVs led assault groups, and that heavy bomber drones dropped kamikaze ground robots more than 10 km behind Russian lines. French analyst Clément Molin called it 'one of the most important victories for Ukraine in 2026', which would delay the offensive on northern Donbas.",
-              "url": "https://euromaidanpress.com/2026/09/20/ukraine-retakes-three-settlements-in-northern-donetsk-vivaldi/"
+              "date": "2026-09-26",
+              "actor": "Russian 25th Combined Arms Army",
+              "tactic": "ATV and motorcycle infiltration into Lyman",
+              "type": "failed",
+              "text": "Russia had tried to take Lyman by seeping small groups in on ATVs and motorcycles. A Ukrainian battalion commander cited by ISW on 26 Sep said phase one targeted these assaults and cut their supply, leaving infiltrators demoralised and isolated until they were destroyed. ISW reported that Russian troops withdrew from southern Lyman to avoid encirclement. Russian milbloggers blamed false reporting up the chain, including Putin's 1 Sep claim to Sviatohirsk that ISW refuted on 20 Sep, for blinding command to Ukrainian preparations.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-september-26-2026"
+            },
+            {
+              "date": "2026-09-24",
+              "actor": "Ukrainian 3rd Army Corps",
+              "tactic": "Ground robots leading assaults and clearing routes",
+              "type": "succeeded",
+              "text": "The corps said UGVs cleared 30 km of routes toward Shandryholove in two nights without sapper losses, a job it said would take two sapper companies a week. It also said drones and UGVs always advance ahead of infantry, and that heavy bomber drones dropped strike UGVs more than 10 km behind Russian lines (Euromaidan Press, 20 Sep). ISW repeated the demining figures on 24 Sep. No source quantifies what the airdropped robots achieved or discusses robot losses, so the evidence is the corps' own.",
+              "url": "https://united24media.com/war-in-ukraine/operation-vivaldi-ground-robots-cleared-30-kilometers-in-two-nights-without-losses-22829",
+              "unverified": true
+            },
+            {
+              "date": "2026-09-19",
+              "actor": "Ukrainian 3rd Army Corps",
+              "tactic": "Counter-drone campaign against Rubikon launch sites",
+              "type": "succeeded",
+              "text": "Corps chief of staff Horbatenko said on 19 Sep (via ISW) that strikes on Russian drone launch sites, plus a mobile EW 'anti-drone bubble' moving with the troops, forced Russia's elite Rubikon centre to move its whole local force to another sector. ISW reported on 17 Sep that Russia was shifting armour and about 1,200 Rubikon drone crews to the Dobropillia direction. The Rubikon withdrawal is a Ukrainian claim, but ISW's report of the redeployment and its overmatch assessment support it.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-september-19-2026"
             },
             {
               "date": "2026-09-15",
-              "actor": "3rd Army Corps, as reported by ISW",
-              "type": "tactic or capability",
-              "text": "ISW's 15 Sep assessment reported Biletskyi's claim that the corps had shaped Vivaldi with intermediate-range strikes at two depths, about 50 km and 120 km behind the front, aimed at Russian fuel supply. The claimed results were a fuel pipeline into occupied Luhansk Oblast shut down and support elements of Russia's 144th Motorized Rifle Division forced to relocate to Voronezh Oblast. ISW assessed that Vivaldi had made the northern arm of the Fortress Belt encirclement unfeasible.",
-              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-september-15-2026"
-            },
-            {
-              "date": "2026-09-15",
-              "actor": "3rd Army Corps (Biletskyi); Kyiv Independent",
-              "type": "territorial change",
-              "text": "On 15 Sep, Biletskyi publicly confirmed Operation Vivaldi for the first time. He claimed 85 km² cleared or liberated in phase one, including the liberation of Serednie and the clearing of Novoselivka, Oleksandrivka, Yarova and the outskirts of Korovyi Yar, and said 'Vivaldi has four seasons... this is only the first.' The Kyiv Independent noted that Russian milbloggers had been tracking the attacks since late spring and that Putin had falsely claimed Sviatohirsk on 1 Sep. It cited Clément Molin's estimate of 'likely more than 200 square kilometers' liberated.",
-              "url": "https://kyivindependent.com/analysis-through-the-fog-of-war-ukraine-goes-on-operation-vivaldi-counterattack-near-lyman/"
+              "actor": "Ukrainian 3rd Army Corps",
+              "tactic": "Deep strikes on fuel logistics",
+              "type": "succeeded",
+              "text": "Biletskyi said Vivaldi was shaped by intermediate-range strikes on Russian fuel supply at about 50 km and 120 km depth. He claimed the strikes shut a pipeline into occupied Luhansk Oblast and forced 144th Motorized Rifle Division support elements back to Voronezh Oblast (ISW, 15 Sep). ISW (17 Sep) assessed that degraded fuel supply strained Russia's ability to power EW systems. The pipeline shutdown and the relocation are Ukrainian claims that ISW repeated without independent confirmation.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-september-15-2026",
+              "unverified": true
             }
           ],
           "assessment": {
             "date": "2026-10-07",
-            "text": "Vivaldi has regained ground in steps. The 3rd Army Corps claimed 85 km² on 15 Sep, then 125 km² on 20 Sep and 176 km² on 28 Sep, and ISW repeated those figures as claims. By 4 Oct, Mashovets reported advances into Zarichne and Myrne. ISW judged on 15 Sep and 1 Oct that removing the Lyman salient made Russia's wide pincer on the Fortress Belt, running via Sviatohirsk and Dobropillia, unfeasible. By 5 Oct even Pushilin implied that Slovyansk and Kramatorsk were Russia's final objectives. Russia has kept attacking around Lyman without confirmed gains (6 Oct), committed reserve and TDF battalions, and countered with narrative: Putin's false Sviatohirsk claim and the MoD's unsupported Dobropillia encirclement claim (22 Sep). The operation shows that limited mechanised manoeuvre came back once Ukraine first won tactical drone overmatch, which ISW noted on 20 and 28 Sep. It rested on strikes on fuel, deception and uncrewed vehicles. Whether phase four can hold that tempo against Russian reserves is still unclear.",
+            "text": "Vivaldi regained ground north of Lyman by first winning the fight for the sky and the supply lines, then moving. ISW credited fuel and launch-site strikes with Ukraine's tactical drone overmatch (17-28 Sep). Under that cover, uncrewed BTR charges and limited mechanised assaults went forward, and Ukrainian claims say a feint at Shandryholove drew reserves off Nove. Russia's small-group infiltration of Lyman failed once its supply was cut (26 Sep). Its repeated assaults around Lyman made no gains through 6 Oct, while committing territorial-defence and mobilisation-reserve battalions has not yet stabilised the line. Russia has dropped the wide Sviatohirsk-Dobropillia pincer for a narrower push on Slovyansk via Mykolaivka, which is itself stalled (1 and 5 Oct). It shifted Rubikon drone crews and armour toward Dobropillia and Druzhkivka. The 'restored manoeuvre' depends on local drone overmatch, and ISW calls it limited in scope. The Zherebets river-line gains are unconfirmed and phase four has not started.",
             "sources": [
               {
                 "label": "ISW/CTP · Russian Offensive Campaign Assessment · 6 Oct 2026",
@@ -892,10 +912,6 @@
                 "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-5-2026"
               },
               {
-                "label": "ISW/CTP · Russian Offensive Campaign Assessment · 4 Oct 2026",
-                "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-4-2026"
-              },
-              {
                 "label": "ISW/CTP · Russian Offensive Campaign Assessment · 1 Oct 2026",
                 "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-1-2026"
               },
@@ -904,8 +920,12 @@
                 "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-september-28-2026"
               },
               {
-                "label": "Euromaidan Press · Russia fabricates Dobropillia encirclement to strengthen its case for Kyiv's capitulation at UN – ISW · 23 Sep 2026",
-                "url": "https://euromaidanpress.com/2026/09/23/russia-dobropillia-encirclement-claim-un-isw/"
+                "label": "ISW/CTP · Russian Offensive Campaign Assessment · 26 Sep 2026",
+                "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-september-26-2026"
+              },
+              {
+                "label": "Meduza · Ukraine's Operation Vivaldi pushed Russian forces back around Lyman; now both armies are massing troops farther south · 18 Sep 2026",
+                "url": "https://meduza.io/en/feature/2026/09/18/ukraine-s-operation-vivaldi-pushed-russian-forces-back-around-lyman-in-the-donbas-now-both-armies-are-massing-troops-for-the-next-battles-farther-south"
               }
             ]
           }
