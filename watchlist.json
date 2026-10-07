@@ -158,8 +158,25 @@
       "watchAreas": "Watch areas: for each numbered topic, its watch status and what to monitor. Status tags: Rising (activity increasing), Established (steady pattern), Contested (the outcome is still open), Watch for trigger (review only on a named event), Background monitor, Declining.",
       "adaptability": "Adaptability: how transferable the topic's lessons are to the Army — High, Medium or Low, set by the team."
     },
-    "infoOps": {
-      "desc": "Information operations and strategic communications watch, or a wider shadow-war watch (kind \"shadow-war\") that also tracks sabotage, incursions and the targeted side's responses. Switched on for an item when a trigger event (a summit, a crisis) makes messaging and influence activity worth tracking on its own: a narrower hourly feed of reporting on official messaging, state-media narratives and documented influence campaigns, plus dated findings and an assessment researched daily from open sources.",
+    "watches": {
+      "desc": "Watches follow one thread of an item on its own once a trigger event makes it worth it: an information-operations watch (kind \"info-ops\": official messaging, state-media narratives and documented influence campaigns), a shadow-war watch (kind \"shadow-war\": sabotage, incursions, cyber and influence below the threshold of war, and the targeted side's responses) or an operation watch (kind \"operation\": one named military operation, its gains, the enemy's response and what it shows). Each carries a narrower daily feed, plus dated findings and an assessment researched from open sources at each review.",
+      "kinds": {
+        "info-ops": {
+          "label": "Info-ops watch",
+          "title": "Information ops & strategic communications watch",
+          "feedTitle": "Latest messaging & influence reporting"
+        },
+        "shadow-war": {
+          "label": "Shadow-war watch",
+          "title": "Shadow-war watch",
+          "feedTitle": "Latest shadow-war reporting"
+        },
+        "operation": {
+          "label": "Operation watch",
+          "title": "Operation watch",
+          "feedTitle": "Latest reporting on the operation"
+        }
+      },
       "types": {
         "official statement": "Government, foreign-ministry, military or party statement aimed at an audience (strategic communications).",
         "state-media narrative": "Framing pushed by state or party media, including English-language outlets aimed abroad.",
@@ -171,7 +188,11 @@
         "debunked claim": "A specific false claim identified by a fact-checker.",
         "third-party assessment": "Analysis by a think-tank, researcher or major outlet.",
         "hybrid attack": "Physical sabotage, arson, cable or pipeline damage, cyber attacks, GPS jamming, drone or airspace incursions and other deniable attacks below the threshold of war.",
-        "defensive response": "The targeted side's practical countermeasures: arrests, expulsions, airspace closures, deployments, new laws and alliance consultations."
+        "defensive response": "The targeted side's practical countermeasures: arrests, expulsions, airspace closures, deployments, new laws and alliance consultations.",
+        "territorial change": "Ground or settlements gained or lost, with who reports it and whether it is independently confirmed (geolocated footage, ISW).",
+        "official claim": "A command's or ministry's claim of gains, enemy losses or prisoners that has not been independently confirmed.",
+        "counterattack": "The opposing side's counterattacks, reinforcements or renewed assaults in the operation's sector.",
+        "tactic or capability": "A tactic, weapon or enabler used in the operation (drones, electronic warfare, converted vehicles, shaping strikes)."
       }
     }
   },
@@ -534,195 +555,374 @@
           }
         }
       ],
-      "infoOps": {
-        "enabled": true,
-        "kind": "shadow-war",
-        "label": "Shadow-war watch",
-        "title": "Russia–Europe shadow-war watch",
-        "feedTitle": "Latest shadow-war reporting",
-        "since": "2026-09-23",
-        "trigger": "Russian helicopter and drone incursions into Poland, Romania and Moldova, 23–24 Sep 2026",
-        "question": "Is Russia escalating a shadow war against Europe below the threshold of open war (sabotage and arson, cyber attacks, undersea cable and pipeline damage, GPS jamming, drone and airspace incursions, shadow-fleet activity, espionage, assassination plots and influence or disinformation operations), through which channels and against whom, and how are European governments and NATO responding?",
-        "feed": {
-          "query": "(Russia OR Russian OR Kremlin OR GRU) (sabotage OR \"hybrid war\" OR \"hybrid attack\" OR \"hybrid threat\" OR \"shadow war\" OR \"shadow fleet\" OR \"drone incursion\" OR \"airspace violation\" OR \"undersea cable\" OR arson OR \"GPS jamming\" OR cyberattack OR espionage OR disinformation) (Europe OR European OR NATO OR Poland OR Germany OR Baltic OR Romania OR Finland OR Britain OR France OR Denmark OR Moldova)",
-          "terms": [
-            "russia",
-            "russian",
-            "kremlin",
-            "gru",
-            "moscow"
-          ],
-          "require": [
-            [
+      "watches": [
+        {
+          "id": "shadow-war",
+          "enabled": true,
+          "kind": "shadow-war",
+          "label": "Shadow-war watch",
+          "title": "Russia–Europe shadow-war watch",
+          "feedTitle": "Latest shadow-war reporting",
+          "since": "2026-09-23",
+          "trigger": "Russian helicopter and drone incursions into Poland, Romania and Moldova, 23–24 Sep 2026",
+          "question": "Is Russia escalating a shadow war against Europe below the threshold of open war (sabotage and arson, cyber attacks, undersea cable and pipeline damage, GPS jamming, drone and airspace incursions, shadow-fleet activity, espionage, assassination plots and influence or disinformation operations), through which channels and against whom, and how are European governments and NATO responding?",
+          "feed": {
+            "query": "(Russia OR Russian OR Kremlin OR GRU) (sabotage OR \"hybrid war\" OR \"hybrid attack\" OR \"hybrid threat\" OR \"shadow war\" OR \"shadow fleet\" OR \"drone incursion\" OR \"airspace violation\" OR \"undersea cable\" OR arson OR \"GPS jamming\" OR cyberattack OR espionage OR disinformation) (Europe OR European OR NATO OR Poland OR Germany OR Baltic OR Romania OR Finland OR Britain OR France OR Denmark OR Moldova)",
+            "terms": [
               "russia",
               "russian",
               "kremlin",
               "gru",
-              "moscow",
-              "putin"
+              "moscow"
             ],
-            [
-              "sabotage",
-              "hybrid",
-              "shadow war",
-              "shadow fleet",
-              "drone",
-              "airspace",
-              "incursion",
-              "violat",
-              "cable",
-              "pipeline",
-              "arson",
-              "explosion",
-              "cyber",
-              "hack",
-              "jamming",
-              "gps",
-              "spoof",
-              "spy",
-              "spies",
-              "espionage",
-              "assassinat",
-              "disinformation",
-              "propaganda",
-              "influence",
-              "interference",
-              "troll",
-              "bot network",
-              "article 4",
-              "expel",
-              "expulsion",
-              "arrest",
-              "sanction"
+            "require": [
+              [
+                "russia",
+                "russian",
+                "kremlin",
+                "gru",
+                "moscow",
+                "putin"
+              ],
+              [
+                "sabotage",
+                "hybrid",
+                "shadow war",
+                "shadow fleet",
+                "drone",
+                "airspace",
+                "incursion",
+                "violat",
+                "cable",
+                "pipeline",
+                "arson",
+                "explosion",
+                "cyber",
+                "hack",
+                "jamming",
+                "gps",
+                "spoof",
+                "spy",
+                "spies",
+                "espionage",
+                "assassinat",
+                "disinformation",
+                "propaganda",
+                "influence",
+                "interference",
+                "troll",
+                "bot network",
+                "article 4",
+                "expel",
+                "expulsion",
+                "arrest",
+                "sanction"
+              ]
+            ],
+            "exclude": [
+              "stock",
+              "shares",
+              "ballet",
+              "football",
+              "tennis",
+              "olympic"
             ]
-          ],
-          "exclude": [
-            "stock",
-            "shares",
-            "ballet",
-            "football",
-            "tennis",
-            "olympic"
-          ]
-        },
-        "findings": [
-          {
-            "date": "2026-10-05",
-            "actor": "EU High Representative Kaja Kallas",
-            "type": "official statement",
-            "text": "On 5 Oct 2026 Kallas, speaking alongside Moldovan PM Vasile Tofan, said Russia is putting lives at risk across Europe and that recent weeks had seen a spike in Russian hybrid attacks, sabotage attempts and airspace violations. She called the weekend missile and drone incursions into Moldova completely unacceptable, signalling the EU now frames the campaign as a direct threat to civilians.",
-            "url": "https://www.usnews.com/news/world/articles/2026-10-05/russia-puts-lives-at-risk-across-europe-with-hybrid-attacks-kallas-says"
           },
-          {
-            "date": "2026-10-03",
-            "actor": "Russian armed forces; Moldovan government",
-            "type": "hybrid attack",
-            "text": "On the morning of 3 Oct 2026 three Banderol-type Russian missiles and two drones crossed Moldovan airspace and exploded on the ground in several districts during a strike on Ukraine, with no casualties reported. President Sandu said Russia's war is dangerously reaching Moldova, and Chisinau summoned Russia's ambassador for the second time in a week. It is the most serious spillover onto a non-NATO EU candidate in the window.",
-            "url": "https://kyivindependent.com/5-russian-missiles-and-drones-exploded-over-moldovas-airspace-sandu-says/"
-          },
-          {
-            "date": "2026-10-02",
-            "actor": "Ukrainian military intelligence (HUR)",
-            "type": "third-party assessment",
-            "text": "On 2 Oct 2026 HUR said Russia's special services have been tasked with increasing hybrid operations in EU and NATO states, including arson, assassinations and sabotage of military sites, critical infrastructure and communications, possibly including Starlink stations. It cited the Leipzig drone plot and the 23 Sep Starlink fire in Poland, but this is an interested party's claim not independently confirmed.",
-            "url": "https://kyivindependent.com/russia-planning-to-increase-hybrid-warfare-activity-in-europe-ukrainian-intelligence-warns/",
-            "unverified": true
-          },
-          {
-            "date": "2026-10-01",
-            "actor": "Vladimir Putin",
-            "type": "coercive signalling",
-            "text": "On 1 Oct 2026 Putin warned Russia was prepared to use all weapons in its arsenal, implicitly including nuclear weapons, if the West threatened the Kaliningrad exclave. The warning followed NATO drills near Kaliningrad and a Russian diplomatic note to NATO in late September threatening a nuclear response to any attempt to isolate the region.",
-            "url": "https://www.abc.net.au/news/2026-10-02/putin-kaliningrad-threat-nuclear-weapons/107219366"
-          },
-          {
-            "date": "2026-09-30",
-            "actor": "NATO Secretary General Mark Rutte",
-            "type": "counter-messaging",
-            "text": "On 30 Sep 2026 Rutte confirmed NATO had replied to Russia's note on Kaliningrad, stressing that NATO is a defensive alliance, and said he did not take the nuclear threat that seriously. He argued Putin's aim was to divide allies and pull focus away from Ukraine.",
-            "url": "https://united24media.com/world/i-dont-take-this-seriously-nato-chief-rutte-dismisses-russias-nuclear-threat-over-kaliningrad-23014"
-          },
-          {
-            "date": "2026-09-29",
-            "actor": "Estonian Foreign Ministry and Internal Security Service",
-            "type": "defensive response",
-            "text": "On 29 Sep 2026 Estonia publicly attributed the 15 Aug arson at defence-robotics firm Milrem Robotics, a Ukraine supplier, to a pre-planned operation commissioned by Russian security services, and summoned Russia's diplomatic representative. Three suspects arrested in Latvia had been handed to Estonia; the Kremlin called the accusation unfounded.",
-            "url": "https://www.nbcnews.com/world/europe/russia-accused-sabotage-estonia-arson-ukraine-supplier-rcna600451"
-          },
-          {
-            "date": "2026-09-25",
-            "actor": "Vladimir Putin",
-            "type": "official statement",
-            "text": "On 25 Sep 2026 at the United Cultures Forum in St Petersburg Putin said Russia is not preparing for military action against Europe and called European threat warnings exaggeration. In the same remarks he claimed Russian speakers' rights are violated in the Baltic states and said Russia was responding on humanitarian grounds, without specifying what that meant, a familiar pretext narrative.",
-            "url": "https://meduza.io/en/feature/2026/09/26/putin-says-russia-will-not-attack-europe-and-blames-ukraine-for-the-breakdown-in-peace-talks"
-          },
-          {
-            "date": "2026-09-25",
-            "actor": "GRU (suspected); German investigators",
-            "type": "hybrid attack",
-            "text": "On 25 Sep 2026 Frankfurter Allgemeine Zeitung reported that German investigators suspect the GRU recruited the two people detained over the 2-3 Sep incendiary attack near the Munich offices of Rohde & Schwarz and drone maker Helsing. Investigators see a possible link to the Leipzig airport drone plot and a simultaneous arson attempt at a drone plant in Slovakia, pointing to coordinated targeting of Ukraine's defence suppliers.",
-            "url": "https://meduza.io/en/news/2026/09/25/german-investigators-suspect-russian-military-intelligence-organized-an-arson-attack-near-defense-firms-in-munich"
-          },
-          {
-            "date": "2026-09-24",
-            "actor": "Danish Defence Intelligence Service (DDIS)",
-            "type": "third-party assessment",
-            "text": "On 24 Sep 2026 DDIS warned of a low but growing risk that Russia could carry out limited strikes on infrastructure supporting Ukraine or a limited attack on one or more NATO countries bordering Russia in the coming months. It expects Russia to intensify hybrid attacks, including damaging cyberattacks and sabotage with a high risk of casualties, while seeing no sign of an outright invasion.",
-            "url": "https://www.cnbc.com/2026/09/25/russia-ukraine-war-nato-denmark-putin.html"
-          },
-          {
-            "date": "2026-09-24",
-            "actor": "Russian armed forces",
-            "type": "hybrid attack",
-            "text": "On 24 Sep 2026 suspected Russian Gerbera-type drones crashed in Romania near Solca in Suceava County after about four minutes in Romanian airspace, and in Moldova's Floresti district, during a mass strike on Ukraine; Romania scrambled two F-16s and no casualties were reported. ISW read these crashes, together with the Polish Starlink fire and a Berlin airport drone stoppage on 23 Sep, as one pattern aimed at normalising airspace violations.",
-            "url": "https://kyivindependent.com/suspected-russian-drones-crash-in-romania-moldova/"
-          },
-          {
-            "date": "2026-09-23",
-            "actor": "Unknown saboteurs; Polish government",
-            "type": "hybrid attack",
-            "text": "On the evening of 23 Sep 2026 a fire hit the power system of a Starlink ground station at Wola Krobowska near Warsaw that supports connectivity used by Ukraine, and a Molotov-style bottle was found nearby. Deputy PM Krzysztof Gawkowski called it sabotage consistent with Russia's new doctrine of attack but said there was no direct evidence of Russian involvement, and service was restored.",
-            "url": "https://meduza.io/en/news/2026/09/24/starlink-ground-station-catches-fire-near-warsaw-polish-security-services-suspect-russian-sabotage"
-          },
-          {
-            "date": "2026-09-23",
-            "actor": "Russian armed forces (Mi-8 helicopter)",
-            "type": "hybrid attack",
-            "text": "At 11:08 on 23 Sep 2026 a Russian Mi-8 helicopter crossed from Kaliningrad about 300 metres into Polish airspace north of Braniewo for 42 seconds, prompting Poland to scramble fighters and put ground air defences on standby. Polish operational command said Russia was again testing the readiness of its air defences; it was the first publicly reported Russian military helicopter crossing of Poland's land border.",
-            "url": "https://notesfrompoland.com/2026/09/23/russian-military-helicopter-violates-polish-airspace/"
-          }
-        ],
-        "assessment": {
-          "date": "2026-10-06",
-          "text": "Russia's below-threshold pressure on Europe intensified between 22 Sep and 6 Oct 2026, mainly through airspace incursions and sabotage of infrastructure that supports Ukraine. A Mi-8 helicopter entered Polish airspace on 23 Sep, Gerbera drones crashed in Romania and Moldova on 24 Sep, and missiles and drones exploded on Moldovan territory on 3 Oct. Sabotage targeted Ukraine's supply chain: the 23 Sep Starlink station fire in Poland, German investigators' 25 Sep suspicion that the GRU recruited the Munich arsonists, and Estonia's 29 Sep attribution of the Milrem arson. Moscow paired this with coercive signalling, including the 1 Oct Kaliningrad 'all weapons' warning and Putin's 25 Sep denial of attack plans alongside claims about Baltic Russian speakers. European responses have so far been calibrated: scrambled jets, summoned envoys, arrests and public attribution, a 24 Sep Danish intelligence warning of possible limited strikes, Rutte's 30 Sep dismissal of nuclear threats, and Kallas's 5 Oct statement that Russia is endangering lives. Evidence on cyber and disinformation activity in this window remains thin.",
-          "sources": [
+          "findings": [
             {
-              "label": "US News (Reuters) · Russia Puts Lives at Risk Across Europe With Hybrid Attacks, Kallas Says · 5 Oct 2026",
+              "date": "2026-10-05",
+              "actor": "EU High Representative Kaja Kallas",
+              "type": "official statement",
+              "text": "On 5 Oct 2026 Kallas, speaking alongside Moldovan PM Vasile Tofan, said Russia is putting lives at risk across Europe and that recent weeks had seen a spike in Russian hybrid attacks, sabotage attempts and airspace violations. She called the weekend missile and drone incursions into Moldova completely unacceptable, signalling the EU now frames the campaign as a direct threat to civilians.",
               "url": "https://www.usnews.com/news/world/articles/2026-10-05/russia-puts-lives-at-risk-across-europe-with-hybrid-attacks-kallas-says"
             },
             {
-              "label": "Kyiv Independent · 5 Russian missiles and drones exploded on Moldova's territory, Sandu says · 3 Oct 2026",
+              "date": "2026-10-03",
+              "actor": "Russian armed forces; Moldovan government",
+              "type": "hybrid attack",
+              "text": "On the morning of 3 Oct 2026 three Banderol-type Russian missiles and two drones crossed Moldovan airspace and exploded on the ground in several districts during a strike on Ukraine, with no casualties reported. President Sandu said Russia's war is dangerously reaching Moldova, and Chisinau summoned Russia's ambassador for the second time in a week. It is the most serious spillover onto a non-NATO EU candidate in the window.",
               "url": "https://kyivindependent.com/5-russian-missiles-and-drones-exploded-over-moldovas-airspace-sandu-says/"
             },
             {
-              "label": "ABC News (Australia) · Putin warns Russia will use 'all weapons' if Kaliningrad threatened · 2 Oct 2026",
+              "date": "2026-10-02",
+              "actor": "Ukrainian military intelligence (HUR)",
+              "type": "third-party assessment",
+              "text": "On 2 Oct 2026 HUR said Russia's special services have been tasked with increasing hybrid operations in EU and NATO states, including arson, assassinations and sabotage of military sites, critical infrastructure and communications, possibly including Starlink stations. It cited the Leipzig drone plot and the 23 Sep Starlink fire in Poland, but this is an interested party's claim not independently confirmed.",
+              "url": "https://kyivindependent.com/russia-planning-to-increase-hybrid-warfare-activity-in-europe-ukrainian-intelligence-warns/",
+              "unverified": true
+            },
+            {
+              "date": "2026-10-01",
+              "actor": "Vladimir Putin",
+              "type": "coercive signalling",
+              "text": "On 1 Oct 2026 Putin warned Russia was prepared to use all weapons in its arsenal, implicitly including nuclear weapons, if the West threatened the Kaliningrad exclave. The warning followed NATO drills near Kaliningrad and a Russian diplomatic note to NATO in late September threatening a nuclear response to any attempt to isolate the region.",
               "url": "https://www.abc.net.au/news/2026-10-02/putin-kaliningrad-threat-nuclear-weapons/107219366"
             },
             {
-              "label": "NBC News · Russia accused of sabotage by Estonia after arson at Ukraine supplier · 29 Sep 2026",
+              "date": "2026-09-30",
+              "actor": "NATO Secretary General Mark Rutte",
+              "type": "counter-messaging",
+              "text": "On 30 Sep 2026 Rutte confirmed NATO had replied to Russia's note on Kaliningrad, stressing that NATO is a defensive alliance, and said he did not take the nuclear threat that seriously. He argued Putin's aim was to divide allies and pull focus away from Ukraine.",
+              "url": "https://united24media.com/world/i-dont-take-this-seriously-nato-chief-rutte-dismisses-russias-nuclear-threat-over-kaliningrad-23014"
+            },
+            {
+              "date": "2026-09-29",
+              "actor": "Estonian Foreign Ministry and Internal Security Service",
+              "type": "defensive response",
+              "text": "On 29 Sep 2026 Estonia publicly attributed the 15 Aug arson at defence-robotics firm Milrem Robotics, a Ukraine supplier, to a pre-planned operation commissioned by Russian security services, and summoned Russia's diplomatic representative. Three suspects arrested in Latvia had been handed to Estonia; the Kremlin called the accusation unfounded.",
               "url": "https://www.nbcnews.com/world/europe/russia-accused-sabotage-estonia-arson-ukraine-supplier-rcna600451"
             },
             {
-              "label": "Euromaidan Press · ISW connects drone crashes in Moldova and Romania, a Starlink fire in Poland, and a Berlin airport shutdown into one Russian pattern · 25 Sep 2026",
-              "url": "https://euromaidanpress.com/2026/09/25/isw-connects-drone-crashes-in-moldova-and-romania-a-starlink-fire-in-poland-and-a-berlin-airport-shutdown-into-one-russian-pattern/"
+              "date": "2026-09-25",
+              "actor": "Vladimir Putin",
+              "type": "official statement",
+              "text": "On 25 Sep 2026 at the United Cultures Forum in St Petersburg Putin said Russia is not preparing for military action against Europe and called European threat warnings exaggeration. In the same remarks he claimed Russian speakers' rights are violated in the Baltic states and said Russia was responding on humanitarian grounds, without specifying what that meant, a familiar pretext narrative.",
+              "url": "https://meduza.io/en/feature/2026/09/26/putin-says-russia-will-not-attack-europe-and-blames-ukraine-for-the-breakdown-in-peace-talks"
             },
             {
-              "label": "CNBC · Russia could attack a NATO country within months, Denmark warns · 25 Sep 2026",
+              "date": "2026-09-25",
+              "actor": "GRU (suspected); German investigators",
+              "type": "hybrid attack",
+              "text": "On 25 Sep 2026 Frankfurter Allgemeine Zeitung reported that German investigators suspect the GRU recruited the two people detained over the 2-3 Sep incendiary attack near the Munich offices of Rohde & Schwarz and drone maker Helsing. Investigators see a possible link to the Leipzig airport drone plot and a simultaneous arson attempt at a drone plant in Slovakia, pointing to coordinated targeting of Ukraine's defence suppliers.",
+              "url": "https://meduza.io/en/news/2026/09/25/german-investigators-suspect-russian-military-intelligence-organized-an-arson-attack-near-defense-firms-in-munich"
+            },
+            {
+              "date": "2026-09-24",
+              "actor": "Danish Defence Intelligence Service (DDIS)",
+              "type": "third-party assessment",
+              "text": "On 24 Sep 2026 DDIS warned of a low but growing risk that Russia could carry out limited strikes on infrastructure supporting Ukraine or a limited attack on one or more NATO countries bordering Russia in the coming months. It expects Russia to intensify hybrid attacks, including damaging cyberattacks and sabotage with a high risk of casualties, while seeing no sign of an outright invasion.",
               "url": "https://www.cnbc.com/2026/09/25/russia-ukraine-war-nato-denmark-putin.html"
+            },
+            {
+              "date": "2026-09-24",
+              "actor": "Russian armed forces",
+              "type": "hybrid attack",
+              "text": "On 24 Sep 2026 suspected Russian Gerbera-type drones crashed in Romania near Solca in Suceava County after about four minutes in Romanian airspace, and in Moldova's Floresti district, during a mass strike on Ukraine; Romania scrambled two F-16s and no casualties were reported. ISW read these crashes, together with the Polish Starlink fire and a Berlin airport drone stoppage on 23 Sep, as one pattern aimed at normalising airspace violations.",
+              "url": "https://kyivindependent.com/suspected-russian-drones-crash-in-romania-moldova/"
+            },
+            {
+              "date": "2026-09-23",
+              "actor": "Unknown saboteurs; Polish government",
+              "type": "hybrid attack",
+              "text": "On the evening of 23 Sep 2026 a fire hit the power system of a Starlink ground station at Wola Krobowska near Warsaw that supports connectivity used by Ukraine, and a Molotov-style bottle was found nearby. Deputy PM Krzysztof Gawkowski called it sabotage consistent with Russia's new doctrine of attack but said there was no direct evidence of Russian involvement, and service was restored.",
+              "url": "https://meduza.io/en/news/2026/09/24/starlink-ground-station-catches-fire-near-warsaw-polish-security-services-suspect-russian-sabotage"
+            },
+            {
+              "date": "2026-09-23",
+              "actor": "Russian armed forces (Mi-8 helicopter)",
+              "type": "hybrid attack",
+              "text": "At 11:08 on 23 Sep 2026 a Russian Mi-8 helicopter crossed from Kaliningrad about 300 metres into Polish airspace north of Braniewo for 42 seconds, prompting Poland to scramble fighters and put ground air defences on standby. Polish operational command said Russia was again testing the readiness of its air defences; it was the first publicly reported Russian military helicopter crossing of Poland's land border.",
+              "url": "https://notesfrompoland.com/2026/09/23/russian-military-helicopter-violates-polish-airspace/"
             }
-          ]
+          ],
+          "assessment": {
+            "date": "2026-10-06",
+            "text": "Russia's below-threshold pressure on Europe intensified between 22 Sep and 6 Oct 2026, mainly through airspace incursions and sabotage of infrastructure that supports Ukraine. A Mi-8 helicopter entered Polish airspace on 23 Sep, Gerbera drones crashed in Romania and Moldova on 24 Sep, and missiles and drones exploded on Moldovan territory on 3 Oct. Sabotage targeted Ukraine's supply chain: the 23 Sep Starlink station fire in Poland, German investigators' 25 Sep suspicion that the GRU recruited the Munich arsonists, and Estonia's 29 Sep attribution of the Milrem arson. Moscow paired this with coercive signalling, including the 1 Oct Kaliningrad 'all weapons' warning and Putin's 25 Sep denial of attack plans alongside claims about Baltic Russian speakers. European responses have so far been calibrated: scrambled jets, summoned envoys, arrests and public attribution, a 24 Sep Danish intelligence warning of possible limited strikes, Rutte's 30 Sep dismissal of nuclear threats, and Kallas's 5 Oct statement that Russia is endangering lives. Evidence on cyber and disinformation activity in this window remains thin.",
+            "sources": [
+              {
+                "label": "US News (Reuters) · Russia Puts Lives at Risk Across Europe With Hybrid Attacks, Kallas Says · 5 Oct 2026",
+                "url": "https://www.usnews.com/news/world/articles/2026-10-05/russia-puts-lives-at-risk-across-europe-with-hybrid-attacks-kallas-says"
+              },
+              {
+                "label": "Kyiv Independent · 5 Russian missiles and drones exploded on Moldova's territory, Sandu says · 3 Oct 2026",
+                "url": "https://kyivindependent.com/5-russian-missiles-and-drones-exploded-over-moldovas-airspace-sandu-says/"
+              },
+              {
+                "label": "ABC News (Australia) · Putin warns Russia will use 'all weapons' if Kaliningrad threatened · 2 Oct 2026",
+                "url": "https://www.abc.net.au/news/2026-10-02/putin-kaliningrad-threat-nuclear-weapons/107219366"
+              },
+              {
+                "label": "NBC News · Russia accused of sabotage by Estonia after arson at Ukraine supplier · 29 Sep 2026",
+                "url": "https://www.nbcnews.com/world/europe/russia-accused-sabotage-estonia-arson-ukraine-supplier-rcna600451"
+              },
+              {
+                "label": "Euromaidan Press · ISW connects drone crashes in Moldova and Romania, a Starlink fire in Poland, and a Berlin airport shutdown into one Russian pattern · 25 Sep 2026",
+                "url": "https://euromaidanpress.com/2026/09/25/isw-connects-drone-crashes-in-moldova-and-romania-a-starlink-fire-in-poland-and-a-berlin-airport-shutdown-into-one-russian-pattern/"
+              },
+              {
+                "label": "CNBC · Russia could attack a NATO country within months, Denmark warns · 25 Sep 2026",
+                "url": "https://www.cnbc.com/2026/09/25/russia-ukraine-war-nato-denmark-putin.html"
+              }
+            ]
+          }
+        },
+        {
+          "id": "vivaldi",
+          "enabled": true,
+          "kind": "operation",
+          "label": "Operation Vivaldi watch",
+          "title": "Operation Vivaldi watch (Lyman counteroffensive)",
+          "feedTitle": "Latest reporting on Operation Vivaldi",
+          "since": "2026-09-15",
+          "trigger": "3rd Army Corps commander Brig. Gen. Andrii Biletskyi reveals Operation Vivaldi counteroffensive north of Lyman, 15 Sep 2026",
+          "question": "Can Ukraine's Operation Vivaldi, the 3rd Army Corps counteroffensive north of Lyman, keep regaining ground and disrupt Russia's planned pincer on the Donbas fortress belt (Lyman–Sviatohirsk in the north, Dobropillia in the south, converging on Barvinkove), how is Russia responding with counterattacks, reserves and narrative, and what does it show about restoring manoeuvre under drone-saturated conditions?",
+          "feed": {
+            "query": "(\"Operation Vivaldi\" OR \"3rd Army Corps\" OR \"Third Army Corps\" OR Biletskyi OR Lyman OR Sviatohirsk OR Svyatohirsk) (Ukraine OR Ukrainian OR Russia OR Russian OR offensive OR counteroffensive)",
+            "terms": [
+              "vivaldi",
+              "lyman",
+              "3rd army corps",
+              "third army corps",
+              "biletskyi",
+              "biletsky",
+              "sviatohirsk",
+              "svyatohirsk"
+            ],
+            "require": [
+              [
+                "ukrain",
+                "russia",
+                "army",
+                "corps",
+                "offensive",
+                "liberat",
+                "front",
+                "isw",
+                "troops",
+                "forces",
+                "settlement",
+                "battle",
+                "fighting",
+                "assault",
+                "attack",
+                "advance",
+                "zelensky",
+                "military",
+                "kamikaze",
+                "drone",
+                "robot",
+                "season",
+                "phase"
+              ]
+            ],
+            "exclude": [
+              "concert",
+              "orchestra",
+              "festival",
+              "violin",
+              "symphony",
+              "four seasons hotel"
+            ]
+          },
+          "findings": [
+            {
+              "date": "2026-10-06",
+              "actor": "ISW",
+              "type": "counterattack",
+              "text": "ISW's 6 Oct assessment reported Russian forces kept attacking around Lyman (northwest, northeast, east, southwest and south) on 5-6 Oct without confirmed advances. Citing a Russian Western Grouping of Forces source, ISW said Russian troops were struggling to repel Ukrainian counterattacks southeast of Borova near Kolodyazi, Myrne, Ivanivka and Novolyubivka, a knock-on effect of Vivaldi. The same source spoke of at least 8,000 desertions in the grouping's Kupyansk-to-Lyman area.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-6-2026"
+            },
+            {
+              "date": "2026-10-05",
+              "actor": "Denis Pushilin (Russian-installed DNR head), as reported by ISW",
+              "type": "official statement",
+              "text": "On 5 Oct, ISW reported that Pushilin said Slovyansk and Kramatorsk would very likely be the last territory Russia takes in Donetsk Oblast. ISW read this as an implicit admission that Vivaldi had curtailed the northern thrust against the Fortress Belt. ISW also found that Russian forces made no gains in the Lyman direction on 4-5 Oct and that Pushilin's claims of fighting inside Druzhkivka were exaggerated.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-5-2026"
+            },
+            {
+              "date": "2026-10-04",
+              "actor": "Kostyantyn Mashovets (Ukrainian military observer), via ISW",
+              "type": "territorial change",
+              "text": "ISW cited Mashovets on 4 Oct: Ukrainian forces had advanced into Zarichne and Myrne northeast of Lyman, reached the west bank of the Zherebets River between Yampolivka and Zarichne, and forced Russian troops out of the Dibrova area southeast of Lyman. Mashovets said Russian TDF and mobilisation-reserve battalions and regiments were active in the Borova and Lyman directions. ISW assessed that the Russian 3rd CAA would likely have to pull forces off its Mykolaivka push to guard its northern flank. No geolocated confirmation was cited.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-4-2026",
+              "unverified": true
+            },
+            {
+              "date": "2026-10-03",
+              "actor": "President Volodymyr Zelensky",
+              "type": "official statement",
+              "text": "On 3 Oct, Zelensky said Operation Vivaldi had been planned about a year earlier but was postponed for lack of preparation, and that the delay meant 'good results and fewer losses.' According to Liga's report, he put the liberated area at about 125-140 km². He also cited Ukrainian ground robots operating behind enemy lines.",
+              "url": "https://news.liga.net/en/war/news/operatsiyu-vivaldi-hoteli-nachat-eshte-god-nazad-zelenskii"
+            },
+            {
+              "date": "2026-10-01",
+              "actor": "ISW",
+              "type": "third-party assessment",
+              "text": "ISW's 1 Oct assessment said the elimination of the Russian salient near Lyman had disrupted Moscow's planned wide encirclement of the Fortress Belt from the Lyman and Dobropillya directions. It said this would likely complicate Russian attacks on Slovyansk from the east. A Kremlin-affiliated milblogger said on 30 Sep that the situation was worsening toward Slovyansk, with Ukrainian forces trying river crossings and counterattacking to block Russian access to Mykolaivka.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-1-2026"
+            },
+            {
+              "date": "2026-09-30",
+              "actor": "President Volodymyr Zelensky",
+              "type": "official statement",
+              "text": "After meeting Biletskyi at a 3rd Army Corps command post on 30 Sep, Zelensky announced plans for a fourth phase ('season') of Vivaldi. He said the operation had disrupted Russia's plan to break into the rear of the Sloviansk-Kramatorsk agglomeration. He cited 176 km² retaken, more than 5,000 Russian casualties and 250 prisoners, and named wider use of unmanned ground vehicles in place of soldiers as a priority.",
+              "url": "https://www.kyivpost.com/post/85781"
+            },
+            {
+              "date": "2026-09-29",
+              "actor": "3rd Army Corps (via Defense Express), reported by UNN",
+              "type": "tactic or capability",
+              "text": "On 29 Sep, the 3rd Army Corps said it had converted Soviet BTR-60 APCs into remote-controlled, uncrewed kamikaze vehicles. It said they were used to deliver explosives against Russia's strongest fortifications during the assaults on Nove, Ridkodub and Katerynivka. ISW's 28 Sep report described the vehicles as BTR-80s turned into VBIEDs, so the vehicle model is inconsistent between sources.",
+              "url": "https://unn.ua/en/news/the-armed-forces-of-ukraine-have-turned-soviet-btr-60s-into-kamikaze-robots-to-breach-russian-defenses"
+            },
+            {
+              "date": "2026-09-28",
+              "actor": "3rd Army Corps (Brig. Gen. Andrii Biletskyi)",
+              "type": "official claim",
+              "text": "On 28 Sep, Biletskyi announced Vivaldi's 'third season.' He said his forces had liberated Ridkodub, Nove and Katerynivka, restored full control of Karpivka and Novomykhailivka, and taken 51 km², for a claimed total of 176 km². He also claimed more than 2,000 Russian losses and over 250 prisoners. He credited a deception on the Shandryholove-Zelena Dolyna axis that drew Russian reserves away from the main blow at Nove. ISW (28 Sep) repeated the figures as Ukrainian claims and cited no geolocated confirmation.",
+              "url": "https://kyivindependent.com/ukraines-operation-vivaldi-liberates-3-more-settlements-inflicts-2-000-russian-losses-3rd-army-corps-announces/"
+            },
+            {
+              "date": "2026-09-23",
+              "actor": "Russian MoD (as reported by Euromaidan Press citing ISW)",
+              "type": "official claim",
+              "text": "On 22 Sep, during the UN General Assembly, the Russian Defence Ministry claimed it had encircled Dobropillia, the southern jaw of the planned pincer on the Fortress Belt. ISW found no evidence of an encirclement. Euromaidan Press reported this alongside the assessment that Vivaldi had broken the northern arm of the pincer, which ran from north of Lyman via Sviatohirsk toward Barvinkove.",
+              "url": "https://euromaidanpress.com/2026/09/23/russia-dobropillia-encirclement-claim-un-isw/"
+            },
+            {
+              "date": "2026-09-20",
+              "actor": "3rd Army Corps (Biletskyi); analyst Clément Molin",
+              "type": "official claim",
+              "text": "On 20 Sep, Biletskyi said phase two had liberated Shandryholove, Derylove and Drobysheve northwest of Lyman. He claimed about 50 km² (125 km² across two phases) and 800 Russian personnel losses, with a third phase underway. The corps said drones and UGVs led assault groups, and that heavy bomber drones dropped kamikaze ground robots more than 10 km behind Russian lines. French analyst Clément Molin called it 'one of the most important victories for Ukraine in 2026', which would delay the offensive on northern Donbas.",
+              "url": "https://euromaidanpress.com/2026/09/20/ukraine-retakes-three-settlements-in-northern-donetsk-vivaldi/"
+            },
+            {
+              "date": "2026-09-15",
+              "actor": "3rd Army Corps, as reported by ISW",
+              "type": "tactic or capability",
+              "text": "ISW's 15 Sep assessment reported Biletskyi's claim that the corps had shaped Vivaldi with intermediate-range strikes at two depths, about 50 km and 120 km behind the front, aimed at Russian fuel supply. The claimed results were a fuel pipeline into occupied Luhansk Oblast shut down and support elements of Russia's 144th Motorized Rifle Division forced to relocate to Voronezh Oblast. ISW assessed that Vivaldi had made the northern arm of the Fortress Belt encirclement unfeasible.",
+              "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-september-15-2026"
+            },
+            {
+              "date": "2026-09-15",
+              "actor": "3rd Army Corps (Biletskyi); Kyiv Independent",
+              "type": "territorial change",
+              "text": "On 15 Sep, Biletskyi publicly confirmed Operation Vivaldi for the first time. He claimed 85 km² cleared or liberated in phase one, including the liberation of Serednie and the clearing of Novoselivka, Oleksandrivka, Yarova and the outskirts of Korovyi Yar, and said 'Vivaldi has four seasons... this is only the first.' The Kyiv Independent noted that Russian milbloggers had been tracking the attacks since late spring and that Putin had falsely claimed Sviatohirsk on 1 Sep. It cited Clément Molin's estimate of 'likely more than 200 square kilometers' liberated.",
+              "url": "https://kyivindependent.com/analysis-through-the-fog-of-war-ukraine-goes-on-operation-vivaldi-counterattack-near-lyman/"
+            }
+          ],
+          "assessment": {
+            "date": "2026-10-07",
+            "text": "Vivaldi has regained ground in steps. The 3rd Army Corps claimed 85 km² on 15 Sep, then 125 km² on 20 Sep and 176 km² on 28 Sep, and ISW repeated those figures as claims. By 4 Oct, Mashovets reported advances into Zarichne and Myrne. ISW judged on 15 Sep and 1 Oct that removing the Lyman salient made Russia's wide pincer on the Fortress Belt, running via Sviatohirsk and Dobropillia, unfeasible. By 5 Oct even Pushilin implied that Slovyansk and Kramatorsk were Russia's final objectives. Russia has kept attacking around Lyman without confirmed gains (6 Oct), committed reserve and TDF battalions, and countered with narrative: Putin's false Sviatohirsk claim and the MoD's unsupported Dobropillia encirclement claim (22 Sep). The operation shows that limited mechanised manoeuvre came back once Ukraine first won tactical drone overmatch, which ISW noted on 20 and 28 Sep. It rested on strikes on fuel, deception and uncrewed vehicles. Whether phase four can hold that tempo against Russian reserves is still unclear.",
+            "sources": [
+              {
+                "label": "ISW/CTP · Russian Offensive Campaign Assessment · 6 Oct 2026",
+                "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-6-2026"
+              },
+              {
+                "label": "ISW/CTP · Russian Offensive Campaign Assessment · 5 Oct 2026",
+                "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-5-2026"
+              },
+              {
+                "label": "ISW/CTP · Russian Offensive Campaign Assessment · 4 Oct 2026",
+                "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-4-2026"
+              },
+              {
+                "label": "ISW/CTP · Russian Offensive Campaign Assessment · 1 Oct 2026",
+                "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-october-1-2026"
+              },
+              {
+                "label": "ISW/CTP · Russian Offensive Campaign Assessment · 28 Sep 2026",
+                "url": "https://www.criticalthreats.org/analysis/russian-offensive-campaign-assessment-september-28-2026"
+              },
+              {
+                "label": "Euromaidan Press · Russia fabricates Dobropillia encirclement to strengthen its case for Kyiv's capitulation at UN – ISW · 23 Sep 2026",
+                "url": "https://euromaidanpress.com/2026/09/23/russia-dobropillia-encirclement-claim-un-isw/"
+              }
+            ]
+          }
         }
-      }
+      ]
     },
     {
       "id": "IL_GZ",
@@ -3320,183 +3520,7 @@
             "text": "track resilience measures, cyber/information disruption and civil-defence readiness."
           }
         }
-      ],
-      "infoOps": {
-        "enabled": true,
-        "since": "2026-09-23",
-        "trigger": "Trump–Xi summit, Washington, 23–24 Sep 2026",
-        "question": "Is Beijing, or Washington, using information operations or strategic communications to pressure Taiwan in the wake of the Trump–Xi summit; through which channels; and how is Taipei responding?",
-        "feed": {
-          "query": "(Taiwan OR Taipei) (\"cognitive warfare\" OR disinformation OR \"information operations\" OR \"information warfare\" OR propaganda OR \"united front\" OR \"Taiwan Affairs Office\" OR \"state media\" OR \"Global Times\" OR Xinhua OR \"influence operation\" OR \"fact check\" OR narrative OR \"psychological warfare\" OR \"strategic communication\" OR \"oppose Taiwan independence\")",
-          "terms": [
-            "taiwan",
-            "taipei"
-          ],
-          "require": [
-            [
-              "taiwan",
-              "taipei"
-            ],
-            [
-              "disinformation",
-              "cognitive",
-              "information operation",
-              "information warfare",
-              "propaganda",
-              "narrative",
-              "united front",
-              "taiwan affairs office",
-              "state media",
-              "global times",
-              "xinhua",
-              "cgtn",
-              "psychological",
-              "influence",
-              "fact check",
-              "fact-check",
-              "fake",
-              "rumor",
-              "rumour",
-              "deepfake",
-              "bot network",
-              "troll",
-              "messaging",
-              "strategic communication",
-              "independence",
-              "reunification",
-              "spokesperson",
-              "foreign ministry",
-              "readout",
-              "warns",
-              "urges",
-              "opposes"
-            ]
-          ],
-          "exclude": [
-            "stock",
-            "shares",
-            "chip export",
-            "earnings"
-          ]
-        },
-        "findings": [
-          {
-            "date": "2026-10-01",
-            "actor": "Taiwan Mainland Affairs Council (deputy minister Liang Wen-chieh)",
-            "type": "counter-messaging",
-            "text": "On 1 Oct 2026 Liang accused the Taiwan Affairs Office of 'answering B when asked A' on wartime history and said Beijing seeks not to inherit but to 'seize' the Republic of China's WWII record, citing the Flying Tigers and the Hump airlift and noting the CCP once branded Claire Chennault a 'flying bandit'. It extends the MAC's post-summit line that the ROC, not the PRC, was America's ally.",
-            "url": "https://www.ettoday.net/news/20261001/3247302.htm"
-          },
-          {
-            "date": "2026-10-01",
-            "actor": "The Diplomat (analysis)",
-            "type": "third-party assessment",
-            "text": "A Diplomat essay published on 1 Oct 2026 argued that Taipei 'can't fight Beijing's history war while erasing its own ROC legacy': the MAC insists the ROC was America's 'true ally', while the government drops ROC references from its own diplomatic correspondence, leaving Beijing's successor-state claim less contested. The article could not be fetched and rests on its search-verified text (single source).",
-            "url": "https://thediplomat.com/2026/10/taiwan-cant-fight-beijings-history-war-while-erasing-its-own-roc-legacy/",
-            "unverified": true
-          },
-          {
-            "date": "2026-10-01",
-            "actor": "US officials (anonymous, via Reuters)",
-            "type": "third-party assessment",
-            "text": "Reuters reported on 1 Oct 2026 that US officials now judge a Chinese invasion of Taiwan before 2028 'increasingly unlikely', citing the PLA purge, which has left two active Central Military Commission members, and Beijing's hope that Taiwan's 2028 election brings a friendlier government; one official said a DPP win would make 2028 'pretty sporty'. The leak reframes the 2027 deadline and gives Beijing's narrative of peaceful patience and the KMT's election argument new material.",
-            "url": "https://www.manilatimes.net/2026/10/02/world/asia-oceania/china-invasion-of-taiwan-unlikely-in-2027/2437249"
-          },
-          {
-            "date": "2026-09-30",
-            "actor": "State Council Taiwan Affairs Office (Zhang Han)",
-            "type": "official statement",
-            "text": "At the 30 Sep 2026 briefing Zhang Han said firmly opposing 'Taiwan independence' and safeguarding cross-strait peace 'serve the common interests of China and the US', quoting People's Daily that independence is a 'common enemy' of both, and called Lai's authorities 'the main source of disruption' in the strait. The TAO thus recast Xi's summit request as a shared US-China interest; no comment on Perdue's arms remark was found.",
-            "url": "https://english.news.cn/20260930/ba8e18a581da4ae79d3b58719b066539/c.html"
-          },
-          {
-            "date": "2026-09-30",
-            "actor": "Xi Jinping (National Day reception)",
-            "type": "official statement",
-            "text": "At the 30 Sep 2026 reception for the PRC's 77th anniversary Xi pledged to 'resolutely combat separatist forces advocating Taiwan independence, and oppose interference by external forces' while promoting 'peaceful development' and cross-strait exchanges. Coming six days after the White House summit, it put the 'external interference' line back beside the 'oppose independence' formula.",
-            "url": "https://www.usnews.com/news/world/articles/2026-09-30/chinas-xi-talks-economy-taiwan-at-reception-marking-national-day"
-          },
-          {
-            "date": "2026-09-29",
-            "actor": "China Coast Guard / Global Times",
-            "type": "coercive signalling",
-            "text": "On 29 Sep 2026 a task group led by CCGS Zhujiajian conducted 'routine law-enforcement patrols' east of Taiwan, with Global Times footage showing the Central Mountain Range from the ship. An analyst told the paper the patrol 'draws a line for the DPP, warning separatist forces that the CCG can take control measures if they cross red lines', tying it to Taiwan-Philippine cooperation.",
-            "url": "https://www.globalsecurity.org/wmd/library/news/taiwan/2026/taiwan-260929-globaltimes02.htm"
-          },
-          {
-            "date": "2026-09-29",
-            "actor": "Taiwan scholars (via Focus Taiwan)",
-            "type": "third-party assessment",
-            "text": "On 29 Sep 2026 NCCU and INPR scholars told CNA that Xi's summit claim that 'China and the United States fought side by side' was meant to show 'the Republic of China has completely disappeared and been replaced by the People's Republic of China', and warned repeated US use of the wording would make 'the erasure of the Republic of China ... very apparent'.",
-            "url": "https://focustaiwan.tw/politics/202609290011"
-          },
-          {
-            "date": "2026-09-29",
-            "actor": "Taiwan Ministry of National Defense (Minister Wellington Koo)",
-            "type": "counter-messaging",
-            "text": "On 29 Sep 2026 Koo said 'we haven't received any notice of any changes to sales or our cooperation' and that Taipei is in 'continuous discussions' with Washington, answering the Perdue disclosure without addressing the held US$14 billion package. AP noted the package remains stalled since the May summit.",
-            "url": "https://www.news4jax.com/news/world/2026/09/29/taiwan-says-us-arms-sales-to-island-are-unchanged-but-a-14b-package-remains-on-hold/"
-          },
-          {
-            "date": "2026-09-28",
-            "actor": "US Ambassador to China David Perdue (Fox News Sunday) / State Department",
-            "type": "official statement",
-            "text": "On 28 Sep 2026 Perdue said Trump 'continues to say, hey, we sell arms to other people around the world' and 'actually asked President Xi, would he like to buy some, at one point', while denying the US$14 billion Taiwan package was delayed to appease Xi and calling Trump 'as strong on Taiwan as I've ever seen anybody'. The State Department replied that 'US law prohibits arms sales to China and there is no offer or plan to sell arms to China', and a White House official said there are no plans to sell arms to China, leaving the summit's Taiwan exchange described by the envoy in terms Washington then had to walk back.",
-            "url": "https://fortune.com/2026/09/28/trump-xi-summit-taiwan-weapons-sale/"
-          },
-          {
-            "date": "2026-09-28",
-            "actor": "PRC Ministry of Foreign Affairs (via Global Times)",
-            "type": "official statement",
-            "text": "On 28 Sep 2026 the foreign ministry released a four-minute bilingual video titled 'The Way Home' that grounds Taiwan's status in the 1943 Cairo Declaration, the 1945 Potsdam Proclamation and UN Resolution 2758, opens with a patriotic song, casts Taiwan as a 'pearl' lost to Japanese invasion and restored at the surrender, and declares that 'any force obstructing China's reunification is doomed to fail' and 'that day will come'. Global Times framed reunification as 'an unstoppable historical trend', turning the summit's WWII framing into a produced legal-historical product for foreign audiences.",
-            "url": "https://www.globaltimes.cn/page/202609/1371494.shtml"
-          },
-          {
-            "date": "2026-09-28",
-            "actor": "Taiwan Mainland Affairs Council (Shen Yu-chung) and Representative to the US Yu Da-wei",
-            "type": "counter-messaging",
-            "text": "Reuters reported on 27-28 Sep 2026 that Shen Yu-chung said Xi is 'continuously trying to guide the World War Two historical narrative to be led by the People's Republic of China' and that Taipei will keep conveying to Washington that 'the Republic of China was America's steadfast ally'. Taiwan's representative in Washington Yu Da-wei used archival photographs on CBS to correct the summit's history and said he hoped the US$14 billion package 'can arrive as soon as possible' (single source on the CBS appearance).",
-            "url": "https://www.usnews.com/news/world/articles/2026-09-27/taiwan-pushes-back-after-xi-seeks-to-win-over-trump-on-world-war-two-narrative"
-          },
-          {
-            "date": "2026-09-28",
-            "actor": "KMT (legislator Lee Yen-hsiu) and DPP government (Foreign Minister Lin Chia-lung)",
-            "type": "domestic narrative",
-            "text": "On 28 Sep 2026 KMT legislator Lee Yen-hsiu said the summit had made the 'anti-China card' that Washington and Taipei could jointly play 'ineffective', describing a 'G2' framework in which Trump deals transactionally under 'America First', and urged the DPP to seek concrete gains on chip tariffs, arms-sale approvals and diplomatic space instead. Foreign Minister Lin Chia-lung replied that Taiwan and the US should manage China together rather than accept 'US-China joint management of Taiwan', keeping the opposition's 'G2' reading and the government's 'true partner' line in contest before the November elections.",
-            "url": "https://www.taipeitimes.com/News/taiwan/archives/2026/09/28/2003865010"
-          }
-        ],
-        "assessment": {
-          "date": "2026-10-02",
-          "text": "Over 25 Sep to 2 Oct 2026 Beijing pressed Taiwan mainly through official messaging rather than force. The foreign ministry's 28 Sep video 'The Way Home' set out a legal-historical claim, the Taiwan Affairs Office said on 30 Sep that opposing 'Taiwan independence' serves 'common interests of China and the US', and Xi's National Day speech the same day added 'oppose interference by external forces'; the 29 Sep coast guard patrol east of Taiwan was framed by Global Times as a warning to the DPP. Washington's signals were inconsistent rather than coordinated: Perdue's 28 Sep arms remark, Trump's denial and a 1 Oct Reuters leak that invasion before 2028 is 'increasingly unlikely'. Taipei responded on history and supply: the MAC on 1 Oct accused Beijing of trying to 'seize' the ROC's wartime record, Koo said on 29 Sep no change in US sales had been notified, and The Diplomat argued on 1 Oct that Taipei undercuts itself by dropping ROC references (single source). No covert operation was documented this week.",
-          "sources": [
-            {
-              "label": "ETtoday · MAC criticises TAO 'question A, answer B' on WWII history · 1 Oct 2026",
-              "url": "https://www.ettoday.net/news/20261001/3247302.htm"
-            },
-            {
-              "label": "Reuters via Manila Times · 'China invasion of Taiwan unlikely in 2027' · 2 Oct 2026",
-              "url": "https://www.manilatimes.net/2026/10/02/world/asia-oceania/china-invasion-of-taiwan-unlikely-in-2027/2437249"
-            },
-            {
-              "label": "Xinhua · Firm opposition to 'Taiwan independence' serves common interests of China, U.S. · 30 Sep 2026",
-              "url": "https://english.news.cn/20260930/ba8e18a581da4ae79d3b58719b066539/c.html"
-            },
-            {
-              "label": "Reuters via US News · China's Xi talks economy, Taiwan at reception marking National Day · 30 Sep 2026",
-              "url": "https://www.usnews.com/news/world/articles/2026-09-30/chinas-xi-talks-economy-taiwan-at-reception-marking-national-day"
-            },
-            {
-              "label": "AP via News4Jax · Taiwan says US arms sales unchanged, but $14B package remains on hold · 29 Sep 2026",
-              "url": "https://www.news4jax.com/news/world/2026/09/29/taiwan-says-us-arms-sales-to-island-are-unchanged-but-a-14b-package-remains-on-hold/"
-            },
-            {
-              "label": "Global Times · Chinese FM releases bilingual video on Taiwan's status · 28 Sep 2026",
-              "url": "https://www.globaltimes.cn/page/202609/1371494.shtml"
-            }
-          ]
-        }
-      }
+      ]
     },
     {
       "id": "CN_JP",

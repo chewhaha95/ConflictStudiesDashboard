@@ -86,23 +86,30 @@ same way.
      does not repeat `status` or `timeline`. Sources are the articles the
      paragraphs rest on, newest first; mark single-source claims
      "(single source)";
-   - **information-ops watch** (items with `infoOps.enabled`, see
-     `definitions.infoOps`): research the item's `infoOps.question` for the
-     window (official statements, state-media narratives, documented
-     influence or disinformation activity, coercive signalling used as
-     messaging, the targeted side's counter-messaging, fact-checks and
-     third-party assessments; for a shadow-war watch, `kind: "shadow-war"`,
-     also hybrid attacks such as sabotage, arson, cable or pipeline damage,
-     cyber attacks, GPS jamming and drone or airspace incursions, and the
-     targeted side's defensive responses). Append dated `findings`
+   - **watches** (each enabled entry of an item's `watches`, see
+     `definitions.watches`): research the watch's `question` for the window.
+     For an info-ops watch (`kind: "info-ops"`): official statements,
+     state-media narratives, documented influence or disinformation activity,
+     coercive signalling used as messaging, the targeted side's
+     counter-messaging, fact-checks and third-party assessments. For a
+     shadow-war watch (`kind: "shadow-war"`): also hybrid attacks such as
+     sabotage, arson, cable or pipeline damage, cyber attacks, GPS jamming and
+     drone or airspace incursions, and the targeted side's defensive
+     responses. For an operation watch (`kind: "operation"`): ground gains and
+     losses (say who claims them and whether geolocated footage or ISW
+     confirms them), the command's claims of losses and prisoners, the
+     enemy's counterattacks and reinforcements, tactics and capabilities used,
+     leaders' statements and analysts' assessments. Append dated `findings`
      `{date, actor, type, text, url, unverified?}` with `type` from
-     `definitions.infoOps.types`, newest first; keep entries from the last
-     14 days, at most 12; do not rewrite earlier entries without cause.
-     Rewrite `infoOps.assessment` `{date, text, sources}`: one paragraph of
-     120–180 words answering the question with dated evidence, 3–6 sources
-     newest first, no recommendations. Never change `enabled`, `kind`,
-     `label`, `title`, `feedTitle`, `since`, `trigger`, `question` or
-     `feed`; the team sets them;
+     `definitions.watches.types`, newest first; keep entries from the last
+     14 days, at most 12 (at least 5); do not rewrite earlier entries without
+     cause. Rewrite the watch's `assessment` `{date, text, sources}`: one
+     paragraph of 120–180 words answering the question with dated evidence,
+     3–6 sources newest first, no recommendations. Never change a watch's
+     `id`, `enabled`, `kind`, `label`, `title`, `feedTitle`, `since`,
+     `trigger`, `question` or `feed` (feed-noise additions to
+     `feed.exclude` aside), and never add or remove watches; the team sets
+     them;
    - append today's snapshot to `snapshots`:
      `{date: <today>, state, phase, escalation, tempo, adaptation, sgExposure}`
      with the values just set (one snapshot per review date; replace the
@@ -130,7 +137,7 @@ same way.
    - adjust `feed.query` / `feed.terms` / `feed.require` / `feed.exclude`
      (see `definitions.feed`) only if the item's vocabulary
      changed (new place names, operations, actors);
-   - **feed noise check**: read the item's `articles` in `watchlist-live.json`
+   - **feed noise check**: read the item's `articles` (and each watch's `watches.<id>.articles`) in `watchlist-live.json`
      (the live feed, committed daily at 05:07 SGT). For any headline that is not
      reporting on the conflict's security, military, diplomatic or
      humanitarian dimension (sport, entertainment, livestream pages,
