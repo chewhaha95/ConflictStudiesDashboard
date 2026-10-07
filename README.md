@@ -78,28 +78,37 @@ The watchlist is fully automated:
   changes, indicators, ignore verdicts, history, sources), runs
   `npm test` and pushes to `main`. Pages deploys on push.
 
-### Information ops & strategic communications watch
+### Watches
 
-An item can carry `infoOps` (see `definitions.infoOps`): switched on when a
-trigger event makes messaging and influence activity worth tracking on its
-own (currently the Taiwan Strait after the 23–24 Sep 2026 Trump–Xi summit,
-and Russia's shadow war on Europe under Russia–Ukraine).
-The register row shows an **Info-ops watch** badge; the expanded row shows a
-card with the question, dated and typed findings (official statement,
-state-media narrative, covert information operation, coercive signalling,
-counter-messaging, debunked claim, third-party assessment…), an assessment
-with sources, and a live sub-feed of messaging and influence reporting from
-a narrower daily query. The daily review keeps the findings and assessment
-current; the team sets the trigger, question and query.
+An item can carry a list of `watches` (see `definitions.watches`), each
+switched on when a trigger event makes one thread worth tracking on its own.
+Each watch has an `id`, a `kind`, a trigger, a question, a narrower daily
+query, dated and typed findings and an assessment with sources. The register
+row shows one badge per watch; the expanded row shows one card per watch with
+the question, findings, assessment and a live sub-feed (live
+`watches[<id>].articles`, screened with the kind's own prompt). The weekly
+review keeps the findings and assessment current; the team sets the trigger,
+question and query. Optional `label`, `title` and `feedTitle` override the
+kind's defaults for the badge, card heading and sub-feed heading.
 
-The same block can track a wider **shadow war** (`kind: "shadow-war"`), as on
-Russia–Ukraine for Russia's campaign against Europe: sabotage and arson,
-cable and pipeline damage, cyber attacks, GPS jamming, drone and airspace
-incursions, espionage and influence operations, and the European and NATO
-response. Optional `label`, `title` and `feedTitle` name the badge, card and
-live sub-feed; the sub-feed is screened for hybrid activity rather than
-messaging only, and findings may use the `hybrid attack` and
-`defensive response` types.
+Three kinds:
+
+- **Info-ops** (`kind: "info-ops"`): official messaging, state-media
+  narratives and documented influence campaigns (types such as official
+  statement, state-media narrative, covert information operation,
+  counter-messaging, debunked claim).
+- **Shadow war** (`kind: "shadow-war"`): sabotage and arson, cable and
+  pipeline damage, cyber attacks, GPS jamming, drone and airspace incursions,
+  espionage and influence operations, and the targeted side's response
+  (`hybrid attack`, `defensive response`).
+- **Operation** (`kind: "operation"`): one named military operation, its
+  claimed and confirmed gains, the enemy's response and the tactics it shows
+  (`territorial change`, `official claim`, `counterattack`,
+  `tactic or capability`).
+
+Current watches: Russia–Ukraine carries the Russia–Europe shadow-war watch
+and the Operation Vivaldi watch (the 3rd Army Corps counteroffensive north of
+Lyman). The Taiwan Strait info-ops watch was retired on 7 Oct 2026.
 
 ### Topics of interest
 
@@ -139,7 +148,7 @@ the weekly brief shown on the Weekly tab.
 | Part of the dashboard | Source | Refresh |
 |---|---|---|
 | Watchlist: coverage sparklines, counts, surge flags, "Newest reporting", latest headlines | `watchlist-live.json` (GDELT + Google News, model relevance screen) | Daily at 05:07 SGT (21:07 UTC; Cloudflare Worker cron → feed workflow). Hourly refresh switched off to save usage; run the workflow by hand for an ad-hoc refresh |
-| Watchlist: state, dimensions, status summary, changes, indicators, timeline, topic assessment, info-ops watch | `watchlist.json` (daily automated open-source review) | Daily, 05:30 SGT, published by about 06:00; the review is dated in Singapore time |
+| Watchlist: state, dimensions, status summary, changes, indicators, timeline, topic assessment, watches (shadow war, Operation Vivaldi) | `watchlist.json` (daily automated open-source review) | Daily, 05:30 SGT, published by about 06:00; the review is dated in Singapore time |
 | Weekly tab and Capabilities tab (brief-evidenced mode) | `weekly-live.json`, synced from the weekly brief site | Daily `sync-weekly.yml` schedule (22:00 UTC), unchanged; outside the scope of the Watchlist automation |
 | Monthly tab | `sample-data.json` (seed weekly reports rolled up) | Only when the seed file is updated in the repository; not synced automatically |
 | Theme | Dark by default; the 🌙/☀️ choice is remembered per browser | — |

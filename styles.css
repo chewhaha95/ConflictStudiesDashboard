@@ -974,6 +974,10 @@ ul.wf-list li { margin-bottom: 8px; font-size: 13px; line-height: 1.5; }
 .wl-io-type-covert-information-operation { color: var(--tone-bad-fg); background: var(--tone-bad-bg); }
 .wl-io-type-coercive-signalling, .wl-io-type-sanctions-lawfare { color: var(--tone-bad-fg); background: var(--tone-bad-bg); }
 .wl-io-type-counter-messaging, .wl-io-type-debunked-claim { color: var(--tone-good-fg, var(--tone-neutral-fg)); background: var(--tone-good-bg, var(--tone-neutral-bg)); }
+.wl-io-type-territorial-change { color: var(--tone-good-fg, var(--tone-neutral-fg)); background: var(--tone-good-bg, var(--tone-neutral-bg)); }
+.wl-io-type-official-claim { color: var(--tone-warn-fg); background: var(--tone-warn-bg); }
+.wl-io-type-counterattack, .wl-io-type-hybrid-attack { color: var(--tone-bad-fg); background: var(--tone-bad-bg); }
+.wl-io-type-tactic-or-capability, .wl-io-type-third-party-assessment { color: var(--tone-research-fg); background: var(--tone-research-bg); }
 @media (max-width: 900px) { .wl-io-grid { grid-template-columns: 1fr; } }
 .wl-status-news { font-size: 12.5px; line-height: 1.45; margin-bottom: 5px; padding: 5px 8px; border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--accent) 7%, transparent); border-radius: 0 6px 6px 0; }
 .wl-news-tag { font-size: 10.5px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }

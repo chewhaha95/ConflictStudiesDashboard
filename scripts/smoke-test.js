@@ -84,18 +84,17 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const words = a.text.join(" ").split(/\s+/).filter(Boolean).length;
     return words >= 120 && words <= 260 && Array.isArray(a.sources) && a.sources.length >= 3 && a.sources.length <= 5 && a.sources.every(x => x.label && /^https?:/.test(x.url)) && !/CSI Flash|weekly awareness|should publish/i.test(a.text.join(" "));
   }));
-  check("info-ops watch: Taiwan Strait carries an enabled infoOps block (since, trigger, question, feed, dated findings, assessment)", (() => {
-    const tw = wl.items.find(i => i.id === "TW"); const io = tw && tw.infoOps;
-    return !!io && io.enabled === true && /^\d{4}-\d{2}-\d{2}$/.test(io.since) && io.trigger && io.question && io.feed && io.feed.query && Array.isArray(io.feed.require) &&
-      Array.isArray(io.findings) && io.findings.length >= 5 && io.findings.every(f => /^\d{4}-\d{2}-\d{2}$/.test(f.date) && f.text && f.type && /^https?:/.test(f.url || "") && f.type in wl.definitions.infoOps.types) &&
-      io.assessment && io.assessment.text.length > 200 && /^\d{4}-\d{2}-\d{2}$/.test(io.assessment.date) && io.assessment.sources.length >= 3 && !/CSI Flash|should publish/i.test(io.assessment.text);
-  })());
-  check("shadow-war watch: Russia–Ukraine carries an enabled shadow-war block (kind, label, since, trigger, question, feed, typed findings, assessment)", (() => {
-    const ru = wl.items.find(i => i.id === "RU_UA"); const io = ru && ru.infoOps;
-    return !!io && io.enabled === true && io.kind === "shadow-war" && io.label && io.title && io.feedTitle && /^\d{4}-\d{2}-\d{2}$/.test(io.since) && io.trigger && io.question && io.feed && io.feed.query && Array.isArray(io.feed.require) &&
-      Array.isArray(io.findings) && io.findings.length >= 5 && io.findings.every(f => /^\d{4}-\d{2}-\d{2}$/.test(f.date) && f.text && f.type && /^https?:/.test(f.url || "") && f.type in wl.definitions.infoOps.types) &&
-      ["hybrid attack", "defensive response"].every(t => t in wl.definitions.infoOps.types) &&
-      io.assessment && io.assessment.text.length > 200 && /^\d{4}-\d{2}-\d{2}$/.test(io.assessment.date) && io.assessment.sources.length >= 3 && !/CSI Flash|should publish/i.test(io.assessment.text);
+  const watchOk = w => !!w && w.enabled === true && /^[a-z0-9-]+$/.test(w.id || "") && w.kind in wl.definitions.watches.kinds && /^\d{4}-\d{2}-\d{2}$/.test(w.since) && w.trigger && w.question && w.feed && w.feed.query && Array.isArray(w.feed.terms) && Array.isArray(w.feed.require) &&
+    Array.isArray(w.findings) && w.findings.length >= 5 && w.findings.length <= 12 && w.findings.every(f => /^\d{4}-\d{2}-\d{2}$/.test(f.date) && f.actor && f.text && /^https?:/.test(f.url || "") && f.type in wl.definitions.watches.types) &&
+    w.assessment && typeof w.assessment.text === "string" && w.assessment.text.length > 200 && /^\d{4}-\d{2}-\d{2}$/.test(w.assessment.date) && w.assessment.sources.length >= 3 && w.assessment.sources.every(x => x.label && /^https?:/.test(x.url)) && !/CSI Flash|should publish|\b(Priority|Archive)\b/i.test(w.assessment.text);
+  check("watches: every watch is well formed (id, known kind, since, trigger, question, feed, 5–12 typed findings, assessment) and ids are unique per item", wl.items.every(i => (i.watches || []).every(watchOk) && new Set((i.watches || []).map(w => w.id)).size === (i.watches || []).length));
+  check("watches: definitions carry the three watch kinds (label, title, feed title) and the finding types", ["info-ops", "shadow-war", "operation"].every(k => { const d = wl.definitions.watches.kinds[k]; return d && d.label && d.title && d.feedTitle; }) &&
+    ["hybrid attack", "defensive response", "territorial change", "official claim", "counterattack", "tactic or capability", "third-party assessment"].every(t => t in wl.definitions.watches.types) && !("infoOps" in wl.definitions));
+  check("watches: Russia–Ukraine carries the shadow-war watch and the Operation Vivaldi watch; Taiwan Strait carries none; no legacy infoOps blocks", (() => {
+    const ru = wl.items.find(i => i.id === "RU_UA"), tw = wl.items.find(i => i.id === "TW");
+    const sw = (ru.watches || []).find(w => w.id === "shadow-war"), vv = (ru.watches || []).find(w => w.id === "vivaldi");
+    return !!sw && sw.kind === "shadow-war" && sw.label && sw.title && sw.feedTitle && !!vv && vv.kind === "operation" && /Vivaldi/.test(vv.title) && /Vivaldi/.test(vv.label) && /Lyman/.test(vv.question) &&
+      !(tw.watches || []).length && wl.items.every(i => !("infoOps" in i));
   })());
   check("every item carries a current-status summary with 2+ article links", wl.items.every(i => i.status && i.status.summary.length > 80 && i.status.sources.length >= 2 && i.status.sources.every(s => /^https?:/.test(s.url))));
   check("watchlist meta carries review dates + cadence", !!(wl.meta && wl.meta.reviewDate && wl.meta.previousReviewDate && wl.meta.cadenceDays));
@@ -326,25 +325,22 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   })());
   check("page names the GitHub Pages data origin for mirrors (Cloudflare Pages / custom domain)", /<meta name="data-origin" content="https:\/\/chewhaha95\.github\.io\/ConflictStudiesDashboard\/"/.test(html));
   {
-    const tw = wl.items.find(i => i.id === "TW");
-    const row = reg.querySelector(`tr[data-wl-row="TW"]`);
-    check("info-ops watch: the Taiwan row carries the badge, and only rows with an enabled watch do", !!row.querySelector(".wl-io-badge") && reg.querySelectorAll(".wl-io-badge").length === wl.items.filter(i => i.infoOps && i.infoOps.enabled).length);
-    if (!doc.querySelector(`tr[data-wl-detail="TW"]`)) { reg.querySelector(`[data-wl-toggle="TW"]`).click(); await sleep(40); }
-    const detTW = doc.querySelector(`tr[data-wl-detail="TW"]`);
-    const card = detTW && detTW.querySelector(".wl-io");
-    check("info-ops watch: the expanded Taiwan row shows the watch card with the question, typed findings, assessment and read-more links", !!card &&
-      card.textContent.includes(tw.infoOps.question) && card.querySelectorAll(".wl-io-list li").length === tw.infoOps.findings.length && card.querySelectorAll(".wl-io-list .wl-io-type").length === tw.infoOps.findings.length &&
-      card.querySelector(".wl-as-p").textContent === tw.infoOps.assessment.text && card.querySelectorAll(".wl-src-list a[href^='http']").length === tw.infoOps.assessment.sources.length && /Latest messaging/.test(card.textContent));
-    reg.querySelector(`[data-wl-toggle="TW"]`).click(); await sleep(40);
+    const nWatches = wl.items.reduce((n, i) => n + (i.watches || []).filter(w => w.enabled).length, 0);
+    check("watches: one badge per enabled watch, none on the Taiwan row", reg.querySelectorAll(".wl-io-badge").length === nWatches && !reg.querySelector(`tr[data-wl-row="TW"] .wl-io-badge`));
     const ru = wl.items.find(i => i.id === "RU_UA");
     const ruRow = reg.querySelector(`tr[data-wl-row="RU_UA"]`);
-    check("shadow-war watch: the Russia–Ukraine row shows its own badge label", !!ruRow && !!ruRow.querySelector(".wl-io-badge") && ruRow.querySelector(".wl-io-badge").textContent.trim() === ru.infoOps.label);
+    check("watches: the Russia–Ukraine row shows both watch badges with their labels", !!ruRow && [...ruRow.querySelectorAll(".wl-io-badge")].map(b => b.textContent.trim()).join("|") === ru.watches.map(w => w.label).join("|"));
     if (!doc.querySelector(`tr[data-wl-detail="RU_UA"]`)) { reg.querySelector(`[data-wl-toggle="RU_UA"]`).click(); await sleep(40); }
-    const ruCard = doc.querySelector(`tr[data-wl-detail="RU_UA"] .wl-io`);
-    check("shadow-war watch: the expanded Russia–Ukraine row shows the shadow-war card (title, question, typed findings, assessment, feed heading)", !!ruCard &&
-      ruCard.textContent.includes(ru.infoOps.title) && ruCard.textContent.includes(ru.infoOps.question) && ruCard.textContent.includes(ru.infoOps.feedTitle) && !/Latest messaging/.test(ruCard.textContent) &&
-      ruCard.querySelectorAll(".wl-io-list li").length === ru.infoOps.findings.length && ruCard.querySelectorAll(".wl-io-list .wl-io-type").length === ru.infoOps.findings.length &&
-      ruCard.querySelector(".wl-as-p").textContent === ru.infoOps.assessment.text);
+    const ruCards = [...doc.querySelectorAll(`tr[data-wl-detail="RU_UA"] .wl-io`)];
+    check("watches: the expanded Russia–Ukraine row shows one card per watch (title, question, typed findings, assessment, feed heading)", ruCards.length === ru.watches.length && ru.watches.every((w, k) => {
+      const c = ruCards[k];
+      return c.dataset.wlWatch === w.id && c.textContent.includes(w.title) && c.textContent.includes(w.question) && c.textContent.includes(w.feedTitle) &&
+        c.querySelectorAll(".wl-io-list li").length === w.findings.length && c.querySelectorAll(".wl-io-list .wl-io-type").length === w.findings.length &&
+        c.querySelector(".wl-as-p").textContent === w.assessment.text && c.querySelectorAll(".wl-src-list a[href^='http']").length === w.assessment.sources.length;
+    }));
+    if (!doc.querySelector(`tr[data-wl-detail="TW"]`)) { reg.querySelector(`[data-wl-toggle="TW"]`).click(); await sleep(40); }
+    check("watches: the expanded Taiwan row has no watch card", !!doc.querySelector(`tr[data-wl-detail="TW"]`) && !doc.querySelector(`tr[data-wl-detail="TW"] .wl-io`));
+    reg.querySelector(`[data-wl-toggle="TW"]`).click(); await sleep(40);
     reg.querySelector(`[data-wl-toggle="RU_UA"]`).click(); await sleep(40);
   }
   check("detail: without a live feed the reporting block explains the daily sync", /Latest open-source reporting/.test(det.textContent) && /No live feed loaded/.test(det.textContent));
@@ -793,15 +789,18 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const prosey = Object.assign(async () => "Sure, here is the result:\n{\"keep\": [2]}\nHope this helps.", { label: "prosey" });
     const r5 = await feed.screenArticles(cnjp, cands, {}, prosey);
     check("feed screen: JSON wrapped in prose is still parsed", r5.screened && r5.kept.length === 1 && r5.kept[0].url === "u3");
-    const tw = wl.items.find(i => i.id === "TW"); const seen = [];
+    const seen = [];
     const ioJudge = Object.assign(async (system, user) => { seen.push({ system, user }); return JSON.stringify({ keep: [0] }); }, { label: "io" });
-    const r6 = await feed.screenArticles(tw, [{ title: "Beijing state media pushes 'abandonment' narrative on Taiwan after summit", url: "i1", domain: "x" }, { title: "Taiwan stocks rise", url: "i2", domain: "y" }], {}, ioJudge, { system: feed.INFOOPS_SYSTEM, prompt: feed.infoOpsPrompt });
-    check("info-ops screen: uses the info-ops system prompt and the item's question", r6.kept.length === 1 && /information-operations watch/.test(seen[0].system) && seen[0].user.includes(tw.infoOps.question) && /Trump/.test(seen[0].user));
-    check("info-ops feed filter: keeps messaging headlines and drops plain economic news", feed.titleMatch({ title: "China's Taiwan Affairs Office warns Taipei after Trump–Xi summit" }, tw.infoOps.feed) && !feed.titleMatch({ title: "Taiwan stocks rise on chip export hopes" }, tw.infoOps.feed));
-    const ruw = wl.items.find(i => i.id === "RU_UA"); seen.length = 0;
-    await feed.screenArticles(ruw, [{ title: "Poland scrambles jets after Russian drone incursion", url: "s1", domain: "x" }], {}, ioJudge, { system: feed.infoOpsSystem(ruw.infoOps), prompt: feed.infoOpsPrompt });
-    check("shadow-war screen: a shadow-war watch uses the shadow-war system prompt and the item's question; info-ops watches keep theirs", /shadow-war watch/.test(seen[0].system) && seen[0].user.includes(ruw.infoOps.question) && feed.infoOpsSystem(tw.infoOps) === feed.INFOOPS_SYSTEM);
-    check("shadow-war feed filter: keeps sabotage and incursion headlines and drops unrelated Russia news", feed.titleMatch({ title: "Poland scrambles jets after Russian drone incursion" }, ruw.infoOps.feed) && feed.titleMatch({ title: "Germany arrests suspects in Russian sabotage plot" }, ruw.infoOps.feed) && !feed.titleMatch({ title: "Russian ballet company opens European tour" }, ruw.infoOps.feed));
+    const ruw = wl.items.find(i => i.id === "RU_UA"); const sw = ruw.watches.find(w => w.id === "shadow-war"), vv = ruw.watches.find(w => w.id === "vivaldi");
+    check("watches feed: itemWatches lists the enabled watches with a feed; Taiwan has none", feed.itemWatches(ruw).map(w => w.id).join() === ruw.watches.map(w => w.id).join() && feed.itemWatches(wl.items.find(i => i.id === "TW")).length === 0);
+    check("watches feed: each kind gets its own screening prompt", feed.watchSystem(sw) === feed.SHADOWWAR_SYSTEM && feed.watchSystem(vv) === feed.OPERATION_SYSTEM && feed.watchSystem({ kind: "info-ops" }) === feed.INFOOPS_SYSTEM && feed.watchSystem({}) === feed.INFOOPS_SYSTEM);
+    const r6 = await feed.screenArticles(ruw, [{ title: "Poland scrambles jets after Russian drone incursion", url: "s1", domain: "x" }], {}, ioJudge, { system: feed.watchSystem(sw), prompt: (x, c) => feed.watchPrompt(x, sw, c) });
+    check("shadow-war screen: uses the shadow-war system prompt and that watch's question", r6.kept.length === 1 && /shadow-war watch/.test(seen[0].system) && seen[0].user.includes(sw.question) && /Shadow-war watch/.test(seen[0].user));
+    seen.length = 0;
+    await feed.screenArticles(ruw, [{ title: "Ukraine's 3rd Army Corps liberates village near Lyman", url: "v1", domain: "x" }], {}, ioJudge, { system: feed.watchSystem(vv), prompt: (x, c) => feed.watchPrompt(x, vv, c) });
+    check("operation screen: the Vivaldi watch uses the operation system prompt and its own question", /operation watch/.test(seen[0].system) && seen[0].user.includes(vv.question) && /Operation watch/.test(seen[0].user) && !seen[0].user.includes(sw.question));
+    check("shadow-war feed filter: keeps sabotage and incursion headlines and drops unrelated Russia news", feed.titleMatch({ title: "Poland scrambles jets after Russian drone incursion" }, sw.feed) && feed.titleMatch({ title: "Germany arrests suspects in Russian sabotage plot" }, sw.feed) && !feed.titleMatch({ title: "Russian ballet company opens European tour" }, sw.feed));
+    check("Vivaldi feed filter: keeps Operation Vivaldi and Lyman-sector headlines and drops other Ukraine news", feed.titleMatch({ title: "Operation Vivaldi: 3rd Army Corps liberates one settlement and clears four in Lyman sector" }, vv.feed) && feed.titleMatch({ title: "Ukrainian forces advance north of Lyman, ISW says" }, vv.feed) && !feed.titleMatch({ title: "Russian drones hit Kyiv power plant overnight" }, vv.feed) && !feed.titleMatch({ title: "Vivaldi Four Seasons concert opens Kyiv music festival" }, vv.feed));
     if (saved.A != null) process.env.ANTHROPIC_API_KEY = saved.A; if (saved.G != null) process.env.GITHUB_TOKEN = saved.G; else delete process.env.GITHUB_TOKEN; if (saved.F != null) process.env.FEED_SCREEN = saved.F; else delete process.env.FEED_SCREEN;
     check("register: definitions.feed.spamDomains lists article sources dropped outright", Array.isArray(wl.definitions.feed.spamDomains) && wl.definitions.feed.spamDomains.includes("czechinvest.gov.cz"));
   }
@@ -833,6 +832,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
         // the sync stores the most relevant recent articles in relevance order (an older one first, the newest second); the app shows the newest of them
         articles: [{ title: "OLDER-HEADLINE " + i.id, url: "https://example.org/old/" + i.id, domain: "example.org", country: "X", date: tl[tl.length - 4].date },
                    { title: "FEED-HEADLINE " + i.id, url: "https://example.org/feed/" + i.id, domain: "example.org", country: "X", date: tl[tl.length - 1].date }] };
+      if ((i.watches || []).length) items[i.id].watches = Object.fromEntries(i.watches.map(w => [w.id, { since: w.since, candidates: 1, articles: [{ title: "WATCH-HEADLINE " + w.id, url: "https://example.org/watch/" + w.id, domain: "example.org", date: tl[tl.length - 1].date }] }]));
     });
     return { __live: true, syncedAt: new Date().toISOString(), source: "GDELT stub", refreshed: wl.items.length, total: wl.items.length, items };
   })();
@@ -873,6 +873,12 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   check("feed: expanded row lists the latest open-source headlines with links", (() => {
     const det2 = d2.querySelector(`#view-watchlist tr[data-wl-detail="${liveProbe.id}"]`);
     return !!det2 && /Latest open-source reporting/.test(det2.textContent) && !!det2.querySelector(".wl-art-list a[href='https://example.org/feed/" + liveProbe.id + "']") && /FEED-HEADLINE/.test(det2.textContent) && det2.querySelector(".wl-art-list li a").textContent === "FEED-HEADLINE " + liveProbe.id;
+  })());
+  check("feed: each watch card lists its own live sub-feed headlines", await (async () => {
+    const ru = wl.items.find(i => i.id === "RU_UA");
+    if (!d2.querySelector(`#view-watchlist tr[data-wl-detail="RU_UA"]`)) { d2.querySelector(`#view-watchlist [data-wl-toggle="RU_UA"]`).click(); await sleep(40); }
+    const cards = [...d2.querySelectorAll(`#view-watchlist tr[data-wl-detail="RU_UA"] .wl-io`)];
+    return cards.length === ru.watches.length && ru.watches.every((w, k) => { const links = [...cards[k].querySelectorAll(".wl-art-list a")]; return links.length === 1 && links[0].textContent === "WATCH-HEADLINE " + w.id && /● LIVE/.test(cards[k].textContent); });
   })());
   check("feed: every status cell opens with the newest of the stored relevant headlines (not the first in relevance order); no 'Latest' line", (() => {
     return wl.items.every(i => { const cell = wv2.querySelector(`tr[data-wl-row="${i.id}"] td.wl-status`), n = cell && cell.firstElementChild; return !!n && n.classList.contains("wl-status-news") && !cell.querySelector(".wl-status-latest") && n.querySelector("a").textContent === "FEED-HEADLINE " + i.id && n.querySelector("a").href === "https://example.org/feed/" + i.id; });

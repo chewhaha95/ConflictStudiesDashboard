@@ -243,17 +243,24 @@ function screenPrompt(it, cands) {
   return `Conflict watchlist item: ${it.name}\nCurrent phase: ${(it.dims && it.dims.phase && it.dims.phase.now) || ""}\nStatus: ${(it.status && it.status.summary) || ""}\nTopics of interest:\n${topics}\n\nCandidate headlines (index. [source] title):\n${list}\n\nReturn the indices to KEEP.`;
 }
 const SCREEN_SYSTEM = "You screen news headlines for a military conflict-studies watchlist. Keep a headline only if it reports on the security, military, political-military, diplomatic or humanitarian dimension of the named conflict or theatre. Drop sport, entertainment, livestream and score pages, business or technology stories with no security angle, cultural or lifestyle pieces, homonyms (places or people with the same name elsewhere), and stories about a different conflict that merely mention a party. When unsure, drop it.";
-// Info-ops watch: a stricter screen for the item's information-operations /
-// strategic-communications sub-feed (register `infoOps`).
+// Watches (register `watches[]`): a stricter screen for each watch's narrower
+// sub-feed, chosen by the watch's `kind`.
+// Info-ops watch (kind "info-ops"): messaging and influence activity.
 const INFOOPS_SYSTEM = "You screen news headlines for a military conflict-studies watchlist's information-operations watch. Keep a headline only if it reports on information operations, disinformation, cognitive or psychological warfare, propaganda or state-media narratives, official strategic communications (government, foreign-ministry, military or party statements aimed at an audience), influence campaigns, censorship, lawfare narratives or sanctions used as messaging, in the named theatre. Drop ordinary military, economic, sport or entertainment news, and anything not about messaging or influence. When unsure, drop it.";
-// Shadow-war watch (infoOps.kind "shadow-war"): keeps hybrid attacks and
+// Shadow-war watch (kind "shadow-war"): keeps hybrid attacks and
 // incursions as well as influence operations.
 const SHADOWWAR_SYSTEM = "You screen news headlines for a military conflict-studies watchlist's shadow-war watch. Keep a headline only if it reports on hybrid or deniable hostile activity below the threshold of open war in the named theatre: sabotage, arson, undersea cable or pipeline damage, cyber attacks, GPS jamming, drone or aircraft airspace incursions, shadow-fleet activity, espionage, assassination plots, influence or disinformation operations, or the targeted governments' and alliance's responses (arrests, expulsions, sanctions, deployments, consultations). Drop ordinary battlefield news from the main war, economic, sport or entertainment news. When unsure, drop it.";
-function infoOpsSystem(io) { return io && io.kind === "shadow-war" ? SHADOWWAR_SYSTEM : INFOOPS_SYSTEM; }
-function infoOpsPrompt(it, cands) {
-  const io = it.infoOps || {};
+// Operation watch (kind "operation"): one named military operation.
+const OPERATION_SYSTEM = "You screen news headlines for a military conflict-studies watchlist's operation watch, which follows one named military operation. Keep a headline only if it reports on that operation or the fighting in its sector: ground gains or losses, settlements taken or lost, attacks and counterattacks, reinforcements, casualties and prisoners, tactics and weapons used there, commanders' or ministries' statements about it, and analysts' assessments of it. Drop news from other sectors of the war, strikes elsewhere, diplomacy, economic, sport or entertainment news. When unsure, drop it.";
+const WATCH_SYSTEMS = { "info-ops": INFOOPS_SYSTEM, "shadow-war": SHADOWWAR_SYSTEM, "operation": OPERATION_SYSTEM };
+const WATCH_NAMES = { "info-ops": "Information-operations watch", "shadow-war": "Shadow-war watch", "operation": "Operation watch" };
+function watchKind(w) { return (w && w.kind) || "info-ops"; }
+function watchSystem(w) { return WATCH_SYSTEMS[watchKind(w)] || INFOOPS_SYSTEM; }
+// Enabled watches with a feed query; each needs an `id` to key its live sub-feed.
+function itemWatches(it) { return (it.watches || []).filter(w => w && w.enabled && w.id && w.feed && w.feed.query); }
+function watchPrompt(it, w, cands) {
   const list = cands.map((a, i) => `${i}. [${a.domain || "?"}] ${a.title}`).join("\n");
-  return `Conflict watchlist item: ${it.name}\n${io.kind === "shadow-war" ? "Shadow-war watch" : "Information-operations watch"} since ${io.since || "?"} (${io.trigger || ""})\nQuestion: ${io.question || ""}\n\nCandidate headlines (index. [source] title):\n${list}\n\nReturn the indices to KEEP.`;
+  return `Conflict watchlist item: ${it.name}\n${WATCH_NAMES[watchKind(w)] || "Watch"}: ${w.title || ""} since ${w.since || "?"} (${w.trigger || ""})\nQuestion: ${w.question || ""}\n\nCandidate headlines (index. [source] title):\n${list}\n\nReturn the indices to KEEP.`;
 }
 async function screenArticles(it, cands, prevScreen, judge, opts) {
   const system = (opts && opts.system) || SCREEN_SYSTEM;
@@ -439,29 +446,28 @@ async function fetchItem(it, prevItem, judge, spamDomains) {
   const out = Object.assign({ query: q, granularity, timeline, articles, screen: sc.screen, screened: sc.screened, source: src.join("+"), fetchedAt: new Date().toISOString() },
     windows(timeline, granularity, capped));
 
-  // 4. Information-operations / strategic-communications or shadow-war watch
-  //    (register `infoOps`, e.g. Taiwan after the Trump–Xi summit, Russia's
-  //    shadow war on Europe): a second, narrower query, newest first, screened
-  //    with the info-ops or shadow-war prompt.
-  const io = it.infoOps;
-  if (io && io.enabled && io.feed && io.feed.query) {
-    const ioLists = [];
+  // 4. Watches (register `watches[]`, e.g. Russia's shadow war on Europe or a
+  //    named operation): a second, narrower query per watch, newest first,
+  //    screened with the watch kind's prompt; keyed by watch id in `out.watches`.
+  for (const w of itemWatches(it)) {
+    const wLists = [];
     if (!throttled) {
-      try { ioLists.push(parseArticles(await gdelt({ query: `${io.feed.query} sourcelang:english`, mode: "ArtList", format: "json", timespan: "3d", maxrecords: 250, sort: "DateDesc" }), io.feed)); }
+      try { wLists.push(parseArticles(await gdelt({ query: `${w.feed.query} sourcelang:english`, mode: "ArtList", format: "json", timespan: "3d", maxrecords: 250, sort: "DateDesc" }), w.feed)); }
       catch (e) { if (e instanceof Throttled) throttled = true; }
       await sleep(PACE_MS);
     }
-    try { ioLists.push((await rssSearch(rssQuery(io.feed.query), 3)).filter(a => titleMatch(a, io.feed))); } catch (e) { /* RSS unavailable */ }
-    const ioPool = days => mergeArticles(withinDays(mergeArticles(ioLists, 500), days), SCREEN_MAX).filter(notSpam);
-    let ioCands = ioPool(3);
-    if (ioCands.length < 6) { try { ioLists.push((await rssSearch(rssQuery(io.feed.query), 7)).filter(a => titleMatch(a, io.feed))); ioCands = ioPool(7); } catch (e) { /* keep */ } }
-    const ioSc = await screenArticles(it, ioCands, ((prevItem || {}).infoOps || {}).screen, judge, { system: infoOpsSystem(io), prompt: infoOpsPrompt });
-    out.infoOps = { since: io.since || null, candidates: ioCands.length, articles: ioSc.kept.slice(0, MAX_ARTICLES), screen: ioSc.screen, screened: ioSc.screened, fetchedAt: new Date().toISOString() };
+    try { wLists.push((await rssSearch(rssQuery(w.feed.query), 3)).filter(a => titleMatch(a, w.feed))); } catch (e) { /* RSS unavailable */ }
+    const wPool = days => mergeArticles(withinDays(mergeArticles(wLists, 500), days), SCREEN_MAX).filter(notSpam);
+    let wCands = wPool(3);
+    if (wCands.length < 6) { try { wLists.push((await rssSearch(rssQuery(w.feed.query), 7)).filter(a => titleMatch(a, w.feed))); wCands = wPool(7); } catch (e) { /* keep */ } }
+    const prevW = (((prevItem || {}).watches) || {})[w.id] || {};
+    const wSc = await screenArticles(it, wCands, prevW.screen, judge, { system: watchSystem(w), prompt: (x, c) => watchPrompt(x, w, c) });
+    (out.watches = out.watches || {})[w.id] = { since: w.since || null, candidates: wCands.length, articles: wSc.kept.slice(0, MAX_ARTICLES), screen: wSc.screen, screened: wSc.screened, fetchedAt: new Date().toISOString() };
   }
   return out;
 }
 
-module.exports = { titleMatch, mergeArticles, withinDays, rankArticles, relevanceScore, topicWords, MIL_TERMS, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, infoOpsPrompt, INFOOPS_SYSTEM, SHADOWWAR_SYSTEM, infoOpsSystem, screenJudge, titleKey, EXCLUDE };
+module.exports = { titleMatch, mergeArticles, withinDays, rankArticles, relevanceScore, topicWords, MIL_TERMS, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, watchPrompt, INFOOPS_SYSTEM, SHADOWWAR_SYSTEM, OPERATION_SYSTEM, watchSystem, itemWatches, screenJudge, titleKey, EXCLUDE };
 if (require.main !== module) return;
 
 (async () => {
@@ -483,7 +489,7 @@ if (require.main !== module) return;
     try {
       out[it.id] = await fetchItem(it, prev[it.id], judge, spamDomains);
       ok++;
-      console.log(`✓ ${it.id.padEnd(9)} [${out[it.id].granularity}, ${out[it.id].source}] 7d=${out[it.id].count7d}${out[it.id].capped ? "+" : ""} prev7d=${out[it.id].prev7d}${out[it.id].surge ? " SURGE" : ""} articles=${out[it.id].articles.length}${out[it.id].screened === false ? " (unscreened)" : ""}${out[it.id].infoOps ? ` infoOps=${out[it.id].infoOps.articles.length}/${out[it.id].infoOps.candidates}` : ""}`);
+      console.log(`✓ ${it.id.padEnd(9)} [${out[it.id].granularity}, ${out[it.id].source}] 7d=${out[it.id].count7d}${out[it.id].capped ? "+" : ""} prev7d=${out[it.id].prev7d}${out[it.id].surge ? " SURGE" : ""} articles=${out[it.id].articles.length}${out[it.id].screened === false ? " (unscreened)" : ""}${Object.entries(out[it.id].watches || {}).map(([k, v]) => ` ${k}=${v.articles.length}/${v.candidates}`).join("")}`);
     } catch (e) {
       console.error(`✗ ${it.id}: ${e.message}${prev[it.id] ? " (keeping previous data)" : ""}`);
     }
