@@ -2208,38 +2208,44 @@
     // ---- Watches ----------------------------------------------------------
     // Register `watches[]`: each {id, kind, enabled, label, title, feedTitle,
     // since, trigger, question, feed, findings[], assessment}, switched on for an
-    // item when a trigger event makes one thread worth tracking on its own: an
-    // information-ops watch (kind "info-ops"), a shadow war of sabotage,
-    // incursions and influence (kind "shadow-war") or one named military
-    // operation (kind "operation"). The daily feed adds a narrower sub-feed per
-    // watch (live `watches[id].articles`); the review keeps the dated, typed
-    // findings and the assessment current.
+    // item when a trigger event makes one thread worth tracking on its own: a
+    // shadow war of sabotage and incursions (kind "shadow-war") or one named
+    // military operation (kind "operation"). Both track operational and tactical
+    // lessons: which tactics succeeded, failed or were superseded. The daily feed
+    // adds a narrower sub-feed per watch (live `watches[id].articles`); the
+    // review keeps the dated findings and the assessment current.
     watches(it) { return (it.watches || []).filter(w => w && w.enabled); },
     watchDefault(w, key) {
-      const k = (((this.defs().watches || {}).kinds) || {})[w.kind || "info-ops"] || {};
+      const k = (((this.defs().watches || {}).kinds) || {})[w.kind || "operation"] || {};
       return w[key] || k[key] || "";
     },
     watchBadges(it) {
-      return this.watches(it).map(w => ` <span class="wl-io-badge wl-io-badge-${esc(w.kind || "info-ops")}" title="${esc(`${this.watchDefault(w, "title")} since ${this.fmtDate(w.since)} (${w.trigger || ""}). ${w.question || ""}`)}">${esc(this.watchDefault(w, "label"))}</span>`).join("");
+      return this.watches(it).map(w => ` <span class="wl-io-badge wl-io-badge-${esc(w.kind || "operation")}" title="${esc(`${this.watchDefault(w, "title")} since ${this.fmtDate(w.since)} (${w.trigger || ""}). ${w.question || ""}`)}">${esc(this.watchDefault(w, "label"))}</span>`).join("");
     },
     watchBlocks(it) {
       return this.watches(it).map(w => this.watchBlock(it, w)).join("");
     },
     watchBlock(it, io) {
+      // Findings are tactical lessons: each names a tactic or action (`tactic`),
+      // who used it (`actor`) and its outcome (`type`: succeeded / failed /
+      // superseded / contested), grouped by outcome, newest first within a group.
       const types = (this.defs().watches || {}).types || {};
-      const typeChip = t => t ? `<span class="wl-io-type wl-io-type-${esc(String(t).replace(/[^a-z]+/gi, "-").toLowerCase())}" title="${esc(types[t] || "")}">${esc(t)}</span>` : "";
-      const finds = (io.findings || []).slice().sort((a, b) => String(b.date || "").localeCompare(String(a.date || ""))).map(f =>
-        `<li><span class="wl-hist-d">${esc(this.fmtDate(f.date))}</span> ${f.actor ? `<b class="wl-io-actor">${esc(f.actor)}</b> ` : ""}${typeChip(f.type)} <span class="wl-io-text">${esc(f.text)}</span>${f.unverified ? ` <span class="wl-tl-unv" title="Single source; not yet corroborated">unverified</span>` : ""}${f.url ? ` <a class="wl-tl-src" href="${esc(f.url)}" target="_blank" rel="noopener" title="Source">↗</a>` : ""}</li>`).join("");
+      const order = Object.keys(types);
+      const finding = f => `<li><span class="wl-hist-d">${esc(this.fmtDate(f.date))}</span> ${f.tactic ? `<b class="wl-io-tactic">${esc(f.tactic)}</b> ` : ""}${f.actor ? `<span class="wl-io-actor">${esc(f.actor)}</span> ` : ""}<span class="wl-io-text">${esc(f.text)}</span>${f.unverified ? ` <span class="wl-tl-unv" title="Single source; not yet corroborated">unverified</span>` : ""}${f.url ? ` <a class="wl-tl-src" href="${esc(f.url)}" target="_blank" rel="noopener" title="Source">↗</a>` : ""}</li>`;
+      const sorted = (io.findings || []).slice().sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+      const groups = [...order, ...[...new Set(sorted.map(f => f.type))].filter(t => !order.includes(t))]
+        .map(t => ({ t, list: sorted.filter(f => f.type === t) })).filter(g => g.list.length);
+      const finds = groups.map(g => `<div class="wl-io-group wl-io-group-${esc(String(g.t).replace(/[^a-z]+/gi, "-").toLowerCase())}"><div class="wl-io-ghead"><span class="wl-io-type wl-io-type-${esc(String(g.t).replace(/[^a-z]+/gi, "-").toLowerCase())}" title="${esc(types[g.t] || "")}">${esc(g.t)}</span> <span class="wl-io-n">${g.list.length}</span></div><ul class="wl-hist-list wl-io-list">${g.list.map(finding).join("")}</ul></div>`).join("");
       const a = io.assessment || {};
       const live = ((this.feed(it) || {}).watches || {})[io.id];
       const arts = live ? this.feedArticles(live).slice(0, 6).map(x => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a><span class="wl-art-meta">${esc(x.domain)}${x.date ? " · " + esc(this.fmtDate(x.date)) : ""}</span></li>`).join("") : "";
-      return `<div class="wl-d-block wl-io wl-io-${esc(io.kind || "info-ops")}" data-wl-watch="${esc(io.id || "")}" title="${esc((this.defs().watches || {}).desc || "")}">
+      return `<div class="wl-d-block wl-io wl-io-${esc(io.kind || "operation")}" data-wl-watch="${esc(io.id || "")}" title="${esc((this.defs().watches || {}).desc || "")}">
         <div class="wl-d-h">${esc(this.watchDefault(io, "title"))} <span class="wl-as-date">since ${esc(this.fmtDate(io.since))}${io.trigger ? ` · ${esc(io.trigger)}` : ""}</span></div>
         <p class="wl-io-q">${esc(io.question || "")}</p>
         <div class="wl-io-grid">
           <div>
-            <div class="wl-d-h sub">Findings${finds ? ` (${(io.findings || []).length})` : ""}</div>
-            ${finds ? `<ul class="wl-hist-list wl-io-list">${finds}</ul>` : "<p class='muted-note'>No findings yet — the review adds dated, sourced findings.</p>"}
+            <div class="wl-d-h sub">Tactical lessons${finds ? ` (${(io.findings || []).length})` : ""}</div>
+            ${finds || "<p class='muted-note'>No findings yet — the review adds dated, sourced findings.</p>"}
           </div>
           <div>
             <div class="wl-d-h sub">Assessment${a.date ? ` <span class="wl-as-date">as of ${esc(this.fmtDate(a.date))}</span>` : ""}</div>

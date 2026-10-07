@@ -159,13 +159,8 @@
       "adaptability": "Adaptability: how transferable the topic's lessons are to the Army — High, Medium or Low, set by the team."
     },
     "watches": {
-      "desc": "Watches follow one thread of an item on its own once a trigger event makes it worth it: an information-operations watch (kind \"info-ops\": official messaging, state-media narratives and documented influence campaigns), a shadow-war watch (kind \"shadow-war\": sabotage, incursions, cyber and influence below the threshold of war, and the targeted side's responses) or an operation watch (kind \"operation\": one named military operation, its gains, the enemy's response and what it shows). Each carries a narrower daily feed, plus dated findings and an assessment researched from open sources at each review.",
+      "desc": "Watches follow one operational thread of an item on its own once a trigger event makes it worth it, as a record of tactical lessons: which tactics and actions succeeded, which failed and which were superseded, on both sides, with dated evidence. Two kinds: a shadow-war watch (kind \"shadow-war\": sabotage, incursions, cable damage, jamming and other attacks below the threshold of war, and the defenders' countermeasures) and an operation watch (kind \"operation\": one named military operation). Each carries a narrower daily feed, plus dated findings and an assessment researched from open sources at each review.",
       "kinds": {
-        "info-ops": {
-          "label": "Info-ops watch",
-          "title": "Information ops & strategic communications watch",
-          "feedTitle": "Latest messaging & influence reporting"
-        },
         "shadow-war": {
           "label": "Shadow-war watch",
           "title": "Shadow-war watch",
@@ -178,21 +173,10 @@
         }
       },
       "types": {
-        "official statement": "Government, foreign-ministry, military or party statement aimed at an audience (strategic communications).",
-        "state-media narrative": "Framing pushed by state or party media, including English-language outlets aimed abroad.",
-        "covert information operation": "Documented coordinated inauthentic behaviour, disinformation or cognitive-warfare activity, attributed by a credible reporter.",
-        "coercive signalling": "Military, coast-guard or legal action whose purpose is the message it sends.",
-        "sanctions/lawfare": "Sanctions, lists or legal framing used to pressure or delegitimise.",
-        "counter-messaging": "The targeted side's official response or rebuttal.",
-        "domestic narrative": "Narratives inside the targeted polity (parties, polls, viral claims).",
-        "debunked claim": "A specific false claim identified by a fact-checker.",
-        "third-party assessment": "Analysis by a think-tank, researcher or major outlet.",
-        "hybrid attack": "Physical sabotage, arson, cable or pipeline damage, cyber attacks, GPS jamming, drone or airspace incursions and other deniable attacks below the threshold of war.",
-        "defensive response": "The targeted side's practical countermeasures: arrests, expulsions, airspace closures, deployments, new laws and alliance consultations.",
-        "territorial change": "Ground or settlements gained or lost, with who reports it and whether it is independently confirmed (geolocated footage, ISW).",
-        "official claim": "A command's or ministry's claim of gains, enemy losses or prisoners that has not been independently confirmed.",
-        "counterattack": "The opposing side's counterattacks, reinforcements or renewed assaults in the operation's sector.",
-        "tactic or capability": "A tactic, weapon or enabler used in the operation (drones, electronic warfare, converted vehicles, shaping strikes)."
+        "succeeded": "The tactic or action achieved its aim, on the evidence available (ground taken and held, target hit, intrusion undetected or unanswered, threat intercepted, cell caught before acting).",
+        "failed": "The tactic or action did not achieve its aim or was defeated (attack repulsed, objective abandoned, intruder shot down, perpetrators caught with little effect).",
+        "superseded": "The tactic or plan was replaced by a newer method or made obsolete by a countermeasure (a plan scaled back, a weapon or approach overtaken).",
+        "contested": "The outcome is unclear or disputed: claims not yet confirmed, sources disagree, or it is too early to judge."
       }
     }
   },
@@ -561,13 +545,13 @@
           "enabled": true,
           "kind": "shadow-war",
           "label": "Shadow-war watch",
-          "title": "Russia–Europe shadow-war watch",
+          "title": "Russia–Europe shadow-war watch: tactics and countermeasures",
           "feedTitle": "Latest shadow-war reporting",
           "since": "2026-09-23",
           "trigger": "Russian helicopter and drone incursions into Poland, Romania and Moldova, 23–24 Sep 2026",
-          "question": "Is Russia escalating a shadow war against Europe below the threshold of open war (sabotage and arson, cyber attacks, undersea cable and pipeline damage, GPS jamming, drone and airspace incursions, shadow-fleet activity, espionage, assassination plots and influence or disinformation operations), through which channels and against whom, and how are European governments and NATO responding?",
+          "question": "Which Russian tactics below the threshold of open war against Europe (drone and aircraft incursions, sabotage and arson through recruited proxies, undersea cable and pipeline damage, shadow-fleet operations, GPS jamming, cyber attacks with real-world effect) are succeeding, which are failing or being countered, and which have been superseded; and how are European and NATO countermeasures (air policing and counter-drone defence, rules of engagement, maritime interdiction, arrests and expulsions) adapting?",
           "feed": {
-            "query": "(Russia OR Russian OR Kremlin OR GRU) (sabotage OR \"hybrid war\" OR \"hybrid attack\" OR \"hybrid threat\" OR \"shadow war\" OR \"shadow fleet\" OR \"drone incursion\" OR \"airspace violation\" OR \"undersea cable\" OR arson OR \"GPS jamming\" OR cyberattack OR espionage OR disinformation) (Europe OR European OR NATO OR Poland OR Germany OR Baltic OR Romania OR Finland OR Britain OR France OR Denmark OR Moldova)",
+            "query": "(Russia OR Russian OR Kremlin OR GRU) (sabotage OR \"hybrid attack\" OR \"shadow fleet\" OR \"drone incursion\" OR \"airspace violation\" OR \"undersea cable\" OR arson OR \"GPS jamming\" OR cyberattack OR \"shot down\" OR intercepted OR \"counter-drone\" OR \"drone wall\" OR \"Eastern Sentry\" OR tanker OR espionage) (Europe OR European OR NATO OR Poland OR Germany OR Baltic OR Romania OR Finland OR Britain OR France OR Denmark OR Moldova OR Estonia OR Latvia OR Lithuania)",
             "terms": [
               "russia",
               "russian",
@@ -606,17 +590,21 @@
                 "spies",
                 "espionage",
                 "assassinat",
-                "disinformation",
-                "propaganda",
-                "influence",
-                "interference",
-                "troll",
-                "bot network",
                 "article 4",
                 "expel",
                 "expulsion",
                 "arrest",
-                "sanction"
+                "detain",
+                "sanction",
+                "shot down",
+                "shoot down",
+                "intercept",
+                "scrambl",
+                "air defen",
+                "counter-drone",
+                "drone wall",
+                "eastern sentry",
+                "tanker"
               ]
             ],
             "exclude": [
@@ -751,11 +739,11 @@
           "enabled": true,
           "kind": "operation",
           "label": "Operation Vivaldi watch",
-          "title": "Operation Vivaldi watch (Lyman counteroffensive)",
+          "title": "Operation Vivaldi watch: tactics and outcomes (Lyman counteroffensive)",
           "feedTitle": "Latest reporting on Operation Vivaldi",
           "since": "2026-09-15",
           "trigger": "3rd Army Corps commander Brig. Gen. Andrii Biletskyi reveals Operation Vivaldi counteroffensive north of Lyman, 15 Sep 2026",
-          "question": "Can Ukraine's Operation Vivaldi, the 3rd Army Corps counteroffensive north of Lyman, keep regaining ground and disrupt Russia's planned pincer on the Donbas fortress belt (Lyman–Sviatohirsk in the north, Dobropillia in the south, converging on Barvinkove), how is Russia responding with counterattacks, reserves and narrative, and what does it show about restoring manoeuvre under drone-saturated conditions?",
+          "question": "Which tactics have let Ukraine's Operation Vivaldi, the 3rd Army Corps counteroffensive north of Lyman, regain ground, and which have failed or been superseded, on both sides; how has Russia adapted its plan for the Donbas fortress belt (the Lyman–Sviatohirsk and Dobropillia pincer on Barvinkove) in response; and what does it show about restoring manoeuvre under drone-saturated conditions?",
           "feed": {
             "query": "(\"Operation Vivaldi\" OR \"3rd Army Corps\" OR \"Third Army Corps\" OR Biletskyi OR Lyman OR Sviatohirsk OR Svyatohirsk) (Ukraine OR Ukrainian OR Russia OR Russian OR offensive OR counteroffensive)",
             "terms": [
