@@ -1,8 +1,8 @@
 {
   "__live": true,
-  "syncedAt": "2026-10-08T11:32:40.642Z",
+  "syncedAt": "2026-10-08T12:44:51.793Z",
   "source": "GDELT DOC 2.0 API (api.gdeltproject.org) with Google News RSS fallback",
-  "refreshed": 12,
+  "refreshed": 4,
   "total": 12,
   "present": 12,
   "items": {
@@ -1076,124 +1076,89 @@
     },
     "US_VE": {
       "query": "(Venezuela OR Venezuelan OR Caracas OR Maduro OR \"Delcy Rodriguez\" OR Machado) sourcelang:english",
-      "granularity": "week",
+      "granularity": "day",
       "timeline": [
         {
-          "date": "2026-09-10",
-          "value": 28
+          "date": "2026-09-09",
+          "value": 358
         },
         {
-          "date": "2026-09-17",
-          "value": 26
+          "date": "2026-09-10",
+          "value": 221
+        },
+        {
+          "date": "2026-09-11",
+          "value": 219
+        },
+        {
+          "date": "2026-09-12",
+          "value": 108
+        },
+        {
+          "date": "2026-09-13",
+          "value": 25
+        },
+        {
+          "date": "2026-09-20",
+          "value": 168
+        },
+        {
+          "date": "2026-09-21",
+          "value": 373
+        },
+        {
+          "date": "2026-09-22",
+          "value": 483
+        },
+        {
+          "date": "2026-09-23",
+          "value": 414
         },
         {
           "date": "2026-09-24",
-          "value": 18
+          "value": 472
+        },
+        {
+          "date": "2026-09-25",
+          "value": 57
+        },
+        {
+          "date": "2026-09-27",
+          "value": 130
+        },
+        {
+          "date": "2026-09-28",
+          "value": 186
+        },
+        {
+          "date": "2026-09-29",
+          "value": 150
+        },
+        {
+          "date": "2026-09-30",
+          "value": 236
         },
         {
           "date": "2026-10-01",
-          "value": 28
+          "value": 372
+        },
+        {
+          "date": "2026-10-02",
+          "value": 93
+        },
+        {
+          "date": "2026-10-06",
+          "value": 2
         }
       ],
-      "articles": [
-        {
-          "title": "Déja vú strikes thrice as Machado robbed of game-tying HR",
-          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOVk9qd0NsTHhVSGJ2aTBkRTFaLTZsaEtYNFJ0Zm53Q05pbUd1MVlraXBvaTl2dUlXZE1vQXNfX01MT2dWT1BHZmJJNXZqeE9yQ0lzSjhTdVRxWVRISE1EZmR4bE9UQW4yMUpjWk9McDhKcU8xWVMxQjlQV2Vkb0JUdDIzWmRlSmg0R0k4?oc=5",
-          "domain": "MLB.com",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T07:50:57.000Z",
-          "rank": 30,
-          "rel": 5.2
-        },
-        {
-          "title": "Baker Hughes strikes two deals to revive Venezuela’s gas and energy sector",
-          "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOVjMzc1p2REN5Ym1IUThrakJxUWRpWXBRdUpzdU40aDBDUTdLXzBoRkhnRU1rcG1FQlUzc2tzTVFkYXJxTlpRSmYtNUxlV21QU3M5V2lRTGF0WHZZZGYwTTJKRFprcUxHYlZEb3JCSDZPVjVPSGd1SnczdEQ3SDliOEVaSkRlck5kYjZ5aElUUkFCS2pQR0MzUzBGeVVvNmFTX0ZGSlo5OVBmMFdfSVc0ck84NUVwUU5RQWdWcWMwMGpWTHPSAcoBQVVfeXFMTTlIb2l4eEg3V1MzbFVIOGJLeDlJLUNaRC1lSHZndG1iNkVkMF8ySVl6bVFvOENVbXFIYWpFbkpqSUg5TzloZzJycm1rT0R5Q0xJd0ZHOFBZYXlFZHF0SGREamlIYVZvLTM3VjJ0dVJ5SVVOSjlxUEZNaVF0c19reWpaaVFhZ3RRZFRBTFlSbDFhLXFFaUU2Q3VOSEhfZ1N6NXJmYXZRWG4wX2dqOWdwQncybVhuUzlpdmRkU3JORFpkZzNqb1JwVV9hUQ?oc=5",
-          "domain": "Indian Chemical News",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T07:24:59.000Z",
-          "rank": 33,
-          "rel": 5.1
-        },
-        {
-          "title": "Ex-Trump officials seek jobs in Venezuelan oil sector now under U.S. control",
-          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOSGZIcm9mM2xlanI0Q1NQeXpScGVhbE5ycl9WRGs0NTFPNm9wSnYzMDJObUVwdVctZXJvUk1FcmR2MmRMZHg0aDJaN2xhSjg5S0ZuTi1mNXBzQlZDbE9kaFJ3d2hZdlFZSElOSDNRVkF1M2lWWmZLd3pNMUQ4YUtiRGVrZ1k0MV9FRnBPTGgySmhWZ0JXY1RPNlJIQnBjTEJXaUlMTEJXMFNKbTFyOGNJWDlySWVlVUhVOUxNNQ?oc=5",
-          "domain": "The Washington Post",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T10:32:42.000Z",
-          "rank": 7,
-          "rel": 4.7
-        },
-        {
-          "title": "Venezuela’s battle for sovereignty continues",
-          "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxPZFZVRTk4NV93ZGJxRTdBVGhWVVNhRm0wNjU3dlhUNjEzVXRqaVVBd3duSlpaX2NHSlhrWlZqaFc3ZHpTRzdlSVl4UHl4aGJ3WUJiOU9UUm0xOEFpUVV3ZDVmRzVjY3JYSVZaOTgyRG1lemEtN0lDZzR5aHFzY1BzaXpmMkUtUQ?oc=5",
-          "domain": "Morning Star | The People’s Daily",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T00:59:06.000Z",
-          "rank": 78,
-          "rel": 4.3
-        },
-        {
-          "title": "FILE PHOTO: Supporters of Venezuela's government rally to demand the release of ousted President Maduro and his wife, in Caracas",
-          "url": "https://news.google.com/rss/articles/CBMipgJBVV95cUxOSERBRXgweE9jSlFHNUtUYjh1ZjMzYmdldWRIOW1iTTZSQjVKaDNlem51WV8wbWtHaVlOdmJ2WHNzeEdNZDBkSjJxNFMyS0pIdFpvQVBLS0VWeU9HcUs0ZVlqQ2tnbHR1MVVEMGpiZllfSGd6NW85ZENCdnNBamxpNGRTYlNFSVpCLWdmM0F4ckRUdWlGcW50MmdtM2NHeHowZUx5NHJwbHJQMTRnU2g5TTNjcFJES1RZeUhPcnJfZ0RtUnc3dWR2bTc1NEtaQWR6QkpVWDJqOE9iN0cyZGpGQ2lyelZMbk5wR0dJVGxFVTVWelN1WTB5Ui1rbnBXMUZnazBzVlRsYlBPOTAtRi0yUUd3QmpGS1ZDSEdwUEs1RXRfT2JiWWc?oc=5",
-          "domain": "The Lufkin Daily News",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T10:08:12.000Z",
-          "rank": 23,
-          "rel": 4.1
-        },
-        {
-          "title": "Army solider who placed insider bets on Maduro capture asks for pretrial dismissal",
-          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQVjZyY3huNEtKZ3o4MUVmXzJ1aE84UlRuYUJDZ2lOc0FlVERuaFNqS0VmYVNhYXVJamY4bmhCNGJnaTdvUldVVnZnaGxpUkIwbEZweWdGU3g4ZC05dGdZS19Ib1VUbFBhTm1GTDFTU0FHckFFVkZZVkdoa19Hd3FCdjluTXE3UGNiM3dxcU5tRUVVcUNydWNwWXhYUWNQX3pCU0dGQjc3R3Q5WWRBYWg5eF9qREU?oc=5",
-          "domain": "Courthouse News",
-          "country": "",
-          "date": "2026-10-07",
-          "ts": "2026-10-07T20:33:34.000Z",
-          "rank": 37,
-          "rel": 3.2
-        },
-        {
-          "title": "Ex-Venezuelan President Nicolas Maduro likely to face new criminal charges over torture allegations | World News",
-          "url": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxQd2NiUlg3ZElaaDZabjh3TEZ0Z2RLT0tMYUx3eVNrR0R6S29GNlJYTlJSeGV2Qk1hT3k2NXExeDRnV1gwQ2lOc19RaFVNYW01b2tqRUVfVWpiNzFwWVVIS0hmRzJrbk5QUGc0LTZtRC1ITXNia2pRaS1kTS0tUXZFRHR5Yy0tcERqemNMY2xFNjkwOWJ4NVc2aXFVU1hna3p3RG9uZ1ZrTGdKZXZTWHpla005SWNnT3g4OE81a3lrUFpSNjRQeVBRTGVmSlFobC02dmRiT1NSX3ZjcnpXMm5yMy1xVEpqSXQ0ZXlkYXZyOXLSAfABQVVfeXFMUHdjYlJYN2RJWmg2Wm44d0xGdGdkS09LTGFMd3lTa0dEektvRjZSWE5SUnhldkJNYU95NjVxMXg0Z1dYMENpTnNfUWhVTWFtNW9rakVFX1VqYjcxcFlVSEtIZkcya25OUFBnNC02bUQtSE1zYmtqUWktZE0tLVF2RUR0eWMtLXBEanpjTGNsRTY5MDlieDVXNmlxVVNYZ2t6d0RvbmdWa0xnSmV2U1h6ZWtNOUljZ094ODhPNWt5a1BaUjY0UHlQUUxlZkpRaGwtNnZkYk9TUl92Y3J6VzJucjMtcVRKakl0NGV5ZGF2cjly?oc=5",
-          "domain": "Hindustan Times",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T06:15:20.000Z",
-          "rank": 65,
-          "rel": 2.9
-        },
-        {
-          "title": "Padres star Manny Machado livid after Garrett Mitchell robs potential game-tying home run, helping Brewers advance to NLCS",
-          "url": "https://news.google.com/rss/articles/CBMigwJBVV95cUxNUTg1QmlwTk9uNTlPSGhrZExEclJ5TFo3ZnBYWXY3cTNGc3hIc3Vac3VFZnZUOUMzcDI4Y3BORlNzWHI0eXlWY2F4ZzBoOExTWmphNTRiQ0p1ZXpKT29MTmp4TjFxNVkwR19pY0I1ZzJuamozcElPSjBmVHNxRHFEUEw4UGFZTkxuUVYtV1hibE1NZko0VEQ0aVU0aEo1bi1LODJHNXpXeU1RcEtjdmtHdjVpNHF2Nk0zeS04LUh4TS1MUnotZmtzaTk3blhUc1ZMeDM4V0pkNGxVYjlhR0VUZ0pnZjVhd3JqUFZZbGdzSzZCdFZjN0l1NnJscldpMTJfakdN?oc=5",
-          "domain": "Yahoo Sports",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T05:48:00.000Z",
-          "rank": 52,
-          "rel": 2.9
-        },
-        {
-          "title": "Padres star Manny Machado livid after Garrett Mitchell robs game-tying home run, helping Brewers advance to NLCS",
-          "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxPOFlwVldUZ3J5SGY2MmZZc1FOLURPVWlQM0R2WXdORDYzbVd1SmVMbXRZUVBqYTdyeklOREhIOWppbkRUdUp0UV9lUlAwRm9hb0FOUHlfVVFwVWtXQzRWNEhPQUJkczhqZ3loWVRBUGNva0FSdEtIcGVfZHdGbERUY2pudkd6cDlTZV9qU095YUZrQS1qUnBaVTg0ZlkzdWxkbS13bWlpMV8wcWdUR2h4d2dTTTRTckxrNE9RRm5DbGd4WUlZZVUyX3Jxc1FhZHZNcWZ5WFdOV083QjUwUGN0aWsxbktHQlg0V0xrbGJESG9EaU5nclE?oc=5",
-          "domain": "Yahoo Sports",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T05:48:00.000Z",
-          "rank": 66,
-          "rel": 2.9
-        }
-      ],
+      "articles": [],
       "screen": {},
-      "screened": false,
-      "source": "rss-articles+unscreened+rss-counts",
-      "fetchedAt": "2026-10-08T11:17:25.998Z",
-      "count7d": 28,
-      "prev7d": 18,
-      "capped": true,
+      "screened": true,
+      "source": "gdelt-timeline",
+      "fetchedAt": "2026-10-08T12:19:10.709Z",
+      "count7d": 1169,
+      "prev7d": 1992,
+      "capped": false,
       "surge": false
     },
     "SCS": {
@@ -1366,458 +1331,263 @@
     },
     "TW": {
       "query": "(Taiwan OR \"Taiwan Strait\" OR \"Han Kuang\") (China OR Chinese OR PLA OR Beijing OR \"coast guard\") sourcelang:english",
-      "granularity": "week",
+      "granularity": "day",
       "timeline": [
         {
-          "date": "2026-09-10",
-          "value": 3
+          "date": "2026-09-09",
+          "value": 244
         },
         {
-          "date": "2026-09-17",
-          "value": 7
+          "date": "2026-09-10",
+          "value": 120
+        },
+        {
+          "date": "2026-09-11",
+          "value": 185
+        },
+        {
+          "date": "2026-09-12",
+          "value": 69
+        },
+        {
+          "date": "2026-09-13",
+          "value": 18
+        },
+        {
+          "date": "2026-09-20",
+          "value": 104
+        },
+        {
+          "date": "2026-09-21",
+          "value": 257
+        },
+        {
+          "date": "2026-09-22",
+          "value": 263
+        },
+        {
+          "date": "2026-09-23",
+          "value": 463
         },
         {
           "date": "2026-09-24",
-          "value": 9
+          "value": 723
+        },
+        {
+          "date": "2026-09-25",
+          "value": 510
+        },
+        {
+          "date": "2026-09-27",
+          "value": 53
+        },
+        {
+          "date": "2026-09-28",
+          "value": 313
+        },
+        {
+          "date": "2026-09-29",
+          "value": 266
+        },
+        {
+          "date": "2026-09-30",
+          "value": 129
         },
         {
           "date": "2026-10-01",
-          "value": 81
+          "value": 147
+        },
+        {
+          "date": "2026-10-02",
+          "value": 96
+        },
+        {
+          "date": "2026-10-06",
+          "value": 5
         }
       ],
-      "articles": [
-        {
-          "title": "From fishing nets to grey-zone tactics: Chinese militia boat enter Taiwan’s sensitive east coast - report",
-          "url": "https://news.google.com/rss/articles/CBMihgJBVV95cUxOdE9JZFFXcThiUER4RGlGcDNEaHZEYWlxWUxnSTItbXlCTEw3eWplczNrSEJhVi1jUU5aSFJreUlsZjVGalhncEZmeXFvSjk3OUVXMW9nS3A1ai1TYW1MR0wyYVJmcExWTGpaRkZCVmJxN2prdGpyR1o4Tkx5bVcwTHRCSXBzMklGYzlEWUx0R0VlTWpBZEJ5TWNxbEJQcEtfRnp1ZlVKcVl3M3ZVZkVKekhNN2c4YTk3d2NJQWVpX2QyU2FrM0FTUUZjWWY4MmJ0dGduOVJraXczTnlVeEVya19rWTJ6eVJKT3AyeTVzN1lfd2RCVEpRcVctN1AyckpwR2t3SDdR0gGLAkFVX3lxTE8yV2Q1U29LZXNKaGRJUHJ4Q2dtelNfSXFpTHZWay10ZVFEVU9yeEdHdExXOGE0Tk5RX3VYQUwtSG41dXZ6U2RnTXdFZlZCQTVERDhfN2ZCNXMweDE3amlseVl2RFR5d2x4TVhIYTVVWXNzUEpDYzEyZktsVTAzbDAwYnhpX0lnMkxnci0yNHp2T0Rnd1FoaE1GN3VEMUlvZzNpSEVaeWhUeFFuZm55LUNwNnJfdUlRQXpJekNnVGlyRUl1REcyd254TmpZcnNlXzV4UzhJQlBfOUJzMjM0ZzctQWVJTXl2U25JTXBzeENSakY1cmRXNFZuSmhuZ1UwQk9DQjV4UDhoVW5UWQ?oc=5",
-          "domain": "The Times of India",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T09:41:00.000Z",
-          "rank": 21,
-          "rel": 10.1
-        },
-        {
-          "title": "War game highlights Taiwan response to Chinese communications attacks",
-          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQMllDeXFJTGRKMTJFc2ZhUWw5bWt4VjVVdU9TLXBrVWNMd1g3b1UyVHZUcmI4Z0ItV0tNOXFWNk9mckIwaXNPWmFQb2VlYzN4U3ZCQmhoclkwbmF1STFmS0F3T0l6d2EyR19fMC1CQXM0U2ZhSVdWQ0M3bWZ6eFUyUkZsSkZsTVBfMjhKV2NLYUx6TVhwaVF4OU9jdTM1SFptMngxWEtIR0o0UW9HWG03elVnQ2pDdw?oc=5",
-          "domain": "Washington Times",
-          "country": "",
-          "date": "2026-10-07",
-          "ts": "2026-10-07T00:24:54.000Z",
-          "rank": 96,
-          "rel": 8.3
-        },
-        {
-          "title": "Taiwan indicts 10 for smuggling US military-grade chips to China, parts routed to missile and radar programs using forged Taiwan defense institute orders — Texas Instruments and Analog Devices hardware passed off as ‘Made in Taiwan’",
-          "url": "https://news.google.com/rss/articles/CBMihANBVV95cUxPdUZORmVSNElnNVJQdzdMdlI5a1RscDVKTjg2ampOalItcDNKZmlndUxYdHVoT25NVzVmUUtrdkdDdkpld2UtQjNJeE0zbVloUVNpMnZwSFRzaGg4WGdoU3lOZWZhdlVNMDJOMXRtd1dfNnRyWlN3ejVZWTRwUWNIbm5EcUpQaFJ4djdKOEtvV2J1REVqbXh5Yjd4WmZtaUtYRmludHdGN0NHd2FPLTFUVXBtQkVaZUtBOU1VcUxMQkhnN2FLSzR6VVNYN3NFZkVqTFJjbF8tZDhkZC1CTDZzNXIzdlIwOFRwYXNlTVVNQTFfRERXRkYzQWF5a01vQlFUektNQkQyRVJHN2dpVGdmU3ZkYUQwN3Bqd1ZOY0EtQzVBV2lWaU12N0IwUzRDSjdmRHFfWlhmWm1KeS03T1M3bERsZmJXeVdiS2pWRUEwaEFRM0x5UmxiUm8zRnNlY3N0di0xcEI1SFZzTGoyS19VaWJfY2FEYzZyQ2pmVnFlNTFqbVBV?oc=5",
-          "domain": "Tom's Hardware",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T10:30:00.000Z",
-          "rank": 39,
-          "rel": 7.9
-        },
-        {
-          "title": "China reiterates opposition to US arms sales after Taiwan gets 2 F-16V fighter jets",
-          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxOVWJ3aUxRYUhaRkRhUTlaZV9rUkdvUEZ1VzdmbV9QUlJkNElYOUZfYVNBcUlFa3JNWk9mVGhQMnZhVlVYTzNPZmJoQ2tRY0ZGN1h0bFJJeGpqbGRKWXBwdXlWWXFQUk54cEhBekE1MGE0LUtjeDFvcWwwVDdOOXpZcUpjRGdrUmxvNzlrUUFmVHZRdWduazRmUEdRdWtKWHRvb3NMcmpLRWxyTEVPdzlmQUpqYUoxYWNSaFdVX0VGMnU4SHBkYkVpbA?oc=5",
-          "domain": "Anadolu Ajansı",
-          "country": "",
-          "date": "2026-10-07",
-          "ts": "2026-10-07T08:05:17.000Z",
-          "rank": 42,
-          "rel": 5.8
-        },
-        {
-          "title": "Taiwan Coast Guard debuts drones at National Day rehearsal",
-          "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTFBBM1NhdU1IQ2lyRDBSWGp6ZnhKS0dPLWNGQ09IbmxmOEQxSVp2cDNRcmd2bi1ucGhia3N4VWVPLTNGVGNWZG13N1lvVi1BbVp0aS13MQ?oc=5",
-          "domain": "Taiwan News",
-          "country": "",
-          "date": "2026-10-07",
-          "ts": "2026-10-07T03:25:00.000Z",
-          "rank": 83,
-          "rel": 5.3
-        },
-        {
-          "title": "EXCLUSIVE: China militia boat spotted for first time off Taiwan's east coast, patrol finds",
-          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPYjltVlp6ZVZyMXZjMzU0QUpmZmhhMGU3MzdzeXgxRTVQWlMyWkV4aTNGSVVkb1A5ZGh1eElyNl9WQkR3VWEzU3hIZ01xZURxNlF0V0hpZlR4aUNfNEE4VlQ4NlN4TGRlc0hyZ3lsQ0x2VTUyNF9hcGMyZkdLY1NJeG9HUnROVXg4VkpTNU5jVG5sU2ZRd1ZxWUlwejRwOHNWS3MyRXEyVGVhdWV4OTQzLXpVc1Q2VzlqYWRjSXlB?oc=5",
-          "domain": "Reuters",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T07:47:30.000Z",
-          "rank": 0,
-          "rel": 4.9
-        },
-        {
-          "title": "EU lawmakers vote to reject Chinese pressure on Taiwan's global role - Focus Taiwan",
-          "url": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE5NbVpYTkN3enpXVDNtWU5zUFRaeHlRYXNiX1hsTzFHbGtoX2tyMDZSQjFjYkFLUzdMTHpRZ1RHNE9neExrVjhGWHNNekk5aEQzVFpUVXpLdw?oc=5",
-          "domain": "Focus Taiwan - CNA English News",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T07:21:00.000Z",
-          "rank": 1,
-          "rel": 4.9
-        },
-        {
-          "title": "Former Taiwan President Tsai tells US audience of 'sustained' Chinese pressure",
-          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxOWWVIOVoyVnJzWmtGLXlRaHJhc1ZxcEViZWkyUDdBYmZEa2h2OFk4VTRUMVJRSW8tdllKSFF6blFqa3VaY1B4c3pxWEVuWE9uT3Z1ZGNNUEV1dzlMbmF5cnJlc2hqbzB0Y0ZCWGZwNFFZZFB3ZTNueklLeDdYWHdhQ2U3TUt2aVQ5TEItNXU5SU1EeTh1QjNIWUUxOHlGUmI3TGJwWWk5NjUzQXQzQm5N?oc=5",
-          "domain": "The Straits Times",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T00:54:00.000Z",
-          "rank": 4,
-          "rel": 4.6
-        },
-        {
-          "title": "Taiwan tracks 7 Chinese ships, 3 military aircraft",
-          "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE5HQVdEdi1PVi1VeEo4Q2Z3ekdib1A2dmlYNEwxOTNkYmNhR1JsTk5GbDUxeTBiTzlDem40VFprNjFobTEwRjdkd2djUG4wVXJMeDZlbg?oc=5",
-          "domain": "Taiwan News",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T05:15:43.000Z",
-          "rank": 48,
-          "rel": 4.5
-        },
-        {
-          "title": "Chinese Militia Boat First Sighted Off Taiwan’s East Coast Amid Growing Grey‑Zone Pressure",
-          "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE1ZV0F5RGZLZnVjdzNWbDBBTWRRZm9vbXBLdHRLQXBJLWtCN296dEVzaXY2ODhTdnd5YlZmajBIYUlaTGczVk5IUUtVb0lOY1UtcVozVXpBY2E2Tnc0SzZXbTln?oc=5",
-          "domain": "Forth.News",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T07:38:33.000Z",
-          "rank": 77,
-          "rel": 4.4
-        },
-        {
-          "title": "Recent Taiwan simulation highlights US cyberdefense gaps against China, experts warn",
-          "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxQWVpubHgzUmhzcGdSTFlzd3E4Vk9ZZko4cDZ6dDNjU1N5OXpsUVZRZHFCemxHV2tBUGhvbFZweThSS2VLZHFzWUZMY1VhZGo4Mmh0M1FOcWVBOFNEMDI2TG9uRkVhMnhldUw1TUwwbDRCMlZfNFZEdUREeHktQ0dTZHpYdjVQcFJwZm9LOGNtajdJN1FKcHlpRTQ3bWRxSHh0VktQTW9nZmV6MUxfUFh5eEtoSkUwSkdOLVJVUUZWOFdPa252RkpUUjFXTTgwSWZMa2JJ?oc=5",
-          "domain": "Nextgov/FCW",
-          "country": "",
-          "date": "2026-10-07",
-          "ts": "2026-10-07T15:59:00.000Z",
-          "rank": 56,
-          "rel": 4.1
-        },
-        {
-          "title": "Taiwan receives first US F-16V fighter jets amid rising tensions with China",
-          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPZzNuaWFoOEt5cW1hSkNLRjdlTnpqZTF1TmpGRW54UVFILU5ha0RmeUpKM25TRm9KcHRXQ2dtSlN4VUtrTzFqUmlZNDhIQnFtV3RXQ2Jlems4bV9mcFNFYTlpV2VaU3ZuVnQySEdGb3YwU1VLR2U3NXdIc3Y5X01MZHdvZ0E0cldVNWkyYmdwcmEzSEtEanhIU1lYSl9IZWxIREUwNGlvMjVOaGlmSDFkd3BxU0U2eFRXeGZUUXlTZjFWRnE5?oc=5",
-          "domain": "Indonesia Business Post",
-          "country": "",
-          "date": "2026-10-07",
-          "ts": "2026-10-07T14:33:27.000Z",
-          "rank": 50,
-          "rel": 4.1
-        }
-      ],
+      "articles": [],
       "screen": {},
-      "screened": false,
-      "source": "rss-articles+unscreened+rss-counts",
-      "fetchedAt": "2026-10-08T11:21:44.385Z",
-      "count7d": 81,
-      "prev7d": 9,
-      "capped": true,
+      "screened": true,
+      "source": "gdelt-timeline",
+      "fetchedAt": "2026-10-08T12:27:14.685Z",
+      "count7d": 1009,
+      "prev7d": 2338,
+      "capped": false,
       "surge": false
     },
     "CN_JP": {
       "query": "(Japan OR Japanese OR Senkaku OR Takaichi) (China OR Chinese OR Beijing OR PLA) sourcelang:english",
-      "granularity": "week",
+      "granularity": "day",
       "timeline": [
         {
-          "date": "2026-09-10",
-          "value": 4
+          "date": "2026-09-09",
+          "value": 408
         },
         {
-          "date": "2026-09-17",
-          "value": 4
+          "date": "2026-09-10",
+          "value": 288
+        },
+        {
+          "date": "2026-09-11",
+          "value": 346
+        },
+        {
+          "date": "2026-09-12",
+          "value": 243
+        },
+        {
+          "date": "2026-09-13",
+          "value": 29
+        },
+        {
+          "date": "2026-09-20",
+          "value": 327
+        },
+        {
+          "date": "2026-09-21",
+          "value": 349
+        },
+        {
+          "date": "2026-09-22",
+          "value": 367
+        },
+        {
+          "date": "2026-09-23",
+          "value": 478
         },
         {
           "date": "2026-09-24",
-          "value": 32
+          "value": 464
+        },
+        {
+          "date": "2026-09-25",
+          "value": 234
+        },
+        {
+          "date": "2026-09-27",
+          "value": 204
+        },
+        {
+          "date": "2026-09-28",
+          "value": 304
+        },
+        {
+          "date": "2026-09-29",
+          "value": 374
+        },
+        {
+          "date": "2026-09-30",
+          "value": 238
         },
         {
           "date": "2026-10-01",
-          "value": 60
+          "value": 365
+        },
+        {
+          "date": "2026-10-02",
+          "value": 180
+        },
+        {
+          "date": "2026-10-06",
+          "value": 8
         }
       ],
-      "articles": [
-        {
-          "title": "Ex-Japan envoy to China seeks risk management in bilateral ties",
-          "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9nVDRGeG9YeThaLXd3RkdibGVOSzRPcDc3ck81TFktX043d3dkaDVnc2NOcWFoUTBEUTZxMmIxRTdaWndzTkJvNEdyUk1mSDlnLU15MEc3RE9jQQ?oc=5",
-          "domain": "Japan Wire by Kyodo News",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T01:32:00.000Z",
-          "rank": 16,
-          "rel": 4.2
-        },
-        {
-          "title": "PLA Navy vs. Japan’s MSDF: How the Balance Shifted Since 2012",
-          "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTE53RXc4ZzFZc2w4eGJ6QS1HbVpRWlRMRk5MSEwzQmowcjh2dHA5cjFLV21qZjllQnQxTlA1NFJGQnVLMUh0NWZWZ1ZWckV6SWVRU0JFeFd3ZktmRHlBZU9FZ2JHQ1pMdTlJRVR3?oc=5",
-          "domain": "Geopolitical Monitor",
-          "country": "",
-          "date": "2026-10-06",
-          "ts": "2026-10-06T14:22:35.000Z",
-          "rank": 57,
-          "rel": 3.6
-        },
-        {
-          "title": "Japan Unveils First Hyper Velocity Gliding Projectile to Counter Chinese Naval Advances",
-          "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPRTY0cFlMSGFnbmxkcmh6ZzBVQ0t2SDY2VXhQellNOHJ0MnAyVUZqWWdUM1NDTzFSUGdUR2VBTF81WTAweVFQTjAzVTQxRHVucmdQSEJDVXFocVhwb2pUZ3NnWUwwMzhrZHJiTlFZVm5CVkJ4UDZ3RXJ2bzVrajNMM014a1pMajN5aVg5dlNxZEU?oc=5",
-          "domain": "Military Watch Magazine",
-          "country": "",
-          "date": "2026-10-05",
-          "ts": "2026-10-05T20:00:00.000Z",
-          "rank": 94,
-          "rel": 3.2
-        },
-        {
-          "title": "How China deploys wartime history against Japan",
-          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOVElUSDZrd2R4bEhHR0JSUkRKRG5ZVEtmXzBvUE52dkx0ZEt2dFlYVlBEUjZ1YTlQRU1pYjQ4M25CMWtDRGxIM3RkMGwtNU5IOHBxN054U0VOYWhwRDlIMmR0dURHbWp0YXdUMGRRUlVJcThZVktuRlNTeWlMVUNvc09nOFA?oc=5",
-          "domain": "Asia Times",
-          "country": "",
-          "date": "2026-10-06",
-          "ts": "2026-10-06T22:57:18.000Z",
-          "rank": 31,
-          "rel": 3
-        },
-        {
-          "title": "Djokovic wins China Open as Alcaraz takes Japan",
-          "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxNZTVmZDM1UHc2Q1cyNXRWN1l6SXpfOXhiZ2hSbVlNN2J1b1k2Q2wySnRIdUhpMndqTlhONFg3SFRhZWU0dXFuQVB4bHZGMjRIZHJuNG9VTkRUX0haMWVhdkZndS1LWjhpbW43SmFVdTc2eWdzV1FJQ3JrSG9wTGw0V3Nfd3JGcnczTlZFamZjM2o?oc=5",
-          "domain": "Khmer Times",
-          "country": "",
-          "date": "2026-10-07",
-          "ts": "2026-10-07T17:08:24.000Z",
-          "rank": 73,
-          "rel": 2.6
-        },
-        {
-          "title": "Japan launches sweeping biotech reforms amid US-China pressure",
-          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOQjZLaXNfSE1yNVNEZlZ5d2VuQUI2NFRCSGQ0cHlHY21iZHltS0hBUmJvVG5SYlB3cDFBcWptN0NHMXlHX1pXbjYxY3V4UVhGTkczQnhKeVZaRldXblhxQ0xEVF9OajVkcXNlVkdzVTQxa3ZHZWNHR1ZuYktsc0V4T0pvQkN1Y09JbUFfWVN3UzZEb2UwM2Z2My1sSXdzbmZZUU5sQVNR?oc=5",
-          "domain": "BioWorld News",
-          "country": "",
-          "date": "2026-10-07",
-          "ts": "2026-10-07T16:00:00.000Z",
-          "rank": 51,
-          "rel": 2.6
-        },
-        {
-          "title": "America’s New Weapon on Japan’s Island Could Threaten Chinese Ships 115 Miles Away",
-          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNQW9pUVZCemlpUXk0WGNmOXZJcHBsYWw2NHRQd0JpWnFnWFQzeVhQQnI5dE5pdWNsNTJVNVU1MEdWcXpOUzJMT3YwcDhKUWFHMTNsRHFZRXhlaWU5SFZQV0hCN1dQQmM2WW90LWlUamt5amFpNUVKUmdGNFk1ZzduSVVhTFhzWFk1S2VUMUx2NkJnc3FRcXU4Q0czNWttaWVqR1h2TGxEMWlvNE9MbkRQTlJzUXNJOVdXX3hVLWlIaw?oc=5",
-          "domain": "Interesting Engineering",
-          "country": "",
-          "date": "2026-10-07",
-          "ts": "2026-10-07T11:18:52.000Z",
-          "rank": 93,
-          "rel": 2.5
-        },
-        {
-          "title": "Takaichi calls China 'important neighbor' but hypes 'regional' tensions; experts say rhetoric masks continued provocation",
-          "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE1oWTJpOU1wZ2k3bjZTblhyRllBVkpYTl9EVWdlVVZyY3BiRHFZM3h0dHlIMU1HTU1HbEZMNjdqc3FVczRjWDhiT1ZRVS0wRDNoTVdIRTVEcEpwV3N1eUZiV0V3?oc=5",
-          "domain": "Global Times",
-          "country": "",
-          "date": "2026-10-05",
-          "ts": "2026-10-05T15:44:00.000Z",
-          "rank": 32,
-          "rel": 2.3
-        },
-        {
-          "title": "Djokovic wins China Open after de Minaur retires, Alcaraz wins Japan Open",
-          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOdnRVRGpMZGRPcEZ0TFdnRXhBWVQzWEkyNktJTk9BaS1hOVhJckY1OVBGek5mb3Y2X0tfbDA1TE9JOU5kQUxsWlZjZjluSDlaV29maXN5M0VaOHU1RE9oTmpEVGJPeXVyRlhFVUtjeWJLU2swMUtXWlNOS1NVVUxzWmRoQnZRTzFTLTBuSlJrZjZpQ2RkVU5qTEU1MjlsTXl4RHhEcURmR1VYaXAxY2V3VENJcjJZZ9IBuwFBVV95cUxOUGQ2RG9kMjlWN29kZWJmckFTcXZtUWY0R3pYRzJmeHBTWTZPcUdwTlhlZzFQU0pxQlBmMTlSdGF3YnBNYlUzVWE3eGItbjJjVGFuRm15YXpxS0hZcmViTXQ0VHNHX0k0bV9tblc3NWNrbFBZbl9DdmtQblRpNkRTbVRWTVFOMXJKeWNRcWVUQTMxR2xNMTFTRWxUUldrNDg2dHJVdW5fMFIzaEM4UTVTdTBkcHYxTGM1bnRF?oc=5",
-          "domain": "Al Jazeera",
-          "country": "",
-          "date": "2026-10-06",
-          "ts": "2026-10-06T17:11:58.000Z",
-          "rank": 49,
-          "rel": 2.2
-        },
-        {
-          "title": "Djokovic wins China Open as Alcaraz retains Japan Open title",
-          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNdHFtcjFSZFpNSm9sbl9taUZTbjJtZVVLZWRvWEc1NXN0c2lpVVhfdU0ySWdSTW5ldks4Y1lrUndwRlZaaEM4SldhWkE4R21NN2o2TUc5OHIzNHA2WTFzRE91TlhEeml2X0lBVl9zVVA1R295R0ItQVlWMHN0bHdjTjZhcTUxOTJnanFVbklhMDU4dVVuU29ndDcxVzQzQnlRRWc?oc=5",
-          "domain": "Anadolu Ajansı",
-          "country": "",
-          "date": "2026-10-06",
-          "ts": "2026-10-06T14:54:07.000Z",
-          "rank": 56,
-          "rel": 2.1
-        },
-        {
-          "title": "Dalio Warns of Japan, China Exit From U.S. Treasuries; Sees Debt Crisis Within 3 Years",
-          "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTFBFYlowNXAxSXZVcXZYc0dWRmdZdXl0VzRpNzJ1dnlRMUpfUk90dnRjNDR4OW5xTHIzbi14bzlyeGdPMUVEOWo5ZGlTMTdvdFA4UnRvS2xyeEtFU0dzaHRyV1BrTFp6RDZ0cUtKUzloWkI1bWhtaWc?oc=5",
-          "domain": "BigGo Finance",
-          "country": "",
-          "date": "2026-10-06",
-          "ts": "2026-10-06T11:25:00.000Z",
-          "rank": 64,
-          "rel": 2
-        },
-        {
-          "title": "Bridgewater Founder Ray Dalio Warns: China and Japan Reducing U.S. Treasury Holdings Could Trigger a Debt Crisis, Risks Rising Within Three Years",
-          "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTFBkSWZVQXNHY3FHTDRGNjlCdWxYdThBeV9xUHRZT0tDWHZnMXlhNkVvSEYzNy0zUk5kNS11a3UyanFhelBYNFJlTVBUTWdQNW9pTjgtbVNrc0JjSjRlRmhZLUlRd3A2Y2o0ZEYtcm83M2dLbU91VUE?oc=5",
-          "domain": "BigGo Finance",
-          "country": "",
-          "date": "2026-10-06",
-          "ts": "2026-10-06T05:25:00.000Z",
-          "rank": 76,
-          "rel": 1.9
-        }
-      ],
+      "articles": [],
       "screen": {},
-      "screened": false,
-      "source": "rss-articles+unscreened+rss-counts",
-      "fetchedAt": "2026-10-08T11:28:42.837Z",
-      "count7d": 60,
-      "prev7d": 32,
-      "capped": true,
+      "screened": true,
+      "source": "gdelt-timeline",
+      "fetchedAt": "2026-10-08T12:39:42.845Z",
+      "count7d": 1673,
+      "prev7d": 2248,
+      "capped": false,
       "surge": false
     },
     "IN_PK": {
       "query": "(India OR Indian OR Kashmir) (Pakistan OR Pakistani OR \"Line of Control\" OR Indus) sourcelang:english",
-      "granularity": "week",
+      "granularity": "day",
       "timeline": [
         {
-          "date": "2026-09-10",
-          "value": 10
+          "date": "2026-09-09",
+          "value": 136
         },
         {
-          "date": "2026-09-17",
-          "value": 1
+          "date": "2026-09-10",
+          "value": 132
+        },
+        {
+          "date": "2026-09-11",
+          "value": 166
+        },
+        {
+          "date": "2026-09-12",
+          "value": 279
+        },
+        {
+          "date": "2026-09-13",
+          "value": 51
+        },
+        {
+          "date": "2026-09-20",
+          "value": 166
+        },
+        {
+          "date": "2026-09-21",
+          "value": 115
+        },
+        {
+          "date": "2026-09-22",
+          "value": 129
+        },
+        {
+          "date": "2026-09-23",
+          "value": 179
         },
         {
           "date": "2026-09-24",
-          "value": 5
+          "value": 140
+        },
+        {
+          "date": "2026-09-25",
+          "value": 56
+        },
+        {
+          "date": "2026-09-27",
+          "value": 114
+        },
+        {
+          "date": "2026-09-28",
+          "value": 131
+        },
+        {
+          "date": "2026-09-29",
+          "value": 116
+        },
+        {
+          "date": "2026-09-30",
+          "value": 111
         },
         {
           "date": "2026-10-01",
-          "value": 84
-        }
-      ],
-      "articles": [
-        {
-          "title": "Issue Brief on “Cyber-Enabled Sub-Conventional Warfare and India-Pakistan Stability”",
-          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOWFlzdVg5Z3dWYjgxcDZvUDlnWXQ2c1pqOHVrZG1hQ0JkX2w1bzk3Yk1HMmgzVWNlRDVaMlFtOG5PS2pTYk1Ib3VwQ3dpU0ZVVnRvMzRad1ZVcU1DaUNHZVVzd3Y3T1JyUExSd1QweC1rZjExNzNMdnUzdGQzMnNNZEdiSFFfaUEzZTFiQ0dXaDV6aEhDR3d3N3B6UXZfclFpOHpUSGVn?oc=5",
-          "domain": "Institute of Strategic Studies Islamabad (ISSI)",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T09:20:45.000Z",
-          "rank": 5,
-          "rel": 7.8
+          "value": 295
         },
         {
-          "title": "[VIDEO] Pakistan Tests Extended-Range Fatah-4 Cruise Missile, Raising India’s Deep-Strike Stakes",
-          "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPSk5zQUdQemwtLW1zR0Iwb3RwbzhoaHI4Uno0UVhXNVY1NTdWYTFFM3dsMHotSV9faS0xQWlWZ1YtaFEzT1pxY3B3YmgxRHcxT1NZa05RcWM2MzgxYXNZMFpBOEZFU3ZVdWhLekpQM2NBYmpqREZxN2otUHRCWUg4S1lTTVlVTVc3X3VPcldnSW4?oc=5",
-          "domain": "Defence Security Asia",
-          "country": "",
+          "date": "2026-10-02",
+          "value": 89
+        },
+        {
           "date": "2026-10-06",
-          "ts": "2026-10-06T17:17:26.000Z",
-          "rank": 67,
-          "rel": 6.6
-        },
-        {
-          "title": "India's clout in Kashmir tested by new China-Pakistan border protocol",
-          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxOckowQV8tVkZxN0s3WjNjNV9TRzFUTmQ4bDBIdGh3MU51TmxZWW5sMzZfSGVtRnBLN3BaLUhOd3NjNVA0b1VWSFNacmpjUnBDMTN4SDIyaHdFSjYwT0NLelJRX0JYRkJ1VW11UUMybkVlTzRXVk9uYjhQbmFpenVjX1NmSmZPdjBGOVpXU3pjWnQ4NWVqOWY5NW1LbWtuOEVhcjM5azBrMkVlbTUzR3VhUWQ1c3FMNjM5U1JiOTBtUTNTaTZ2?oc=5",
-          "domain": "Nikkei Asia",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T01:54:00.000Z",
-          "rank": 0,
-          "rel": 6.3
-        },
-        {
-          "title": "India exposes Pakistan’s doublespeak at UN, says world has not forgotten 9/11, 26/11, Pahalgam attacks",
-          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNUUQ1Qzg4SGszekZ2MF9VRHZ6UGFWN2U4UG4xVDFoY1NEQzJieGZiUnQ5NjBuREtzLXU1b1p1dGVqZTNTdFBSMVFTUjFwTnVKLVU1eXFZRkFSQ0FCdEhFNDBlell1WVJyQ3NiMEtLMnpKWEdEeUQ1dlVManlOOVZyMjZwUTcyYlJVUzBFQVVwZ2NhYmNNb0JfSjBGWkpXR1B3Z09KWVN2Nk02WTE1VGNqZUFhdEvSAbsBQVVfeXFMTk56bDFYam41bXN5c1B3bjlKRkVtbUVMNmJEakpySW9kQkp1RHZ3YTFlcVhnaHg5Um16bUNxQzQ2SWg4SWV0d01yVWVxZHViN3YxWTQwVzRXSGNZSzdZNUU4OGYxcTFxa29qb3pST3ZVT01tSG12WV8xZ0lRb2c3T2gzQ0VTMC1Oa2E5ODlkUC1mcmZnWVpza3lFeWNLeDh3STlZeWRWQVZYTFAyRllnT2taQk82N0pNMGUydw?oc=5",
-          "domain": "The Hindu",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T06:37:08.000Z",
-          "rank": 3,
-          "rel": 6.3
-        },
-        {
-          "title": "India’s war on drugs faces new test as major meth hub shifts to Pakistan",
-          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQQ0h0VWdKblhTaG1qTV9UNEdLeE1rMnVwQkpub0JrNlJCZXluM2xrUVFKUUdoOGE1VGJaUktQa3g3aC1HV3FHbV8zel92MThKblFFUnFQcFpIUVdRNlEyUmM0TENCRnVQcEFma2ZXVnJXMlFZQzU4bnRUeGNlSHBmWTEwdmUzbllUaFBCNUhzdUt3QTBLMVNydmg2VjhzZXNYaVB6NGF6TnJ4N2F0bHduaHUwUHpMZXhDM0FJ0gHAAUFVX3lxTE1YQkVIdmJickpZOGM5NkRhQzl1Y0ZZX0UtaVF4Q2RfODJubHprUkJjWThCWXhLUXg3SlZrUmpRMVJrUVRjOTloVXhMQlVqODVNQlZETnp0YnFxVkwwRUJIWUpPbFlnRktJVXFTazBtTmFULTVva1F5N0duU3UwSVdvNU5OX2RqMVVKVklBQ090YmZIcGhDWUkwbjZ3bXpraWx1aW5yMWQzQW9fQUxYMmJmYlVTUlFFakZLWU9jUGdrNw?oc=5",
-          "domain": "Firstpost",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T08:08:41.000Z",
-          "rank": 6,
-          "rel": 6.2
-        },
-        {
-          "title": "Pakistan warns India-backed terror proxies will face 'same fate' as downed jets in May last year",
-          "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxNVkpDclpBVklBWkNqUU5NakRUbThWYTZfa2tpTW0tMVVmWG9ZakRHTm5FTHM1SG9WRVRkSkZDanZnNDB1TVdCeU9tSzg2cEQ1WDVhNEF1NUhVeDdWdVFTY0FvYXZ5eXBCU3BScjNrUWFaS3JJQmRZWURMeS11Nk1nbzNwWmlsTnA4cWJtN2J1SHh4cHF3cHdoS2JtY0h3TzNRbnNCTkMwdzZRQmFuaFlXOXB5X2Fla2Nwb09iNHJla2E2NlpvY01GRzlfQXpDb0d2QXYxTUllRQ?oc=5",
-          "domain": "| Associated Press Of Pakistan",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T07:53:17.000Z",
-          "rank": 87,
-          "rel": 5.9
-        },
-        {
-          "title": "At UN, India calls out Pakistan doublespeak; says world has not forgotten 9/11, 26/11, Pahalgam attacks",
-          "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxON29XQXZJa3JhMGFQU0ZINHVtU0VzaU5QWkpwRHhDSjhRMFh6Y1k2WEluVDVHNEVla2gwR3Q0TDc4RzdZVmVCbUFvUkxDR0VqQ3JtbEkxV2tNYVZ6LUJCMGpHMFkwNzZyMW5vMTdtNWczZXRPam5nYVlvMTJCaF9vYU1WSURzSWhmdDh2cEZ0QzZtMzBuZjBrQV9oOHkxRnl5al9raU9wRDhfSUgwdlNrR3JsVVp3T0FZeFEwbmFTSHZVUnBRVFRvc1JWTC1kTi1RaDVCR3VYT2l5YUdBSUZYbVpZOHRZSkE?oc=5",
-          "domain": "Deccan Herald",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T07:19:00.000Z",
-          "rank": 36,
-          "rel": 5
-        },
-        {
-          "title": "India Hits Back at OIC Over Kashmir, Pakistan Terror Links and “Wilful Blindness”",
-          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9GSkdXMVJ4YVl2RGp1NGVudkhNMUVJRVdWak81TDdCYWJNSkZpTWJycmM5Yk1BQkYwb3lhbzBtY29KczRJbW0wRmJBZktzSi1vVF9sdFZucThsNVlD?oc=5",
-          "domain": "YouTube",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T03:30:05.000Z",
-          "rank": 10,
-          "rel": 4.4
-        },
-        {
-          "title": "'Frankenstein’s monster': India tears into Pakistan at UN over terror links",
-          "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPNEw3T1NPZVNFNU91ZmdiZkdvUWxrdWdGd1FYT0R0dGQtajFpejBtQlF3Qk91Ym5wcU5xeXZQZkZlSkxJdnIycjJtTTZRRlhoeGlrbEZkbHotalFOd3JubVpPWVNhdHJYeG4ybE9rTVl3WFlBaDl6UXFWZGFXZXI5WTFsOEcweEFGZ3Bwc0U0WHNsX0RkVEgteXh0WlNBWkhKX2NtcHVWRUhYT0EybUp3Z2RWTl8yQ03SAbwBQVVfeXFMUGNBb2RGcG11YVdpX1Z6aC03M3FxelJkeGNlNVR5cVNzTUR0cU5lQXFpNC1sdFB5Q0gwWm93RTJsZ1EzbWdRM2UyQ3UxU3I4UkJ6MGh2MnVsUmFrblJVZnNWNTF6dEwwSHdDMndvSWVoQWd1MGVSa0JIUDNlSGhBSmk3cmptZjByWVNqRUZCUXBiVlB1R1g0N3BtaEkyMld0bXc3bktNVVFyNm43QWt5aHA1RmREblJCZVVrT2U?oc=5",
-          "domain": "WION",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T07:02:00.000Z",
-          "rank": 12,
-          "rel": 4.4
-        },
-        {
-          "title": "Pakistan's terror monsters now wreak havoc in its own backyard: India at UN",
-          "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxOaFVJV1IwZF9TbmY2d1k3cG9HTHU2eHJZdENWV0dJT0h6T25rNDJLOENMS3g5alA1WTVuTnBTbS1oT3h3MDFFWGp0Q2hzeWh5aEcwcml6YjBEdjhSTFYwQ1dGYWdJMFRjb0FNaVJnRE5LdEhRX1RQcWFZRUtzbG1wbnJnQTctSFdQTWtEXzNDOEM3cFZKdHJsR3JWalpYM2RCM3pMMmZtX1ppR0swUHpIZzhWUmNtNVF4a3F6M0w1ZG5Ed0ZHdWluOTJDdDk4Z0xldHNuWWQ3SFfSAd4BQVVfeXFMT1JmOTM1ZUdyMjhXS1lOd0h4TGRFX3B5U0lqWEZZX2d0bTJMTk5vMFYxVlgyVlVXaURMdFljaG1iU2dIbl9jamdDcUJCSDg3UUdzaERYYXhuTlR1S1Yyc3lvcWJyRTVXOEQ4dWgwTVNzck1KNkU4a3lwMDMzMmlfQ1loQ3ZIbU5oRU5BSEhkMkpHUHM0NTcxNV9QbXJoUl9FNjhid2J3bUh0SzBpeDBhTEcxZWlEdkVzYWZMU1RMMjlmNjl2Tlg0Zk1rWlVaRVRHUllEb28wYVVqR0NwVWNB?oc=5",
-          "domain": "The Times of India",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T03:30:00.000Z",
-          "rank": 11,
-          "rel": 4.4
-        },
-        {
-          "title": "India accuses Pakistan of ‘doublespeak’ on terrorism at UN",
-          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQZDJ3WkRDOFJKUFQ5MUNxb3hBTTlmaUxoemZFUHpRR2NNekdHdmwyNWpTcFcwQldyS0F3bUVrNEhMNTlBeUQ1Ujh5LVhJV09zZktNSldKbjJTR0RQamF3bkRaWGpveFVKcExTRTctYW9BbmtHVFlJYXVWVWZJR2gya0J0UFR3R2p3NXFzUA?oc=5",
-          "domain": "The Indian Awaaz",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T10:16:00.000Z",
-          "rank": 19,
-          "rel": 4.2
-        },
-        {
-          "title": "India Exposes Pakistan At UN, Turns Islamabad’s Own Words On Terror Against It",
-          "url": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxQWWdJeGZaNTB4T1VjbUlKQ1I2Ylc0a1FIQlNkN3E2OTNoS0ZsZWlxdTNGUzBCZnBCWXlZdl9nYXpKMlBvZllkOVg0cnBadGxxZjFkdlp3REVfZkxwaEZ2dG9MMDJjWVNWbEpGbGFqV1R6R3NLSzNiOFp4bjVQaGlGNmprT1hpQzN5ZkNiRm5NUnI0N0o4X19GdTUtTEdWdzRaZnFkd1J0eUhFYjB3MTRQU01hMkFqeHFaVVlld2RCQnc4bTdPUjRTSVpSaUNFSm80MWVNU1VyVHhES21YWVh6LUR30gHnAUFVX3lxTE8yUTFBMkdndGJveEU0U0p0RWRVYjlLN3ZkYTIwaGJHTHRsRkZBVTVJNlpCNkVRZV9aM1ZPMk4ya0laejVVemJXakZYUmppTEVlU3BGS3ZNSzJqamNwUUhzdVJ3c0NqRE5QZVNxQWZ4Y1U5THhpa3U3Z1c2a0UyaHAxT0RFdGE5dTJkXzJPbHhmel80enRIRmVPNk13bDVSSkVSQmgzYllXN1YwTTlzdXVPN1NwTGV4aFh6WjNmV0wyVENDZF90S0ZQWjU4LUR5QnJGeXpVV3M4d3hnZjR1RUg0SE5XNEVZbw?oc=5",
-          "domain": "The Times of India",
-          "country": "",
-          "date": "2026-10-08",
-          "ts": "2026-10-08T07:09:30.000Z",
-          "rank": 18,
-          "rel": 4.2
+          "value": 2
         }
       ],
+      "articles": [],
       "screen": {},
-      "screened": false,
-      "source": "rss-articles+unscreened+rss-counts",
-      "fetchedAt": "2026-10-08T11:24:25.084Z",
-      "count7d": 84,
-      "prev7d": 5,
-      "capped": true,
+      "screened": true,
+      "source": "gdelt-timeline",
+      "fetchedAt": "2026-10-08T12:30:08.051Z",
+      "count7d": 858,
+      "prev7d": 836,
+      "capped": false,
       "surge": false
     },
     "MM": {
