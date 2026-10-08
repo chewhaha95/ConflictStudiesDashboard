@@ -244,18 +244,17 @@ function screenPrompt(it, cands) {
 }
 const SCREEN_SYSTEM = "You screen news headlines for a military conflict-studies watchlist. Keep a headline only if it reports on the security, military, political-military, diplomatic or humanitarian dimension of the named conflict or theatre. Drop sport, entertainment, livestream and score pages, business or technology stories with no security angle, cultural or lifestyle pieces, homonyms (places or people with the same name elsewhere), and stories about a different conflict that merely mention a party. When unsure, drop it.";
 // Watches (register `watches[]`): a stricter screen for each watch's narrower
-// sub-feed, chosen by the watch's `kind`.
-// Info-ops watch (kind "info-ops"): messaging and influence activity.
-const INFOOPS_SYSTEM = "You screen news headlines for a military conflict-studies watchlist's information-operations watch. Keep a headline only if it reports on information operations, disinformation, cognitive or psychological warfare, propaganda or state-media narratives, official strategic communications (government, foreign-ministry, military or party statements aimed at an audience), influence campaigns, censorship, lawfare narratives or sanctions used as messaging, in the named theatre. Drop ordinary military, economic, sport or entertainment news, and anything not about messaging or influence. When unsure, drop it.";
-// Shadow-war watch (kind "shadow-war"): keeps hybrid attacks and
-// incursions as well as influence operations.
-const SHADOWWAR_SYSTEM = "You screen news headlines for a military conflict-studies watchlist's shadow-war watch. Keep a headline only if it reports on hybrid or deniable hostile activity below the threshold of open war in the named theatre: sabotage, arson, undersea cable or pipeline damage, cyber attacks, GPS jamming, drone or aircraft airspace incursions, shadow-fleet activity, espionage, assassination plots, influence or disinformation operations, or the targeted governments' and alliance's responses (arrests, expulsions, sanctions, deployments, consultations). Drop ordinary battlefield news from the main war, economic, sport or entertainment news. When unsure, drop it.";
+// sub-feed, chosen by the watch's `kind`. Both kinds track operational and
+// tactical lessons (what was tried, what worked, what failed), not messaging.
+// Shadow-war watch (kind "shadow-war"): hybrid attacks below the threshold of
+// war and the defenders' countermeasures.
+const SHADOWWAR_SYSTEM = "You screen news headlines for a military conflict-studies watchlist's shadow-war watch, which tracks the operational and tactical side of hostile activity below the threshold of open war in the named theatre. Keep a headline only if it reports a concrete action or its outcome: sabotage, arson, undersea cable or pipeline damage, cyber attacks with real-world effect, GPS jamming, drone or aircraft airspace incursions, shadow-fleet or maritime activity, espionage or sabotage cells, or the defenders' countermeasures and their results (interceptions, shoot-downs, air-defence or counter-drone deployments, boardings and detentions, arrests, expulsions, new rules of engagement). Drop pure rhetoric, propaganda or disinformation stories with no operational action, ordinary battlefield news from the main war, economic, sport or entertainment news. When unsure, drop it.";
 // Operation watch (kind "operation"): one named military operation.
-const OPERATION_SYSTEM = "You screen news headlines for a military conflict-studies watchlist's operation watch, which follows one named military operation. Keep a headline only if it reports on that operation or the fighting in its sector: ground gains or losses, settlements taken or lost, attacks and counterattacks, reinforcements, casualties and prisoners, tactics and weapons used there, commanders' or ministries' statements about it, and analysts' assessments of it. Drop news from other sectors of the war, strikes elsewhere, diplomacy, economic, sport or entertainment news. When unsure, drop it.";
-const WATCH_SYSTEMS = { "info-ops": INFOOPS_SYSTEM, "shadow-war": SHADOWWAR_SYSTEM, "operation": OPERATION_SYSTEM };
-const WATCH_NAMES = { "info-ops": "Information-operations watch", "shadow-war": "Shadow-war watch", "operation": "Operation watch" };
-function watchKind(w) { return (w && w.kind) || "info-ops"; }
-function watchSystem(w) { return WATCH_SYSTEMS[watchKind(w)] || INFOOPS_SYSTEM; }
+const OPERATION_SYSTEM = "You screen news headlines for a military conflict-studies watchlist's operation watch, which follows the tactics and outcomes of one named military operation. Keep a headline only if it reports on that operation or the fighting in its sector: ground gains or losses, settlements taken or lost, attacks and counterattacks, reinforcements, casualties and prisoners, tactics, weapons and enablers used there and whether they worked, commanders' or ministries' statements about it, and analysts' assessments of it. Drop news from other sectors of the war, strikes elsewhere, diplomacy, economic, sport or entertainment news. When unsure, drop it.";
+const WATCH_SYSTEMS = { "shadow-war": SHADOWWAR_SYSTEM, "operation": OPERATION_SYSTEM };
+const WATCH_NAMES = { "shadow-war": "Shadow-war watch", "operation": "Operation watch" };
+function watchKind(w) { return (w && w.kind) || "operation"; }
+function watchSystem(w) { return WATCH_SYSTEMS[watchKind(w)] || OPERATION_SYSTEM; }
 // Enabled watches with a feed query; each needs an `id` to key its live sub-feed.
 function itemWatches(it) { return (it.watches || []).filter(w => w && w.enabled && w.id && w.feed && w.feed.query); }
 function watchPrompt(it, w, cands) {
@@ -467,7 +466,7 @@ async function fetchItem(it, prevItem, judge, spamDomains) {
   return out;
 }
 
-module.exports = { titleMatch, mergeArticles, withinDays, rankArticles, relevanceScore, topicWords, MIL_TERMS, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, watchPrompt, INFOOPS_SYSTEM, SHADOWWAR_SYSTEM, OPERATION_SYSTEM, watchSystem, itemWatches, screenJudge, titleKey, EXCLUDE };
+module.exports = { titleMatch, mergeArticles, withinDays, rankArticles, relevanceScore, topicWords, MIL_TERMS, parseArticles, rssSearch, rssQuery, screenArticles, screenPrompt, watchPrompt, SHADOWWAR_SYSTEM, OPERATION_SYSTEM, watchSystem, itemWatches, screenJudge, titleKey, EXCLUDE };
 if (require.main !== module) return;
 
 (async () => {

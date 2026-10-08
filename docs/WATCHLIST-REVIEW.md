@@ -87,29 +87,36 @@ same way.
      paragraphs rest on, newest first; mark single-source claims
      "(single source)";
    - **watches** (each enabled entry of an item's `watches`, see
-     `definitions.watches`): research the watch's `question` for the window.
-     For an info-ops watch (`kind: "info-ops"`): official statements,
-     state-media narratives, documented influence or disinformation activity,
-     coercive signalling used as messaging, the targeted side's
-     counter-messaging, fact-checks and third-party assessments. For a
-     shadow-war watch (`kind: "shadow-war"`): also hybrid attacks such as
-     sabotage, arson, cable or pipeline damage, cyber attacks, GPS jamming and
-     drone or airspace incursions, and the targeted side's defensive
-     responses. For an operation watch (`kind: "operation"`): ground gains and
-     losses (say who claims them and whether geolocated footage or ISW
-     confirms them), the command's claims of losses and prisoners, the
-     enemy's counterattacks and reinforcements, tactics and capabilities used,
-     leaders' statements and analysts' assessments. Append dated `findings`
-     `{date, actor, type, text, url, unverified?}` with `type` from
-     `definitions.watches.types`, newest first; keep entries from the last
-     14 days, at most 12 (at least 5); do not rewrite earlier entries without
-     cause. Rewrite the watch's `assessment` `{date, text, sources}`: one
-     paragraph of 120–180 words answering the question with dated evidence,
-     3–6 sources newest first, no recommendations. Never change a watch's
-     `id`, `enabled`, `kind`, `label`, `title`, `feedTitle`, `since`,
-     `trigger`, `question` or `feed` (feed-noise additions to
-     `feed.exclude` aside), and never add or remove watches; the team sets
-     them;
+     `definitions.watches`): research the watch's `question` for the window
+     as **tactical lessons**, on both sides: which tactics or actions were
+     tried, and whether each **succeeded**, **failed**, was **superseded**
+     (replaced by a newer method or made obsolete by a countermeasure) or is
+     still **contested** (claims unconfirmed, sources disagree, too early to
+     judge), with the evidence for that judgement. For a shadow-war watch
+     (`kind: "shadow-war"`): sabotage and arson, cable or pipeline damage,
+     cyber attacks with real-world effect, GPS jamming, drone or airspace
+     incursions, shadow-fleet and maritime activity, and the defenders'
+     countermeasures (interceptions, counter-drone defence, rules of
+     engagement, boardings, arrests, expulsions); pure rhetoric or
+     disinformation without an operational effect is out of scope. For an
+     operation watch (`kind: "operation"`): the tactics, weapons and enablers
+     both sides use in the operation's sector and what they achieved; say who
+     claims gains or losses and whether geolocated footage or ISW confirms
+     them. Append dated `findings` `{date, actor, tactic, type, text, url,
+     unverified?}` (`tactic` = a short name of the tactic or action, 3–8
+     words; `type` = the outcome, from `definitions.watches.types`; `text` =
+     what was tried, what happened and the evidence), newest first; keep
+     entries from the last 14 days, at most 12 (at least 5, with at least one
+     `succeeded` and one `failed` or `superseded`); do not rewrite earlier
+     entries without cause, but do update an earlier finding's `type` when
+     new evidence settles a `contested` outcome. Rewrite the watch's
+     `assessment` `{date, text, sources}`: one paragraph of 120–180 words on
+     what is working, what is failing or being countered and what has been
+     superseded, and how each side is adapting, with dated evidence, 3–6
+     sources newest first, no recommendations. Never change a watch's `id`,
+     `enabled`, `kind`, `label`, `title`, `feedTitle`, `since`, `trigger`,
+     `question` or `feed` (feed-noise additions to `feed.exclude` aside),
+     and never add or remove watches; the team sets them;
    - append today's snapshot to `snapshots`:
      `{date: <today>, state, phase, escalation, tempo, adaptation, sgExposure}`
      with the values just set (one snapshot per review date; replace the
