@@ -9,7 +9,7 @@
  * Bindings (Settings → Variables and Secrets on the Worker):
  *   GITHUB_TOKEN   secret — fine-grained token, this repository only,
  *                  permission "Actions: Read and write".
- *   GH_OWNER       var    — chewhaha95
+ *   GH_OWNER       var    — withoutequal31
  *   GH_REPO        var    — ConflictStudiesDashboard
  *   WORKFLOW_FILE  var    — sync-watchlist-feed.yml
  *   GH_REF         var    — main

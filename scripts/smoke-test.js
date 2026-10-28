@@ -323,7 +323,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       [...card.querySelectorAll(".wl-as-p")].map(p => p.textContent) .join("\n") === a.text.join("\n") && card.querySelector(".wl-as-date").textContent.includes(fmtD(a.date)) &&
       card.querySelectorAll(".wl-src-list a[href^='http']").length === a.sources.length && !/CSI Flash|should publish|Priority|Archive/.test(card.textContent);
   })());
-  check("page names the GitHub Pages data origin for mirrors (Cloudflare Pages / custom domain)", /<meta name="data-origin" content="https:\/\/chewhaha95\.github\.io\/ConflictStudiesDashboard\/"/.test(html));
+  check("page names the GitHub Pages data origin for mirrors (Cloudflare Pages / custom domain)", /<meta name="data-origin" content="https:\/\/withoutequal31\.github\.io\/ConflictStudiesDashboard\/"/.test(html));
   {
     const nWatches = wl.items.reduce((n, i) => n + (i.watches || []).filter(w => w.enabled).length, 0);
     check("watches: one badge per enabled watch, none on the Taiwan row", reg.querySelectorAll(".wl-io-badge").length === nWatches && !reg.querySelector(`tr[data-wl-row="TW"] .wl-io-badge`));
@@ -813,7 +813,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     domM.window.Chart = function () { return { destroy() {} }; }; domM.window.Chart.prototype = {};
     domM.window.HTMLCanvasElement.prototype.getContext = () => ({});
     domM.window.eval(appjs); await sleep(250);
-    const org = "https://chewhaha95.github.io/ConflictStudiesDashboard/";
+    const org = "https://withoutequal31.github.io/ConflictStudiesDashboard/";
     check("mirror host: register, feed and weekly editions are fetched from the GitHub Pages data origin; code assets stay local",
       seen.includes(org + "watchlist.json") && seen.includes(org + "watchlist-live.json") && seen.includes(org + "weekly-live.json") && seen.includes("sample-data.json") && seen.includes("assets/world-110m.json") && !seen.includes("watchlist.json"));
     check("mirror host: the Watchlist tab renders from the cross-origin register", domM.window.document.querySelectorAll("#wl-register tbody tr.wl-row").length === wl.items.length);

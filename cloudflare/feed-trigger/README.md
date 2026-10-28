@@ -19,7 +19,7 @@ the sync's concurrency group absorbs any overlap).
    `worker.js` from this folder, Deploy.
 3. **Variables.** Worker → Settings → Variables and Secrets → add
    - `GITHUB_TOKEN` (type **Secret**) = the token from step 1
-   - `GH_OWNER` = `chewhaha95`
+   - `GH_OWNER` = `withoutequal31`
    - `GH_REPO` = `ConflictStudiesDashboard`
    - `WORKFLOW_FILE` = `sync-watchlist-feed.yml`
    - `GH_REF` = `main`
